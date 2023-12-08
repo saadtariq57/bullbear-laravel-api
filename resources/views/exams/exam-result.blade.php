@@ -1,11 +1,13 @@
+@extends('layouts.master')
 @section('body')
-<body>
-  @endsection
-  @section('content')
-    <section class="container mt-3 bg-white py-4">
+
+<body class="exam">
+    @endsection
+    @section('content')
+    <section class="container mt-5 bg-white py-80">
         <div class="container-lg w-75 exam-result-container p-0">
             <div class="mb-4">
-                <a href="" class="fs-18 fw-5 text-decoration-underline text-black">
+                <a href="/exams" class="fs-18 fw-5 text-decoration-underline text-black">
                     < Back to Exam Center</a>
             </div>
             <div class="card rounded-5 shadow-lg">
@@ -37,8 +39,8 @@
             </div>
 
             <div class="text-center mt-5">
-                <button class="btn-primary">
-                    < Back to Exam Center</button>
+                <a href="/exams" class="btn-primary">
+                    < Back to Exam Center</a>
             </div>
         </div>
 
@@ -46,4 +48,4 @@
     </section>
     @endsection
     @section('scripts')
-  @endsection
+    @endsection

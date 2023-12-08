@@ -1,8 +1,10 @@
+@extends('layouts.master')
 @section('body')
-<body>
-  @endsection
-  @section('content')
-    <section class="container-lg mt-3">
+
+<body class="exam">
+    @endsection
+    @section('content')
+    <section class="container-lg mt-5 py-80">
         <div class="exam-header bg-white shadow-sm p-4">
             <div class="container-lg exam-main my-2">
                 <div>
@@ -39,7 +41,7 @@
                         </label>
                     </div>
                     <div class="text-center">
-                        <button class="btn-primary">Next >></button>
+                        <a href="/exam-result" class="btn-primary">Next >></a>
                     </div>
                 </form>
             </div>
@@ -47,4 +49,4 @@
     </section>
     @endsection
     @section('scripts')
-  @endsection
+    @endsection

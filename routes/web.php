@@ -34,6 +34,14 @@ Route::get('/exams', function () {
     return view('exams.index');
 })->name('exams.index');
 
+Route::get('/exam-queries', function () {
+    return view('exams.exam-queries');
+})->name('exams.exam-queries');
+
+Route::get('/exam-result', function () {
+    return view('exams.exam-result');
+})->name('exams.exam-result');
+
 Route::get('/user-profile', function () {
     return view('profile.index');
 })->name('profile.index');
