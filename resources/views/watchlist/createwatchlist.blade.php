@@ -1,8 +1,9 @@
+@extends('layouts.master')
 @section('body')
 <body>
   @endsection
   @section('content')
-    <section class="container-fluid manage-watchlist">
+    <section class="container-fluid manage-watchlist py-80">
         <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con">
             <div class="Manage-list pl-1">
                 <h3 class="fw-bold py-2 px-2">My Watchlist 2</h3>
@@ -20,5 +21,5 @@
 
     </section>
     @endsection
-  @section('scripts')
-@endsection
+    @section('scripts')
+  @endsection
