@@ -16,7 +16,7 @@
               <ul class="main-list mb-0">
                 <li>
                   <div class="dropdown">
-                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16 fw-bolder" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       FINANCIAL NEWS
                     </button>
                     <ul class="dropdown-menu px-4 py-3">
@@ -30,7 +30,7 @@
                 </li>
                 <li>
                   <div class="dropdown">
-                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16 fw-bolder" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       TRADING SCHOOL
                     </button>
                     <ul class="dropdown-menu px-4 py-3 mega-menu gap-4 rounded-3">
@@ -82,7 +82,7 @@
                 </li>
                 <li>
                   <div class="dropdown">
-                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="nav-link dropdown-toggle d-flex nav-clr fs-16 fw-bolder" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       RESOURCES
                     </button>
                     <ul class="dropdown-menu px-4 py-3 mega-menu gap-4 rounded-3">
@@ -107,12 +107,12 @@
                   </div>
                 </li>
                 <li>
-                  <a href="" class="nav-link nav-clr">CEO INTERVIEWS</a>
+                  <a href="" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
                 </li>
               </ul>
               <div class="header_login d-flex gap-4 justify-content-end">
-                <a href="/welcome" class="d-flex gap-2 fs-16 fw-6 nav-clr" aria-label="login"><i class="bi bi-box-arrow-in-right"></i>LOG IN</a>
-                <a href="/register" class="d-flex gap-2 nav-clr fs-16 fw-6" aria-label="signup"><i class="bi bi-person-fill"></i>SIGN UP</a>
+                <a href="/welcome" class="d-flex gap-2 fs-16 fw-bolder nav-clr" aria-label="login"><i class="bi bi-box-arrow-in-right"></i>LOG IN</a>
+                <a href="/register" class="d-flex gap-2 nav-clr fs-16 fw-bolder" aria-label="signup"><i class="bi bi-person-fill"></i>SIGN UP</a>
               </div>
               <div class="search-main">
                 <button class="bg-transparent border-0 search-btn fs-3 nav-clr" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">

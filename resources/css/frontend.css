@@ -171,7 +171,7 @@ h3 {
 }
 
 h2 {
-    font: normal 700 26px/36px "Poppins";
+    font: normal 700 32px/36px "Poppins";
 }
 
 p {
@@ -377,7 +377,6 @@ td {
 .icon-heading::before {
     content: url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon.png);
     display: inline-block;
-    margin-right: 8px;
     vertical-align: middle;
 }
 
@@ -466,6 +465,11 @@ td {
     overflow: hidden;
 }
 
+.widgets-slide-section,
+.main-header {
+    background-color: #ffffff5e;
+}
+
 .hero-wrapper {
     padding-left: 48px;
     padding-right: 48px;
@@ -481,14 +485,14 @@ td {
     background-image: radial-gradient(circle at 78% 60%, #edb043, #ffffff6b, #fff), url(https://s3.us-east-1.wasabisys.com/rpdapp1/upload/photos/ADL-Abstract-Background-v3.png);
     padding-left: 0;
     padding-right: 0;
-    padding-top: 80px;
+    padding-top: 73px;
     min-height: 100vh;
 }
 
 .hero-graph {
     position: absolute;
     right: 0;
-    top: 32%;
+    top: 280px;
 }
 
 /* .hero-graph img {
@@ -2211,11 +2215,11 @@ p.user-message {
     }
 }
 
-/* @media screen and (max-width: 1440px) {
+@media screen and (max-width: 1300px) {
     .hero-graph {
-        padding-left: 30px;
+        top: 310px;
     }
-} */
+}
 
 @media screen and (max-width: 1203px) {
     .main-heading h1 {
@@ -2239,7 +2243,7 @@ p.user-message {
     }
 
     .hero-graph {
-        top: 40%;
+        top: 315px;
     }
 
     .main-menu-container .dropdown-menu.show {
@@ -2276,7 +2280,7 @@ p.user-message {
     }
 
     .hero-graph {
-        top: 44%;
+        top: 335px;
     }
 }
 

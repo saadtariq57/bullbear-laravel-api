@@ -15,160 +15,160 @@
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <!-- {{ URL::asset('build/images/widgets-chart.png') }} -->
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
                 </div>
-                <div class="Green fs-12 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
+                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <!-- {{ URL::asset('build/images/widgets-chart.png') }} -->
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
                 </div>
-                <div class="Green fs-12 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
+                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <!-- {{ URL::asset('build/images/widgets-chart.png') }} -->
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
                 </div>
-                <div class="Green fs-12 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
+                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span> <span>(+1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Green fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Green fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="{{ URL::asset('build/images/widgets-chart.png') }}" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
             <div class="d-flex justify-content-around align-items-center widgets-slider-card">
               <div class="hero-card-wrapper">
                 <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="fw-bold lh-1">
-                    <a href="" class="fw-bold fs-16 text-black">BTC-USD</a><br>
-                    <span class="fs-16 text-black">36702.25</span>
+                  <h3 class="lh-1">
+                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
+                    <span class="fw-bolder fs-16 text-black">36702.25</span>
                   </h3>
                   <div>
                     <img src="" alt="">
                   </div>
 
                 </div>
-                <div class="Red fs-12 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
               </div>
               <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
@@ -1198,7 +1198,7 @@
   <section class="Guides-section container-fluid py-80">
     <div class="container">
       <div class="heading-summary">
-        <h2 class="icon-heading mb-4 px-10 ">HOW TO GUIDES</h2>
+        <h2 class="icon-heading mb-4 px-10 ">How To Guides</h2>
         <!-- Carousel Multiple Items Start -->
         <div class="guide-slider">
           <div class="guide-content-slider">
@@ -1307,7 +1307,7 @@
   <section class="testimonial-section container-fluid py-80 overflow-hidden bg-smoke">
     <div class="container">
       <div class="main-heading-help px-10 mb-5">
-        <h2 class="text-uppercase icon-heading">Recommended by Traders Worldwide</h2>
+        <h2 class="text-uppercase icon-heading text-capitalize">Recommended by Traders Worldwide</h2>
       </div>
       <div class="testimonial-slider wide-slider">
         <div class="testimonial-card">
