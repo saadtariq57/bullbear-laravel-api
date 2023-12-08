@@ -228,8 +228,7 @@ function scrollUpdate() {
     }
 }
 window.addEventListener("scroll", scrollUpdate);
-
-
+// feed page form focus js
 function feedoverlay() {
     var element = document.getElementById("focus-overlay");
     element.classList.add("focus-overlay");
@@ -254,3 +253,23 @@ function hideColor() {
     var y = document.getElementById("user-color-con");
     y.classList.add("d-none");
 }
+// feed page form focus js end
+// watchlist add search js 
+$(document).ready(function() {
+    const $addSymbolBtn = $('.add-symbol-btn');
+    const $symbolSearchForm = $('.symbol-search-form');
+    function toggleSymbolSearchForm() {
+      $symbolSearchForm.toggle();
+    }
+    $addSymbolBtn.on('click', function(event) {
+      event.stopPropagation(); // Prevent body click event from firing
+      toggleSymbolSearchForm();
+    });
+    $(document).on('click', function(event) {
+      if (!$(event.target).closest('.symbol-search-form, .add-symbol-btn').length) {
+        $symbolSearchForm.hide();
+      }
+    });
+  });
+// watchlist add search js end
+  
