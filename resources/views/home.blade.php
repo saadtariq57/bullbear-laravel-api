@@ -8,7 +8,7 @@
   <!-- Hero Section Start  -->
   <section class="hero-section container-fluid position-relative">
     <!-- top slider Start -->
-    <section class="container-fluid widgets-slide-section pt-1">
+    <section class="container-fluid widgets-slide-section py-1">
       <div class="row widgets-slide-wrapper">
         <div class="col-12 col-sm-11">
           <div class="widgets-slider mb-0">

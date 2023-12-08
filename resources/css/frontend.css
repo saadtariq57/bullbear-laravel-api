@@ -2020,7 +2020,7 @@ p.user-message {
 }
 
 .custom-border-left {
-    border-left: 10px solid var(--primary-color);
+    border-left: 5px solid var(--cta-btn);
 }
 
 .exam-main {
