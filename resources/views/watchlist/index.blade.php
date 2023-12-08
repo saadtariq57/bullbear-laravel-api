@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="container-fluid watch-list-sec py-80">
+  <section class="container-fluid watch-list-sec py-80 mt-5">
         <div class="container">
             <div class="row">
                 <div class="d-flex align-items-center">

@@ -8,7 +8,7 @@
     <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con">
       <h2 class="mt-1 mb-1 fw-bold">Manage Watchlists</h2>
       <div class="manage-watchlist-sidebar mt-3">
-        <a href="#" class="border-start border-dark px-2 text-decoration-underline fw-bold">Done</a>
+        <a href="/watchlist" class="border-start border-dark px-2 text-decoration-underline fw-bold">Done</a>
       </div>
       <hr class="mt-5 divider">
       <ul class="px-0">
@@ -22,18 +22,37 @@
               </svg>
             </div>
             <div class="Manage-list px-2">
-              <h3 class="fw-bold py-2 pe-4 w-100">My Watchlist 1</h3>
+              <h3 class="fw-bold py-2 pe-4 w-100">NVDA</h3>
             </div>
           </div>
           <div>
-            <button type="button" class="btn-close" aria-label="Close"></button>
+            <button class="border-0 fs-2 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#delete-list">X</button>
           </div>
 
         </li>
       </ul>
-
     </div>
-
+    <!-- Delete Model start -->
+    <!-- Modal -->
+    <div class="modal fade" id="delete-list" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="delete-listLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="delete-listLabel">NVDA</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          Are you sure you want to delete NVDA from your watchlist?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
+            <button type="button" class="btn btn-primary">DELETE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Delete Model end -->
   </section>
 
   @endsection

@@ -220,12 +220,18 @@ ul {
     border: none;
     transition: 0.5s;
 }
-
-.btn-hero {
-    background-color: var(--astronaut-blue) !important;
+.btn-primary:hover {
+    background-color: var(--cta-hover) !important;
+}
+.border-btn{
+    background-color: transparent !important;
+    color:var(--cta-btn);
+    border: 1px solid var(--cta-btn);
+}
+.border-btn:hover{
+    background-color: var(--cta-btn) !important;
     color: var(--white);
 }
-
 .scroll-image {
     transition: transform 0.3s ease;
 }
@@ -241,9 +247,6 @@ ul {
     color: var(--white) !important;
 }
 
-.btn-primary:hover {
-    background-color: var(--cta-hover) !important;
-}
 
 .cta-color,
 .cta-color:hover {
@@ -1265,7 +1268,17 @@ meter::-moz-meter-bar {
 .Manage-list {
     background-color: #f8f8f8;
 }
-
+.symbol-search-form{
+    display: none;
+}
+.symbol-search-form input{
+    border: 1px solid var(--cta-btn);
+    margin-top: 10px;
+}
+.symbol-search-form button{
+    right: 10px;
+    top: 4px;
+}
 /* Watchlist Page CSS end */
 /* Single Page CSS start */
 .breadcrumb-divider {
