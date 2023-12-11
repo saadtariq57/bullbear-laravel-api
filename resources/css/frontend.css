@@ -150,7 +150,9 @@ body {
 .w180 {
     width: 180px;
 }
-
+.border-light,thead, tbody, tfoot, tr, td, th{
+    border-color: #d8d4d4a6!important;
+}
 input,
 textarea {
     outline: none;
@@ -1284,7 +1286,13 @@ meter::-moz-meter-bar {
 .breadcrumb-divider {
     --bs-breadcrumb-divider: '»';
 }
-
+p.favorite-stocks {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    max-width: 1200px;
+    margin: auto;
+  }
 .card-title a:hover,
 .latest-article-widget h3 a:hover {
     color: #edb043 !important;
@@ -2031,6 +2039,12 @@ p.user-message {
 
 /* single-chats page end css */
 /* Exam page start css */
+.exam-btn a{
+    left: 50%;
+transform: translateX(-50%);
+border-radius: 10px;
+bottom: -25px;
+  }
 .exam-navtab .active {
     background-color: var(--primary-color) !important;
     color: var(--heading-color) !important;
