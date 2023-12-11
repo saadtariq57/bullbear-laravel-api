@@ -65,6 +65,9 @@ Route::get('/manageWatchlist', function () {
 Route::get('/createwatchlist', function () {
     return view('watchlist.createwatchlist');
 })->name('watchlist.createwatchlist');
+Route::get('/watchlist-main', function () {
+    return view('watchlist.watchlist-main');
+})->name('watchlist.watchlist-main');
 
 Route::get('/ceo-interviews', function () {
     return view('ceo-interviews');

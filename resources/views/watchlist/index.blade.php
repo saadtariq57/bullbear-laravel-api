@@ -48,7 +48,7 @@
                             aria-labelledby="dashboard-tab" tabindex="0">
                             <div class="row">
                                 <div class="col-lg-4 col-md-12 my-4">
-                                    <div class="watchlist-dashboard-container border p-3">
+                                    <div class="watchlist-dashboard-container border border-light p-3">
                                         <h3 class="fs-18"><b>My Whatchlist 1</b></h3>
                                         <div class="table-responsive">
                                             <table class="table stock-market-table1 height-1024">
