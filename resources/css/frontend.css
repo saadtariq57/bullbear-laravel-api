@@ -150,9 +150,17 @@ body {
 .w180 {
     width: 180px;
 }
-.border-light,thead, tbody, tfoot, tr, td, th{
-    border-color: #d8d4d4a6!important;
+
+.border-light,
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+    border-color: #d8d4d4a6 !important;
 }
+
 input,
 textarea {
     outline: none;
@@ -222,18 +230,22 @@ ul {
     border: none;
     transition: 0.5s;
 }
+
 .btn-primary:hover {
     background-color: var(--cta-hover) !important;
 }
-.border-btn{
+
+.border-btn {
     background-color: transparent !important;
-    color:var(--cta-btn);
+    color: var(--cta-btn);
     border: 1px solid var(--cta-btn);
 }
-.border-btn:hover{
+
+.border-btn:hover {
     background-color: var(--cta-btn) !important;
     color: var(--white);
 }
+
 .scroll-image {
     transition: transform 0.3s ease;
 }
@@ -1270,29 +1282,35 @@ meter::-moz-meter-bar {
 .Manage-list {
     background-color: #f8f8f8;
 }
-.symbol-search-form{
+
+.symbol-search-form {
     display: none;
 }
-.symbol-search-form input{
+
+.symbol-search-form input {
     border: 1px solid var(--cta-btn);
     margin-top: 10px;
 }
-.symbol-search-form button{
+
+.symbol-search-form button {
     right: 10px;
     top: 4px;
 }
+
 /* Watchlist Page CSS end */
 /* Single Page CSS start */
 .breadcrumb-divider {
     --bs-breadcrumb-divider: '»';
 }
+
 p.favorite-stocks {
     font-size: 20px;
     font-weight: 700;
     line-height: 30px;
     max-width: 1200px;
     margin: auto;
-  }
+}
+
 .card-title a:hover,
 .latest-article-widget h3 a:hover {
     color: #edb043 !important;
@@ -2039,12 +2057,13 @@ p.user-message {
 
 /* single-chats page end css */
 /* Exam page start css */
-.exam-btn a{
+.exam-btn a {
     left: 50%;
-transform: translateX(-50%);
-border-radius: 10px;
-bottom: -25px;
-  }
+    transform: translateX(-50%);
+    border-radius: 10px;
+    bottom: -25px;
+}
+
 .exam-navtab .active {
     background-color: var(--primary-color) !important;
     color: var(--heading-color) !important;
@@ -2063,9 +2082,20 @@ bottom: -25px;
     height: 10px;
 }
 
-.exam-progress-bar {
+/* .exam-progress-bar {
     background-color: var(--primary-color);
     width: 10%;
+} */
+
+.overall-percentage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 30px 0 rgba(8, 153, 129, .5);
+}
+
+.exam-result-container {
+    width: 60%;
 }
 
 .form-check-input {
