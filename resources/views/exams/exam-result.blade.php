@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('body')
 
-<body class="exam">
+<body class="bg-light-grey">
     @endsection
     @section('content')
     <section class="container mt-5 bg-white py-80">
