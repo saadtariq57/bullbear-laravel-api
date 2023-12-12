@@ -4,7 +4,7 @@
 <body class="exam">
     @endsection
     @section('content')
-    <section class="container mt-3 bg-white py-80">
+    <section class="container mt-3 py-80">
         <div class="container-lg exam-result-container p-0">
             <div class="card rounded-2 shadow-lg p-5">
                 <div class="">
