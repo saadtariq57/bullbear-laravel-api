@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-check p-3">
                         <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-                        <label class="form-check-label fw-5" for="flexRadioDefault2">
+                        <label class="form-check-label fw-5" for="flexRadioDefault3">
                             Buying low and selling high
                         </label>
                     </div>
