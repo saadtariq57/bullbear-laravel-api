@@ -4,7 +4,7 @@
 <body class="bg-light-grey">
     @endsection
     @section('content')
-    <section class="container mt-3 py-80">
+    <section class="container mt-5 py-80">
         <div class="container-lg exam-result-container p-0">
             <div class="card rounded-2 shadow-lg p-5">
                 <div class="">
@@ -21,23 +21,23 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <th>Points:</th>
+                                    <th class="fw-bolder">Points:</th>
                                     <td colspan="2">2/9.5</td>
                                 </tr>
                                 <tr>
-                                    <th>Time:</th>
+                                    <th class="fw-bolder">Time:</th>
                                     <td colspan="2">1:53</td>
                                 </tr>
                                 <tr>
-                                    <th>Correct answers:</th>
+                                    <th class="fw-bolder">Correct answers:</th>
                                     <td colspan="2">3</td>
                                 </tr>
                                 <tr>
-                                    <th>Percentage:</th>
+                                    <th class="fw-bolder">Percentage:</th>
                                     <td colspan="2">100%</td>
                                 </tr>
                                 <tr>
-                                    <th>Result:</th>
+                                    <th class="fw-bolder">Result:</th>
                                     <td colspan="2">Qualified</td>
                                 </tr>
                             </tbody>
