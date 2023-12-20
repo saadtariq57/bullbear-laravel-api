@@ -54,17 +54,6 @@ Route::get('/user-feed', function () {
     return view('feed');
 })->name('feed');
 
-Route::get('/watchlist', function () {
-    return view('watchlist.index');
-})->name('watchlist.index');
-
-Route::get('/manageWatchlist', function () {
-    return view('watchlist.manageWatchlist');
-})->name('watchlist.manageWatchlist');
-
-Route::get('/createwatchlist', function () {
-    return view('watchlist.createwatchlist');
-})->name('watchlist.createwatchlist');
 Route::get('/watchlist-main', function () {
     return view('watchlist.watchlist-main');
 })->name('watchlist.watchlist-main');
@@ -87,6 +76,15 @@ Route::get('/trading-school', function () {
 Route::get('/widgets', function () {
     return view('widgets');
 })->name('widgets');
+
+
+    Route::prefix('watchlist')->name('watchlist.')->group(function() {
+        Route::get('/', [WatchlistController::Class, 'index'])->name('index');
+        Route::get('manage', [WatchlistController::Class, 'manage'])->name('manage');
+        Route::get('store', [WatchlistController::Class, 'store'])->name('store');
+        Route::get('edit/{watchlist}', [WatchlistController::class, 'edit'])->name('edit');
+    });
+
 
 // Public Routes
 #Route::get('/groups', [GroupController::class, 'groupsPage'])->name('groups.group');

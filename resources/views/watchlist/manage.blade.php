@@ -12,6 +12,7 @@
       </div>
       <hr class="mt-5 divider">
       <ul class="px-0">
+      @foreach($watchlists as $watchlist)
         <li class="d-flex align-items-center">
           <div class="d-flex align-items-center flex-fill">
             <div class="px-2">
@@ -22,14 +23,14 @@
               </svg>
             </div>
             <div class="Manage-list px-2">
-              <h3 class="fw-bold py-2 pe-4 w-100">NVDA</h3>
+              <a href="edit/{{ $watchlist->id }}" class="fw-bold py-2 pe-4 w-100">{{ $watchlist->title }}</a>
             </div>
           </div>
           <div>
             <button class="border-0 fs-2 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#delete-list">X</button>
           </div>
-
         </li>
+        @endforeach
       </ul>
     </div>
     <!-- Delete Model start -->
@@ -42,14 +43,14 @@
             <h1 class="modal-title fs-5" id="delete-listLabel">NVDA</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+                    <div class="modal-body">
           Are you sure you want to delete NVDA from your watchlist?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
             <button type="button" class="btn btn-primary">DELETE</button>
           </div>
-        </div>
+                  </div>
       </div>
     </div>
     <!-- Delete Model end -->
@@ -57,4 +58,4 @@
 
   @endsection
   @section('scripts')
-  @endsection
+    @endsection
