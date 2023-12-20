@@ -22,38 +22,38 @@
                   d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
               </svg>
             </div>
-            <div class="Manage-list px-2">
-              <a href="edit/{{ $watchlist->id }}" class="fw-bold py-2 pe-4 w-100">{{ $watchlist->title }}</a>
+            <div class="Manage-list px-2 my-2">
+              <a href="edit/{{ $watchlist->id }}" class="fw-bold py-2 pe-4 w-100 text-black fs-3">{{ $watchlist->title }}</a>
             </div>
           </div>
           <div>
-            <button class="border-0 fs-2 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#delete-list">X</button>
+          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-list"></button>
           </div>
         </li>
         @endforeach
       </ul>
     </div>
     <!-- Delete Model start -->
-    <!-- Modal -->
-    <div class="modal fade" id="delete-list" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="delete-listLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="delete-listLabel">NVDA</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Delete Model start -->
+      <div class="modal fade" id="delete-list" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="delete-listLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="delete-listLabel">{{ $watchlist->title }}</h1>
+                  <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-list"></button>>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete your {{ $watchlist->title }}?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">DELETE</button>
+                </div>
+              </div>
+            </div>
           </div>
-                    <div class="modal-body">
-          Are you sure you want to delete NVDA from your watchlist?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
-            <button type="button" class="btn btn-primary">DELETE</button>
-          </div>
-                  </div>
-      </div>
-    </div>
-    <!-- Delete Model end -->
+          <!-- Delete Model end -->
   </section>
 
   @endsection
