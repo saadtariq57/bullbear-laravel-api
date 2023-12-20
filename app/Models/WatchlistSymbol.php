@@ -20,9 +20,9 @@ class WatchlistSymbol extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function watchlist()
+    public function userWatchlist()
     {
-        return $this->belongsTo(UserWatchlist::class);
+        return $this->belongsTo(UserWatchlist::class, 'watchlist_id');
     }
 
     // Assuming you have a `Symbol` model
