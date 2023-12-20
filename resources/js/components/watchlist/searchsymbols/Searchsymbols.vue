@@ -20,7 +20,7 @@
           <form action="" class="position-relative">
             <input class="form-control form-control-lg" type="search" placeholder="Search"
               aria-label=".form-control-lg example" v-model="search" @input="searchTags">
-            <button type="submit" class="btn btn-primary px-3 py-2 position-absolute">ADD</button>
+            <button type="button" class="btn btn-primary px-3 py-2 position-absolute">ADD</button>
           </form>
 
           <!-- <ul v-show="search" class="list-group list-group-flush border-top border-cta-clr px-3">
@@ -36,8 +36,8 @@
               <tbody>
                 <tr v-for="symbol in symbols" v-on:click="addWatchlistSymbol(symbol.id)">
                   <td>{{ symbol.name }}</td>
-                  <td>Seabridge Gold Inc</td>
-                  <td>US</td>
+                  <td ><p class="company_name mb-0">{{ symbol.company_name }}</p></td>
+                  <td>{{ symbol.country }}</td>
                 </tr>
                 <tr v-show="error">
                   <td>{{ error }}</td>

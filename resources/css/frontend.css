@@ -694,7 +694,12 @@ section.featured-video {
     padding: 10px 15px;
     border-bottom: 1px solid #dee2e6;
 }
-
+.company_name{
+    width: 125px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 /* Table section CSS End */
 /* Carousel Multiple Items CSS */
 .carousel-inner {
