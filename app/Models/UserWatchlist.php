@@ -8,18 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class UserWatchlist extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
+    
     protected $fillable = [
-        'watchlist_id',
         'user_id',
         'title',
-        'who_can_view',
-        'featured',
-        'symbol_count'
+        'who_can_view'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function watchlistSymbols(){
+        return $this->hasMany(WatchlistSymbol::class, 'watchlist_id');
     }
 }
