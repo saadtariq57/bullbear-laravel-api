@@ -209,6 +209,10 @@ ul {
     border-color: var(--primary-color) !important;
 }
 
+.border-cta-clr {
+    border-color: var(--cta) !important;
+}
+
 .border-cta {
     border: 1px solid var(--primary-color);
 }
@@ -1285,12 +1289,37 @@ meter::-moz-meter-bar {
 
 .symbol-search-form {
     display: none;
+    border: 1px solid var(--cta-btn);
+    width: 300px;
+    z-index: 1;
 }
 
-.symbol-search-form input {
+.table-responsive.symbol-table {
+    max-height: 370px;
+}
+
+.symbol-table table tbody:nth-child(n) {
+    cursor: pointer;
+}
+
+.table-responsive.symbol-table::-webkit-scrollbar {
+    width: 10px;
+}
+
+.table-responsive.symbol-table::-webkit-scrollbar-thumb {
+    border-radius: 0px !important;
+    box-shadow: none !important;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* .symbol-search-form input {
     border: 1px solid var(--cta-btn);
     margin-top: 10px;
-}
+} */
 
 .symbol-search-form button {
     right: 10px;
@@ -2057,33 +2086,40 @@ p.user-message {
 
 /* single-chats page end css */
 /* Exam page start css */
-.form-check-input:focus{
+.form-check-input:focus {
     box-shadow: none;
 }
-.exam-content{
+
+.exam-content {
     border-radius: 5px;
-    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0,0.1);
-  }
-  .exam-content .exam-image{
+    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.1);
+}
+
+.exam-content .exam-image {
     overflow: hidden;
-  }
-  .exam-content .exam-image img {
+}
+
+.exam-content .exam-image img {
     height: 200px;
     width: 100%;
     object-fit: cover;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     transition: .6s ease-in-out;
-  }
-  .exam-content:hover .exam-image img{
+}
+
+.exam-content:hover .exam-image img {
     transform: scale(1.1);
-  }
-  .exam-btn d-inline-block a{
+}
+
+.exam-btn d-inline-block a {
     transition: .4s;
-  }
-  .exam-btn:hover a{
+}
+
+.exam-btn:hover a {
     transform: translateX(7px);
-  }
+}
+
 .exam-navtab .active {
     background-color: var(--primary-color) !important;
     color: var(--heading-color) !important;
