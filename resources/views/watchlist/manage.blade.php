@@ -27,35 +27,27 @@
             </div>
           </div>
           <div>
-          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-list"></button>
+          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-watchlist" onclick="deleteWatchlist('{{ $watchlist->id }}', '{{ $watchlist->title }}')"></button>
           </div>
         </li>
         @endforeach
       </ul>
     </div>
-    <!-- Delete Model start -->
-      <!-- Delete Model start -->
-      <div class="modal fade" id="delete-list" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="delete-listLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="delete-listLabel">{{ $watchlist->title }}</h1>
-                  <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-list"></button>>
-                </div>
-                <div class="modal-body">
-                  Are you sure you want to delete your {{ $watchlist->title }}?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
-                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">DELETE</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Delete Model end -->
   </section>
-
+  @include('shared.confirm', [
+    'modalId' => 'delete-watchlist',
+    'title' => '',
+    'body' => '',
+    'formId' => 'deleteWatchListForm',
+    'formAction' => '',
+  ])
   @endsection
+  <script>
+    function deleteWatchlist(id, title){
+        $('#deleteWatchListForm').attr('action', id);
+        $('#delete-watchlistLabel').text(title);
+        $('#delete-watchlist .modal-body').text('Are you sure you want to delete your ' + title + '?');
+    }
+  </script>
   @section('scripts')
-    @endsection
+  @endsection

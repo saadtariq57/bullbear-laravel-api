@@ -64,32 +64,8 @@
           </div>
         </div>
         <div>
-          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-list"></button>
-          <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#delete-list" class="btn-close" aria-label="Close"
-            v-on:click="deleteWatchlistSymbol(item.id)"></button> -->
-          <!-- Delete Model start -->
-          <div class="modal fade" id="delete-list" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="delete-listLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="delete-listLabel">{{ item.symbol.name }}</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  Are you sure you want to delete {{ item.symbol.name }} from your watchlist?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal">DON’T DELETE</button>
-                  <button type="button" class="btn btn-primary" v-on:click="deleteWatchlistSymbol(item.id)"
-                    data-bs-dismiss="modal">DELETE</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Delete Model end -->
+          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-symbol" @click="openModal(item)"></button>
         </div>
-
       </li>
     </ul>
     <div class="border mt-5 mb-5">
@@ -98,6 +74,7 @@
       </p>
     </div>
   </div>
+  <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" />
 </template>
 
 <script>

@@ -23,7 +23,7 @@ class WatchlistController extends Controller
         // $records = UserWatchlist::where('user_id', Auth::id())
         //     ->orWhere('featured', 1)
         //     ->get();
-
+return [];
         $records = UserWatchlist::where('user_id', 2)
             ->orWhere('featured', 1)
             ->get();
@@ -132,9 +132,10 @@ class WatchlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Watchlist $watchlist)
+    public function destroy(UserWatchlist $watchlist)
     {
-        //
+        $watchlist->delete();
+        return redirect()->route('watchlist.manage');
     }
 
     public function storeWatchListSymbol(Request $request){

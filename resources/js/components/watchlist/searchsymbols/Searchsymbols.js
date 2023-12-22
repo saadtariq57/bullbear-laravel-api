@@ -1,10 +1,12 @@
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import axios from "axios";
+import Confirm from '../../shared/confirm.vue';
 
 export default {
   components: {
     Skeletor,
+    Confirm
   },
   methods: {
     searchTags() {
@@ -48,6 +50,15 @@ export default {
     initValues() {
       this.error = '';
       this.symbols = [];
+    },
+    openModal(item) {
+      this.modalData = { id: item.id, modalId: 'delete-symbol', title: item.symbol.name, body: `Are you sure you want to delete symbol : ${item.symbol.name}?` },
+      this.isModalOpen = true
+    },
+    handleActionFromModal(response) {
+      if(response.type == 'confirm'){
+        this.deleteWatchlistSymbol(response.id);
+      }
     }
   },
   mounted() {
@@ -59,7 +70,9 @@ export default {
       watchlistData: Object,
       error: '',
       search: '',
-      symbols: []
+      symbols: [],
+      isModalOpen: false,
+      modalData: undefined
     };
   },
   props: {
