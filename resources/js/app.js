@@ -7,11 +7,12 @@ File: Main Js File
 */
 
 import { createApp } from 'vue';
-import { Tabs, Searchsymbols } from './components/index.js';
+import { Tabs, Searchsymbols, Confirm } from './components/index.js';
  
 const app = createApp({})
 app.component('Tabs', Tabs);
 app.component('Searchsymbols', Searchsymbols);
+app.component('Confirm', Confirm);
 app.mount('#app');
 
 (function ($) {

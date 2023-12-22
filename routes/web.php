@@ -83,6 +83,7 @@ Route::get('/widgets', function () {
         Route::get('manage', [WatchlistController::Class, 'manage'])->name('manage');
         Route::get('store', [WatchlistController::Class, 'store'])->name('store');
         Route::get('edit/{watchlist}', [WatchlistController::class, 'edit'])->name('edit');
+        Route::delete('{watchlist}', [WatchlistController::class, 'destroy'])->name('destroy');
     });
 
 
