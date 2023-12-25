@@ -1,5 +1,5 @@
 <template>
-  <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con">
+  <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con position-relative">
     <div class="Manage-list pl-1">
       <h3 class="fw-bold py-2 px-2">{{ watchlistData.title }}</h3>
     </div>
@@ -36,8 +36,11 @@
               <tbody>
                 <tr v-for="symbol in symbols" v-on:click="addWatchlistSymbol(symbol.id)">
                   <td>{{ symbol.name }}</td>
-                  <td ><p class="company_name mb-0">{{ symbol.company_name }}</p></td>
-                  <td>{{ symbol.country }}</td>
+                  <td>
+                    <p class="text-oneline company_name mb-0">{{ symbol.company_name }}</p>
+                  </td>
+                  <!-- <td>{{ symbol.country }}</td> -->
+                  <td>USA</td>
                 </tr>
                 <tr v-show="error">
                   <td>{{ error }}</td>
@@ -51,8 +54,8 @@
     <hr class="mt-3 divider">
     <ul class="px-0">
       <li class="d-flex align-items-center" v-for="item in watchlistData.watchlist_symbols">
-        <div class="d-flex align-items-center flex-fill">
-          <div class="px-2">
+        <div class="d-flex align-items-center flex-fill gap-3">
+          <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
               viewBox="0 0 16 16">
               <path fill-rule="evenodd"
@@ -60,11 +63,15 @@
             </svg>
           </div>
           <div class="Manage-list px-2 my-2">
-            <h3 class="fw-bold py-2 pe-4 w-100 mb-0">{{ item.symbol.name }}</h3>
+            <h3 class="fw-bold py-2 mb-0 text-oneline symbol-name">{{ item.symbol.name }}</h3>
+          </div>
+          <div>
+            <p class="m-0 text-oneline company-name">{{ item.symbol.company_name }}</p>
           </div>
         </div>
         <div>
-          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-symbol" @click="openModal(item)"></button>
+          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-symbol"
+            @click="openModal(item)"></button>
         </div>
       </li>
     </ul>
