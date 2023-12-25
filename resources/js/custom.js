@@ -14,7 +14,7 @@ $(document).ready(function () {
     $('.video-slider').slick({
         dots: false,
         infinite: true,
-        speed: 300,
+        speed: 1500,
         arrows: true,
         autoplay: true,
         slidesToShow: 3,
@@ -90,17 +90,19 @@ $(".show-less , .less-desc").click(function () {
 $('.widgets-slider').slick({
     dots: false,
     infinite: true,
-    speed: 300,
+    speed: 1000,
+    autoplay: true,
     slidesToShow: 9,
-    slidesToScroll: 9,
+    slidesToScroll: 1,
     autoplay: false,
     responsive: [
         {
             breakpoint: 2300,
             settings: {
                 slidesToShow: 8,
-                slidesToScroll: 8,
+                slidesToScroll: 1,
                 infinite: true,
+                autoplay: true,
                 dots: false
             }
         },
@@ -108,8 +110,9 @@ $('.widgets-slider').slick({
             breakpoint: 2100,
             settings: {
                 slidesToShow: 7,
-                slidesToScroll: 7,
+                slidesToScroll: 1,
                 infinite: true,
+                autoplay: true,
                 dots: false
             }
         },
@@ -117,8 +120,9 @@ $('.widgets-slider').slick({
             breakpoint: 1850,
             settings: {
                 slidesToShow: 6,
-                slidesToScroll: 6,
+                slidesToScroll: 1,
                 infinite: true,
+                autoplay: true,
                 dots: false
             }
         },
@@ -126,8 +130,9 @@ $('.widgets-slider').slick({
             breakpoint: 1500,
             settings: {
                 slidesToShow: 5,
-                slidesToScroll: 5,
+                slidesToScroll: 1,
                 infinite: true,
+                autoplay: true,
                 dots: false
             }
         },
@@ -135,8 +140,9 @@ $('.widgets-slider').slick({
             breakpoint: 1200,
             settings: {
                 slidesToShow: 4,
-                slidesToScroll: 4,
+                slidesToScroll: 1,
                 infinite: true,
+                autoplay: true,
                 dots: false
             }
         },
@@ -144,14 +150,15 @@ $('.widgets-slider').slick({
             breakpoint: 992,
             settings: {
                 slidesToShow: 3,
-                slidesToScroll: 3
+                slidesToScroll: 1,
+                autoplay: true,
             }
         },
         {
             breakpoint: 650,
             settings: {
                 slidesToShow: 2,
-                slidesToScroll: 2,
+                slidesToScroll: 1,
                 autoplay: true,
                 arrows: false,
             }
@@ -170,7 +177,7 @@ $('.widgets-slider').slick({
 $('.trading-books-slider').slick({
     dots: false,
     infinite: true,
-    speed: 300,
+    speed: 1000,
     slidesToShow: 2,
     slidesToScroll: 1,
     responsive: [
@@ -188,7 +195,7 @@ $('.trading-books-slider').slick({
 $('.guide-slider').slick({
     dots: false,
     infinite: true,
-    speed: 300,
+    speed: 1000,
     arrows: true,
     // autoplay: true,
     slidesToShow: 3,
@@ -218,16 +225,19 @@ function scrollDirection() {
     return scrollDirection;
 }
 
-function scrollUpdate() {
-    const direction = scrollDirection();
+if (image) {
+    function scrollUpdate() {
+        const direction = scrollDirection();
 
-    if (direction === "down") {
-        image.style.transform = "rotateY(30deg)";
-    } else {
-        image.style.transform = "rotateY(0deg)";
+        if (direction === "down") {
+            image.style.transform = "rotateY(30deg)";
+        } else {
+            image.style.transform = "rotateY(0deg)";
+        }
     }
+
+    window.addEventListener("scroll", scrollUpdate);
 }
-window.addEventListener("scroll", scrollUpdate);
 // feed page form focus js
 function feedoverlay() {
     var element = document.getElementById("focus-overlay");
@@ -255,21 +265,20 @@ function hideColor() {
 }
 // feed page form focus js end
 // watchlist add search js 
-$(document).ready(function() {
+$(document).ready(function () {
     const $addSymbolBtn = $('.add-symbol-btn');
     const $symbolSearchForm = $('.symbol-search-form');
     function toggleSymbolSearchForm() {
-      $symbolSearchForm.toggle();
+        $symbolSearchForm.toggle();
     }
-    $addSymbolBtn.on('click', function(event) {
-      event.stopPropagation(); // Prevent body click event from firing
-      toggleSymbolSearchForm();
+    $addSymbolBtn.on('click', function (event) {
+        event.stopPropagation(); // Prevent body click event from firing
+        toggleSymbolSearchForm();
     });
-    $(document).on('click', function(event) {
-      if (!$(event.target).closest('.symbol-search-form, .add-symbol-btn').length) {
-        $symbolSearchForm.hide();
-      }
+    $(document).on('click', function (event) {
+        if (!$(event.target).closest('.symbol-search-form, .add-symbol-btn').length) {
+            $symbolSearchForm.hide();
+        }
     });
-  });
+});
 // watchlist add search js end
-  

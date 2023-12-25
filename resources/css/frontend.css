@@ -694,12 +694,21 @@ section.featured-video {
     padding: 10px 15px;
     border-bottom: 1px solid #dee2e6;
 }
-.company_name{
-    width: 125px;
+
+.text-oneline {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.company_name {
+    width: 125px;
+}
+
+.symbol-name {
+    width: 95px;
+}
+
 /* Table section CSS End */
 /* Carousel Multiple Items CSS */
 .carousel-inner {
@@ -1300,7 +1309,7 @@ meter::-moz-meter-bar {
 }
 
 .table-responsive.symbol-table {
-    max-height: 370px;
+    max-height: 343px;
 }
 
 .symbol-table table tbody:nth-child(n) {
@@ -2535,6 +2544,10 @@ p.user-message {
     .testimonial-card {
         padding: 30px 14px;
     }
+
+    .company-name {
+        width: 90px;
+    }
 }
 
 @media screen and (max-width: 760px) {
@@ -2689,6 +2702,10 @@ p.user-message {
     .watchlish-main-heading {
         font-size: 20px !important;
     }
+
+    .symbol-search-form {
+        right: 0;
+    }
 }
 
 @media screen and (max-width: 380px) {
@@ -2760,6 +2777,7 @@ p.user-message {
     .w-md-75 {
         width: 75%;
     }
+
 }
 
 @media (min-width: 1200px) {
