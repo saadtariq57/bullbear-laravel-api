@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -26,6 +27,14 @@ Route::prefix('watchlist')->name('watchlist.')->group(function() {
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
 });
+
+Route::prefix('exams')->name('exam.')->group(function() {
+    Route::get('/', [ExamController::class, 'getExams']);
+});
+Route::get('/questions/start-exam/{examId}', [ExamController::class, 'getExamQuestions'])->name('questions.exam_queries');
+
+
+// Route::get('/start-exam/{examId}', [ExamController::class, 'getExamQuestions']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('userposts')->name('post.')->group(function() {

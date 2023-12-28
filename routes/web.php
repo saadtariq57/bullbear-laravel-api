@@ -27,16 +27,21 @@ Route::get('/groups-single', function () {
 })->name('groups.chat-single');
 
 Route::get('/settings', function () {
-        return view('profile.setting');
+    return view('profile.setting');
 })->name('profile.setting');
 
 Route::get('/exams', function () {
     return view('exams.index');
 })->name('exams.index');
 
-Route::get('/exam-queries', function () {
-    return view('exams.exam-queries');
-})->name('exams.exam-queries');
+// Route::get('/exam-questions', function () {
+//     return view('exams.ExamQuestions');
+// })->name('exams.ExamQuestions');
+// Route::get('/exam-queries/{examId}', [ExamController::class, 'show'])->name('exams.ExamQuestions.show');
+Route::get('/questions/start-exam/{examId}', function ($examId) {
+    return view('exams.ExamQuestions', compact('examId'));
+})->name('exams.ExamQuestions');
+
 
 Route::get('/exam-result', function () {
     return view('exams.exam-result');
@@ -78,13 +83,13 @@ Route::get('/widgets', function () {
 })->name('widgets');
 
 
-    Route::prefix('watchlist')->name('watchlist.')->group(function() {
-        Route::get('/', [WatchlistController::Class, 'index'])->name('index');
-        Route::get('manage', [WatchlistController::Class, 'manage'])->name('manage');
-        Route::get('store', [WatchlistController::Class, 'store'])->name('store');
-        Route::get('edit/{watchlist}', [WatchlistController::class, 'edit'])->name('edit');
-        Route::delete('{watchlist}', [WatchlistController::class, 'destroy'])->name('destroy');
-    });
+Route::prefix('watchlist')->name('watchlist.')->group(function () {
+    Route::get('/', [WatchlistController::class, 'index'])->name('index');
+    Route::get('manage', [WatchlistController::class, 'manage'])->name('manage');
+    Route::get('store', [WatchlistController::class, 'store'])->name('store');
+    Route::get('edit/{watchlist}', [WatchlistController::class, 'edit'])->name('edit');
+    Route::delete('{watchlist}', [WatchlistController::class, 'destroy'])->name('destroy');
+});
 
 
 // Public Routes
@@ -97,15 +102,15 @@ Route::group(['middleware' => ['guest']], function () {
     // Add routes that are only accessible to guests here
 });
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
 
     // For Admin users
-    Route::middleware(['role'])->group(function() {
+    Route::middleware(['role'])->group(function () {
         // Admin Dashboard route
         Route::get('/admin', [HomeController::class, 'index'])->name('admin.index');
 
         // Grouping for SymbolController
-        Route::prefix('admin/symbols')->name('admin.symbols.')->group(function() {
+        Route::prefix('admin/symbols')->name('admin.symbols.')->group(function () {
             Route::get('/', [SymbolController::class, 'index'])->name('index');
             Route::get('create', [SymbolController::class, 'create'])->name('create');
             Route::post('store', [SymbolController::class, 'store'])->name('store');
@@ -116,7 +121,7 @@ Route::middleware(['auth'])->group(function() {
         });
 
         // route group for WidgetController
-        Route::prefix('admin/widgets')->name('admin.widgets.')->group(function() {
+        Route::prefix('admin/widgets')->name('admin.widgets.')->group(function () {
             Route::get('/', [WidgetController::class, 'index'])->name('index');
             Route::get('create', [WidgetController::class, 'create'])->name('create');
             Route::post('store', [WidgetController::class, 'store'])->name('store');
@@ -127,7 +132,7 @@ Route::middleware(['auth'])->group(function() {
         });
 
         // route group for ExamController
-        Route::prefix('admin/exams')->name('admin.exams.')->group(function() {
+        Route::prefix('admin/exams')->name('admin.exams.')->group(function () {
             // Exams Routes
             Route::get('/', [ExamController::class, 'index'])->name('index');
             Route::get('create', [ExamController::class, 'create'])->name('create');
@@ -135,7 +140,7 @@ Route::middleware(['auth'])->group(function() {
             Route::get('{exam}/edit', [ExamController::class, 'edit'])->name('edit');
             Route::put('{exam}', [ExamController::class, 'update'])->name('update');
             Route::delete('{exam}', [ExamController::class, 'destroy'])->name('destroy');
-            
+
             // Questions Routes
             Route::match(['get', 'post'], '{exam}/add_questions', [ExamController::class, 'addQuestions'])->name('add_questions');
 
@@ -149,7 +154,7 @@ Route::middleware(['auth'])->group(function() {
         });
 
         // route group for GroupController
-        Route::prefix('admin/groups')->name('admin.groups.')->group(function() {
+        Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
             Route::get('create', [GroupController::class, 'create'])->name('create');
             Route::post('/', [GroupController::class, 'store'])->name('store');
@@ -160,18 +165,18 @@ Route::middleware(['auth'])->group(function() {
         });
 
         // route group for GroupController
-        Route::prefix('admin/users')->name('admin.users.')->group(function() {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('create', [UserController::class, 'create'])->name('create');
-        Route::post('/', [UserController::class, 'store'])->name('store');
-        Route::get('{user}/edit', [UserController::class, 'edit'])->name('edit');
-        Route::put('{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
-        // Additional routes for user management can be added here
+        Route::prefix('admin/users')->name('admin.users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('create', [UserController::class, 'create'])->name('create');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::get('{user}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::put('{user}', [UserController::class, 'update'])->name('update');
+            Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
+            // Additional routes for user management can be added here
         });
 
         // Route group for SubscriptionPlanController
-        Route::prefix('admin/settings/subscription_plans')->name('admin.settings.subscription_plans.')->group(function() {
+        Route::prefix('admin/settings/subscription_plans')->name('admin.settings.subscription_plans.')->group(function () {
             Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
             Route::get('create', [SubscriptionPlanController::class, 'create'])->name('create');
             Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
@@ -183,7 +188,7 @@ Route::middleware(['auth'])->group(function() {
 
         // TODO: Group routes for other controllers similarly.
         // Example for BookmarkController (adjust as needed for other controllers):
-        Route::prefix('admin/bookmarks')->name('admin.bookmarks.')->group(function() {
+        Route::prefix('admin/bookmarks')->name('admin.bookmarks.')->group(function () {
             // Define routes for BookmarkController methods here
         });
 

@@ -7,16 +7,39 @@ File: Main Js File
 */
 
 import { createApp } from 'vue';
-import { Tabs, Searchsymbols, Confirm } from './components/index.js';
+import { createRouter, createWebHistory } from 'vue-router';
+import { Tabs, Searchsymbols, Confirm, Exam, ExamQuestions } from './components/index.js';
 import Userposts from './components/feed/userposts/Userposts.vue';
 import Userdata from './components/feed/userdata/Userdata.vue';
-const app = createApp({})
+
+// Import your components
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+      {
+        path: '/questions/start-exam/:examId',
+        component: ExamQuestions,
+      },
+      // Other routes...
+    ],
+  });
+  
+  const app = createApp({});
+  app.use(router);
+
+
+// Register your components
 app.component('Tabs', Tabs);
 app.component('Searchsymbols', Searchsymbols);
 app.component('Confirm', Confirm);
+app.component('Exam', Exam);
+app.component('ExamQuestions', ExamQuestions);
 app.component('Userposts', Userposts);
 app.component('Userdata', Userdata);
+
 app.mount('#app');
+
 
 (function ($) {
 

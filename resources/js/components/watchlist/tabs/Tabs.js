@@ -37,5 +37,4 @@ export default {
   mounted() {
     this.getUserData();
   },
-
 };

@@ -26,7 +26,8 @@ class WatchlistController extends Controller
         //     ->get();
         //return $records;
         if (Auth::check()) {
-            $user_id = 681;
+            $user_id = Auth::id();
+
     
             $records = UserWatchlist::where('user_id', $user_id)->orWhere('featured', 1)->get();
     

@@ -18,11 +18,11 @@ class ExamController extends Controller
     {
         $search = $request->query('search');
 
-        if($search) {
+        if ($search) {
             $exams = Exam::where('title', 'LIKE', "%{$search}%")
-                             ->orWhere('category', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->paginate(10);
+                ->orWhere('category', 'LIKE', "%{$search}%")
+                // ... add other fields if needed
+                ->paginate(10);
         } else {
             $exams = Exam::paginate(10);
         }
@@ -30,6 +30,51 @@ class ExamController extends Controller
         return view('admin.exams.index', compact('exams'));
         //return view('admin.symbols.index', ['symbols' => $symbols]);
     }
+
+    public function getExams(Request $request)
+    {
+        $search = $request->query('search');
+
+        if ($search) {
+            $exams = Exam::where('title', 'LIKE', "%{$search}%")
+                ->orWhere('category', 'LIKE', "%{$search}%")
+                // ... add other fields if needed
+                ->paginate(10);
+        } else {
+            $exams = Exam::paginate(10);
+        }
+
+        $categories = ExamCategory::with(['exams' => function ($query) {
+            $query->orderByDesc('created_at')->take(3);
+        }])->get();
+
+        // Replace category IDs with names in the exams
+        $exams->getCollection()->transform(function ($exam) use ($categories) {
+            $categoryName = $categories->where('id', $exam->category)->first()->name ?? '';
+            $exam->category = $categoryName;
+            return $exam;
+        });
+
+        return response()->json(['exams' => $exams, 'categories' => $categories]);
+    }
+    // public function getExamQuestions(Request $request, $examId)
+    // {
+    //     try {
+
+    //         $questionsQuery = ExamQuestion::where('exam_id', 1);
+
+    //         $questions = $questionsQuery->paginate(10);
+
+    //         return response()->json(['questions' => $questions, 'examId' => $examId]);
+    //     } catch (\Exception $e) {
+
+    //         return response()->json(['error' => 'Failed to fetch questions'], 500);
+    //     }
+    // }
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -58,7 +103,7 @@ class ExamController extends Controller
         return redirect()->route('admin.exams.index', $exam->id)->with('success', 'Exam created successfully. Now add questions for the exam.');
     }
 
-        /**
+    /**
      * Show the form for adding questions to an exam.
      */
     public function addQuestions(Request $request, Exam $exam)
@@ -129,6 +174,23 @@ class ExamController extends Controller
 
         return redirect()->route('admin.exams.index')->with('success', 'Questions updated successfully.');
     }
+    public function getExamQuestions(Request $request, $examId)
+    {
+        $examQuestions = [];
+
+        if ($examId) {
+            $exam = Exam::find($examId);
+            if ($exam) {
+                $examQuestions = $exam->examQuestions()->get();
+            }
+        }
+
+        return response()->json(['examQuestions' => $examQuestions]);
+    }
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -167,17 +229,17 @@ class ExamController extends Controller
         return redirect()->route('admin.exams.index')->with('success', 'Exam deleted successfully.');
     }
 
-     /**
+    /**
      * Display a listing of the exam categories.
      */
     public function categoriesIndex(Request $request)
     {
         $search = $request->query('search');
-        if($search) {
+        if ($search) {
             $categories = ExamCategory::where('name', 'LIKE', "%{$search}%")
-                             ->orWhere('description', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->paginate(10);
+                ->orWhere('description', 'LIKE', "%{$search}%")
+                // ... add other fields if needed
+                ->paginate(10);
         } else {
             $categories = ExamCategory::paginate(10);
         }
