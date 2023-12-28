@@ -20,25 +20,33 @@ class WatchlistController extends Controller
     public function getWatchLists()
     {
         //TO DO
+        
         // $records = UserWatchlist::where('user_id', Auth::id())
         //     ->orWhere('featured', 1)
         //     ->get();
-return [];
-        $records = UserWatchlist::where('user_id', 2)
-            ->orWhere('featured', 1)
-            ->get();
-
-        $records->each(function ($watchlist) {
-            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.name');
-            $stats = $this->getSymbolsStats($symbolNames->join(','));
-            // dd($stats);
-            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
-                $symbol = $watchlistSymbol->symbol;
-                $symbol->stats = array_merge($symbol->toArray(), $stats[$symbol->name] ?? []);
+        //return $records;
+        if (Auth::check()) {
+            $user_id = 681;
+    
+            $records = UserWatchlist::where('user_id', $user_id)->orWhere('featured', 1)->get();
+    
+            $records->each(function ($watchlist) {
+                $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.name');
+                $stats = $this->getSymbolsStats($symbolNames->join(','));
+    
+                $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
+                    $symbol = $watchlistSymbol->symbol;
+                    $symbol->stats = array_merge($symbol->toArray(), $stats[$symbol->name] ?? []);
+                });
             });
-        });
-
-        return response()->json($records);
+    
+            return response()->json($records);
+        }
+        else{
+            // Handle the case when the user is not authenticated.
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        
     }
 
     public function getSymbolsStats($symbols){
@@ -72,8 +80,8 @@ return [];
 
     public function manage(){
         // $user = Auth::user();
-        // $watchlist = UserWatchlist::where('user_id', Auth::id()) TO DO
-        $watchlists = UserWatchlist::where('user_id', 2)
+        $watchlist = UserWatchlist::where('user_id', Auth::id()) //TO DO
+        // $watchlists = UserWatchlist::where('user_id', 2)
         ->get();
         return view('watchlist.manage', compact('watchlists'));
     }
@@ -92,11 +100,11 @@ return [];
     public function store(Request $request)
     {
         // TO DO
-        // $userWatchlistCount = UserWatchlist::where('user_id', Auth::id())->count();
-        $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
+        $userWatchlistCount = UserWatchlist::where('user_id', Auth::id())->count();
+        // $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
         $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
         $data = [
-            'user_id' => '2',
+            'user_id' => Auth::id(),
             'title' => $newWatchlistName,
             'who_can_view' => 'Everyone'
         ];

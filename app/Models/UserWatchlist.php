@@ -21,7 +21,12 @@ class UserWatchlist extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function watchlists()
+    {
+        return $this->belongsTo(UserWatchlist::class, 'user_id');
+    }
     public function watchlistSymbols(){
         return $this->hasMany(WatchlistSymbol::class, 'watchlist_id');
     }
+    
 }

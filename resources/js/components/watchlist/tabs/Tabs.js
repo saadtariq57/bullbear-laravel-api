@@ -12,20 +12,30 @@ export default {
       type: Object
     },
   },
+  data() {
+    return {
+      btcImage: btcImage,
+      watchlists: undefined,
+    };
+  },
   methods: {
-    getUserData() {
-      axios.get('/api/watchlist').then(response => {
+    async getUserData() {
+      try {
+        const response = await axios.get('/api/watchlist/', {
+          withCredentials: true, // Ensures cookies (like CSRF token) are sent with the request
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // Retrieves CSRF token from a meta tag
+          },
+        });
         this.watchlists = response.data;
-      });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle error appropriately
+      }
     },
   },
   mounted() {
     this.getUserData();
   },
-  data() {
-    return {
-      btcImage: btcImage,
-      watchlists: undefined
-    };
-  },
+
 };
