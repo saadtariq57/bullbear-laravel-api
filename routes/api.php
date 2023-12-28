@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\SymbolController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +35,17 @@ Route::get('/questions/start-exam/{examId}', [ExamController::class, 'getExamQue
 
 
 // Route::get('/start-exam/{examId}', [ExamController::class, 'getExamQuestions']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('userposts')->name('post.')->group(function() {
+        Route::get('/all', [PostController::class, 'getUserPosts']);
+        Route::get('/users/{id}', [UserController::class, 'getUserById']);
+
+        // Add other routes for different post types as needed
+    });
+});
+Route::get('/user-data', [UserController::class, 'getUserData']);
+// Route::get('/userposts/all', [PostController::class, 'getUserPosts'])->name('post.all');
 
 
 Route::get('/symbol/search', [SymbolController::Class, 'search']);

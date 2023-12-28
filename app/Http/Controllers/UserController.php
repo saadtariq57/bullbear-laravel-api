@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 
@@ -57,4 +57,39 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
+    public function getUserById(Request $request, $id)
+    {
+        try {
+            // Fetch user data by id
+            $user = User::find($id);
+    
+            if ($user) {
+                // Return the user data as JSON response
+                return response()->json($user);
+            } else {
+                // If user not found, return a 404 response
+                return response()->json(['error' => 'User not found'], 404);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that might occur during the database query
+            return response()->json(['error' => 'Error fetching user data'], 500);
+        }
+    }
+    public function getUserData()
+    {
+        // Get the authenticated user
+        $authenticatedUser = Auth::user();
+
+        // Check if the user is authenticated
+        if ($authenticatedUser) {
+            // Retrieve data for the authenticated user
+            $userData = User::find($authenticatedUser->id);
+
+            return response()->json($userData);
+        } else {
+            // Return an error response if the user is not authenticated
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+    }
+    
 }

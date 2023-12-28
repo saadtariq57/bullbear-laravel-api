@@ -15,7 +15,7 @@ export default {
   data() {
     return {
       btcImage: btcImage,
-      watchlists: undefined
+      watchlists: undefined,
     };
   },
   methods: {
