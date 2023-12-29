@@ -2126,11 +2126,11 @@ p.user-message {
     transform: scale(1.1);
 }
 
-.exam-btn d-inline-block a {
+.exam-btn  button {
     transition: .4s;
 }
 
-.exam-btn:hover a {
+.exam-btn:hover button {
     transform: translateX(7px);
 }
 

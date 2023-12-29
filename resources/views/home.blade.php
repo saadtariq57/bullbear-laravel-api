@@ -783,7 +783,7 @@
         </div>
       </div>
     </div>
-    <!-- Modal -->
+    <!-- Login Modal -->
     <div class="modal fade" id="login-popup" tabindex="-1" aria-labelledby="login-popupLabel" aria-hidden="true">
       <div class="modal-dialog login-popup-dialog modal-dialog-centered">
         <div class="modal-content position-relative">
@@ -797,7 +797,9 @@
             <div class="col-xl-8">
               <div class="login-popup-wrapper">
                 <h2 class="fs-2">RICH TV ACCOUNT LOGIN</h2>
-                <p>Not a member? <a href="">Create Account</a></p>
+                <p>Not a member? <a
+                  href="{{ route('register') }}" class="fw-medium text-primary">
+                  Create Account</a></p>
                 <hr class="Red border-2">
                 <form>
                   <div class="mb-3">
@@ -825,7 +827,7 @@
         </div>
       </div>
     </div>
-    <!-- Modal -->
+    <!--Login Modal -->
     <div class="modal fade" id="add-watchlist-popup" tabindex="-1" aria-labelledby="add-watchlist-popup" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

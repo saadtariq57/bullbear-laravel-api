@@ -20,6 +20,7 @@
         "rtlcss": "^4.1.0",
         "vite-plugin-static-copy": "^0.16.0",
         "vue-router": "^4.2.5",
-        "vue-skeletor": "^1.0.6"
+        "vue-skeletor": "^1.0.6",
+        "vuex": "^4.1.0"
     }
 }
