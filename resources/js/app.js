@@ -2,82 +2,84 @@
 File: Main Js File
 */
 
-import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createApp } from "vue";
+import Navigation from "./components/header/Navigation.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
 // Define routes with lazy loading
 const routes = [
-  {
-    path: '/watchlist',
-    name: 'watchlist',
-    component: () => import('./components/watchlist/tabs/Tabs.vue'),
-    children: [
-      {
-        path: ':id',
-        component: () => import('./components/watchlist/searchsymbols/Searchsymbols.vue'),
-      },
-      {
-        path: ':id',
-        component: () => import('./components/shared/confirm.vue'),
-      },
-    ],
-  },
-  {
-    path: '/exams',
-    name: 'exams',
-    component: () => import('./components/exam/Exam.vue'),
-  },
-  {
-    path: '/exam/result/:id',
-    name: 'exam.result',
-    component: () => import('./components/exam/ExamResult.vue'),
-    props: true,
-  },
-  {
-    path: '/exam/:examName/question/:questionId',
-    name: 'exam.question',
-    component: () => import('./components/exam/ExamQuestions.vue'),
-    props: route => ({ examId: route.query.examId, timeLimit: route.query.timeLimit })
-  },
-  {
-    path: '/feed',
-    name: 'feed',
-    component: () => import('./components/feed/Userposts.vue'),
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: () => import('./components/feed/Userposts.vue'),
-  },
-  {
-    path: '/groups',
-    name: 'groups',
-    component: () => import('./components/feed/Userposts.vue'),
-  },
+    {
+        path: "/watchlist",
+        name: "watchlist",
+        component: () => import("./components/watchlist/tabs/Tabs.vue"),
+        children: [
+            {
+                path: ":id",
+                component: () =>
+                    import(
+                        "./components/watchlist/searchsymbols/Searchsymbols.vue"
+                    ),
+            },
+            {
+                path: ":id",
+                component: () => import("./components/shared/confirm.vue"),
+            },
+        ],
+    },
+    {
+        path: "/exams",
+        name: "exams",
+        component: () => import("./components/exam/Exam.vue"),
+    },
+    {
+        path: "/exam/result/:id",
+        name: "exam.result",
+        component: () => import("./components/exam/ExamResult.vue"),
+        props: true,
+    },
+    {
+        path: "/exam/:examName/question/:questionId",
+        name: "exam.question",
+        component: () => import("./components/exam/ExamQuestions.vue"),
+        props: (route) => ({
+            examId: route.query.examId,
+            timeLimit: route.query.timeLimit,
+        }),
+    },
+    {
+        path: "/feed",
+        name: "feed",
+        component: () => import("./components/feed/Userposts.vue"),
+    },
+    {
+        path: "/profile",
+        name: "profile",
+        component: () => import("./components/feed/Userposts.vue"),
+    },
+    {
+        path: "/groups",
+        name: "groups",
+        component: () => import("./components/feed/Userposts.vue"),
+    },
 ];
 
 // Create router instance
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+    history: createWebHistory(),
+    routes,
 });
 
 // Create Vue app
 const app = createApp({});
-
-//app.component('Exam', Exam);
-
+app.component("Navigation", Navigation);
 // Use router
 app.use(router);
 
 // Mount the app
-app.mount('#app');
-
-
+app.mount("#app");
 
 (function ($) {
-
-    'use strict';
+    "use strict";
 
     function initMetisMenu() {
         //metis menu
@@ -85,19 +87,23 @@ app.mount('#app');
     }
 
     function initLeftMenuCollapse() {
-        $('.vertical-menu-btn').on('click', function (event) {
+        $(".vertical-menu-btn").on("click", function (event) {
             event.preventDefault();
-            $('body').toggleClass('sidebar-enable');
+            $("body").toggleClass("sidebar-enable");
             if ($(window).width() >= 992) {
-                $('body').toggleClass('vertical-collpsed');
+                $("body").toggleClass("vertical-collpsed");
             } else {
-                $('body').removeClass('vertical-collpsed');
+                $("body").removeClass("vertical-collpsed");
             }
         });
 
-        $('body,html').click(function (e) {
+        $("body,html").click(function (e) {
             var container = $(".vertical-menu-btn");
-            if (!container.is(e.target) && container.has(e.target).length === 0 && !(e.target).closest('div.vertical-menu')) {
+            if (
+                !container.is(e.target) &&
+                container.has(e.target).length === 0 &&
+                !e.target.closest("div.vertical-menu")
+            ) {
                 $("body").removeClass("sidebar-enable");
             }
         });
@@ -114,7 +120,13 @@ app.mount('#app');
                 $(this).parent().parent().prev().addClass("mm-active"); // add active class to an anchor
                 $(this).parent().parent().parent().addClass("mm-active");
                 $(this).parent().parent().parent().parent().addClass("mm-show"); // add active to li of the current link
-                $(this).parent().parent().parent().parent().parent().addClass("mm-active");
+                $(this)
+                    .parent()
+                    .parent()
+                    .parent()
+                    .parent()
+                    .parent()
+                    .addClass("mm-active");
             }
         });
     }
@@ -128,7 +140,13 @@ app.mount('#app');
                 $(this).parent().parent().addClass("active");
                 $(this).parent().parent().parent().addClass("active");
                 $(this).parent().parent().parent().parent().addClass("active");
-                $(this).parent().parent().parent().parent().parent().addClass("active");
+                $(this)
+                    .parent()
+                    .parent()
+                    .parent()
+                    .parent()
+                    .parent()
+                    .addClass("active");
             }
         });
     }
@@ -136,11 +154,18 @@ app.mount('#app');
     function initMenuItemScroll() {
         // focus active menu in left sidebar
         $(document).ready(function () {
-            if ($("#sidebar-menu").length > 0 && $("#sidebar-menu .mm-active .active").length > 0) {
-                var activeMenu = $("#sidebar-menu .mm-active .active").offset().top;
+            if (
+                $("#sidebar-menu").length > 0 &&
+                $("#sidebar-menu .mm-active .active").length > 0
+            ) {
+                var activeMenu = $("#sidebar-menu .mm-active .active").offset()
+                    .top;
                 if (activeMenu > 300) {
                     activeMenu = activeMenu - 200;
-                    $(".vertical-menu .simplebar-content-wrapper").animate({ scrollTop: activeMenu }, "slow");
+                    $(".vertical-menu .simplebar-content-wrapper").animate(
+                        { scrollTop: activeMenu },
+                        "slow"
+                    );
                 }
             }
         });
@@ -149,14 +174,21 @@ app.mount('#app');
     function initFullScreen() {
         $('[data-toggle="fullscreen"]').on("click", function (e) {
             e.preventDefault();
-            $('body').toggleClass('fullscreen-enable');
-            if (!document.fullscreenElement && /* alternative standard method */ !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+            $("body").toggleClass("fullscreen-enable");
+            if (
+                !document.fullscreenElement &&
+                /* alternative standard method */ !document.mozFullScreenElement &&
+                !document.webkitFullscreenElement
+            ) {
+                // current working methods
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen();
                 } else if (document.documentElement.mozRequestFullScreen) {
                     document.documentElement.mozRequestFullScreen();
                 } else if (document.documentElement.webkitRequestFullscreen) {
-                    document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    document.documentElement.webkitRequestFullscreen(
+                        Element.ALLOW_KEYBOARD_INPUT
+                    );
                 }
             } else {
                 if (document.cancelFullScreen) {
@@ -168,52 +200,65 @@ app.mount('#app');
                 }
             }
         });
-        document.addEventListener('fullscreenchange', exitHandler);
+        document.addEventListener("fullscreenchange", exitHandler);
         document.addEventListener("webkitfullscreenchange", exitHandler);
         document.addEventListener("mozfullscreenchange", exitHandler);
         function exitHandler() {
-            if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
-                console.log('pressed');
-                $('body').removeClass('fullscreen-enable');
+            if (
+                !document.webkitIsFullScreen &&
+                !document.mozFullScreen &&
+                !document.msFullscreenElement
+            ) {
+                console.log("pressed");
+                $("body").removeClass("fullscreen-enable");
             }
         }
     }
 
     function initRightSidebar() {
         // right side-bar toggle
-        $('.right-bar-toggle').on('click', function (e) {
-            $('body').toggleClass('right-bar-enabled');
+        $(".right-bar-toggle").on("click", function (e) {
+            $("body").toggleClass("right-bar-enabled");
         });
 
-        $(document).on('click', 'body', function (e) {
-            if ($(e.target).closest('.right-bar-toggle, .right-bar').length > 0) {
+        $(document).on("click", "body", function (e) {
+            if (
+                $(e.target).closest(".right-bar-toggle, .right-bar").length > 0
+            ) {
                 return;
             }
 
-            $('body').removeClass('right-bar-enabled');
+            $("body").removeClass("right-bar-enabled");
             return;
         });
     }
 
     function initDropdownMenu() {
         if (document.getElementById("topnav-menu-content")) {
-            var elements = document.getElementById("topnav-menu-content").getElementsByTagName("a");
+            var elements = document
+                .getElementById("topnav-menu-content")
+                .getElementsByTagName("a");
             for (var i = 0, len = elements.length; i < len; i++) {
                 elements[i].onclick = function (elem) {
                     if (elem.target.getAttribute("href") === "#") {
                         elem.target.parentElement.classList.toggle("active");
                         elem.target.nextElementSibling.classList.toggle("show");
                     }
-                }
+                };
             }
             window.addEventListener("resize", updateMenu);
         }
     }
 
     function updateMenu() {
-        var elements = document.getElementById("topnav-menu-content").getElementsByTagName("a");
+        var elements = document
+            .getElementById("topnav-menu-content")
+            .getElementsByTagName("a");
         for (var i = 0, len = elements.length; i < len; i++) {
-            if (elements[i].parentElement.getAttribute("class") === "nav-item dropdown active") {
+            if (
+                elements[i].parentElement.getAttribute("class") ===
+                "nav-item dropdown active"
+            ) {
                 elements[i].parentElement.classList.remove("active");
                 elements[i].nextElementSibling.classList.remove("show");
             }
@@ -221,39 +266,52 @@ app.mount('#app');
     }
 
     function initComponents() {
-
         // Tooltip
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
         // Popover
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle="popover"]')
+        );
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        })
+            return new bootstrap.Popover(popoverTriggerEl);
+        });
 
         // select-dropdown
-        var selectDropdown = document.querySelectorAll('.select-dropdown');
+        var selectDropdown = document.querySelectorAll(".select-dropdown");
         if (selectDropdown) {
             selectDropdown.forEach(function (elem) {
-                elem.querySelectorAll('.dropdown-menu .dropdown-item').forEach(function (item) {
-                    item.addEventListener('click', function () {
-                        elem.querySelector('.user-name-text').innerHTML = item.querySelector(".dropdown-name").innerHTML;
-                        elem.querySelector('.user-sort-name').innerHTML = item.querySelector(".dropdown-sort-name").innerHTML;
-                        elem.querySelector('.user-name-sub-text').innerHTML = item.querySelector(".dropdown-sub-desc").innerHTML;
-                    });
-                });
+                elem.querySelectorAll(".dropdown-menu .dropdown-item").forEach(
+                    function (item) {
+                        item.addEventListener("click", function () {
+                            elem.querySelector(".user-name-text").innerHTML =
+                                item.querySelector(".dropdown-name").innerHTML;
+                            elem.querySelector(".user-sort-name").innerHTML =
+                                item.querySelector(
+                                    ".dropdown-sort-name"
+                                ).innerHTML;
+                            elem.querySelector(
+                                ".user-name-sub-text"
+                            ).innerHTML =
+                                item.querySelector(
+                                    ".dropdown-sub-desc"
+                                ).innerHTML;
+                        });
+                    }
+                );
             });
         }
-
     }
 
     function initPreloader() {
-        $(window).on('load', function () {
-            $('#status').fadeOut();
-            $('#preloader').delay(350).fadeOut('slow');
+        $(window).on("load", function () {
+            $("#status").fadeOut();
+            $("#preloader").delay(350).fadeOut("slow");
         });
     }
 
@@ -261,14 +319,22 @@ app.mount('#app');
         if (window.sessionStorage) {
             var alreadyVisited = sessionStorage.getItem("is_visited");
             if (!alreadyVisited) {
-                if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+                if (
+                    document.documentElement.getAttribute("data-bs-theme") ==
+                    "dark"
+                ) {
                     sessionStorage.setItem("is_visited", "dark-mode-switch");
                     $("#light-mode-switch").prop("checked", false);
                     $("#dark-mode-switch").prop("checked", true);
                     $("#rtl-mode-switch").prop("checked", false);
-                } else if (document.documentElement.getAttribute('data-bs-theme') == 'light') {
+                } else if (
+                    document.documentElement.getAttribute("data-bs-theme") ==
+                    "light"
+                ) {
                     sessionStorage.setItem("is_visited", "light-mode-switch");
-                } else if (document.documentElement.getAttribute('dir') == 'rtl') {
+                } else if (
+                    document.documentElement.getAttribute("dir") == "rtl"
+                ) {
                     sessionStorage.setItem("is_visited", "rtl-mode-switch");
                     $("#light-mode-switch").prop("checked", false);
                     $("#dark-mode-switch").prop("checked", false);
@@ -277,50 +343,66 @@ app.mount('#app');
                     sessionStorage.setItem("is_visited", "light-mode-switch");
                 }
             } else {
-                $(".right-bar input:checkbox").prop('checked', false);
-                $("#" + alreadyVisited).prop('checked', true);
+                $(".right-bar input:checkbox").prop("checked", false);
+                $("#" + alreadyVisited).prop("checked", true);
                 updateThemeSetting(alreadyVisited);
             }
         }
-        $("#light-mode-switch, #dark-mode-switch, #rtl-mode-switch").on("change", function (e) {
-            updateThemeSetting(e.target.id);
-
-        });
+        $("#light-mode-switch, #dark-mode-switch, #rtl-mode-switch").on(
+            "change",
+            function (e) {
+                updateThemeSetting(e.target.id);
+            }
+        );
     }
 
     var sidebarlight = document.body.getAttribute("data-topbar");
     function updateThemeSetting(id) {
-        if ($("#light-mode-switch").prop("checked") == true && id === "light-mode-switch") {
+        if (
+            $("#light-mode-switch").prop("checked") == true &&
+            id === "light-mode-switch"
+        ) {
             $("#dark-mode-switch").prop("checked", false);
-            document.body.setAttribute('data-bs-theme', 'light');
+            document.body.setAttribute("data-bs-theme", "light");
             sessionStorage.setItem("is_visited", "light-mode-switch");
-        } else if ($("#dark-mode-switch").prop("checked") == true && id === "dark-mode-switch") {
+        } else if (
+            $("#dark-mode-switch").prop("checked") == true &&
+            id === "dark-mode-switch"
+        ) {
             if ($("#rtl-mode-switch").prop("checked") == true) {
-                $("html").attr("dir", 'rtl');
+                $("html").attr("dir", "rtl");
             } else {
                 $("html").removeAttr("dir");
             }
             $("#light-mode-switch").prop("checked", false);
 
             if (sidebarlight == "dark") {
-                document.body.setAttribute('data-sidebar', 'light');
+                document.body.setAttribute("data-sidebar", "light");
             }
-            document.body.setAttribute('data-bs-theme', 'dark');
+            document.body.setAttribute("data-bs-theme", "dark");
             sessionStorage.setItem("is_visited", "dark-mode-switch");
-        } else if ($("#rtl-mode-switch").prop("checked") == true && id === "rtl-mode-switch") {
-            $("html").attr("dir", 'rtl');
+        } else if (
+            $("#rtl-mode-switch").prop("checked") == true &&
+            id === "rtl-mode-switch"
+        ) {
+            $("html").attr("dir", "rtl");
             $("#light-mode-switch").prop("checked", false);
             $("#dark-mode-switch").prop("checked", false);
-            $("#bootstrap-style").attr('href', 'build/css/bootstrap.min.rtl.css');
-            $("#app-style").attr('href', 'build/css/app.min.rtl.css');
-            $("html").attr("dir", 'rtl');
+            $("#bootstrap-style").attr(
+                "href",
+                "build/css/bootstrap.min.rtl.css"
+            );
+            $("#app-style").attr("href", "build/css/app.min.rtl.css");
+            $("html").attr("dir", "rtl");
             sessionStorage.setItem("is_visited", "rtl-mode-switch");
-        } else if ($("#rtl-mode-switch").prop("checked") == false && id === "rtl-mode-switch") {
+        } else if (
+            $("#rtl-mode-switch").prop("checked") == false &&
+            id === "rtl-mode-switch"
+        ) {
             $("html").removeAttr("dir");
-            $("#bootstrap-style").attr('href', 'build/css/bootstrap.min.css');
-            $("#app-style").attr('href', 'build/css/app.min.css');
+            $("#bootstrap-style").attr("href", "build/css/bootstrap.min.css");
+            $("#app-style").attr("href", "build/css/app.min.css");
         }
-
     }
     function init() {
         initMetisMenu();
@@ -332,13 +414,10 @@ app.mount('#app');
         initRightSidebar();
         initDropdownMenu();
         initComponents();
-        initPreloader()
+        initPreloader();
         initSettings();
         Waves.init();
     }
 
     init();
-
-})(jQuery)
-
-
+})(jQuery);
