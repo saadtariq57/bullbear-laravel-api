@@ -64,7 +64,7 @@ const routes = [
     },
     {
         path: '/groups/chat-single',
-        name: 'groups',
+        name: 'chat-single',
         component: () => import('./components/chat/SingleChat.vue'),
 
     },

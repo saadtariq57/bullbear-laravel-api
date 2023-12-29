@@ -12,34 +12,36 @@
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <!-- include head css -->
     @include('layouts.head-css')
 </head>
 @yield('body')
 <!-- Begin page -->
+<div id="app">
     <div id="layout-wrapper">
-            <!-- topbar -->
-            @include('layouts.navigation')
-            <div class="main-content">
+        <!-- topbar -->
+        @include('layouts.navigation')
+        <div class="main-content">
 
-                <div class="page-content">
-                    @yield('content')
-                    <!-- container-fluid -->
-                </div>
-                <!-- End Page-content -->
-
-                <!-- footer -->
-                @include('layouts.footer')
-
+            <div class="page-content">
+                @yield('content')
+                <!-- container-fluid -->
             </div>
-            <!-- end main content-->
+            <!-- End Page-content -->
+
+            <!-- footer -->
+            @include('layouts.footer')
+
+        </div>
+        <!-- end main content-->
     </div>
     <!-- END layout-wrapper -->
 
     <!-- vendor-scripts -->
     @include('layouts.vendor-scripts')
-
+</div>
 </body>
 
 </html>

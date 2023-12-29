@@ -1,5 +1,4 @@
 <template>
-  <section class="container-lg mt-3 py-80">
     <!-- Exam Header with Timer -->
     <div class="exam-header bg-white shadow-sm p-4 mb-3">
       <p class="d-flex justify-content-end">
@@ -37,7 +36,6 @@
         <p>No questions available</p>
       </div>
     </div>
-  </section>
 </template>
 
 <script>
