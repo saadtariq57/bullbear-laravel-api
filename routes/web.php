@@ -70,7 +70,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('exams.exam-result');
 
     // Single Group route
-    Route::get('/groups/{group_name}', function () {
+    // Route::get('/groups/{group_name}', function () {
+    //     return view('groups.chat-single');
+    // })->name('groups.chat-single');
+    Route::get('/groups/chat-single', function () {
         return view('groups.chat-single');
     })->name('groups.chat-single');
 
