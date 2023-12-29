@@ -49,7 +49,7 @@
   
 <script>
 
-import Userposts from "./Userposts.js";
+import Userposts from "./js/Userposts.js";
 
 export default Userposts;
 </script>

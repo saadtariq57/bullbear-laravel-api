@@ -20,12 +20,12 @@
                 </span>
                 <span class="time">
                   <i class="bi bi-stopwatch-fill"></i>
-                  {{ exam.per_question_time_limit }} Minutes Per Question
+                  {{ exam.per_question_time_limit }} Seconds Per Question
                 </span>
               </div>
               <p>{{ exam.description }}</p>
               <div class="exam-btn d-inline-block">
-                <a :href="`/questions/start-exam/${exam.id}`" class="btn-primary d-inline-block">Start Exam</a>
+                <button @click="startExam(exam.id)" class="btn-primary d-inline-block">Start Exam</button>
               </div>
             </div>
           </div>
@@ -36,6 +36,15 @@
 </template>
 
 <script>
-import Exam from "./exam.js";
-export default Exam;
+import Exam from "./js/Exam.js";
+export default {
+  ...Exam,
+  methods: {
+    ...Exam.methods,
+    startExam(examId) {
+      // Call the method to initiate the exam
+      this.initiateExam(examId);
+    }
+  }
+};
 </script>

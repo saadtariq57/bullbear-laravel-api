@@ -1,10 +1,7 @@
-import VideoPosts from './Userposts.vue';
-import TextPosts from '../textposts/Textposts.vue';
-import ImagePosts from '../imageposts/Imageposts.vue';
-// import VideoPosts from './VideoPosts.vue';
-// import TimePosts from './TimePosts.vue';
-// import FilePosts from './FilePosts.vue';
-import AllPosts from '../allposts/Allposts.vue';
+import UserPosts from '../Userposts.vue';
+import AllPosts from '../Allposts.vue';
+import TextPosts from '../Textposts.vue';
+import ImagePosts from '../Imageposts.vue';
 
 export default {
     data() {
