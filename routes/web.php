@@ -11,57 +11,13 @@ use App\Http\Controllers\WatchlistController;
 
 Auth::routes();
 
+// Public routes
 Route::get('/', function () {
     if (auth()->check()) {
-        return view('feed');
+        return redirect()->route('feed');
     }
     return view('home');
 })->name('home');
-
-Route::get('/groups', function () {
-    return view('groups.index');
-})->name('groups.index');
-
-Route::get('/groups-single', function () {
-    return view('groups.chat-single');
-})->name('groups.chat-single');
-
-Route::get('/settings', function () {
-    return view('profile.setting');
-})->name('profile.setting');
-
-Route::get('/exams', function () {
-    return view('exams.index');
-})->name('exams.index');
-
-// Route::get('/exam-questions', function () {
-//     return view('exams.ExamQuestions');
-// })->name('exams.ExamQuestions');
-// Route::get('/exam-queries/{examId}', [ExamController::class, 'show'])->name('exams.ExamQuestions.show');
-Route::get('/questions/start-exam/{examId}', function ($examId) {
-    return view('exams.ExamQuestions', compact('examId'));
-})->name('exams.ExamQuestions');
-
-
-Route::get('/exam-result', function () {
-    return view('exams.exam-result');
-})->name('exams.exam-result');
-
-Route::get('/user-profile', function () {
-    return view('profile.index');
-})->name('profile.index');
-
-Route::get('/single-stock', function () {
-    return view('single-stock');
-})->name('single-stock');
-
-Route::get('/user-feed', function () {
-    return view('feed');
-})->name('feed');
-
-Route::get('/watchlist-main', function () {
-    return view('watchlist.watchlist-main');
-})->name('watchlist.watchlist-main');
 
 Route::get('/ceo-interviews', function () {
     return view('ceo-interviews');
@@ -78,11 +34,49 @@ Route::get('/earning-calender', function () {
 Route::get('/trading-school', function () {
     return view('trading-school');
 })->name('trading-school');
-Route::get('/widgets', function () {
-    return view('widgets');
-})->name('widgets');
+
+Route::get('/groups', function () {
+    return view('groups.index');
+})->name('groups.index');
+
+Route::get('/exams', function () {
+    return view('exams.index');
+})->name('exams.index');
+
+Route::get('/quote/{symbol}', function () {
+    return view('single-stock');
+})->name('single-stock');
+
+// Routes requiring authentication
+Route::middleware(['auth'])->group(function () {
+    // Home (Feed) route
+    Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
+
+    // Profile route
+    Route::get('/profile/{id}', function () {
+        return view('profile.index');
+    })->name('profile.index');
 
 
+    // Single Exam route
+    Route::get('/exam/{examName}/question/{questionId}', [ExamController::class, 'getExamQuestions'])
+    ->name('exam.question')
+    ->where('examName', '[a-zA-Z0-9\-]+')
+    ->where('questionId', '[0-9]+');
+
+    // Exam Results route
+    Route::get('/exam/result/{id}', function () {
+        return view('exams.exam-result');
+    })->name('exams.exam-result');
+
+    // Single Group route
+    Route::get('/groups/{group_name}', function () {
+        return view('groups.chat-single');
+    })->name('groups.chat-single');
+
+});
+
+// Routes for Watchlist with prefix
 Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/', [WatchlistController::class, 'index'])->name('index');
     Route::get('manage', [WatchlistController::class, 'manage'])->name('manage');
@@ -92,15 +86,9 @@ Route::prefix('watchlist')->name('watchlist.')->group(function () {
 });
 
 
-// Public Routes
-#Route::get('/groups', [GroupController::class, 'groupsPage'])->name('groups.group');
-#Route::get('/exams', [ExamController::class, 'examPage'])->name('exams');
-// Route::get('/watchlist', [WatchlistController::class, 'watchlistPage'])->name('watchlist');
-
-// Guest Routes only accessible for non logged in members
-Route::group(['middleware' => ['guest']], function () {
-    // Add routes that are only accessible to guests here
-});
+Route::get('/widgets', function () {
+    return view('widgets');
+})->name('widgets');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -186,20 +174,5 @@ Route::middleware(['auth'])->group(function () {
             // Additional routes for subscription plan management can be added here
         });
 
-        // TODO: Group routes for other controllers similarly.
-        // Example for BookmarkController (adjust as needed for other controllers):
-        Route::prefix('admin/bookmarks')->name('admin.bookmarks.')->group(function () {
-            // Define routes for BookmarkController methods here
-        });
-
-        // Continue this pattern for other controllers like CommentController, ConfigController, etc.
     });
-
-    // For Regular users
-    Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
-    Route::get('/profile', [UserController::class, 'profilePage'])->name('profile');
-    Route::get('/exams/{exam_name}', [ExamController::class, 'singleExamPage'])->name('exam.single');
-    Route::get('/exam-results', [ExamController::class, 'examResultsPage'])->name('exam.results');
-    Route::get('/groups/{group_name}', [GroupController::class, 'singleGroupPage'])->name('group.single');
-    Route::get('/watchlist/{watchlist_id}', [WatchlistController::class, 'singleWatchlistPage'])->name('watchlist.single');
 });

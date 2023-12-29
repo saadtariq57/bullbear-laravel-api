@@ -6,32 +6,14 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Exam;
 use App\Models\ExamCategory;
 use App\Models\ExamQuestion;
+use App\Models\ExamResult;
 use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
 
-    public function index(Request $request)
-    {
-        $search = $request->query('search');
 
-        if ($search) {
-            $exams = Exam::where('title', 'LIKE', "%{$search}%")
-                ->orWhere('category', 'LIKE', "%{$search}%")
-                // ... add other fields if needed
-                ->paginate(10);
-        } else {
-            $exams = Exam::paginate(10);
-        }
-
-        return view('admin.exams.index', compact('exams'));
-        //return view('admin.symbols.index', ['symbols' => $symbols]);
-    }
-
-    public function getExams(Request $request)
+    public function getAllExams(Request $request)
     {
         $search = $request->query('search');
 
@@ -57,28 +39,116 @@ class ExamController extends Controller
 
         return response()->json(['exams' => $exams, 'categories' => $categories]);
     }
-    // public function getExamQuestions(Request $request, $examId)
-    // {
-    //     try {
 
-    //         $questionsQuery = ExamQuestion::where('exam_id', 1);
+    public function initiateExam($examId)
+    {
+        $exam = Exam::with(['questions' => function ($query) {
+            $query->orderBy('id')->first();
+        }])->find($examId);
 
-    //         $questions = $questionsQuery->paginate(10);
+        if ($exam && $exam->questions->isNotEmpty()) {
+            $firstQuestionId = $exam->questions->first()->id;
+            $examNameFormatted = strtolower(str_replace(' ', '-', $exam->title));
+            $timeLimit = $exam->per_question_time_limit;
 
-    //         return response()->json(['questions' => $questions, 'examId' => $examId]);
-    //     } catch (\Exception $e) {
+            return response()->json([
+                'firstQuestionId' => $firstQuestionId,
+                'examName' => $examNameFormatted,
+                'examId' => $examId,
+                'timeLimit' => $timeLimit,
+            ]);
+        } else {
+            return response()->json(['error' => 'No questions found for this exam'], 404);
+        }
+    }
 
-    //         return response()->json(['error' => 'Failed to fetch questions'], 500);
-    //     }
-    // }
+
+    public function getExamQuestions($examId)
+    {
+        $questions = ExamQuestion::where('exam_id', $examId)->get();
+        if ($questions->isNotEmpty()) {
+            return response()->json(['questions' => $questions]);
+        } else {
+            return response()->json(['error' => 'No questions found for this exam'], 404);
+        }
+    }
+
+    public function submitExam(Request $request, $examId)
+    {
+        $user = auth()->user(); // Get the authenticated user
+        $userAnswers = $request->input('userAnswers'); // Retrieve user answers from the request
+        $totalTimeSpent = 0;
+
+        // Logic to calculate the results
+        $totalQuestions = count($userAnswers);
+        $correctAnswers = 0;
+        foreach ($userAnswers as $answer) {
+            $totalTimeSpent += $answer['timeSpent'];
+            $question = ExamQuestion::find($answer['questionId']);
+            if ($question && $question->correct_answer === $answer['answer']) {
+                $correctAnswers++;
+            }
+        }
+
+        $percentage = ($correctAnswers / $totalQuestions) * 100;
+
+        // Store the results in the database
+        $examResult = ExamResult::create([
+            'user_id' => $user->id,
+            'exam_id' => $examId,
+            'exam_date' => now(),
+            'total_questions' => $totalQuestions,
+            'correct_answers' => $correctAnswers,
+            'percentage' => $percentage,
+            'time_consumed' => $totalTimeSpent,
+        ]);
+
+        // Return the result ID for redirection
+        return response()->json(['examResultId' => $examResult->id]);
+    }
+
+    public function getExamResult($examResultId)
+    {
+        $examResult = ExamResult::find($examResultId);
+
+        if ($examResult) {
+            // Return the result data
+            return response()->json($examResult);
+        } else {
+            abort(404, 'Result not found');
+        }
+    }
 
 
 
 
 
+    // Admin panel Routes Below
+
+    /**
+     * Display a listing of the resource.
+     */
+
+    public function index(Request $request)
+    {
+        $search = $request->query('search');
+
+        if ($search) {
+            $exams = Exam::where('title', 'LIKE', "%{$search}%")
+                ->orWhere('category', 'LIKE', "%{$search}%")
+                // ... add other fields if needed
+                ->paginate(10);
+        } else {
+            $exams = Exam::paginate(10);
+        }
+
+        return view('admin.exams.index', compact('exams'));
+        //return view('admin.symbols.index', ['symbols' => $symbols]);
+    }
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         $categories = ExamCategory::all();
@@ -174,23 +244,6 @@ class ExamController extends Controller
 
         return redirect()->route('admin.exams.index')->with('success', 'Questions updated successfully.');
     }
-    public function getExamQuestions(Request $request, $examId)
-    {
-        $examQuestions = [];
-
-        if ($examId) {
-            $exam = Exam::find($examId);
-            if ($exam) {
-                $examQuestions = $exam->examQuestions()->get();
-            }
-        }
-
-        return response()->json(['examQuestions' => $examQuestions]);
-    }
-
-
-
-
 
     /**
      * Show the form for editing the specified resource.

@@ -19,7 +19,7 @@
         "alertifyjs": "^1.13.1",
         "rtlcss": "^4.1.0",
         "vite-plugin-static-copy": "^0.16.0",
-        "vue-router": "^4.0.13",
+        "vue-router": "^4.2.5",
         "vue-skeletor": "^1.0.6"
     }
 }

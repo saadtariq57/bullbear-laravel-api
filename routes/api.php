@@ -22,30 +22,55 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
 });
 
+//Exam Routes
+
 Route::prefix('exams')->name('exam.')->group(function() {
     Route::get('/', [ExamController::class, 'getExams']);
+    Route::get('/questions/start-exam/{examId}', [ExamController::class, 'getExamQuestions'])->name('questions.exam_queries');
 });
-Route::get('/questions/start-exam/{examId}', [ExamController::class, 'getExamQuestions'])->name('questions.exam_queries');
 
+// Route to show all exams
+Route::get('/exams', [ExamController::class, 'getAllExams'])->name('exams.all');
 
-// Route::get('/start-exam/{examId}', [ExamController::class, 'getExamQuestions']);
-
+//Authenticated routes
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::prefix('userposts')->name('post.')->group(function() {
-        Route::get('/all', [PostController::class, 'getUserPosts']);
-        Route::get('/users/{id}', [UserController::class, 'getUserById']);
 
-        // Add other routes for different post types as needed
+    //User Data Route
+    Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
+
+    //Exam Routes
+
+    //initiating an exam
+    Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
+
+    //All Questions Of Exam
+    Route::get('/exams/{examId}/questions', [ExamController::class, 'getExamQuestions']);
+
+    // Route to calculate and store exam results
+    Route::post('/exam/submit/{examId}', [ExamController::class, 'submitExam'])->name('exam.submit');
+    // Route to retrieve and show exam result
+    Route::get('/exam/result/{examResultId}', [ExamController::class, 'getExamResult'])->name('exam.result');
+
+
+    //User Feed Routes
+    Route::prefix('userposts')->name('post.')->group(function() {
+        Route::get('/all', [PostController::class, 'getUserPosts'])->name('all');
+        Route::get('/text', [PostController::class, 'getTextPosts'])->name('text');
+        Route::get('/image', [PostController::class, 'getImagePosts'])->name('image');
+        Route::get('/video', [PostController::class, 'getVideoPosts'])->name('video');
+        Route::get('/recent', [PostController::class, 'getRecentPosts'])->name('recent');
+        Route::get('/bookmarks', [PostController::class, 'getBookmarkedPosts'])->name('bookmarks');
+        Route::post('/create', [PostController::class, 'createPost'])->name('create');
     });
 });
-Route::get('/user-data', [UserController::class, 'getUserData']);
-// Route::get('/userposts/all', [PostController::class, 'getUserPosts'])->name('post.all');
 
 
+//Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);

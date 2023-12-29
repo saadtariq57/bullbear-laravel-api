@@ -20,20 +20,20 @@
             <ul class="wo_user_side_info list-unstyled row text-center">
                 <li class="col-4">
                     <a class="menu_list text-black" href="/admin" data-ajax="?link1=timeline&amp;u=admin">
-                        <span class="split-link d-block"><b>posts</b></span>
+                        <span class="split-link d-block"><b>Watchlists</b></span>
                         <span id="user_post_count">{{ users.details.post_count }}</span>
                     </a>
                 </li>
                 <li class="col-4 border-start border-end">
                     <a class="menu_list text-black" href="/albums/admin" data-ajax="?link1=albums&amp;user=admin">
-                        <span class="split-link d-block"><b>Albums</b></span>
+                        <span class="split-link d-block"><b>Posts</b></span>
                         <span>{{ users.details.album_count }}</span>
                     </a>
                 </li>
                 <li class="col-4">
                     <a class="menu_list text-black" href="/admin/followers"
                         data-ajax="?link1=timeline&amp;u=admin&amp;type=followers">
-                        <span class="split-link d-block"><b>Friends</b></span>
+                        <span class="split-link d-block"><b>Followers</b></span>
                         <span>{{ users.details.following_count }}</span>
                     </a>
                 </li>
@@ -83,7 +83,7 @@
 </template>
 <script>
 
-import Userdata from "./Userdata.js";
+import Userdata from "./js/Userdata.js";
 
 export default Userdata;
 </script>

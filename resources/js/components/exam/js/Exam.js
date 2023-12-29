@@ -1,4 +1,3 @@
-// Exam.js
 import { Skeletor } from "vue-skeletor";
 import examImage from '../../../../images/exam1.jpg';
 import axios from "axios";
@@ -25,6 +24,20 @@ export default {
         });
       } catch (error) {
         console.error("Error fetching exams:", error);
+      }
+    },
+
+    async initiateExam(examId) {
+      try {
+        const response = await axios.get(`/api/exams/initiate/${examId}`);
+        const { firstQuestionId, examName, timeLimit } = response.data;
+        this.$router.push({
+          name: 'exam.question',
+          params: { examName, questionId: firstQuestionId },
+          query: { examId, timeLimit }
+        });
+      } catch (error) {
+        console.error("Error initiating exam:", error);
       }
     },
   },

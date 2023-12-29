@@ -1,44 +1,78 @@
 /*
-Template Name: Tocly -  Admin & Dashboard Template
-Author: Themesdesign
-Version: 1.0.0
-Contact: themesdesign.in@gmail.com
 File: Main Js File
 */
 
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { Tabs, Searchsymbols, Confirm, Exam, ExamQuestions } from './components/index.js';
-import Userposts from './components/feed/userposts/Userposts.vue';
-import Userdata from './components/feed/userdata/Userdata.vue';
 
-// Import your components
-
-const router = createRouter({
-    history: createWebHistory(),
-    routes: [
+// Define routes with lazy loading
+const routes = [
+  {
+    path: '/watchlist',
+    name: 'watchlist',
+    component: () => import('./components/watchlist/tabs/Tabs.vue'),
+    children: [
       {
-        path: '/questions/start-exam/:examId',
-        component: ExamQuestions,
+        path: ':id',
+        component: () => import('./components/watchlist/searchsymbols/Searchsymbols.vue'),
       },
-      // Other routes...
+      {
+        path: ':id',
+        component: () => import('./components/shared/confirm.vue'),
+      },
     ],
-  });
-  
-  const app = createApp({});
-  app.use(router);
+  },
+  {
+    path: '/exams',
+    name: 'exams',
+    component: () => import('./components/exam/Exam.vue'),
+  },
+  {
+    path: '/exam/result/:id',
+    name: 'exam.result',
+    component: () => import('./components/exam/ExamResult.vue'),
+    props: true,
+  },
+  {
+    path: '/exam/:examName/question/:questionId',
+    name: 'exam.question',
+    component: () => import('./components/exam/ExamQuestions.vue'),
+    props: route => ({ examId: route.query.examId, timeLimit: route.query.timeLimit })
+  },
+  {
+    path: '/feed',
+    name: 'feed',
+    component: () => import('./components/feed/Userposts.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('./components/feed/Userposts.vue'),
+  },
+  {
+    path: '/groups',
+    name: 'groups',
+    component: () => import('./components/feed/Userposts.vue'),
+  },
+];
 
+// Create router instance
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
 
-// Register your components
-app.component('Tabs', Tabs);
-app.component('Searchsymbols', Searchsymbols);
-app.component('Confirm', Confirm);
-app.component('Exam', Exam);
-app.component('ExamQuestions', ExamQuestions);
-app.component('Userposts', Userposts);
-app.component('Userdata', Userdata);
+// Create Vue app
+const app = createApp({});
 
+//app.component('Exam', Exam);
+
+// Use router
+app.use(router);
+
+// Mount the app
 app.mount('#app');
+
 
 
 (function ($) {

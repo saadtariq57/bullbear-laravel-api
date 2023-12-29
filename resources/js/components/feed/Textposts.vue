@@ -12,7 +12,7 @@
 </template>
   
 <script>
-import Textposts from "./Textposts.js";
+import Textposts from "./js/Textposts.js";
 
 export default Textposts;
 </script>

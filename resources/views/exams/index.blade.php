@@ -4,7 +4,7 @@
   @endsection
   @section('content')
   <section class="container-lg mt-3 py-80" id="app">
-    <Exam />
+    <router-view></router-view>
   </section>
     @endsection
     @section('scripts')

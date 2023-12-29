@@ -11,7 +11,7 @@
 </template>
   
 <script>
-import Imageposts from './Imagepost.js';
+import Imageposts from './js/Imagepost.js';
 export default Imageposts;
 </script>
   
