@@ -13,8 +13,8 @@
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-5">
                                     <a href="index" class="">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png" alt=""
-                                            width="200" class="auth-logo logo-dark mx-auto">
+                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png"
+                                            alt="" width="200" class="auth-logo logo-dark mx-auto">
                                         <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
                                             width="200" class="auth-logo logo-light mx-auto">
                                     </a>
@@ -34,7 +34,8 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="font-size-18">LOG IN TO YOUR ACCOUNT</h4>
-                                                        <p class="text-muted">Please log in to start utilizing the different features available in your membership plan.</p>
+                                                        <p class="text-muted">Please log in to start utilizing the different
+                                                            features available in your membership plan.</p>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
@@ -43,7 +44,8 @@
                                                             <label for="email" class="form-label">Email</label>
                                                             <input id="email" type="email"
                                                                 class="form-control @error('email') is-invalid @enderror"
-                                                                name="email" value="{{ old('email', 'admin@themesbrand.com') }}" required
+                                                                name="email"
+                                                                value="{{ old('email', 'admin@themesbrand.com') }}" required
                                                                 autocomplete="email" autofocus>
                                                             @error('email')
                                                                 <span class="invalid-feedback" role="alert">
@@ -74,7 +76,8 @@
                                                                 <label class="form-check-label" for="remember">Remember
                                                                     me</label>
                                                             </div>
-                                                            <a href="{{ route('password.update') }}" class="text-end">Forget Password?</a>
+                                                            <a href="{{ route('password.update') }}" class="text-end">Forget
+                                                                Password?</a>
                                                         </div>
 
                                                         <div class="mt-4">
@@ -112,7 +115,7 @@
                                 <!-- end card -->
 
                                 <div class="mt-5 text-center">
-                                    <p class="mb-0">©  
+                                    <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
                                         </script> Rich Tv

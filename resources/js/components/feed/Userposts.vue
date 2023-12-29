@@ -48,8 +48,41 @@
 </template>
   
 <script>
+import AllPosts from './AllPosts.vue';
+import TextPosts from './TextPosts.vue';
+import ImagePosts from './ImagePosts.vue';
+import VideoPosts from './VideoPosts.vue';
+import TimePosts from './TimePosts.vue';
+import FilePosts from './FilePosts.vue';
 
-import Userposts from "./js/Userposts.js";
-
-export default Userposts;
+export default {
+    data() {
+        return {
+            currentTab: 'all', // default tab
+        };
+    },
+    computed: {
+        currentTabComponent() {
+            switch (this.currentTab) {
+                case 'text':
+                    return TextPosts;
+                case 'image':
+                    return ImagePosts;
+                case 'video':
+                    return VideoPosts;
+                case 'time':
+                    return TimePosts;
+                case 'file':
+                    return FilePosts;
+                default:
+                    return AllPosts;
+            }
+        },
+    },
+    methods: {
+        changeTab(tabName) {
+            this.currentTab = tabName;
+        },
+    },
+};
 </script>

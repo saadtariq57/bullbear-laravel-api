@@ -973,16 +973,40 @@
                 </div>
             </div>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="add-watchlist-popup" tabindex="-1" aria-labelledby="add-watchlist-popup"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title fs-5" id="add-watchlist-popup"><img
-                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/watchlist/edit-blue.svg"
-                                alt="Edit" width="20px" height="20px"> ADD TO WATCHLIST</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    </div>
+    <!-- Login Modal -->
+    <div class="modal fade" id="login-popup" tabindex="-1" aria-labelledby="login-popupLabel" aria-hidden="true">
+      <div class="modal-dialog login-popup-dialog modal-dialog-centered">
+        <div class="modal-content position-relative">
+          <button type="button" class="btn-close position-absolute login-popup-closebtn" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body row p-0">
+            <div class="col-lg-4 d-xl-flex d-none align-items-end" style="background-color: #EAECF4;">
+              <div class="login-men">
+                <img src="{{ URL::asset('build/images/man.png') }}" alt="men">
+              </div>
+            </div>
+            <div class="col-xl-8">
+              <div class="login-popup-wrapper">
+                <h2 class="fs-2">RICH TV ACCOUNT LOGIN</h2>
+                <p>Not a member? <a
+                  href="{{ route('register') }}" class="fw-medium text-primary">
+                  Create Account</a></p>
+                <hr class="Red border-2">
+                <form>
+                  <div class="mb-3">
+                    <label for="Username" class="form-label">Username</label>
+                    <input type="email" class="form-control" id="Username" placeholder="Enter Your Email">
+                  </div>
+                  <div class="mb-3">
+                    <label for="Password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="Password" placeholder="Enter Password">
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 py-3 fs-5">Login</button>
+                  <div class="d-sm-flex justify-content-between mt-3">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                      <label class="form-check-label" for="exampleCheck1">Remember this device</label>
                     </div>
                     <div class="modal-body">
                         <form action="" class="px-4">
@@ -1019,6 +1043,74 @@
                     <div class="modal-footer justify-content-center">
                         <button type="button" class="btn btn-primary px-5">Add</button>
                     </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Login Modal -->
+    <div class="modal fade" id="add-watchlist-popup" tabindex="-1" aria-labelledby="add-watchlist-popup" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title fs-5" id="add-watchlist-popup"><img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/watchlist/edit-blue.svg" alt="Edit" width="20px" height="20px"> ADD TO WATCHLIST</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="" class="px-4">
+              <div class="form-check p-3">
+                <input class="form-check-input" type="radio" name="watchlistRadioDefault" id="watchlistRadioDefault1">
+                <label class="form-check-label fw-5" for="watchlistRadioDefault1">
+                  Penny Stocks
+                </label>
+              </div>
+              <div class="form-check p-3">
+                <input class="form-check-input" type="radio" name="watchlistRadioDefault" id="watchlistRadioDefault2">
+                <label class="form-check-label fw-5" for="watchlistRadioDefault2">
+                  stock for 2023
+                </label>
+              </div>
+              <div class="form-check p-3">
+                <input class="form-check-input" type="radio" name="watchlistRadioDefault" id="watchlistRadioDefault3">
+                <label class="form-check-label fw-5" for="watchlistRadioDefault3">
+                  penny stock 20
+                </label>
+              </div>
+              <div class="form-check p-3">
+                <input class="form-check-input" type="radio" name="watchlistRadioDefault" id="watchlistRadioDefault4">
+                <label class="form-check-label fw-5" for="watchlistRadioDefault4">
+                  top ten stock
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-primary px-5">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Top Tables Section End-->
+  <!-- stock html start  -->
+  <section class="stock-quote container-fluid py-80 bg-smoke" id="stock-quote">
+    <div class="container">
+      <div class="row justify-content-center gy-5">
+        <div class="col-xl-4 col-lg-6">
+          <div class="chat-main mb-40 border-grey border pb-0">
+            <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-3 pb-1">
+              <h3 class="fs-6 fw-bolder lh-base">Dynamic Group Chats</h3>
+            </div>
+            <div class="chat-search chat-main-common-padding">
+              <form action="#">
+                <div class="input-group mt-3 mb-4 d-flex align-items-stretch">
+                  <span class="header-serch-icon position-absolute "><svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M16.0319 14.6177C17.2635 13.078 18 11.125 18 9C18 4.02944 13.9706 0 9 0C4.02944 0 0 4.02944 0 9C0 13.9706 4.02944 18 9 18C11.125 18 13.078 17.2635 14.6177 16.0319L17.2929 18.7071C17.6834 19.0976 18.3166 19.0976 18.7071 18.7071C19.0976 18.3166 19.0976 17.6834 18.7071 17.2929L16.0319 14.6177ZM16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z" fill="#777E90"></path>
+                    </svg></span>
+                  <input type="search" class="form-control rounded-pill border-grey bg_color border" id="group-search-widget" placeholder="Search Groups.." aria-label="search" aria-describedby="basic-addon1">
                 </div>
             </div>
         </div>

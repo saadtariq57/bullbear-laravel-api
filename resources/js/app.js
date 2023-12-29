@@ -9,6 +9,7 @@ import { createRouter, createWebHistory } from "vue-router";
 // Define routes with lazy loading
 const routes = [
     {
+
         path: "/watchlist",
         name: "watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
@@ -47,19 +48,25 @@ const routes = [
         }),
     },
     {
-        path: "/feed",
-        name: "feed",
-        component: () => import("./components/feed/Userposts.vue"),
+        path: '/feed',
+        name: 'feed',
+        component: () => import('./components/feed/UserFeed.vue'),
     },
     {
-        path: "/profile",
-        name: "profile",
-        component: () => import("./components/feed/Userposts.vue"),
+        path: '/profile',
+        name: 'profile',
+        component: () => import('./components/feed/UserPosts.vue'),
     },
     {
-        path: "/groups",
-        name: "groups",
-        component: () => import("./components/feed/Userposts.vue"),
+        path: '/groups',
+        name: 'groups',
+        component: () => import('./components/chat/ChatGroups.vue'),
+    },
+    {
+        path: '/groups/chat-single',
+        name: 'groups',
+        component: () => import('./components/chat/SingleChat.vue'),
+
     },
 ];
 
@@ -76,6 +83,7 @@ app.component("Navigation", Navigation);
 app.use(router);
 
 // Mount the app
+
 app.mount("#app");
 
 (function ($) {
