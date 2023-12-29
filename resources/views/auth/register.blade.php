@@ -25,8 +25,14 @@
                                 <div class="card my-auto overflow-hidden">
                                     <div class="row g-0">
                                         <div class="col-lg-6">
+                                         
+                                            
                                             <div class="bg-overlay bg-primary"></div>
                                             <div class="h-100 bg-auth align-items-end">
+                                                <div class="p-3 mt-4 d-none d-lg-block">
+                                                    <h4 class="fs-3 text-center">SET UP YOUR ACCOUNT</h4>
+                                                            <p class="fs-5 text-center">Please enter the required details and follow the given instructions to finish setting up your account. Once you're done, you can begin making use of various features accompanying your plan such as setting up watchlists, accessing education/exam center, joining groups, tracking reward points, managing your social network, etc. In case of any issues, please contact us at support@richtv.io</p>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -34,8 +40,7 @@
                                             <div class="p-lg-5 p-4">
                                                 <div>
                                                     <div class="text-center mt-1">
-                                                        <h4 class="font-size-18">SET UP YOUR ACCOUNT</h4>
-                                                        <p class="text-muted">Please enter the required details and follow the given instructions to finish setting up your account. </p>
+                                                        <h4 class="font-size-18">Account Information</h4>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('register') }}"

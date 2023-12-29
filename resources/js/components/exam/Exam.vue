@@ -36,15 +36,55 @@
 </template>
 
 <script>
-import Exam from "./js/Exam.js";
+import { Skeletor } from "vue-skeletor";
+import axios from "axios";
+import ConfirmationPopup from "./ConfirmationPopup.vue"
+import LoginPopup from "../login/LoginPopup.vue"
+import examImage from '../../../images/exam1.jpg';
+
 export default {
-  ...Exam,
+  components: {
+    Skeletor,
+    ConfirmationPopup,
+    LoginPopup,
+  },
+  data() {
+    return {
+      categories: [],
+      examImage: examImage,
+    };
+  },
   methods: {
-    ...Exam.methods,
-    startExam(examId) {
-      // Call the method to initiate the exam
-      this.initiateExam(examId);
-    }
-  }
+    async getExamData() {
+      try {
+        const response = await axios.get('/api/exams');
+        this.categories = response.data.categories.map(category => {
+          return {
+            ...category,
+            exams: response.data.exams.data.filter(exam => exam.category === category.name),
+          };
+        });
+      } catch (error) {
+        console.error("Error fetching exams:", error);
+      }
+    },
+
+    async startExam(examId) {
+      try {
+        const response = await axios.get(`/api/exams/initiate/${examId}`);
+        const { firstQuestionId, examName, timeLimit } = response.data;
+        this.$router.push({
+          name: 'exam.question',
+          params: { examName, questionId: firstQuestionId },
+          query: { examId, timeLimit }
+        });
+      } catch (error) {
+        console.error("Error initiating exam:", error);
+      }
+    },
+  },
+  mounted() {
+    this.getExamData();
+  },
 };
 </script>
