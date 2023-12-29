@@ -33,8 +33,11 @@
                 <div class="post-description">
                     <p class="px-3">After-hours Gainers</p>
                     <div class="post-file">
-                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/10/HxxaZjP9YL6tdswHK68t_29_59820aa89bbd25215a0f4b04549fcde7_image.jpg"
-                            alt="image" class="image-file pointer img-fluid">
+                        <iframe width="100%" height="315"
+                            src="https://www.youtube.com/embed/Sf2vgLNheUQ?si=EHa3GgvLP5YcrK30" title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
                     </div>
                     <div class="like-comment-count d-flex     justify-content-between p-3">
                         <div class="like-count"><span><i class="bi bi-hand-thumbs-up"></i> 1</span></div>
@@ -66,7 +69,8 @@
   
 <script>
 import PostComment from './PostComment.vue';
-import SharePost from "./SharePost.vue";
+import SharePost from './SharePost.vue';
+
 export default {
     components: {
         PostComment,
@@ -76,5 +80,5 @@ export default {
 </script>
   
 <style scoped>
-/* CSS styles specific to image posts */
+/* CSS styles specific to text posts */
 </style>
