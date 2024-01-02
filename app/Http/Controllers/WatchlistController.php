@@ -19,37 +19,66 @@ class WatchlistController extends Controller
 
     public function getWatchLists()
     {
-        //TO DO
-        
-        // $records = UserWatchlist::where('user_id', Auth::id())
-        //     ->orWhere('featured', 1)
-        //     ->get();
-        //return $records;
         if (Auth::check()) {
             $user_id = Auth::id();
-
-    
-            $records = UserWatchlist::where('user_id', $user_id)->orWhere('featured', 1)->get();
-    
-            $records->each(function ($watchlist) {
-                $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.name');
-                $stats = $this->getSymbolsStats($symbolNames->join(','));
-    
-                $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
-                    $symbol = $watchlistSymbol->symbol;
-                    $symbol->stats = array_merge($symbol->toArray(), $stats[$symbol->name] ?? []);
-                });
-            });
+            $records = UserWatchlist::where('user_id', $user_id);
+            if ($records->exists()){
+                $records = UserWatchlist::where('user_id', $user_id)
+                    ->orderBy('position')
+                    ->with(['watchlistSymbols' => function ($query) {
+                    $query->orderBy('position');
+                }, 'watchlistSymbols.symbol'])->get();
+            }else{
+                $records = UserWatchlist::where('featured', 1)
+                    ->orderBy('position')
+                    ->with(['watchlistSymbols' => function ($query) {
+                        $query->orderBy('position');
+                    }, 'watchlistSymbols.symbol'])->get();
+            }
+            
+            // $records = UserWatchlist::where('user_id', $user_id)->orderBy('position');
+            // if (!$records->exists()) {
+            //     $records = UserWatchlist::where('featured', 1)->orderBy('position')->get();
+            // } else {
+            //     $records = $records->orderBy('position')->get();
+            // }
+            // $records->each(function ($watchlist) {
+            //     $watchlist->watchlistSymbols->each(function ($watchlistSymbol)  {
+            //         $symbol = $watchlistSymbol->symbol;
+            //     });
+            // });
     
             return response()->json($records);
         }
         else{
-            // Handle the case when the user is not authenticated.
-            return response()->json(['error' => 'User not authenticated'], 401);
+            $records = UserWatchlist::where('featured', 1)
+            ->orderBy('position')
+            ->with(['watchlistSymbols' => function ($query) {
+                $query->orderBy('position');
+            }, 'watchlistSymbols.symbol'])->get();
+            return response()->json($records);
+            // return response()->json(['error' => 'User not authenticated'], 401);
         }
         
     }
+    public function getSymbols($watchlistId)
+    {
+        $watchlist = $this->getWatchListAllData($watchlistId);
 
+        if ($watchlist) {
+            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.name');
+            $stats = $this->getSymbolsStats($symbolNames->join(','));
+
+            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
+                $symbol = $watchlistSymbol->symbol;
+                $symbol->stats = array_merge($symbol->toArray(), $stats[$symbol->name] ?? []);
+            });
+
+            return response()->json($watchlist);
+        } else {
+            return response()->json(['error' => 'Watchlist not found'], 404);
+        }
+    }
     public function getSymbolsStats($symbols){
         $url = config('thirdparty.rapidapi.quoetsurl');
         $url .= $symbols;
@@ -58,13 +87,14 @@ class WatchlistController extends Controller
             'X-RapidAPI-Key' => config('thirdparty.rapidapi.key'),
             'X-RapidAPI-Host' => config('thirdparty.rapidapi.host')
         ];
-
+        // $response = $this->httpClient->request('GET', $url, ['headers' => $headers, 'debug' => true]);
         try {
             $response = $this->httpClient->request('GET', $url, ['headers' => $headers]);
             $data = $response->getBody()->getContents();
             $data = json_decode($data, true);
             return collect($data['body'])->pluck(null, 'symbol')->all();
         } catch (\GuzzleHttp\Exception\RequestException $e) {
+           // \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
             return [];
         }
     }
@@ -80,13 +110,16 @@ class WatchlistController extends Controller
     }
 
     public function manage(){
-        // $user = Auth::user();
-        $watchlist = UserWatchlist::where('user_id', Auth::id()) //TO DO
-        // $watchlists = UserWatchlist::where('user_id', 2)
-        ->get();
-        return view('watchlist.manage', compact('watchlists'));
+        if (Auth::check()) {
+            $user_id = Auth::id();
+            // $user = Auth::user();
+            $watchlists = UserWatchlist::where('user_id', $user_id) 
+            ->get();
+            return view('watchlist.manage', compact('watchlists'));
+        }else{
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -129,15 +162,59 @@ class WatchlistController extends Controller
         $watchlist = $this->getWatchListAllData($watchlist->id);
         return view('watchlist.edit', compact('watchlist'));
     }
-
+    
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Watchlist $watchlist)
+    public function update(Request $request, UserWatchlist $watchlist)
     {
-        //
+        try {
+            if ($request->has('symbol_positions')) {
+                $symbolPositions = $request->input('symbol_positions');
+                foreach ($symbolPositions as $symbolPosition) {
+                    $watchlistSymbol = WatchlistSymbol::find($symbolPosition['id']);
+                    
+                    if ($watchlistSymbol) {
+                        $watchlistSymbol->update([
+                            'position' => $symbolPosition['position'],
+                        ]);
+                    }
+                }
+                return response()->json(['position' => $watchlistSymbol->position]);
+            }else{
+                $request->validate([
+                    'title' => 'required|string|max:255|regex:/\S/',
+                ]);
+    
+                $watchlist->update([
+                    'title' => $request->input('title'),
+                ]);
+                return response()->json(['title' => $watchlist->title]);
+            }
+        } catch (\Exception $e) {
+            // Add this line to log the validation errors
+            \Log::error('Validation Errors: ' . json_encode($request->errors()->all()));
+
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
+    public function updatePositions(Request $request)
+    {
+        $positions = $request->input('positions');
+
+        foreach ($positions as $position) {
+            $watchlist = UserWatchlist::find($position['id']);
+            
+            if ($watchlist) {
+                $watchlist->update([
+                    'position' => $position['position'],
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Positions updated successfully']);
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -169,10 +246,13 @@ class WatchlistController extends Controller
     }
 
 
-    public function getWatchListAllData($watchlistId){
+    public function getWatchListAllData($watchlistId)
+    {
         return UserWatchlist::where('id', $watchlistId)
-        ->with('watchlistSymbols', 'watchlistSymbols.symbol')
-        ->first();
+            ->with(['watchlistSymbols' => function ($query) {
+                $query->orderBy('position');
+            }, 'watchlistSymbols.symbol'])
+            ->first();
     }
     
 }

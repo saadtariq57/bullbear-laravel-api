@@ -1,7 +1,8 @@
 <template>
   <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con position-relative">
     <div class="Manage-list pl-1">
-      <h3 class="fw-bold py-2 px-2">{{ watchlistData.title }}</h3>
+      <!-- <h3 class="fw-bold py-2 px-2">{{ watchlistData.title }}</h3> -->
+      <input type="text" v-model="editedWatchlistName" @input="handleInput">
     </div>
     <div class="manage-watchlist-sidebar mt-3 d-flex">
       <div>
@@ -22,15 +23,6 @@
               aria-label=".form-control-lg example" v-model="search" @input="searchTags">
             <button type="button" class="btn btn-primary px-3 py-2 position-absolute">ADD</button>
           </form>
-
-          <!-- <ul v-show="search" class="list-group list-group-flush border-top border-cta-clr px-3">
-            <li v-for="symbol in symbols" v-on:click="addWatchlistSymbol(symbol.id)"
-              class="list-group-item border-light px-0 d-flex justify-content-between">
-              <span> {{ symbol.name }}</span><span class="company-custom-width">Seabridge Gold Inc</span><span>US</span>
-
-            </li>
-            <li v-show="error" class="list-group-item">{{ error }}</li>
-          </ul> -->
           <div class="table-responsive symbol-table">
             <table class="table border-top border-cta-clr px-3 mb-0" v-show="search">
               <tbody>
@@ -52,8 +44,8 @@
       </div>
     </div>
     <hr class="mt-3 divider">
-    <ul class="px-0">
-      <li class="d-flex align-items-center" v-for="item in watchlistData.watchlist_symbols">
+    <ul class="px-0" ref="sortableList">
+      <li class="d-flex align-items-center" v-for="item in watchlistData.watchlist_symbols" :key="item.id">
         <div class="d-flex align-items-center flex-fill gap-3">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
@@ -85,7 +77,148 @@
 </template>
 
 <script>
-import Searchsymbols from "./Searchsymbols.js";
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
+import axios from "axios";
+import Confirm from '../../shared/confirm.vue';
+import Sortable from "sortablejs";
 
-export default Searchsymbols;
+export default {
+  components: {
+    Skeletor,
+    Confirm,
+    Sortable
+  },
+  methods: {
+    searchTags() {
+      this.initValues();
+      if (this.search) {
+        axios.get('/api/symbol/search?query=' + this.search).then(response => {
+          this.symbols = response.data;
+          this.error = this.symbols.length == 0 ? 'No symbols found against this search' : '';
+        }).catch(error => {
+          this.error = 'Error while fetching symbols';
+          console.log(error)
+        });
+      }
+    },
+    addWatchlistSymbol(symbolId) {
+      let postData = {
+        user_id: this.watchlist.user_id,
+        watchlist_id: this.watchlist.id,
+        symbol_id: symbolId
+      }
+        axios.post('/api/watchlist/symbol', postData).then(response => {
+          if(response.data){
+            this.watchlistData = response.data;
+            this.search = '';
+          }
+        }).catch(error => {
+          this.error = 'Error while adding symbol';
+          console.log(error)
+        });
+    },
+    handleInput() {
+      clearTimeout(this.inputTimeout);
+      this.inputTimeout = setTimeout(() => {
+        this.editWatchlistName();
+      }, 1000);
+    },
+    editWatchlistName() {
+      if (this.editedWatchlistName.trim() !== "") {
+        const watchlistId = this.watchlist.id;
+        axios.put(`/api/watchlist/update/${watchlistId}`, { title: this.editedWatchlistName })
+          .then(response => {
+            this.watchlistData.title = response.data.title;
+            this.editedWatchlistName = response.data.title;
+          })
+          .catch(error => {
+            console.error("Error editing watchlist name:", error);
+          });
+      }
+    },
+    deleteWatchlistSymbol(id) {
+        axios.delete(`/api/watchlist/symbol?id=${id}&watchlist_id=${this.watchlist.id}`).then(response => {
+          if(response.data){
+            this.watchlistData = response.data;
+          }
+        }).catch(error => {
+          this.error = 'Error while deleting symbol';
+          console.log(error)
+        });
+    },
+    initValues() {
+      this.error = '';
+      this.symbols = [];
+    },
+    openModal(item) {
+      this.modalData = { id: item.id, modalId: 'delete-symbol', title: item.symbol.name, body: `Are you sure you want to delete symbol : ${item.symbol.name}?` },
+      this.isModalOpen = true
+    },
+    handleActionFromModal(response) {
+      if(response.type == 'confirm'){
+        this.deleteWatchlistSymbol(response.id);
+      }
+    },
+    initSortable() {
+      if (this.sortableInstance) {
+        this.sortableInstance.destroy();
+      }
+
+      this.sortableInstance = new Sortable(this.$refs.sortableList, {
+        animation: 150,
+        onUpdate: (event) => {
+          this.handleItemReordering(event);
+        },
+      });
+    },
+    handleItemReordering(event) {
+      const movedItem = this.watchlistData.watchlist_symbols.splice(event.oldIndex, 1)[0];
+      this.watchlistData.watchlist_symbols.splice(event.newIndex, 0, movedItem);
+      // Create a new array with updated positions
+      const updatedPositions = this.watchlistData.watchlist_symbols.map((symbol, index) => ({
+        id: symbol.id,
+        position: index + 1,
+      }));
+      console.log('Frontend payload:', { symbol_positions: updatedPositions });
+
+
+      const watchlistId = this.watchlist.id;
+      axios.put(`/api/watchlist/update/${watchlistId}`, {
+        symbol_positions: updatedPositions,
+      })
+      .then((response) => {
+        console.log('Positions updated successfully:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error updating positions:', error);
+      });
+    }
+  },
+  mounted() {
+    this.initValues();
+    this.watchlistData = JSON.parse(JSON.stringify(this.watchlist));
+    this.editedWatchlistName = this.watchlistData.title;
+    this.initSortable();
+  },
+  data() {
+    return {
+      watchlistData: Object,
+      error: '',
+      search: '',
+      symbols: [],
+      isModalOpen: false,
+      modalData: undefined,
+      editedWatchlistName: '',
+      inputTimeout: null,
+      sortableInstance: null,
+    };
+  },
+  props: {
+    watchlist: {
+      type: Object, // Adjust the type based on your data structure
+      required: true,
+    },
+  },
+};
 </script>

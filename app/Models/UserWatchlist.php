@@ -13,7 +13,8 @@ class UserWatchlist extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'who_can_view'
+        'who_can_view',
+        'position'
     ];
 
     public function user()
@@ -23,7 +24,7 @@ class UserWatchlist extends Model
 
     public function watchlists()
     {
-        return $this->belongsTo(UserWatchlist::class, 'user_id');
+        return $this->hasMany(UserWatchlist::class, 'user_id');
     }
     public function watchlistSymbols(){
         return $this->hasMany(WatchlistSymbol::class, 'watchlist_id');

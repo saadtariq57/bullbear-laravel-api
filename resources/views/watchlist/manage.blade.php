@@ -11,43 +11,7 @@
         <a href="/watchlist" class="border-start border-dark px-2 text-decoration-underline fw-bold">Done</a>
       </div>
       <hr class="mt-5 divider">
-      <ul class="px-0">
-      @foreach($watchlists as $watchlist)
-        <li class="d-flex align-items-center">
-          <div class="d-flex align-items-center flex-fill">
-            <div class="px-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
-                viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                  d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-              </svg>
-            </div>
-            <div class="Manage-list px-2 my-2">
-              <a href="edit/{{ $watchlist->id }}" class="fw-bold py-2 pe-4 w-100 text-black fs-3">{{ $watchlist->title }}</a>
-            </div>
-          </div>
-          <div>
-          <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-watchlist" onclick="deleteWatchlist('{{ $watchlist->id }}', '{{ $watchlist->title }}')"></button>
-          </div>
-        </li>
-        @endforeach
-      </ul>
+       <router-view></router-view>
     </div>
   </section>
-  @include('shared.confirm', [
-    'modalId' => 'delete-watchlist',
-    'title' => '',
-    'body' => '',
-    'formId' => 'deleteWatchListForm',
-    'formAction' => '',
-  ])
-  @endsection
-  <script>
-    function deleteWatchlist(id, title){
-        $('#deleteWatchListForm').attr('action', id);
-        $('#delete-watchlistLabel').text(title);
-        $('#delete-watchlist .modal-body').text('Are you sure you want to delete your ' + title + '?');
-    }
-  </script>
-  @section('scripts')
   @endsection

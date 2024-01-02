@@ -33,8 +33,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
+    Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
+    Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
+    Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
+    Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
+    // Route::delete('delete/{watchlist}', [WatchlistController::class, 'destroy'])->name('destroy');
 });
 
 //Exam Routes
