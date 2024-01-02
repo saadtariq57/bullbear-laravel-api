@@ -1,0 +1,26 @@
+.bg-auth {
+  background-image: url('../images/login-img.png') !important;
+  background-position: bottom;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.auth-full-page-content  {
+  .bg-overlay.bg-primary {
+    background-color: #EAECF4 !important;
+  }
+}
+.btn-primary {
+  background-color: #183B56 !important;
+  
+  &:hover {
+    background-color: #003566 !important;
+  }
+}
+
+body[data-sidebar=colored] {
+  .vertical-menu, .navbar-brand-box {
+    background: #183B56;
+    border-color: #003566;
+  }
+}
