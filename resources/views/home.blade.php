@@ -1095,27 +1095,6 @@
     </div>
   </section>
   <!-- Top Tables Section End-->
-  <!-- stock html start  -->
-  <section class="stock-quote container-fluid py-80 bg-smoke" id="stock-quote">
-    <div class="container">
-      <div class="row justify-content-center gy-5">
-        <div class="col-xl-4 col-lg-6">
-          <div class="chat-main mb-40 border-grey border pb-0">
-            <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-3 pb-1">
-              <h3 class="fs-6 fw-bolder lh-base">Dynamic Group Chats</h3>
-            </div>
-            <div class="chat-search chat-main-common-padding">
-              <form action="#">
-                <div class="input-group mt-3 mb-4 d-flex align-items-stretch">
-                  <span class="header-serch-icon position-absolute "><svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M16.0319 14.6177C17.2635 13.078 18 11.125 18 9C18 4.02944 13.9706 0 9 0C4.02944 0 0 4.02944 0 9C0 13.9706 4.02944 18 9 18C11.125 18 13.078 17.2635 14.6177 16.0319L17.2929 18.7071C17.6834 19.0976 18.3166 19.0976 18.7071 18.7071C19.0976 18.3166 19.0976 17.6834 18.7071 17.2929L16.0319 14.6177ZM16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z" fill="#777E90"></path>
-                    </svg></span>
-                  <input type="search" class="form-control rounded-pill border-grey bg_color border" id="group-search-widget" placeholder="Search Groups.." aria-label="search" aria-describedby="basic-addon1">
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Top Tables Section End-->
     <!-- stock html start  -->
     <section class="stock-quote container-fluid py-80 bg-smoke" id="stock-quote">
         <div class="container">
