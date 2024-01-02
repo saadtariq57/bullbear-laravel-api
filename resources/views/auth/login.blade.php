@@ -7,7 +7,7 @@
         <div class="bg-overlay bg-light"></div>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <div class="auth-full-page-content d-flex min-vh-100 py-sm-5 py-4">
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
@@ -83,22 +83,6 @@
                                                         <div class="mt-4">
                                                             <button class="btn btn-primary w-100" type="submit">Sign
                                                                 In</button>
-                                                        </div>
-
-                                                        <div class="mt-4 pt-2 text-center">
-                                                            <div class="signin-other-title">
-                                                                <h5 class="font-size-14 mb-4 title">Sign In with</h5>
-                                                            </div>
-                                                            <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-primary btn-sm"><i
-                                                                        class="ri-facebook-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-danger btn-sm"><i
-                                                                        class="ri-google-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-dark btn-sm"><i
-                                                                        class="ri-github-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i
-                                                                        class="ri-twitter-fill font-size-16"></i></button>
-                                                            </div>
                                                         </div>
                                                     </form>
                                                 </div>

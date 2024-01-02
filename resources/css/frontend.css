@@ -1256,7 +1256,7 @@ tr.borderb-none td {
     bottom: 5px;
 }
 
-.postive-symbol::before {
+.positive-symbol::before {
     content: "▲";
     position: absolute;
     left: 5px;
@@ -1269,7 +1269,7 @@ tr.borderb-none td {
     content: "▲";
     font-size: 10px;
     position: absolute;
-    left: 67%;
+    left: var(--caret-position);
 }
 
 #table-meter2::after {

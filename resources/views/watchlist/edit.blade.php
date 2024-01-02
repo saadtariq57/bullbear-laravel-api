@@ -4,11 +4,8 @@
 <body>
     @endsection
     @section('content')
-    <section class="container-fluid manage-watchlist py-80" id="app">
-        <Searchsymbols :watchlist="{{ $watchlist }}" />
+    <section class="container-fluid manage-watchlist py-80">
+        <router-view :watchlist="{{ $watchlist }}"></router-view>
     </section>
 
-    @endsection
-    @section('scripts')
-    @vite('resources/js/app.js')
     @endsection

@@ -16,23 +16,28 @@ const routes = [
         component: () => import('./components/feed/UserPosts.vue'),
     },
     {
-
         path: "/watchlist",
-        name: "watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
         children: [
             {
-                path: ":id",
+                path: "",
+                name: "watchlist",
                 component: () =>
-                    import(
-                        "./components/watchlist/searchsymbols/Searchsymbols.vue"
-                    ),
-            },
-            {
-                path: ":id",
-                component: () => import("./components/shared/confirm.vue"),
+                    import("./components/watchlist/tabs/Tabs.vue"),
             },
         ],
+    },
+    {
+        path: "/watchlist/edit/:id",
+        name: "watchlist.edit",
+        component: () =>
+            import("./components/watchlist/searchsymbols/Searchsymbols.vue"), 
+    },
+    {
+        path: "/watchlist/manage",
+        name: "watchlist.manage",
+        component: () =>
+            import("./components/watchlist/manage/Manage.vue"),
     },
     {
         path: "/exams",
