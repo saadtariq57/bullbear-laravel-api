@@ -74,7 +74,3 @@ export default {
     },
 }
 </script>
-  
-<style scoped>
-/* CSS styles specific to image posts */
-</style>

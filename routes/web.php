@@ -69,11 +69,8 @@ Route::middleware(['auth'])->group(function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
 
-    // Single Group route
-    // Route::get('/groups/{group_name}', function () {
-    //     return view('groups.chat-single');
-    // })->name('groups.chat-single');
-    Route::get('/groups/chat-single', function () {
+    //Single Group Route
+    Route::get('/groups/{group_name}', function () {
         return view('groups.chat-single');
     })->name('groups.chat-single');
 

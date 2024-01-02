@@ -22,7 +22,7 @@
 <div id="app">
     <div id="layout-wrapper">
         <!-- topbar -->
-        @include('layouts.navigation')
+            <Navigation></Navigation>
         <div class="main-content">
 
             <div class="page-content">

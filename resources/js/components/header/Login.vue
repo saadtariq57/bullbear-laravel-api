@@ -6,8 +6,3 @@
                 class="bi bi-person-fill"></i>SIGN UP</a>
     </div>
 </template>
-<script>
-export default {
-
-}
-</script>

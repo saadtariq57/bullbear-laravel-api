@@ -18,6 +18,14 @@ use App\Http\Controllers\UserController;
 |
 */
 
+Route::get('/check-login', function () {
+    if (auth()->check()) {
+        return response()->json(['loggedIn' => true]);
+    } else {
+        return response()->json(['loggedIn' => false]);
+    }
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

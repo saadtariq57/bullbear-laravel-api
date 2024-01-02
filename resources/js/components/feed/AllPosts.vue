@@ -9,7 +9,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="user-avatar d-flex gap-2">
                             <div class="img">
-                                <img :src="posts.user.avatar_url" class="rounded-circle" width="46" height="46"
+                                <img :src="posts.user.avatar_url" class="rounded-circle"
                                     :alt="posts.user.name + ' profile picture'">
                             </div>
                             <div class="user-info">
@@ -122,7 +122,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* CSS styles for all posts */
-</style>

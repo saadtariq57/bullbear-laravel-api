@@ -56,7 +56,7 @@
                         <h4 class="fs-5 fw-6 text-start">Share the post on</h4>
                         <div class="d-flex justify-content-center">
                             <a class="text-black p-3 border border-info rounded-2 d-flex justify-content-center align-items-center fw-5"
-                                style="width: fit-content;" data-bs-toggle="collapse" href="#share-popup-chat" role="button"
+                                 data-bs-toggle="collapse" href="#share-popup-chat" role="button"
                                 aria-expanded="false" aria-controls="share-popup-chat">
                                 <span class="bg-smoke rounded-3 align-self-center chat-popup-icon me-2"><i
                                         class="bi bi-people-fill fs-4" fill="#03A9F4"></i></span> Chat
@@ -105,8 +105,3 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-
-}
-</script>

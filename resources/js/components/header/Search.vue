@@ -13,7 +13,7 @@
             </div>
             <div class="offcanvas-body container">
                 <form class="d-flex nav-search-main nav-link popup-form position-relative" action="https://richtv.io/"
-                    method="get" id="search_form_large" style="flex-grow: 1">
+                    method="get" id="search_form_large">
                     <span class="header-serch-icon position-absolute">
                         <i class="bi bi-search nav-clr fs-4"></i></span>
                     <div class="navbar-search w-100">
@@ -24,8 +24,3 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-
-}
-</script>

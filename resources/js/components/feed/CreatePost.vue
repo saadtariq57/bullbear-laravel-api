@@ -12,7 +12,7 @@
           </div>
         </div>
         <div>
-          <i class="bi bi-emoji-smile fs-4" style="color: #555961;"></i>
+          <i class="bi bi-emoji-smile fs-4"</i>
         </div>
       </div>
       <div class="user-post-text">
@@ -25,7 +25,7 @@
             <div>
               <span
                 class="btn-file img d-flex justify-content-center align-items-center position-relative gap-2 bg-light-grey fs-14 fw-4 rounded-pill">
-                <i class="bi bi-image-fill fs-18" style="color:#4db3f6;"></i> Upload
+                <i class="bi bi-image-fill fs-18"></i> Upload
                 Image <input type="file" class="position-absolute border-0" id="publisher-photos" name="postPhotos[]"
                   multiple="multiple">
               </span>
@@ -42,7 +42,7 @@
             <div>
               <span
                 class=" btn-file vid d-flex justify-content-center align-items-center position-relative gap-2 bg-light-grey fs-14 fw-4 rounded-pill">
-                <i class="bi bi-file-earmark-richtext fs-18" style="color:#6bcfef;"></i> Upload
+                <i class="bi bi-file-earmark-richtext fs-18"></i> Upload
                 file <input type="file" class="position-absolute border-0" id="publisher-video" name="postfile">
               </span>
             </div>
@@ -50,7 +50,7 @@
               <span
                 class="btn-file mor d-flex justify-content-center align-items-center position-relative gap-2 bg-light-grey fs-14 fw-4 rounded-pill"
                 onclick="showColor()">
-                <i class="bi bi-palette-fill fs-18" style="color: #673ab7;"></i> Color</span>
+                <i class="bi bi-palette-fill fs-18"></i> Color</span>
 
             </div>
           </div>
@@ -59,26 +59,26 @@
           <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
             <div class="d-flex gap-2">
               <div>
-                <div class="all_colors_style" style="background-image: linear-gradient(45deg, #8d2de2 0%, #4a00e0 100%);">
+                <div class="all_colors_style">
                 </div>
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #ff416c 0%, #ff4b2b 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #ffe000 0%, #799f0c 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #011627 0%, #02223c 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #38b000 0%, #011627 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #38b000 0%, #38b000 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #a8ff78 0%, #78ffd6 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #333333 0%, #dd1818 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #0f0c29 0%, #302b63 100%);">
+              <div class="all_colors_style">
               </div>
-              <div class="all_colors_style" style="background-image: linear-gradient(45deg, #ed4263 0%, #ffedbc 100%);">
+              <div class="all_colors_style">
               </div>
             </div>
             <div class="btn-close-color bg-white">
@@ -105,9 +105,3 @@
 
   </form>
 </template>
-<script>
-export default {
-
-
-};
-</script>

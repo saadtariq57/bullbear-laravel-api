@@ -13,14 +13,3 @@
         </div>
     </div>
 </template>
-  
-<script>
-
-export default {
-
-}
-</script>
-  
-<style scoped>
-/* CSS styles specific to text posts */
-</style>

@@ -4,10 +4,7 @@
   @endsection
   @section('content')
   <div id="focus-overlay" onclick="hideoverlay()"></div>
-  <section class="feed-main container-fluid py-80" id="app">
+  <section class="feed-main container-fluid py-80">
     <router-view></router-view>
   </section>
   @endsection
-    @section('scripts')
-    @vite('resources/js/app.js')
-    @endsection

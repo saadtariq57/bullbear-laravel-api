@@ -334,7 +334,7 @@
 </template>
 <script>
 import Login from './Login.vue';
-import Search from './search.vue';
+import Search from './Search.vue';
 import Profile from './Profile.vue'
 export default {
     components: {
