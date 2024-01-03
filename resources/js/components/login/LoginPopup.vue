@@ -1,7 +1,5 @@
 <template>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-popup">
-    Launch Login MOdel
-  </button>
+  
   <div class="modal fade" id="login-popup" tabindex="-1" aria-labelledby="login-popupLabel" aria-hidden="true">
     <div class="modal-dialog login-popup-dialog modal-dialog-centered">
       <div class="modal-content position-relative">

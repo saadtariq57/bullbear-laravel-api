@@ -28,17 +28,17 @@
             <button class="nav-link border-0 fs-5 text-black active m-auto watchlist-nav-btn"
                 id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-tab-pane"
                 type="button" role="tab" aria-controls="dashboard-tab-pane"
-                aria-selected="true" @click="selectWatchlist(null)">DASHBORD</button>
+                aria-selected="true" @click="selectWatchlist(null, 'dashboard')">DASHBORD</button>
         </li>
         <li class="nav-item flex-fill" role="presentation">
             <button class="nav-link border-0 fs-5 text-black m-auto watchlist-nav-btn" id="content-tab"
                 data-bs-toggle="tab" data-bs-target="#content-tab-pane" type="button" role="tab"
-                aria-controls="content-tab-pane" aria-selected="false">LIST</button>
+                aria-controls="content-tab-pane" aria-selected="false" @click="selectWatchlist(selectedWatchlist, 'list')">LIST</button>
         </li>
         <li class="nav-item flex-fill" role="presentation">
             <button class="nav-link border-0 border-none fs-5 text-black m-auto watchlist-nav-btn"
                 id="include-tab" data-bs-toggle="tab" data-bs-target="#include-tab-pane" type="button"
-                role="tab" aria-controls="include-tab-pane" aria-selected="false">NEWS</button>
+                role="tab" aria-controls="include-tab-pane" aria-selected="false" @click="selectWatchlist(selectedWatchlist, 'news')">NEWS</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -48,7 +48,7 @@
             <div class="row" v-show="watchlists">
                 <div class="col-lg-4 col-md-12 my-4" v-for="watchlist in watchlists">
                     <div class="watchlist-dashboard-container border p-3">
-                        <h3 class="fs-18" @click="selectWatchlist(watchlist)"><b>{{ watchlist.title }} </b></h3>
+                        <h3 class="fs-18" @click="selectWatchlist(watchlist, 'userSelection')"><b>{{ watchlist.title }} </b></h3>
                         <div class="table-responsive">
                             <table class="table stock-market-table1 height-1024">
                                 <thead>

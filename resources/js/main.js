@@ -70,6 +70,12 @@ const routes = [
         component: () => import('./components/chat/SingleChat.vue'),
 
     },
+    {
+        path: '/',
+        name: 'home',
+        component: () => import('./components/home/HomeMain.vue'),
+
+    },
 ];
 
 // Create router instance

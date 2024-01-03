@@ -1296,7 +1296,9 @@ meter::-moz-meter-bar {
 .manage-watchlist-con {
     box-shadow: 0 0 4px #0003;
 }
-
+section.manage-watchlist ul li{
+    cursor: grab;
+}
 .Manage-list {
     background-color: #f8f8f8;
 }
