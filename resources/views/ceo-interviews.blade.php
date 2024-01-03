@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="container-fluid mt-5">
+  <section class="container-fluid mt-5 py-80">
         <div class="container">
             <div class="text-center">
                 <h1 class="fw-bold fs-1 text-uppercase">Ceo interviews</h1>

@@ -1841,14 +1841,25 @@ p.user-message {
     top: 4px;
     right: 5px;
 }
-
-.post-footer {
-    background: #f9f9f9;
+.poll-prograss-bar{
+    height: 30px;
 }
+.bg-poll-prograss{
+    background-color: rgba(140, 140, 140, 0.2) !important;
+}
+.option-text{
+    width: 97%;
+top: 5px;
+left: 10px;
+}
+
+/* .post-footer {
+    background: #f9f9f9;
+} */
 
 .reply-comment-elements-wrapper {
     right: 15px;
-    top: 6px;
+    top: 10px;
 }
 
 .video-side-bar-modal {
@@ -2006,12 +2017,12 @@ p.user-message {
 
 /* profile page css End */
 /* Profile-sidgets css start */
-.progress {
+.profile-progress {
     background-color: rgba(168, 72, 73, .5);
     height: 50px;
 }
 
-.progress-bar {
+.profile-progress-bar {
     background-color: rgba(168, 72, 73, .8);
     width: 40%;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-post-panel shadow rounded bg-white px-4 pt-3">
+  <div class="user-post-panel shadow rounded bg-white px-4 pt-4">
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
@@ -37,7 +37,7 @@
               <div class="modal-body">
                 <!-- Content for create post modal -->
                 <form action="" class="post-textarea">
-                  <textarea v-model="textContent" rows="10" class="w-100 border-0 fs-5"
+                  <textarea v-model="textContent" rows="10" class="w-100 border-0 fs-5 p-2 rounded-3"
                     :style="{ 'color': textColor, 'background-image': selectedColor }"
                     placeholder="What's going on? #Hashtag.. @Mention.. Link.."></textarea>
                 </form>
@@ -52,7 +52,7 @@
                   <div id="user-color-con" class="d-none position-relative">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
                       <div class="d-flex gap-2">
-                        <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style"
+                        <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style "
                           :style="{ 'background-image': style }" @click="selectColor(style)"></div>
                       </div>
                       <div class="btn-close-color bg-white">
@@ -371,7 +371,8 @@ export default {
         'linear-gradient(45deg, #a8ff78 0%, #78ffd6 100%)',
         'linear-gradient(45deg, #333333 0%, #dd1818 100%)',
         'linear-gradient(45deg, #0f0c29 0%, #302b63 100%)',
-        'linear-gradient(45deg, #ed4263 0%, #ffedbc 100%)'
+        'linear-gradient(45deg, #ed4263 0%, #ffedbc 100%)',
+        'linear-gradient(45deg, #ffffff 0%, #ffffff 100%)'
       ]
     };
   },
@@ -442,7 +443,7 @@ input[type="file"] {
   cursor: pointer;
 }
 
-.post-icon-bg:hover {
+.post-icon-bg:hover , .all_colors_style{
   box-shadow:
     rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
     rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;
