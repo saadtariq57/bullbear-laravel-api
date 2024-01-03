@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ColoredPost;
 
 class HomeController extends Controller
 {
@@ -28,5 +29,11 @@ class HomeController extends Controller
 
     public function feedPage(){
         return view('feed');
+    }
+
+    public function colorOptions()
+    {
+        $colors = ColoredPost::all();
+        return response()->json($colors);
     }
 }

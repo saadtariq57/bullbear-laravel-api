@@ -80,13 +80,24 @@ export default {
       const positionPercentage = ((currentValue - low) / (high - low)) * 100;
       return `${positionPercentage - 3}%`;
     },
-    selectWatchlist(watchlist) {
+    selectWatchlist(watchlist, tabName) {
       this.selectedWatchlist = watchlist;
-      if(this.selectedWatchlist!=null){
-        const tab = new bootstrap.Tab(document.getElementById('content-tab'));
-        tab.show();
-        
-      }else{
+      if (tabName === 'dashboard') { this.selectedWatchlist = null; } 
+      else if (tabName === 'list' || tabName === 'news') {
+        if(this.selectedWatchlist==null){
+          //this.selectedWatchlist = watchlist;
+          this.selectedWatchlist = this.watchlists[0];
+        }
+        // else{
+        //   this.selectedWatchlist = this.watchlists[0];
+        // }
+      } 
+      else if (tabName === 'userSelection') {
+          // this.selectedWatchlist = watchlist;
+          const tab = new bootstrap.Tab(document.getElementById('content-tab'));
+          tab.show();
+      }
+      else{
         const tab = new bootstrap.Tab(document.getElementById('dashboard-tab-pane'));
         tab.show();
       }
