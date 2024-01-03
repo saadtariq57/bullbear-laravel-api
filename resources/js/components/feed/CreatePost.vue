@@ -3,8 +3,7 @@
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
-          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary"
-            src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/08/fKtTdh1OZpNVIqDZEPTY_22_3202a52699526cbda398b939872fc17e_avatar.png?cache=0">
+          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
         </a>
       </div>
       <div class="flex-fill">
@@ -22,11 +21,10 @@
                 <!-- Post Settings trigger button -->
                 <button data-bs-toggle="modal" data-bs-target="#postSettingModal"
                   class="btn d-flex gap-3 align-items-center">
-                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary"
-                    src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/08/fKtTdh1OZpNVIqDZEPTY_22_3202a52699526cbda398b939872fc17e_avatar.png?cache=0">
+                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
-                      <span class="fs-4 fw-6">Rich Tv</span>
+                      <span class="fs-4 fw-6">{{ userData.name }}</span>
                       <i class="bi bi-caret-down-fill"></i>
                     </div>
                     <div>Post to Anyone</div>
@@ -35,37 +33,42 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <!-- Content for create post modal -->
+                  <!-- Content for create post modal -->
                 <form action="" class="post-textarea">
-                  <textarea v-model="textContent" rows="10" class="w-100 border-0 fs-5"
-                    :style="{ 'color': textColor, 'background-image': selectedColor }"
-                    placeholder="What's going on? #Hashtag.. @Mention.. Link.."></textarea>
+                  <textarea v-model="textContent" :class="postClass" :maxlength="textAreaMaxLength"
+                            class="w-100 border-0"
+                            :style="textareaStyle"
+                            placeholder="What do you want to talk about?"></textarea>
+                  <!-- Clear Color Button -->
+                  <abbr title="Clear Color" v-if="selectedColor">
+                    <span class="post-icon-bg d-flex justify-content-center align-items-center clear-color" v-on:click="clearColor()">
+                      <i class="bi bi-x-lg fs-4"></i>
+                    </span>
+                  </abbr>
                 </form>
                 <div class="d-flex justify-content-between">
-                  <div class="d-flex" id="user-poster-con">
-                    <abbr title="Color Posts">
-                      <span class="post-icon-bg d-flex justify-content-center align-items-center"
-                        v-on:click="showColor()">
-                        <i class="bi bi-palette-fill fs-4"></i></span></abbr>
-
-                  </div>
-                  <div id="user-color-con" class="d-none position-relative">
+                  <!-- Show Color Options -->
+                  <div id="user-color-con" class="position-relative" v-show="showColorOptions">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
                       <div class="d-flex gap-2">
                         <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style"
-                          :style="{ 'background-image': style }" @click="selectColor(style)"></div>
+                             :style="{ 'background-image': style.background }" @click="selectColor(style)">
+                        </div>
                       </div>
                       <div class="btn-close-color bg-white">
                         <button type="button" class="btn-close ms-5" aria-label="Close" v-on:click="hideColor()"></button>
-
                       </div>
                     </div>
                   </div>
-                  <button class="btn">
+                  <!-- Emojis Model Button-->
+                  <button class="btn" v-on:click="toggleEmojiPicker">
                     <abbr title="Open Emoji">
-                      <i class="bi bi-emoji-smile fs-4"></i></abbr>
+                      <i class="bi bi-emoji-smile fs-4"></i>
+                    </abbr>
                   </button>
+                  <EmojiPicker v-if="showEmojiPicker" :native="true" @select="onSelectEmoji" />
                 </div>
+                <!-- Model Buttons-->
                 <div class="d-flex gap-3 my-2">
                   <abbr title="Add Media">
                     <span class="post-icon-bg d-flex justify-content-center align-items-center" data-bs-toggle="modal"
@@ -82,11 +85,15 @@
                       data-bs-target="#decumentpostModal">
                       <i class="bi bi-file-earmark-text fs-4"></i>
                     </span></abbr>
+                    <abbr title="Color Posts">
+                      <span class="post-icon-bg d-flex justify-content-center align-items-center"
+                        v-on:click="showColor()">
+                        <i class="bi bi-palette-fill fs-4"></i></span>
+                    </abbr>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary">Publish Post</button>
               </div>
             </div>
           </div>
@@ -228,189 +235,107 @@
       </div>
     </div>
     <div class="d-flex justify-content-around py-2">
-      <!-- Media Post trigger modal -->
-      <button type="button" class="btn fs-5" data-bs-toggle="modal" data-bs-target="#mediapostModal">
-        <i class="bi bi-image me-2 media-icon"></i>
-        <span>Media</span>
-      </button>
-      <!-- Media Post Modal -->
-      <div class="modal fade" id="mediapostModal" tabindex="-1" aria-labelledby="mediapostModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="mediapostModalLabel">Editor</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="d-flex justify-content-center h-100">
-                <div class="text-center align-self-center">
-                  <img src="	https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
-                    class="mb-3" width="200">
-                  <h2>Select files to begin</h2>
-                  <p>Share images or a single video in your post.</p>
-                  <form action="">
-                    <label class="btn btn-primary">
-                      <input type="file" />
-                      Upload from computer
-                    </label>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Poll Post trigger modal -->
-      <button type="button" class="btn fs-5" data-bs-toggle="modal" data-bs-target="#pollpostModal">
-        <i class="bi bi-bar-chart-line-fill me-2"></i>
-        <span>Poll</span>
-      </button>
-      <!-- Poll Post Modal -->
-      <div class="modal fade" id="pollpostModal" tabindex="-1" aria-labelledby="pollpostModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="pollpostModal">Create a poll</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="" id="myForm">
-
-                <div class="mb-3">
-                  <label for="exampleFormControlTextarea1" class="form-label">Your question</label>
-                  <textarea class="form-control border border-dark" id="exampleFormControlTextarea1" rows="3"
-                    placeholder="E.g., How do you commute to work?"></textarea>
-                </div>
-
-                <div class="options-container">
-                  <div class="mb-3 option-group">
-                    <label class="form-label">Option 1</label>
-                    <input type="text" class="form-control border border-dark" placeholder="E.g., Public transportation">
-                  </div>
-                  <div class="mb-3 option-group">
-                    <label class="form-label">Option 2</label>
-                    <input type="text" class="form-control border border-dark" placeholder="E.g., Drive myself">
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <button type="button" id="addOptionBtn" class="btn btn-primary">Add Option</button>
-                </div>
-                <div class="mb-3">
-                  <select class="form-select border border-dark" aria-label="Default select example">
-                    <option value="1" selected>1 day</option>
-                    <option value="3">3 day</option>
-                    <option value="7">1 week</option>
-                    <option value="14">2 week</option>
-                  </select>
-                </div>
-              </form>
-
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-              <button type="button" class="btn btn-primary">Done</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Document Post trigger modal -->
-      <button type="button" class="btn fs-5" data-bs-toggle="modal" data-bs-target="#decumentpostModal">
-        <i class="bi bi-file-earmark-text me-2"></i>
-        <span>Document</span>
-      </button>
-
-      <!-- Media Post Modal -->
-      <div class="modal fade" id="decumentpostModal" tabindex="-1" aria-labelledby="decumentpostModallLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="decumentpostModallLabel">Share a document</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="">
-                <label class="btn btn-primary w-100">
-                  <input type="file" />
-                  Choose file
-                </label>
-              </form>
-              <div class="d-flex gap-2 mt-3">
-                <i class="bi bi-info-square-fill fs-5"></i>
-                <p>For accessibility purposes, Rich Tv members who can view your post will be able to download your
-                  document as a PDF</p>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-              <button type="button" class="btn btn-primary">Done</button>
-            </div>
-          </div>
-        </div>
+      <UploadMedia />
+      <CreatePoll />
+      <UploadFile />
       </div>
     </div>
-  </div>
 </template>
 <script>
+import axios from 'axios';
+import EmojiPicker from 'vue3-emoji-picker';
+import 'vue3-emoji-picker/css';
+import { mapState } from 'vuex';
+import UploadMedia from './UploadMedia.vue';
+import CreatePoll from './CreatePoll.vue';
+import UploadFile from './UploadFile.vue';
+
 export default {
+  components: {
+    UploadMedia,
+    CreatePoll,
+    UploadFile,
+    EmojiPicker
+  },
+  props: {
+    context: {
+      type: String,
+      default: 'feed'
+    },
+  },
   data() {
     return {
       selectedColor: '',
+      selectedColorId: null,
+      textColor: '',
       textContent: '',
-      colorStyles: [
-        'linear-gradient(45deg, #8d2de2 0%, #4a00e0 100%)',
-        'linear-gradient(45deg, #ff416c 0%, #ff4b2b 100%)',
-        'linear-gradient(45deg, #ffe000 0%, #799f0c 100%)',
-        'linear-gradient(45deg, #011627 0%, #02223c 100%)',
-        'linear-gradient(45deg, #38b000 0%, #011627 100%)',
-        'linear-gradient(45deg, #38b000 0%, #38b000 100%)',
-        'linear-gradient(45deg, #a8ff78 0%, #78ffd6 100%)',
-        'linear-gradient(45deg, #333333 0%, #dd1818 100%)',
-        'linear-gradient(45deg, #0f0c29 0%, #302b63 100%)',
-        'linear-gradient(45deg, #ed4263 0%, #ffedbc 100%)'
-      ]
+      colorStyles: [],
+      showColorOptions: false,
+      showEmojiPicker: false,
     };
   },
+  computed: {
+    ...mapState(['userData']),
+    postClass() {
+      return this.selectedColor ? 'colored-post' : '';
+    },
+    textAreaMaxLength() {
+      return this.selectedColor ? 100 : null;
+    },
+    textareaStyle() {
+      return this.selectedColor ? {
+        'color': this.textColor,
+        'background-image': this.selectedColor,
+        'font-size': '2.5rem',
+        'text-align': 'center'
+      } : {};
+    }
+  },
   methods: {
-    selectColor(style) {
-      this.selectedColor = style;
+    toggleEmojiPicker() {
+      this.showEmojiPicker = !this.showEmojiPicker;
+    },
+    onSelectEmoji(emoji) {
+      this.textContent += emoji.i;
+    },
+    selectColor(style, colorId) {
+      this.selectedColor = style.background;
+      this.textColor = style.textColor;
+      this.selectedColorId = colorId;
+    },
+    clearColor() {
+      this.selectedColor = '';
+      this.textColor = '';
+      this.selectedColorId = null;
     },
     showColor() {
-      var x = document.getElementById("user-poster-con");
-      x.classList.add("d-none");
-      var y = document.getElementById("user-color-con");
-      y.classList.remove("d-none");
+      this.showColorOptions = true;
     },
     hideColor() {
-      var x = document.getElementById("user-poster-con");
-      x.classList.remove("d-none");
-      var y = document.getElementById("user-color-con");
-      y.classList.add("d-none");
+      this.showColorOptions = false;
+    },
+    async fetchColorOptions() {
+      try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const response = await axios.get('/api/color-options', {
+          headers: {
+            'X-CSRF-TOKEN': csrfToken
+          }
+        });
+        this.colorStyles = response.data.map(color => ({
+          background: `linear-gradient(45deg, ${color.color_1} 0%, ${color.color_2} 100%)`,
+          textColor: color.text_color,
+          id: color.id
+        }));
+      } catch (error) {
+        console.error('Error fetching color options:', error);
+      }
     }
+  },
+  created() {
+    this.fetchColorOptions();
   }
 };
-
-$(document).ready(function () {
-  // Add Option
-  $("#addOptionBtn").on("click", function () {
-    var optionGroup = $(".option-group:first").clone();
-    optionGroup.find("input").val(""); // Clear the input value
-    optionGroup.append('<button type="button" class="deleteOptionBtn btn text-danger">Delete</button>');
-    $(".options-container").append(optionGroup);
-  });
-
-  // Delete Option
-  $(document).on("click", ".deleteOptionBtn", function () {
-    if ($(this).closest(".option-group").index() > 1) {
-      $(this).closest(".option-group").remove();
-    }
-  });
-});
-
 </script>
 <style>
 #mediapostModal .modal-dialog {
@@ -431,7 +356,9 @@ input[type="file"] {
 }
 
 .post-textarea textarea {
-  resize: none
+  resize: none;
+  height: 300px;
+  padding: 10px 15px;
 }
 
 .post-icon-bg {
@@ -440,6 +367,17 @@ input[type="file"] {
   background-color: rgb(244, 242, 238);
   border-radius: 50%;
   cursor: pointer;
+}
+.clear-color {
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:30px;
+  height:20px;
+}
+.v3-emoji-picker{
+  position: absolute;
+  top:5px;
 }
 
 .post-icon-bg:hover {

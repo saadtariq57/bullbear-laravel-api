@@ -4,7 +4,7 @@
             <div class="col-lg-8">
                 <section class="feed-main">
                     <div>
-                        <CreatePost />
+                        <CreatePost context="feed" />
                     </div>
                     <div>
                         <UserPosts />

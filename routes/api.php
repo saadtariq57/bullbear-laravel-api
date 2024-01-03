@@ -7,6 +7,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,9 +27,7 @@ Route::get('/check-login', function () {
     }
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/color-options', [HomeController::class, 'colorOptions']);
 
 //Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {
