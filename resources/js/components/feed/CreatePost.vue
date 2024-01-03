@@ -1,5 +1,5 @@
 <template>
-  <div class="user-post-panel shadow rounded bg-white px-4 pt-3">
+  <div class="user-post-panel shadow rounded bg-white px-4 pt-4">
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
@@ -35,6 +35,7 @@
               <div class="modal-body">
                   <!-- Content for create post modal -->
                 <form action="" class="post-textarea">
+
                   <textarea v-model="textContent" :class="postClass" :maxlength="textAreaMaxLength"
                             class="w-100 border-0"
                             :style="textareaStyle"
@@ -51,6 +52,7 @@
                   <div id="user-color-con" class="position-relative" v-show="showColorOptions">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
                       <div class="d-flex gap-2">
+
                         <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style"
                              :style="{ 'background-image': style.background }" @click="selectColor(style)">
                         </div>
@@ -269,6 +271,7 @@ export default {
       selectedColorId: null,
       textColor: '',
       textContent: '',
+
       colorStyles: [],
       showColorOptions: false,
       showEmojiPicker: false,
@@ -380,7 +383,7 @@ input[type="file"] {
   top:5px;
 }
 
-.post-icon-bg:hover {
+.post-icon-bg:hover , .all_colors_style{
   box-shadow:
     rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
     rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;

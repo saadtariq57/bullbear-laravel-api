@@ -182,7 +182,7 @@
                                                                 Alerts</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">CHAT
+                                                            <a class="dropdown-item nav-link" href="/groups/chat-single">CHAT
                                                                 ROOM</a>
                                                         </li>
                                                     </ul>
@@ -207,7 +207,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="/" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
+                                        <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
                                     </li>
                                 </ul>
                                 <!-- <div>
@@ -320,7 +320,7 @@
                                             </div>
                                         </li>
                                         <li>
-                                            <a href="" class="nav-link">CEO INTERVIEWS</a>
+                                            <a href="/ceo-interviews" class="nav-link">CEO INTERVIEWS</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -345,7 +345,7 @@ export default {
     data() {
         return {
             // Simulate the login status. Replace this with your actual logic.
-            isLoggedIn: false,
+            isLoggedIn: true,
         };
     },
 };

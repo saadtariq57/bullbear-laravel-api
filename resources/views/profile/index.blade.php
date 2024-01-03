@@ -1774,8 +1774,8 @@
                 <div class="col-lg-4">
                     <ul class="bg-white list-unstyled rounded-1 pb-2 shadow-sm">
                         <li class="mb-1">
-                            <div class="progress position-relative rounded-top rounded-0">
-                                <div class="progress-bar" role="progressbar" aria-label="Basic example"
+                            <div class="progress profile-progress position-relative rounded-top rounded-0">
+                                <div class="progress-bar profile-progress-bar" role="progressbar" aria-label="Basic example"
                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
                                 </div>
                                 <h4
