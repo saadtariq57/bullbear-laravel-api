@@ -17,7 +17,7 @@
                         </button>
                         <div class="dextop-nav d-none d-xl-block">
                             <div class="main-menu-container d-flex gap-4 align-items-center">
-                                <ul class="main-list mb-0 gap-4">
+                                <ul class="main-list mb-0 gap-4 align-items-center">
                                     <li>
                                         <div class="dropdown">
                                             <button class="nav-link dropdown-toggle d-flex nav-clr fs-16 fw-bolder"
@@ -212,7 +212,7 @@
                                     </li>
                                 </ul>
                                 <template v-if="isLoggedIn">
-                                    <div class="d-flex gap-5">
+                                    <div class="d-flex gap-5 align-items-center">
                                         <Search />
                                         <Profile />
                                     </div>
