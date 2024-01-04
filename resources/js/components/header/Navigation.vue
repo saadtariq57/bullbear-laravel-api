@@ -341,7 +341,7 @@ export default {
     data() {
         return {
             // Simulate the login status. Replace this with your actual logic.
-            isLoggedIn: true,
+            isLoggedIn: false,
         };
     },
 };

@@ -136,3 +136,31 @@
     </div>
   </section>
 </template>
+<script>
+export default {
+  mounted() {
+    $('.guide-slider').slick({
+    dots: false,
+    infinite: true,
+    speed: 1000,
+    arrows: true,
+    // autoplay: true,
+    slidesToShow: 3,
+    responsive: [{
+        breakpoint: 992,
+        settings: {
+            slidesToShow: 2,
+            swipeToSlide: true,
+        }
+    }, {
+        breakpoint: 768,
+        settings: {
+            slidesToShow: 1,
+            swipeToSlide: true,
+        }
+    }
+    ]
+});
+  }
+}
+</script>

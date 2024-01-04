@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <div class="btn-flex mb-4 px-10">
+          <div class="btn-flex mb-5 px-10">
             <div class="main-heading-help ">
               <h2 class="icon-heading">Featured Videos</h2>
             </div>
@@ -15,7 +15,7 @@
           <!-- slick Multiple video Items Start -->
           <div class="video-slider">
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -26,7 +26,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -41,7 +41,7 @@
               </div>
             </div>
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -52,7 +52,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -67,7 +67,7 @@
               </div>
             </div>
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -78,7 +78,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -93,7 +93,7 @@
               </div>
             </div>
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -104,7 +104,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -119,7 +119,7 @@
               </div>
             </div>
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -130,7 +130,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -145,7 +145,7 @@
               </div>
             </div>
             <div class="video-card">
-              <div class="featured-video-1 m-auto bg-white shadow-sm pb-2 mb-3">
+              <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
                 <div class="video-featured position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
@@ -156,7 +156,7 @@
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
                 </div>
-                <div class="video-bio px-2 pt-2">
+                <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
                     <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
                     <div class="d-flex">
@@ -177,3 +177,81 @@
     </div>
   </section>
 </template>
+<script>
+export default {
+  mounted() {
+    $('.video-slider').slick({
+      centerMode: true,
+      centerPadding: '20px',
+      dots: true,
+      infinite: true,
+      speed: 2000,
+      arrows: false,
+      autoplaySpeed: 4500,
+      autoplay: true,
+      slidesToShow: 3,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 2,
+          swipeToSlide: true,
+        }
+      },{
+        breakpoint: 1025,
+        settings: {
+          slidesToShow: 3,
+          swipeToSlide: true,
+        }
+      },
+      {
+        breakpoint: 769,
+        settings: {
+          slidesToShow: 1,
+          swipeToSlide: true,
+          centerMode: true,
+          centerPadding: '120px',
+        }
+      },
+      {
+        breakpoint: 430,
+        settings: {
+          slidesToShow: 1,
+        }
+      }
+      ,
+      {
+        breakpoint: 325,
+        settings: {
+          slidesToShow: 1,
+          centerPadding: '0px',
+
+        }
+      }
+      ]
+    });
+  }
+}
+</script>
+<style>
+.video-slider .slick-slide {
+  transform: scale(.8);
+  transition: all 2s;
+
+}
+
+.video-slider .slick-slide.slick-center {
+  transition: all 2.5s;
+  transform: scale(1);
+}
+
+.video-slider .slick-dots {
+  bottom: -40px;
+}
+
+.video-slider .slick-dots li button:before {
+  opacity: 0.3;
+}
+
+.video-slider .slick-dots .slick-active button:before {
+  opacity: 1;
+}</style>

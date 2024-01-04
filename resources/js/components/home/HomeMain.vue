@@ -56,8 +56,8 @@
         <div class="col-xl-3 col-lg-6 col-12">
           <div class="feature text-center h-100 px-1">
             <div class="d-flex flex-column">
-              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/richtv-training.png" width="40"
-                alt="icon" class="d-block mb-2 mx-auto">
+              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/richtv-training.png" width="40" alt="icon"
+                class="d-block mb-2 mx-auto">
               <h3 class="fs-18 fw-bolder lh-base m-0">Interactive Live Trainings</h3>
               <p class="">Learn from the best! Attend live sessions with industry
                 professionals. Enhance
@@ -78,7 +78,7 @@
   <!-- stock html end  -->
   <!-- Guides-section html start -->
   <Guides />
-  
+
   <!-- Guides-section html start -->
   <!-- testimonial-section start -->
   <section class="testimonial-section container-fluid py-80 overflow-hidden bg-smoke">
@@ -249,20 +249,70 @@
   </section>
 </template>
 <script>
-  import Hero from "./Hero.vue";
-  import FeaturedVideo from "./FeaturedVideo.vue";
-  import TopStocks from "./TopStocks.vue";
-  import Guides from "./Guides.vue";
-  import NewsLetter from "./NewsLetter.vue";
-  import StockQuote from "./StockQuote.vue";
-  export default {
-    components: {
-        Hero,
-        FeaturedVideo,
-        TopStocks,
-        Guides,
-        NewsLetter,
-        StockQuote,
-    },
+import Hero from "./Hero.vue";
+import FeaturedVideo from "./FeaturedVideo.vue";
+import TopStocks from "./TopStocks.vue";
+import Guides from "./Guides.vue";
+import NewsLetter from "./NewsLetter.vue";
+import StockQuote from "./StockQuote.vue";
+export default {
+  components: {
+    Hero,
+    FeaturedVideo,
+    TopStocks,
+    Guides,
+    NewsLetter,
+    StockQuote,
+  },
+  mounted() {
+    $(".show-more , .show-desc").click(function () {
+      $(".slide-up-down p , .slide-up-down span").slideToggle();
+      $(this).hide();
+    });
+    $(".show-less , .less-desc").click(function () {
+      $(".slide-up-down p , .slide-up-down span").slideToggle();
+      setTimeout(function () {
+        $(".show-more , .show-desc").show();
+      }, 500);
+    });
+    $('.testimonial-slider').slick({
+      // centerMode: true,
+      // centerPadding: '300px',
+      slidesToShow: 3,
+      dots: true,
+      arrows: false,
+      autoplay: true,
+      speed: 2000,
+      // autoplaySpeed: 4500,
+      cssEase: 'ease-out',
+      responsive: [
+        {
+          breakpoint: 1400,
+          settings: {
+            arrows: false,
+            // centerMode: true,
+            // centerPadding: '30px',
+            slidesToShow: 2,
+          }
+        },
+        {
+          breakpoint: 992,
+          settings: {
+            arrows: false,
+            // centerMode: true,
+            // centerPadding: '40px',
+            slidesToShow: 1
+          }
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            // centerPadding: '0px',
+            slidesToShow: 1
+          }
+        }
+      ]
+    });
+  }
 };
 </script>
