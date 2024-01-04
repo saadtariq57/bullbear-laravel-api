@@ -218,10 +218,19 @@ class WatchlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserWatchlist $watchlist)
+    public function deleteWatchList(Request $request)
     {
-        $watchlist->delete();
-        return redirect()->route('watchlist.manage');
+        $watchlistId = $request->input('id');
+        try {
+            UserWatchlist::where('id', $watchlistId)->delete();
+            
+            WatchlistSymbol::where('watchlist_id', $watchlistId)->delete();
+
+            return response()->json(['message' => 'Watchlist deleted successfully']);
+        }
+        catch (\Exception $e) {
+            return response()->json(['message' => 'Error Deleting Watchlist']);
+        }
     }
 
     public function storeWatchListSymbol(Request $request){

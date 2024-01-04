@@ -249,11 +249,6 @@ ul {
     background-color: var(--cta-btn) !important;
     color: var(--white);
 }
-
-.scroll-image {
-    transition: transform 0.3s ease;
-}
-
 .btn-border {
     background-color: transparent;
     border: 1px solid var(--cta-btn) !important;
@@ -499,11 +494,10 @@ td {
 }
 
 .hero-section {
-    background-color: #729069;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: top center;
-    background-image: radial-gradient(circle at 78% 60%, #edb043, #ffffff6b, #fff), url(https://s3.us-east-1.wasabisys.com/rpdapp1/upload/photos/ADL-Abstract-Background-v3.png);
+    background-image: url(../images/hero_bg.png);
     padding-left: 0;
     padding-right: 0;
     padding-top: 73px;
@@ -512,8 +506,14 @@ td {
 
 .hero-graph {
     position: absolute;
-    right: 0;
-    top: 280px;
+    right: 20px;
+    bottom: 0;
+    display: flex;
+    justify-content: end;
+}
+.widgets-slide-section{
+    max-width: 1089px;
+    margin-left: 0px !important;
 }
 
 /* .hero-graph img {
