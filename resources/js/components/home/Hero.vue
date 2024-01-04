@@ -1,7 +1,7 @@
 <template>
   <section class="hero-section container-fluid position-relative">
     <!-- top slider Start -->
-    <div class="container-fluid widgets-slide-section py-1">
+    <div class="widgets-slide-section py-1">
       <div class="row widgets-slide-wrapper">
         <div class="col-12 col-sm-11">
           <div class="widgets-slider mb-0">
@@ -180,8 +180,7 @@
       <div class="row m-0">
         <div class="col-lg-7 px-0">
           <div class="main-heading">
-            <h1 class="text-black fw-bolder mb-3">NAVIGATE<span class="astronaut-blue"> MARKETS
-              </span><br>TOGETHER!</h1>
+            <h1 class="text-black fw-bolder mb-3">NAVIGATE MARKETS <br>TOGETHER!</h1>
             <p class="mb-5 lh-base text-black">CONQUER MARKET LABYRINTHS: SAVVY INSIGHTS &amp; DYNAMIC
               CHATS.
             </p>
@@ -213,10 +212,10 @@
           </div>
           <!-- Form HTML End -->
         </div>
-        <div class="col-lg-5 hero-graph px-5">
+        <div class="col-lg-5 hero-graph">
           <!-- build/images/hero-graph.png -->
-          <img src="build/images/hero-graph.png" alt="Graph"
-            class="scroll-image w-100 d-lg-block d-none">
+          <img src="build/images/hero_mobile.png" alt="Graph"
+            class="scroll-image d-lg-block d-none">
         </div>
 
       </div>
