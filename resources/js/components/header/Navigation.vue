@@ -1,5 +1,5 @@
 <template>
-    <header class="container-fluid position-fixed main-header px-5 bg-white">
+    <header class="container-fluid main-header px-5 bg-white">
         <div>
             <div class="nav-main">
                 <nav class="navbar bg-transparent py-3">
