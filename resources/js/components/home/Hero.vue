@@ -1,175 +1,105 @@
 <template>
   <section class="hero-section container-fluid position-relative">
     <!-- top slider Start -->
-    <div class="widgets-slide-section py-1">
-      <div class="row widgets-slide-wrapper">
-        <div class="col-12 col-sm-11">
-          <div class="widgets-slider mb-0">
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <!-- build/images/widgets-chart.png -->
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-                </div>
-                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                  <span>(+1.71%)</span>
-                </div>
-              </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+    <div class="widgets-slide-section">
+      <div class="widgets-slide-wrapper">
+        <div class="widgets-slider mb-0">
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <!-- build/images/widgets-chart.png -->
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-                </div>
-                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                  <span>(+1.71%)</span>
-                </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
               </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <!-- build/images/widgets-chart.png -->
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-                </div>
-                <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                  <span>(+1.71%)</span>
-                </div>
-              </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
               </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
-              </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
               </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
-              </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Green fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
               </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="build/images/widgets-chart.png" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
-              </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
-            <div class="d-flex justify-content-around align-items-center widgets-slider-card">
-              <div class="hero-card-wrapper">
-                <div class="d-flex align-items-center market-summary gap-3">
-                  <h3 class="lh-1">
-                    <a href="" class="fw-bolder fw-bolder fs-16 text-black">BTC-USD</a><br>
-                    <span class="fw-bolder fs-16 text-black">36702.25</span>
-                  </h3>
-                  <div>
-                    <img src="" alt="">
-                  </div>
-
-                </div>
-                <div class="Red fs-14 fw-bolder"><span>-645.92</span> <span>(-1.71%)</span></div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
               </div>
-              <div style="height: 50px; width: 2px; border-right: 1px solid #747474"></div>
+            </div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
+            </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
+              </div>
+            </div>
+          </div>
+          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
+            </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
+                <span>(+1.71%)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -214,8 +144,7 @@
         </div>
         <div class="col-lg-5 hero-graph">
           <!-- build/images/hero-graph.png -->
-          <img src="build/images/hero_mobile.png" alt="Graph"
-            class="scroll-image d-lg-block d-none">
+          <img src="build/images/hero_mobile.png" alt="Graph" class="scroll-image d-lg-block d-none">
         </div>
 
       </div>
@@ -223,7 +152,56 @@
   </section>
 </template>
 <script>
-  export default {
-  
+export default {
+  mounted() {
+    $('.widgets-slider').slick({
+      dots: false,
+      infinite: true,
+      speed: 1000,
+      autoplay: true,
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      autoplay: false,
+      responsive: [
+        {
+          breakpoint: 1200,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            infinite: true,
+            autoplay: true,
+            dots: false
+          }
+        },
+        {
+          breakpoint: 992,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            autoplay: true,
+          }
+        },
+        {
+          breakpoint: 650,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            autoplay: true,
+            arrows: false,
+          }
+        },
+        {
+          breakpoint: 400,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,
+            arrows: false,
+          }
+        }
+      ]
+    });
+  }
 };
+
 </script>
