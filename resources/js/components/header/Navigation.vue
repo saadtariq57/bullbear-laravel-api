@@ -1,5 +1,5 @@
 <template>
-    <header class="container-fluid position-fixed main-header px-5">
+    <header class="container-fluid position-fixed main-header px-5 bg-white">
         <div>
             <div class="nav-main">
                 <nav class="navbar bg-transparent py-3">
@@ -17,7 +17,7 @@
                         </button>
                         <div class="dextop-nav d-none d-xl-block">
                             <div class="main-menu-container d-flex gap-4 align-items-center">
-                                <ul class="main-list mb-0">
+                                <ul class="main-list mb-0 gap-4">
                                     <li>
                                         <div class="dropdown">
                                             <button class="nav-link dropdown-toggle d-flex nav-clr fs-16 fw-bolder"
@@ -182,7 +182,8 @@
                                                                 Alerts</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/groups/chat-single">CHAT
+                                                            <a class="dropdown-item nav-link"
+                                                                href="/groups/chat-single">CHAT
                                                                 ROOM</a>
                                                         </li>
                                                     </ul>
@@ -210,22 +211,17 @@
                                         <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
                                     </li>
                                 </ul>
-                                <!-- <div>
-                                <li >
-                                    <a href="/profile" class="nav-link">
-                                        PROFILE
-                                    </a>
-                                </li>
-                            </div> -->
                                 <template v-if="isLoggedIn">
-                                    <Profile />
+                                    <div class="d-flex gap-5">
+                                        <Search />
+                                        <Profile />
+                                    </div>
                                 </template>
                                 <template v-else>
                                     <Login />
+                                    <Search />
 
                                 </template>
-                                <Search />
-
                             </div>
                         </div>
                         <div class="offcanvas offcanvas-end text-bg-white" tabindex="-1" id="offcanvasDarkNavbar"
