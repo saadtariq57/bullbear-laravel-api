@@ -7,7 +7,7 @@
                         <CreatePost context="feed" />
                     </div>
                     <div>
-                        <UserPosts />
+                        <PostItems />
                     </div>
 
                 </section>
@@ -22,13 +22,13 @@
 </template>
 <script>
 import CreatePost from './CreatePost.vue';
-import UserPosts from './UserPosts.vue';
+import PostItems from './PostItems.vue';
 import UserData from './UserData.vue';
 
 export default {
     components: {
         CreatePost,
-        UserPosts,
+        PostItems,
         UserData,
     },
 };

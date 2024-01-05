@@ -205,3 +205,13 @@ export default {
 };
 
 </script>
+<style>
+.hero-graph img{
+    max-height: 700px;
+}
+@media screen and (max-width: 1440px) {
+  .hero-graph img{
+   height: 500px;
+}
+}
+</style>

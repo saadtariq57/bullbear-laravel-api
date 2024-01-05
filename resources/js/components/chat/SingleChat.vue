@@ -25,7 +25,7 @@
                         id="groupdiscussion-tab-pane" role="tabpanel" aria-labelledby="groupdiscussion-tab" tabindex="0">
                         <Createpost />
                         <div class="pt-3">
-                            <AllPosts />
+                            <PostItems />
                         </div>
                     </div>
                     <div class="tab-pane fade chat-sec" id="livechat-tab-pane" role="tabpanel"
@@ -181,13 +181,13 @@
 </template>
 <script>
 import Createpost from '../feed/CreatePost.vue';
-import AllPosts from '../feed/AllPosts.vue';
+import PostItems from '../feed/PostItems.vue';
 import LiveChat from './LiveChat.vue';
 export default {
     components: {
-        Createpost,
-        AllPosts,
-        LiveChat
-    }
+    Createpost,
+    PostItems,
+    LiveChat,
+}
 }
 </script>

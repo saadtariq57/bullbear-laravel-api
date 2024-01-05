@@ -7,24 +7,23 @@
             <div class="main-heading-help ">
               <h2 class="icon-heading">Featured Videos</h2>
             </div>
-            <div class="help-btn-all text-end ">
-              <a href="/ceo-interviews/" class="btn btn-primary fs-18 px-3 py-2" aria-label="View All videos">View
-                all <i class="bi bi-arrow-right"></i></a>
-            </div>
           </div>
           <!-- slick Multiple video Items Start -->
           <div class="video-slider">
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -42,15 +41,18 @@
             </div>
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -68,15 +70,18 @@
             </div>
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -94,15 +99,18 @@
             </div>
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -120,15 +128,18 @@
             </div>
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -146,15 +157,18 @@
             </div>
             <div class="video-card">
               <div class="featured-video-1 shadow m-auto bg-white border border-light rounded-4 pb-2 mb-3">
-                <div class="video-featured position-relative">
+                <div class="position-relative">
                   <form action="">
                     <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
                     <div class="video-play-icon-small position-absolute">
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
+                <div class="video-featured position-relative">
+                  
                   <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                     class="thumbnail-card w-100">
+                </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -178,6 +192,7 @@
   </section>
 </template>
 <script>
+
 export default {
   mounted() {
     $('.video-slider').slick({
@@ -233,17 +248,27 @@ export default {
 }
 </script>
 <style>
+.video-slider .slick-slide .video-card .featured-video-1 .video-featured img {
+  filter: blur(2px);
+  transition: all 0.5s;
+}
+.video-slider .slick-slide.slick-center .video-card .featured-video-1 .video-featured img {
+  filter: blur(0px);
+  transition: all 1s;
+}
 .video-slider .slick-slide {
   transform: scale(.8);
   transition: all 2s;
-
 }
 
 .video-slider .slick-slide.slick-center {
   transition: all 2.5s;
   transform: scale(1);
 }
-
+.video-slider .slick-slide.slick-center .featured-video-1 .video-play-icon-small{
+  display: none;
+  transition: all 1s;
+}
 .video-slider .slick-dots {
   bottom: -40px;
 }

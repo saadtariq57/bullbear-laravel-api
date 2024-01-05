@@ -98,16 +98,17 @@
                     <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/profile"
                             class="d-flex align-items-center gap-2">
                             <img :src="userData.avatar" class="rounded-circle" width="40" height="40"
-                                alt="Rich TV profile picture">
+                                alt="profile picture">
                             <b class="text-uppercase text-black">{{ userData.name }}</b></a>
                     </div>
                 </li>
                 <li class="px-4 pb-4">
                     <div class="bg-white rounded-3 px-3 py-3 w180">
+                        <!-- <a class="dropdown-item text-black ps-0 fw-6" href="/profile/`${ userData.id }`">My Profile</a> -->
                         <a class="dropdown-item text-black ps-0 fw-6" href="/profile">My Profile</a>
                         <a class="dropdown-item text-black ps-0 fw-6" href="#">Upgrade To Pro</a>
                         <!-- <a class="dropdown-item text-black ps-0 fw-6" href="#">Find Friend</a> -->
-                        <a class="dropdown-item text-black ps-0 fw-6" href="#">Settings</a>
+                        <a class="dropdown-item text-black ps-0 fw-6" href="/profile/setting">Settings</a>
                     </div>
                 </li>
                 <li class="px-4 pb-4">
