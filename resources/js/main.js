@@ -13,7 +13,7 @@ const routes = [
     {
         path: '/profile',
         name: 'profile',
-        component: () => import('./components/feed/UserPosts.vue'),
+        component: () => import('./components/profile/UserProfile.vue'),
     },
     {
         path: "/watchlist",

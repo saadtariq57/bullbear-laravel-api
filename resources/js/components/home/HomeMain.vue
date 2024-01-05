@@ -249,6 +249,7 @@
   </section>
 </template>
 <script>
+
 import Hero from "./Hero.vue";
 import FeaturedVideo from "./FeaturedVideo.vue";
 import TopStocks from "./TopStocks.vue";
@@ -265,14 +266,14 @@ export default {
     StockQuote,
   },
   mounted() {
-    $(".show-more , .show-desc").click(function () {
-      $(".slide-up-down p , .slide-up-down span").slideToggle();
+    $(".show-more").click(function () {
+      $(".slide-up-down p").slideToggle();
       $(this).hide();
     });
-    $(".show-less , .less-desc").click(function () {
-      $(".slide-up-down p , .slide-up-down span").slideToggle();
+    $(".show-less").click(function () {
+      $(".slide-up-down p").slideToggle();
       setTimeout(function () {
-        $(".show-more , .show-desc").show();
+        $(".show-more").show();
       }, 500);
     });
     $('.testimonial-slider').slick({
@@ -316,3 +317,5 @@ export default {
   }
 };
 </script>
+<style>
+</style>

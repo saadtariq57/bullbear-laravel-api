@@ -249,13 +249,11 @@ import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
 import { mapState } from 'vuex';
 import UploadMedia from './UploadMedia.vue';
-import CreatePoll from './CreatePoll.vue';
 import UploadFile from './UploadFile.vue';
 
 export default {
   components: {
     UploadMedia,
-    CreatePoll,
     UploadFile,
     EmojiPicker
   },

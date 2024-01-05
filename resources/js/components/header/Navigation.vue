@@ -11,9 +11,12 @@
                                     title="Rich TV" />
                             </a>
                         </div>
-                        <button class="navbar-toggler d-block d-xl-none" type="button" data-bs-toggle="offcanvas"
+                        <button class="navbar-toggler d-block d-xl-none border-0" type="button" data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-                            <i class="bi bi-list fs-2 fw-bolder nav-clr"></i>
+                            <!-- <i class="bi bi-list fs-2 fw-bolder nav-clr"></i> -->
+                            <svg width="30" height="23" viewBox="0 0 30 23"  xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z" fill="#000000"></path>
+                    </svg>
                         </button>
                         <div class="dextop-nav d-none d-xl-block">
                             <div class="main-menu-container d-flex gap-4 align-items-center">
@@ -83,7 +86,7 @@
                                                     <h4>GUIDES</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">EXAMS</a>
+                                                            <a class="dropdown-item nav-link" href="/exams">EXAMS</a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link" href="/">Day
@@ -175,7 +178,7 @@
                                                                 PICKS</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">WATCHLIST</a>
+                                                            <a class="dropdown-item nav-link" href="/watchlist">WATCHLIST</a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link" href="/">Email and
@@ -183,7 +186,7 @@
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link"
-                                                                href="/groups/chat-single">CHAT
+                                                                href="/groups">CHAT
                                                                 ROOM</a>
                                                         </li>
                                                     </ul>
@@ -192,11 +195,11 @@
                                                     <h4>CALENDARS</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Economic
+                                                            <a class="dropdown-item nav-link" href="/economic-calender">Economic
                                                                 Calendar</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Earning
+                                                            <a class="dropdown-item nav-link" href="/earning-calender">Earning
                                                                 Calendar</a>
                                                         </li>
                                                         <li>
@@ -341,9 +344,10 @@ export default {
     data() {
         return {
             // Simulate the login status. Replace this with your actual logic.
-            isLoggedIn: false,
+            isLoggedIn: true,
         };
     },
 };
 
 </script>
+
