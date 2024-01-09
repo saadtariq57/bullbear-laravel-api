@@ -64,7 +64,7 @@
                 <button class="position-absolute btn-primary" type="submit" id="sub_footer"
                   aria-label="Newsletter Button" fdprocessedid="d97vyg">
                   <div class=" d-inline-block">
-                    <i class="bi bi-arrow-right fw-6"></i>
+                    <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
                   </div>
                 </button>
               </form>

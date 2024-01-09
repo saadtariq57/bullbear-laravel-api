@@ -91,6 +91,9 @@
                                                             <a class="dropdown-item nav-link" href="/exams">EXAMS</a>
                                                         </li>
                                                         <li>
+                                                        <a class="dropdown-item nav-link py-1" href="/trading-school">Trading School</a>
+                                                    </li>
+                                                        <li>
                                                             <a class="dropdown-item nav-link" href="/">Day
                                                                 Trading</a>
                                                         </li>
@@ -214,9 +217,9 @@
                                             </ul>
                                         </div>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                                 <template v-if="userData">
                                     <div class="d-flex gap-5 align-items-center">
@@ -248,109 +251,137 @@
                                 <div class="main-menu-container">
                                     <ul class="main-list mb-0 flex-column ps-0">
                                         <li>
-                                            <div class="dropdown">
-                                                <button class="nav-link dropdown-toggle d-flex t" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <div class="d-flex align-items-center gap-4"><span
-                                                            class="nav_mobile-img bg-white p-2 rounded-3"><img
-                                                                class="img-fluid" src="/build/images/Market_analysis.png"
-                                                                alt="mobile-img" /></span>Analysis</div>
-                                                    <span class="pt-3 ps-4 nav_see_more_btn">see more</span>
-                                                </button>
-                                                <hr>
-                                                <ul class="dropdown-menu px-4 py-3 mobile-drop">
+                                            <div class="accordion moblie-navbar-accordion" id="accordionMobilenavbar">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseMarket_analysis"
+                                                            aria-expanded="false" aria-controls="collapseMarket_analysis">
+                                                            <div class="nav_mobile-img bg-white p-2 rounded-3 shadow"><img
+                                                                    class="img-fluid"
+                                                                    src="/build/images/Market_analysis.png" alt="mobile-img"
+                                                                    width="30" height="30" /></div>
+                                                            <div class="lh-sm">
+                                                                <p class="moblie-nav-heading m-0 fw-6">Analysis</p>
+                                                                <span class="fs-12 text-secondary">see more</span>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <hr>
+                                                    <div id="collapseMarket_analysis" class="accordion-collapse collapse"
+                                                        data-bs-parent="#accordionMobilenavbar">
+                                                        <div class="accordion-body">
+                                                            <ul class="list-unstyled">
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="#">Press Release</a>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Press Release</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="#">Market Analysis</a>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Market Analysis</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="#">Investing</a>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Investing</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="#">Stocks</a>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="#">Cryptocurrency</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="dropdown">
-                                                <button class="nav-link dropdown-toggle d-flex t" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <div class="d-flex align-items-center gap-4"><span
-                                                            class="nav_mobile-img bg-white p-2 rounded-3"><img
-                                                                class="img-fluid" src="/build/images/group_chat.png"
-                                                                alt="mobile-img" /></span>Group Chat</div>
-                                                    <span class="pt-3 ps-4 nav_see_more_btn">see more</span>
-                                                </button>
-                                                <hr>
-                                                <ul class="dropdown-menu px-4 py-3 mobile-drop">
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="#">Press Release</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="#">Market Analysis</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="#">Investing</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="#">Stocks</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="#">Cryptocurrency</a>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Cryptocurrency</a>
                                                     </li>
                                                 </ul>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="dropdown">
-                                                <button class="nav-link dropdown-toggle d-flex t" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-
-                                                    <div class="d-flex align-items-center gap-4"><span
-                                                            class="nav_mobile-img bg-white p-2 rounded-3"><img
-                                                                class="img-fluid" src="/build/images/Trading_guide.png"
-                                                                alt="mobile-img" /></span>Trading Guides</div>
-                                                    <span class="pt-3 ps-4 nav_see_more_btn">see more</span>
-                                                </button>
-                                                <hr>
-                                                <ul class="dropdown-menu px-4 py-3 mobile-drop">
-                                                    <li><b class="fs-5">STRATEGIES</b></li>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseGroup_chat"
+                                                            aria-expanded="false" aria-controls="collapseGroup_chat">
+                                                            <div class="nav_mobile-img bg-white p-2 rounded-3 shadow"><img
+                                                                    class="img-fluid"
+                                                                    src="/build/images/group_chat.png" alt="mobile-img"
+                                                                    width="30" height="30" /></div>
+                                                            <div class="lh-sm">
+                                                                <p class="moblie-nav-heading m-0 fw-6">Group Chat</p>
+                                                                <span class="fs-12 text-secondary">see more</span>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <hr>
+                                                    <div id="collapseGroup_chat" class="accordion-collapse collapse"
+                                                        data-bs-parent="#accordionMobilenavbar">
+                                                        <div class="accordion-body">
+                                                            <ul class="list-unstyled">
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Penny
+                                                        <a class="dropdown-item nav-link py-1" href="#">Press Release</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Market Analysis</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Investing</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Stocks</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="#">Cryptocurrency</a>
+                                                    </li>
+                                                </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseTrading_guide"
+                                                            aria-expanded="false" aria-controls="collapseTrading_guide">
+                                                            <div class="nav_mobile-img bg-white p-2 rounded-3 shadow"><img
+                                                                    class="img-fluid"
+                                                                    src="/build/images/Trading_guide.png" alt="mobile-img"
+                                                                    width="30" height="30" /></div>
+                                                            <div class="lh-sm">
+                                                                <p class="moblie-nav-heading m-0 fw-6">Trading Guides</p>
+                                                                <span class="fs-12 text-secondary">see more</span>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <hr>
+                                                    <div id="collapseTrading_guide" class="accordion-collapse collapse"
+                                                        data-bs-parent="#accordionMobilenavbar">
+                                                        <div class="accordion-body">
+                                                            <ul class="list-unstyled">
+                                                    <li><b class="fs-5 py-2 d-block">STRATEGIES</b></li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Penny
                                                             Stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">REVERSAL</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">REVERSAL</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">MOMENTUM</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">MOMENTUM</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">SWING
+                                                        <a class="dropdown-item nav-link py-1" href="/">SWING
                                                             TRADING</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">GAP AND
+                                                        <a class="dropdown-item nav-link py-1" href="/">GAP AND
                                                             GO</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">BULL
+                                                        <a class="dropdown-item nav-link py-1" href="/">BULL
                                                             FLAG</a>
                                                     </li>
-                                                    <li><b class="fs-5">GUIDES</b></li>
+                                                    <li><b class="fs-5 py-2 d-block">GUIDES</b></li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/exams">EXAMS</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/exams">EXAMS</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Day
+                                                        <a class="dropdown-item nav-link py-1" href="/trading-school">Trading School</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Day
                                                             Trading</a>
                                                     </li>
                                                     <li>
@@ -359,104 +390,114 @@
                                                             GUIDE</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">PENNY STOCK
+                                                        <a class="dropdown-item nav-link py-1" href="/">PENNY STOCK
                                                             TRADING</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">How to Invest
+                                                        <a class="dropdown-item nav-link py-1" href="/">How to Invest
                                                             in
                                                             stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">How To Identify
+                                                        <a class="dropdown-item nav-link py-1" href="/">How To Identify
                                                             & Avoid A Bull
                                                             Trap</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">How To Trade
+                                                        <a class="dropdown-item nav-link py-1" href="/">How To Trade
                                                             With Bollinger
                                                             Bands</a>
                                                     </li>
-                                                    <li><b class="fs-5">HOW TO’S</b></li>
+                                                    <li><b class="fs-5 py-2 d-block">HOW TO’S</b></li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Investing</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Market
+                                                        <a class="dropdown-item nav-link py-1" href="/">Market
                                                             Analysis</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Investing</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Cryptocurrency</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Cryptocurrency</a>
                                                     </li>
-                                                    <li><b class="fs-5">STOCK QUOTES</b></li>
+                                                    <li><b class="fs-5 py-2 d-block">STOCK QUOTES</b></li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Market
+                                                        <a class="dropdown-item nav-link py-1" href="/">Market
                                                             Analysis</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Investing</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Stocks</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Cryptocurrency</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/">Cryptocurrency</a>
                                                     </li>
                                                 </ul>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="dropdown">
-                                                <button
-                                                    class="nav-link dropdown-toggle d-flex align-items-center position-relative"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <div class="d-flex align-items-center gap-4"><span
-                                                            class="nav_mobile-img bg-white p-2 rounded-3"><img
-                                                                class="img-fluid" src="/build/images/Vector_Smart.png"
-                                                                alt="mobile-img" /></span> Trading Exams</div>
-                                                    <span class="pt-3 ps-4 nav_see_more_btn">see more</span>
-
-                                                </button>
-                                                <hr>
-                                                <ul class="dropdown-menu px-4 py-3 mobile-drop">
-                                                    <li><b class="fs-5">SOURCE</b></li>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseVector_smart"
+                                                            aria-expanded="false" aria-controls="collapseVector_smart">
+                                                            <div class="nav_mobile-img bg-white p-2 rounded-3 shadow"><img
+                                                                    class="img-fluid"
+                                                                    src="/build/images/Vector_Smart.png" alt="mobile-img"
+                                                                    width="30" height="30" /></div>
+                                                            <div class="lh-sm">
+                                                                <p class="moblie-nav-heading m-0 fw-6">Trading Exams</p>
+                                                                <span class="fs-12 text-secondary">see more</span>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <hr>
+                                                    <div id="collapseVector_smart" class="accordion-collapse collapse"
+                                                        data-bs-parent="#accordionMobilenavbar">
+                                                        <div class="accordion-body">
+                                                            <ul class="list-unstyled">
+                                                                <li><b class="fs-5 py-2 d-block">SOURCE</b></li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">RICH TV
+                                                        <a class="dropdown-item nav-link PY-1" href="/">RICH TV
                                                             PICKS</a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item nav-link" href="/watchlist">WATCHLIST</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/">Email and
+                                                        <a class="dropdown-item nav-link PY-1" href="/">Email and
                                                             Alerts</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/groups">CHAT
+                                                        <a class="dropdown-item nav-link PY-1" href="/groups">CHAT
                                                             ROOM</a>
                                                     </li>
-                                                    <li><b class="fs-5">CALENDARS</b></li>
+                                                    <li><b class="fs-5 py-2 d-block">CALENDARS</b></li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/economic-calender">Economic
+                                                        <a class="dropdown-item nav-link PY-1" href="/economic-calender">Economic
                                                             Calendar</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item nav-link" href="/earning-calender">Earning
+                                                        <a class="dropdown-item nav-link PY-1" href="/earning-calender">Earning
                                                             Calendar</a>
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item nav-link" href="/">SCREENER</a>
-                                                    </li>
+                                                    <!-- <li>
+                                                        <a class="dropdown-item nav-link PY-1" href="/">SCREENER</a>
+                                                    </li> -->
                                                 </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </li>
                                         <li>
@@ -502,3 +543,17 @@ export default {
 };
 
 </script>
+<style>.moblie-navbar-accordion {
+    --bs-accordion-bg: #F8F8FA;
+    --bs-accordion-border-width: 0px;
+}
+
+.moblie-nav-btn:after {
+    background-image: url(/build/icons/bxs_up-arrow.png) !important;
+    /* --bs-accordion-btn-icon-transform: rotate(0deg);
+    transform: var(--bs-accordion-btn-icon-transform) !important; */
+}
+
+/* .moblie-nav-btn.collapsed:after{
+    --bs-accordion-btn-icon-transform: rotate(180deg) !important;
+} */</style>

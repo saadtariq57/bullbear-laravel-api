@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="position-sticky profile-tab-sticky">
+            <div>
             <div class="row user-chat-top-tab justify-content-center">
                 <div class="col-md-10 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
                     <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab"
