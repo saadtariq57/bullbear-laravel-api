@@ -90,7 +90,6 @@ body {
 .quoteDown-color {
     color: #82191C;
 }
-
 .bg-primary {
     background-color: var(--primary-color) !important;
 }
@@ -2198,10 +2197,9 @@ p.user-message {
     height: 10px;
 }
 
-/* .exam-progress-bar {
-    background-color: var(--primary-color);
-    width: 10%;
-} */
+.exam-progress-bar {
+    background-color: var(--cta-btn);
+}
 
 .overall-percentage {
     width: 150px;

@@ -13,8 +13,8 @@
                 <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
-              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                <span>(+1.71%)</span>
+              <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
+                <span>(-1.71%)</span>
               </div>
             </div>
           </div>
