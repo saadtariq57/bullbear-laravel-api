@@ -390,14 +390,3 @@ export default {
 
 };
 </script>
-<style>
-#listTable_length ,#listTable_filter,#listTable_info,#listTable_paginate,#newsTable_length,#newsTable_filter,#newsTable_info,#newsTable_paginate{
-    display: none !important;
-}
-.news-para{
-    height: 60px;
-}
-.news-para td{ 
-    inset: 0;
-}
-</style>
