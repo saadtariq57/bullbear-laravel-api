@@ -2,9 +2,6 @@
   <!-- Hero Section Start  -->
   <Hero />
   <!-- Hero Section End  -->
-  <!-- FEATURED VIDEOS Section Start -->
-  <FeaturedVideo />
-  <!-- FEATURED VIDEOS Section End -->
   <!-- advanced-features-section Start -->
   <section class="advanced-features-section container-fluid bg-smoke py-80">
     <div class="container">

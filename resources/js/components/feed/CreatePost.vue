@@ -42,7 +42,7 @@
                             placeholder="What do you want to talk about?"></textarea>
                   <!-- Clear Color Button -->
                   <abbr title="Clear Color" v-if="selectedColor">
-                    <span class="post-icon-bg d-flex justify-content-center align-items-center clear-color" v-on:click="clearColor()">
+                    <span class="post-icon-bg d-flex justify-content-center clear-color" v-on:click="clearColor()">
                       <i class="bi bi-x-lg fs-4"></i>
                     </span>
                   </abbr>
@@ -374,7 +374,7 @@ input[type="file"] {
   top:20px;
   right:20px;
   width:30px;
-  height:20px;
+  height:30px;
 }
 .v3-emoji-picker{
   position: absolute;
