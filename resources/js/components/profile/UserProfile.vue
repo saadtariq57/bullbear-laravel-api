@@ -1,7 +1,7 @@
 <template>
 <div class="container profile-container ">
             <ProfileInfo />
-            <div class="row z-n1 position-relative">
+            <div class="row">
                 <div class="col-lg-8">
                     <div class="tab-content mt-5" id="myTabContent">
                         <div class="tab-pane fade show active" id="user-Timeline" role="tabpanel"

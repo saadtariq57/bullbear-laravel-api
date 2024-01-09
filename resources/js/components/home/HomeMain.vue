@@ -213,12 +213,14 @@
                     may
                     buy and sell shares of securities or options of the issuers mentioned on
                     this
-                    website at any time. <a class="arrow-down show-more cursor-pointer" rel="nofollow"
+                    website at any time.
+                     <!-- <a class="arrow-down show-more cursor-pointer" rel="nofollow"
                       aria-label="See All" @click="toggleShowMore"> See
-                      more</a></p>
+                      more</a> -->
+                    </p>
                 </div>
                 <div class="slide-up-down">
-                  <p style="display: none;" class="fs-18 lh-base">Stock market investing is
+                  <p class="fs-18 lh-base">Stock market investing is
                     inherently
                     risky. Rich TV is
                     not
@@ -233,8 +235,9 @@
                     any
                     investment decision. For more information on stock market investing, visit
                     the
-                    Securities and Exchange Commission ("SEC") at www.sec.gov. <a
-                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less" @click="toggleShowLess"> See less</a>
+                    Securities and Exchange Commission ("SEC") at www.sec.gov.
+                     <!-- <a
+                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less" @click="toggleShowLess"> See less</a> -->
                   </p>
                 </div>
               </div>
@@ -263,16 +266,16 @@ export default {
     StockQuote,
   },
   methods: {
-    toggleShowMore() {
-      $(".slide-up-down p").slideToggle();
-      $(".show-more").hide();
-    },
-    toggleShowLess() {
-      $(".slide-up-down p").slideToggle();
-      setTimeout(function () {
-        $(".show-more").show();
-      }, 500);
-    }
+    // toggleShowMore() {
+    //   $(".slide-up-down p").slideToggle();
+    //   $(".show-more").hide();
+    // },
+    // toggleShowLess() {
+    //   $(".slide-up-down p").slideToggle();
+    //   setTimeout(function () {
+    //     $(".show-more").show();
+    //   }, 500);
+    // }
   },
   mounted() {
     
