@@ -897,7 +897,7 @@ section.featured-video {
 
 .guide-card-hover:hover .read-more-link-artical {
     color: #fff;
-    transform: scaleY(1) translateX(-95px);
+    transform: scaleY(1) translateX(-85px);
 }
 
 .read-more-link-artical:hover {
@@ -1205,7 +1205,9 @@ footer {
 .mt-mobile .email a {
     width: fit-content;
 }
-
+.footer-newsletter-icon::before{
+    line-height: 21px;
+}
 /* footer css End */
 /* Home page CSS End */
 /* Header-css Start */
@@ -1297,24 +1299,22 @@ ul.dropdown-menu li {
 
 }
 
-.nav_see_more_btn {
+/* .nav_see_more_btn {
     position: absolute;
     top: 15px;
     left: 48px;
     font-size: 11px;
     color: #BDC7D7;
-}
+} */
 
-.mobile-nav-body .dropdown .dropdown-toggle,
-.mobile-nav-body .mobile-drop li .nav-link,
-.mobile-nav-body .mobile-drop li b {
+.moblie-nav-heading {
     color: #2a4B61 !important;
 }
 
-.nav_mobile-img img {
+/* .nav_mobile-img img {
     height: 27px;
     width: 32px;
-}
+} */
 
 .mobile-nav-body hr {
     border: 1px solid #e8eaf0;
@@ -2010,7 +2010,7 @@ p.user-message {
 }
 
 .shadow {
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 1px 15px #00000026!important;
 }
 
 .focus-overlay {

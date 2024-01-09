@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
-          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
+          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="'/' + userData.avatar">
         </a>
       </div>
       <div class="flex-fill">
@@ -21,7 +21,7 @@
                 <!-- Post Settings trigger button -->
                 <button data-bs-toggle="modal" data-bs-target="#postSettingModal"
                   class="btn d-flex gap-3 align-items-center">
-                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
+                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="'/' + userData.avatar">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
                       <span class="fs-4 fw-6">{{ userData.name }}</span>

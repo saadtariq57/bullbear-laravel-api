@@ -16,6 +16,11 @@ const routes = [
         component: () => import('./components/profile/UserProfile.vue'),
     },
     {
+        path: '/profile/setting',
+        name: 'profile.setting',
+        component: () => import('./components/profile/ProfileSetting.vue'),
+    },
+    {
         path: "/watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
         children: [

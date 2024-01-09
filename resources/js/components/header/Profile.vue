@@ -10,11 +10,11 @@
                     <div class="dropdown-item px-3 py-3 d-flex align-items-center justify-content-between border-bottom"
                         type="button">
                         <div class="d-flex align-items-center gap-3">
-                            <img src="build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                            <div>
-                                <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
-                                <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
-                            </div>
+
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <div>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
                         </div>
                         <div>
                             <button class="btn btn-primary px-2 pt-1 pb-0"><i class="bi bi-check2-all fs-5"></i></button>
@@ -32,7 +32,7 @@
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
                         type="button">
-                        <img src="build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
@@ -44,7 +44,7 @@
                     </button></li>
                 <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
                         type="button">
-                        <img src="build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
@@ -56,7 +56,7 @@
                     </button></li>
                 <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
                         type="button">
-                        <img src="build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
@@ -95,14 +95,15 @@
             <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 <div class="img">
-                    <img :src="userData.avatar" class="rounded-circle" width="40" height="40" alt="Rich TV profile picture">
+                    <img :src="'/' + userData.avatar" class="rounded-circle" width="40" height="40" alt="Rich TV profile picture">
                 </div>
             </button>
             <ul class="dropdown-menu bg-light dropdown-menu-end m-0 p-0">
                 <li class="px-4 py-4">
                     <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/profile"
                             class="d-flex align-items-center gap-2">
-                            <img :src="userData.avatar" class="rounded-circle" width="40" height="40" alt="profile picture">
+                            <img :src="'/' + userData.avatar" class="rounded-circle" width="40" height="40"
+                                alt="profile picture">
                             <b class="text-uppercase text-black">{{ userData.name }}</b></a>
                     </div>
                 </li>
