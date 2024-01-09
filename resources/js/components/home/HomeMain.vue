@@ -214,7 +214,7 @@
                     buy and sell shares of securities or options of the issuers mentioned on
                     this
                     website at any time. <a class="arrow-down show-more cursor-pointer" rel="nofollow"
-                      aria-label="See All"> See
+                      aria-label="See All" @click="toggleShowMore"> See
                       more</a></p>
                 </div>
                 <div class="slide-up-down">
@@ -234,7 +234,7 @@
                     investment decision. For more information on stock market investing, visit
                     the
                     Securities and Exchange Commission ("SEC") at www.sec.gov. <a
-                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less"> See less</a>
+                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less" @click="toggleShowLess"> See less</a>
                   </p>
                 </div>
               </div>
@@ -262,17 +262,20 @@ export default {
     NewsLetter,
     StockQuote,
   },
-  mounted() {
-    $(".show-more").click(function () {
+  methods: {
+    toggleShowMore() {
       $(".slide-up-down p").slideToggle();
-      $(this).hide();
-    });
-    $(".show-less").click(function () {
+      $(".show-more").hide();
+    },
+    toggleShowLess() {
       $(".slide-up-down p").slideToggle();
       setTimeout(function () {
         $(".show-more").show();
       }, 500);
-    });
+    }
+  },
+  mounted() {
+    
     $('.testimonial-slider').slick({
       // centerMode: true,
       // centerPadding: '300px',

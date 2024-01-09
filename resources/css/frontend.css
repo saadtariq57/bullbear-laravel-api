@@ -1182,7 +1182,7 @@ header {
 .main-list {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 15px;
 }
 
 .main-menu-container .nav-link {
@@ -1219,20 +1219,6 @@ ul.dropdown-menu li {
     color: var(--heading-color);
 }
 
-/* .main-header.scroll {
-    background-color: var(--white);
-    top: 0;
-    z-index: 11;
-} */
-
-/* .main-header.scroll .nav-clr {
-    color: #000;
-} */
-
-/* .search-btn {
-    color: var(--white);
-} */
-
 .main-header.scroll .search-btn {
     color: var(--text-color);
 }
@@ -1242,7 +1228,35 @@ ul.dropdown-menu li {
     font-size: 16px;
     min-width: max-content;
 }
+.mobile-nav-body,
+.mobile_nav_header,
+.mobile-drop {
+    background-color: #F8F8FA;
 
+}
+
+.nav_see_more_btn {
+    position: absolute;
+    top: 15px;
+    left: 48px;
+    font-size: 11px;
+    color: #BDC7D7;
+}
+
+.mobile-nav-body .dropdown .dropdown-toggle,
+.mobile-nav-body .mobile-drop li .nav-link,
+.mobile-nav-body .mobile-drop li b {
+    color: #2a4B61 !important;
+}
+
+.nav_mobile-img img {
+    height: 27px;
+    width: 32px;
+}
+
+.mobile-nav-body hr {
+    border: 1px solid #e8eaf0;
+}
 /* Header-css  end */
 /* Watchlist Page CSS start */
 .watch-list-sec .nav-tabs {
