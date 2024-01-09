@@ -2,7 +2,7 @@
   <section class="hero-section container-fluid position-relative">
     <!-- top slider Start -->
     <div class="widgets-slide-section">
-      <div class="widgets-slide-wrapper">
+      <div class="widgets-slide-wrapper position-relative z-3">
         <div class="widgets-slider mb-0">
           <div class="market-summary d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
@@ -205,13 +205,3 @@ export default {
 };
 
 </script>
-<style>
-.hero-graph img{
-    max-height: 700px;
-}
-@media screen and (max-width: 1440px) {
-  .hero-graph img{
-   height: 500px;
-}
-}
-</style>

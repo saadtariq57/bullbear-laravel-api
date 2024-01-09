@@ -6,20 +6,22 @@
                 <i class="bi bi-person-fill-add fs-4"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li class="py-0"><div class="dropdown-item px-3 py-3 d-flex align-items-center justify-content-between border-bottom"
+                <li class="py-0">
+                    <div class="dropdown-item px-3 py-3 d-flex align-items-center justify-content-between border-bottom"
                         type="button">
                         <div class="d-flex align-items-center gap-3">
+
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
                         </div>
-                    </div>
                         <div>
                             <button class="btn btn-primary px-2 pt-1 pb-0"><i class="bi bi-check2-all fs-5"></i></button>
                             <button type="button" class="btn-close ms-2 align-middle" aria-label="Close"></button>
                         </div>
-                    </div></li>
+                    </div>
+                </li>
             </ul>
         </div>
         <div class="btn-group">
@@ -33,7 +35,8 @@
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on bullish
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
                                 sentiment
                             </p>
                         </div>
@@ -44,7 +47,8 @@
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on bullish
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
                                 sentiment
                             </p>
                         </div>
@@ -55,7 +59,8 @@
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on bullish
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
                                 sentiment
                             </p>
                         </div>
@@ -129,21 +134,3 @@ export default {
     computed: mapState(['userData']),
 };
 </script>
-<style>
-.profile-dropdown-toggle::after {
-    display: none !important;
-}
-
-.notifications-list {
-    width: 330px;
-}
-
-.empty-notifications {
-    height: 300px;
-}
-
-.empty-notifications-icon {
-    width: 50px;
-    height: 50px;
-}
-</style>
