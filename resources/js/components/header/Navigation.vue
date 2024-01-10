@@ -209,6 +209,7 @@
                                         <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
                                     </li> -->
                                 </ul>
+
                                 <template v-if="userData">
                                     <div class="d-flex gap-5 align-items-center">
                                         <button class="bg-transparent border-0 search-btn fs-3 nav-clr" type="button"
@@ -244,6 +245,7 @@
                                 <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
                                     aria-label="Close"></button>
                             </div>
+
                             <div class="offcanvas-body mobile-nav-body pt-5">
                                 <div class="main-menu-container">
                                     <ul class="main-list mb-0 flex-column ps-0">
@@ -550,6 +552,37 @@
         </div>
     </header>
 </template>
+<style>
+.mobile-nav-body,
+.mobile_nav_header,
+.mobile-drop {
+    background-color: #F8F8FA;
+
+}
+
+.nav_see_more_btn {
+    position: absolute;
+    top: 15px;
+    left: 48px;
+    font-size: 11px;
+    color: #BDC7D7;
+}
+
+.mobile-nav-body .dropdown .dropdown-toggle,
+.mobile-nav-body .mobile-drop li .nav-link,
+.mobile-nav-body .mobile-drop li b {
+    color: #2a4B61 !important;
+}
+
+.nav_mobile-img img {
+    height: 27px;
+    width: 32px;
+}
+
+hr {
+    border: 1px solid #e8eaf0;
+}
+</style>
 <script>
 import { mapState } from 'vuex';
 import Login from './Login.vue';
