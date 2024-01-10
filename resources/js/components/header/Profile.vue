@@ -21,6 +21,7 @@
                             <button type="button" class="btn-close ms-2 align-middle" aria-label="Close"></button>
                         </div>
                     </div>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -111,7 +112,7 @@
                     <div class="bg-white rounded-3 px-3 py-3 w180">
                         <!-- <a class="dropdown-item text-black ps-0 fw-6" href="/profile/`${ userData.id }`">My Profile</a> -->
                         <a class="dropdown-item text-black ps-0 fw-6" href="/profile">My Profile</a>
-                        <a class="dropdown-item text-black ps-0 fw-6" href="#">Upgrade To Pro</a>
+                        <a class="dropdown-item text-black ps-0 fw-6" href="/pricing">Upgrade To Pro</a>
                         <!-- <a class="dropdown-item text-black ps-0 fw-6" href="#">Find Friend</a> -->
                         <a class="dropdown-item text-black ps-0 fw-6" href="/profile/setting">Settings</a>
                     </div>

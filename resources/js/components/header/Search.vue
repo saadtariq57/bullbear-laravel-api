@@ -1,9 +1,6 @@
 <template>
     <div class="search-main">
-        <button class="bg-transparent border-0 search-btn fs-3 nav-clr" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-            <i class="bi bi-search"></i>
-        </button>
+        
 
         <div class="offcanvas offcanvas-top bg-transparent canvas-header border-0" tabindex="-1" id="offcanvasTop"
             aria-labelledby="offcanvasTopLabel">

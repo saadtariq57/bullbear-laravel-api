@@ -50,6 +50,11 @@ Route::get('/quote/{symbol}', function () {
     return view('single-stock');
 })->name('single-stock');
 
+// Profile route
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
+
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {
     // Home (Feed) route
