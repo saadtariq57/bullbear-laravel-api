@@ -35,21 +35,21 @@
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Press
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/press-release/">Press
                                                         Release</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Market
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/market-analysis/">Market
                                                         Analysis</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/investing/">Investing</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/stocks/">Stocks</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Cryptocurrency</a>
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -65,25 +65,24 @@
                                                     <h4>STRATEGIES</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Penny
-                                                                Stocks</a>
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks">Penny Stocks</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">REVERSAL</a>
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/reversal-trading-strategy/">REVERSAL</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">MOMENTUM</a>
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/momentum-trading-strategies/">MOMENTUM</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">SWING
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/swing-trading-strategies/">SWING
                                                                 TRADING</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">GAP AND
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/gap-and-go-strategy/">GAP AND
                                                                 GO</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">BULL
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/bull-flag-patterns/">BULL
                                                                 FLAG</a>
                                                         </li>
                                                     </ul>
@@ -95,36 +94,25 @@
                                                             <a class="dropdown-item nav-link" href="/exams">EXAMS</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link py-1"
-                                                                href="/trading-school">Trading School</a>
+                                                        <a class="dropdown-item nav-link py-1" href="/trading-school">
+                                                            Trading School</a>
+                                                    </li>
+
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/day-trading-beginner/">Day Trading</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Day
-                                                                Trading</a>
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/technical-analysis-using-multiple-timeframes">
+                                                                TECHNICAL ANALYSIS GUIDE</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">TECHNICAL
-                                                                ANALYSIS
-                                                                GUIDE</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item nav-link" href="/">PENNY STOCK
+                                                            <a class="dropdown-item nav-link" href="https://richtv.io/category/penny-stocks/">PENNY STOCK
                                                                 TRADING</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">How to Invest
-                                                                in
+                                                            <a class="dropdown-item nav-link" href="/">
+                                                                How to Invest in
                                                                 stocks</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item nav-link" href="/">How To Identify
-                                                                & Avoid A Bull
-                                                                Trap</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item nav-link" href="/">How To Trade
-                                                                With Bollinger
-                                                                Bands</a>
                                                         </li>
                                                     </ul>
                                                 </li>
@@ -132,20 +120,19 @@
                                                     <h4>HOW TO’S</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Market
-                                                                Analysis</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Cryptocurrency</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                     </ul>
                                                 </li>
@@ -153,20 +140,19 @@
                                                     <h4>STOCK QUOTES</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Market
-                                                                Analysis</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Stocks</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Cryptocurrency</a>
+                                                            <a class="dropdown-item nav-link" href="/"></a>
                                                         </li>
                                                     </ul>
                                                 </li>
@@ -192,7 +178,7 @@
                                                                 href="/watchlist">WATCHLIST</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">Email and
+                                                            <a class="dropdown-item nav-link" href="/email-alerts">Email and
                                                                 Alerts</a>
                                                         </li>
                                                         <li>
@@ -213,9 +199,6 @@
                                                             <a class="dropdown-item nav-link"
                                                                 href="/earning-calender">Earning
                                                                 Calendar</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item nav-link" href="/">SCREENER</a>
                                                         </li>
                                                     </ul>
                                                 </li>

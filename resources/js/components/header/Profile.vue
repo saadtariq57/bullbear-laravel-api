@@ -12,6 +12,7 @@
                         <div class="d-flex align-items-center gap-3">
 
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        </div>
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
