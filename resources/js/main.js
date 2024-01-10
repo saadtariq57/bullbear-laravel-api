@@ -6,6 +6,11 @@ import store from './store';
 // Define routes with lazy loading
 const routes = [
     {
+        path: '/pricing',
+        name: 'pricing',
+        component: () => import('./components/pricing/Pricing.vue'),
+    },
+    {
         path: '/feed',
         name: 'feed',
         component: () => import('./components/feed/UserFeed.vue'),

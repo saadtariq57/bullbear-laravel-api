@@ -53,6 +53,11 @@ Route::get('/email-alerts', function () {
     return view('email-alerts');
 })->name('email-alerts');
 
+// Profile route
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
+
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {
     // Home (Feed) route

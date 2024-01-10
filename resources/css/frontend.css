@@ -82,7 +82,9 @@ body {
 .astronaut-blue {
     color: var(--astronaut-blue) !important;
 }
-
+.text-cta{
+    color: var(--cta-btn);
+}
 .text-color {
     color: var(--text-color);
 }
@@ -94,7 +96,6 @@ body {
 .bg-primary {
     background-color: var(--primary-color) !important;
 }
-
 .bg-green {
     background-color: var(--Green) !important;
 }
@@ -1050,12 +1051,6 @@ section.featured-video {
     background-color: #ffffff7d;
 }
 
-.border-heading {
-    background-image: repeating-linear-gradient(90deg, #ffb800 0 70%, #353535 33% 100%);
-    width: 181.5px;
-    height: 4px;
-}
-
 .newsletter-wrapper {
     padding: 50px 70px;
     border-radius: 25px;
@@ -1250,8 +1245,8 @@ header {
 }
 
 .main-menu-container .nav-link {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
 }
 
 /* .main-menu-container .nav-link:not(.dropdown-menu .nav-link, .main-header.scroll .nav-link) {
@@ -1288,9 +1283,13 @@ ul.dropdown-menu li {
 }
 
 .mega-menu h4 {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 16px;
     min-width: max-content;
+}
+.mega-menu li ul li a ,.mega-menu li a{
+    font-weight: 600 !important;
+    font-size: 15px !important;
 }
 
 .mobile-nav-body,
@@ -1320,7 +1319,14 @@ ul.dropdown-menu li {
 .mobile-nav-body hr {
     border: 1px solid #e8eaf0;
 }
+.moblie-navbar-accordion {
+    --bs-accordion-bg: #F8F8FA;
+    --bs-accordion-border-width: 0px;
+}
 
+.moblie-nav-btn:after {
+    background-image: url(/build/icons/bxs_up-arrow.png) !important;
+}
 /* Header-css  end */
 /* Watchlist Page CSS start */
 .watch-list-sec .nav-tabs {
@@ -2717,6 +2723,64 @@ border: 1px solid #367F2E;
 /* email alert css end */
 
 /* Trading School Css End */
+/* Price & Plan Css Start */
+.bg-basic-plan {
+    background: #e7e7e7;
+    width: 75%;
+  }
+  .bg-pro-plan{
+    background: var(--primary-color);
+    width: 75%;
+  }
+  .bg-elite-plan{
+    background: var(--cta-btn);
+    width: 75%;
+  }
+  .curvespan {
+    width: 60px;
+    height: 70px;
+    display: inline-block;
+    position: absolute;
+    right: -25px;
+    top: 0;
+    transform: skewX(35deg);
+  }
+  
+  .basic-plan-curve {
+    background: #e7e7e7;
+  }
+  .pro-plan-curve{
+    background: var(--primary-color);
+  }
+  .elite-plan-curve{
+    background: var(--cta-btn);
+  }
+  .membership-checks-list {
+    --bs-list-group-border-width: 0px;
+    min-height: 435px;
+  }
+  .membership-checks-list li{
+    color: var(--Cinder);
+  }
+  .btn-basic-plan{
+    color: #696974;
+    background: #e7e7e7;
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+  .btn-basic-plan:hover{
+    background-color: #c3c3c7;
+    
+  }
+  .btn-pro-plan{
+    background: var(--primary-color);
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+  .btn-pro-plan:hover{
+    background-color: #2c8b00;
+  }
+/* Price & Plan Css End */
 @media screen and (max-width: 1550px) {
     .main-heading h1 {
         font-size: 65px;
@@ -3120,7 +3184,14 @@ border: 1px solid #367F2E;
     }
 
 }
-
+@media screen and (max-width:335px) {
+    .bg-basic-plan h2,.bg-pro-plan h2,.bg-elite-plan h2 {
+      font-size: 25px;
+    }
+    .curvespan{
+      height: 67px;
+    }
+  }
 @media screen and (max-width: 320px) {
     .receive-smg-text {
         max-width: 130px !important;
