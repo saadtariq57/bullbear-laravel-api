@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
-          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
+          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="'/' + userData.avatar">
         </a>
       </div>
       <div class="flex-fill">
@@ -21,7 +21,7 @@
                 <!-- Post Settings trigger button -->
                 <button data-bs-toggle="modal" data-bs-target="#postSettingModal"
                   class="btn d-flex gap-3 align-items-center">
-                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
+                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="'/' + userData.avatar">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
                       <span class="fs-4 fw-6">{{ userData.name }}</span>
@@ -42,7 +42,7 @@
                             placeholder="What do you want to talk about?"></textarea>
                   <!-- Clear Color Button -->
                   <abbr title="Clear Color" v-if="selectedColor">
-                    <span class="post-icon-bg d-flex justify-content-center align-items-center clear-color" v-on:click="clearColor()">
+                    <span class="post-icon-bg d-flex justify-content-center clear-color" v-on:click="clearColor()">
                       <i class="bi bi-x-lg fs-4"></i>
                     </span>
                   </abbr>
@@ -338,52 +338,3 @@ export default {
   }
 };
 </script>
-<style>
-#mediapostModal .modal-dialog {
-  max-width: 70%;
-  height: 93vh;
-}
-
-#mediapostModal .modal-dialog .modal-content {
-  height: 100%;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-#postModal .modal-dialog {
-  max-width: 50%;
-}
-
-.post-textarea textarea {
-  resize: none;
-  height: 300px;
-  padding: 10px 15px;
-}
-
-.post-icon-bg {
-  width: 55px;
-  height: 55px;
-  background-color: rgb(244, 242, 238);
-  border-radius: 50%;
-  cursor: pointer;
-}
-.clear-color {
-  position:absolute;
-  top:20px;
-  right:20px;
-  width:30px;
-  height:20px;
-}
-.v3-emoji-picker{
-  position: absolute;
-  top:5px;
-}
-
-.post-icon-bg:hover , .all_colors_style{
-  box-shadow:
-    rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;
-}
-</style>

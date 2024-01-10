@@ -6,6 +6,11 @@ import store from './store';
 // Define routes with lazy loading
 const routes = [
     {
+        path: '/pricing',
+        name: 'pricing',
+        component: () => import('./components/pricing/Pricing.vue'),
+    },
+    {
         path: '/feed',
         name: 'feed',
         component: () => import('./components/feed/UserFeed.vue'),
@@ -14,6 +19,11 @@ const routes = [
         path: '/profile',
         name: 'profile',
         component: () => import('./components/profile/UserProfile.vue'),
+    },
+    {
+        path: '/profile/setting',
+        name: 'profile.setting',
+        component: () => import('./components/profile/ProfileSetting.vue'),
     },
     {
         path: "/watchlist",
@@ -75,6 +85,11 @@ const routes = [
         name: 'home',
         component: () => import('./components/home/HomeMain.vue'),
 
+    },
+    {
+        path: '/trading-school',
+        name: 'TradingBooks',
+        component: () => import('./components/widgets/TradingBooks.vue'),
     },
 ];
 

@@ -18,74 +18,10 @@
     </section>
     <section class="trading-books container-fluid pb-80">
         <div class="container">
-            <div class="trading-books-wrapper bg-white px-5 pt-3 pb-4 border-1 border rounded-2 shadow-sm">
-                <div class="text-center">
-                    <h1 class="fw-bold fs-1 text-uppercase">TRADING BOOKS <span
-                            class="videos-count fs-12 fw-light">(7)</span></h1>
-                    <div class="border-heading d-inline-block mt-4 mb-3"></div>
-                </div>
-                <div class="trading-books-slider">
-                    <div class="books-slider-wrapper card px-2 py-3">
-                        <div 
-                            target="_blank" class="d-md-flex gap-4 align-items-center">
-                            <div class="book-img">
-                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/stockmarket-101.png"
-                                    alt="book cover">
-                            </div>
-                            <div class="book-dic">
-                                <h2 class="pt-2 fs-6 mb-0 lh-base">RICH TV'S DAILY TRAINING MANUAL</h2>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad autem libero enim cumque, cupiditate reprehenderit!</p>
-                                <a href="https://dev.richtv.io/themes/wowonder/trading-school/rpd-training-manual.pdf" class="btn btn-primary">Download Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="books-slider-wrapper card px-2 py-3">
-                        <div 
-                            target="_blank" class="d-md-flex gap-4 align-items-center">
-                            <div class="book-img">
-                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/stockmarket-101.png"
-                                    alt="book cover">
-                            </div>
-                            <div class="book-dic">
-                                <h2 class="pt-2 fs-6 mb-0 lh-base">RICH TV'S DAILY TRAINING MANUAL</h2>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad autem libero enim cumque, cupiditate reprehenderit!</p>
-                                <a href="https://dev.richtv.io/themes/wowonder/trading-school/rpd-training-manual.pdf" class="btn btn-primary">Download Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="books-slider-wrapper card px-2 py-3">
-                        <div 
-                            target="_blank" class="d-md-flex gap-4 align-items-center">
-                            <div class="book-img">
-                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/stockmarket-101.png"
-                                    alt="book cover">
-                            </div>
-                            <div class="book-dic">
-                                <h2 class="pt-2 fs-6 mb-0 lh-base">RICH TV'S DAILY TRAINING MANUAL</h2>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad autem libero enim cumque, cupiditate reprehenderit!</p>
-                                <a href="https://dev.richtv.io/themes/wowonder/trading-school/rpd-training-manual.pdf" class="btn btn-primary">Download Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="books-slider-wrapper card px-2 py-3">
-                        <div 
-                            target="_blank" class="d-md-flex gap-4 align-items-center">
-                            <div class="book-img">
-                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/stockmarket-101.png"
-                                    alt="book cover">
-                            </div>
-                            <div class="book-dic">
-                                <h2 class="pt-2 fs-6 mb-0 lh-base">RICH TV'S DAILY TRAINING MANUAL</h2>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad autem libero enim cumque, cupiditate reprehenderit!</p>
-                                <a href="https://dev.richtv.io/themes/wowonder/trading-school/rpd-training-manual.pdf" class="btn btn-primary">Download Now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <router-view></router-view>
         </div>
     </section>
-    <section class="container-fluid">
+    {{-- <section class="container-fluid">
         <div class="container">
             <div class="tradind-videos-wrapper bg-white px-5 py-4 border-1 border rounded-2 shadow-sm">
                 <div class="text-center">
@@ -326,7 +262,7 @@
                 <button class="btn btn-primary">VIEW MORE</button>
             </div>
         </div>
-    </section>
+    </section> --}}
     <section class="pre-footer container-fluid py-80 bg-smoke">
         <div class="container pb-120">
             <div class="row">
@@ -357,12 +293,15 @@
                                         materials and presentations are subject to change. Rich TV and its affiliates
                                         may
                                         buy and sell shares of securities or options of the issuers mentioned on this
-                                        website at any time. <a class="arrow-down show-more cursor-pointer"
+                                        website at any time.
+                                         {{-- <a class="arrow-down show-more cursor-pointer"
                                             rel="nofollow" aria-label="See All"> See
-                                            more</a></p>
+                                            more</a> --}}
+                                        </p>
                                 </div>
                                 <div class="slide-up-down">
-                                    <p style="display: none;">Stock market investing is inherently risky. Rich TV is not
+                                    {{-- style="display: none;" --}}
+                                    <p>Stock market investing is inherently risky. Rich TV is not
                                         responsible for any gains or losses that result from the opinions expressed on
                                         this
                                         website, in its research reports, company profiles or in other investor
@@ -371,9 +310,10 @@
                                         We strongly encourage all investors to conduct their own research before making
                                         any
                                         investment decision. For more information on stock market investing, visit the
-                                        Securities and Exchange Commission ("SEC") at www.sec.gov. <a
+                                        Securities and Exchange Commission ("SEC") at www.sec.gov. 
+                                        {{-- <a
                                             class="arrow-down show-less cursor-pointer" rel="nofollow"
-                                            aria-label="See less"> See less</a>
+                                            aria-label="See less"> See less</a> --}}
                                     </p>
                                 </div>
                             </div>

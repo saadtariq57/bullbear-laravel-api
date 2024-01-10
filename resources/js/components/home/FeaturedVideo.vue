@@ -19,11 +19,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -48,11 +48,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -77,11 +77,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -106,11 +106,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -135,11 +135,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -164,11 +164,11 @@
                       <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
                     </div>
                   </form>
-                <div class="video-featured position-relative">
-                  
-                  <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
-                    class="thumbnail-card w-100">
-                </div>
+                  <div class="video-featured position-relative">
+
+                    <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
+                      class="thumbnail-card w-100">
+                  </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
@@ -211,7 +211,7 @@ export default {
           slidesToShow: 2,
           swipeToSlide: true,
         }
-      },{
+      }, {
         breakpoint: 1025,
         settings: {
           slidesToShow: 3,
@@ -233,7 +233,7 @@ export default {
           slidesToShow: 1,
         }
       }
-      ,
+        ,
       {
         breakpoint: 325,
         settings: {
@@ -247,36 +247,3 @@ export default {
   }
 }
 </script>
-<style>
-.video-slider .slick-slide .video-card .featured-video-1 .video-featured img {
-  filter: blur(2px);
-  transition: all 0.5s;
-}
-.video-slider .slick-slide.slick-center .video-card .featured-video-1 .video-featured img {
-  filter: blur(0px);
-  transition: all 1s;
-}
-.video-slider .slick-slide {
-  transform: scale(.8);
-  transition: all 2s;
-}
-
-.video-slider .slick-slide.slick-center {
-  transition: all 2.5s;
-  transform: scale(1);
-}
-.video-slider .slick-slide.slick-center .featured-video-1 .video-play-icon-small{
-  display: none;
-  transition: all 1s;
-}
-.video-slider .slick-dots {
-  bottom: -40px;
-}
-
-.video-slider .slick-dots li button:before {
-  opacity: 0.3;
-}
-
-.video-slider .slick-dots .slick-active button:before {
-  opacity: 1;
-}</style>

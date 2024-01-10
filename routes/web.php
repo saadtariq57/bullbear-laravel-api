@@ -49,6 +49,14 @@ Route::get('/exams', function () {
 Route::get('/quote/{symbol}', function () {
     return view('single-stock');
 })->name('single-stock');
+Route::get('/email-alerts', function () {
+    return view('email-alerts');
+})->name('email-alerts');
+
+// Profile route
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
 
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {

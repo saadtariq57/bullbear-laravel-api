@@ -2,7 +2,7 @@
   <section class="hero-section container-fluid position-relative">
     <!-- top slider Start -->
     <div class="widgets-slide-section">
-      <div class="widgets-slide-wrapper">
+      <div class="widgets-slide-wrapper position-relative z-3">
         <div class="widgets-slider mb-0">
           <div class="market-summary d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
@@ -13,8 +13,8 @@
                 <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
-              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                <span>(+1.71%)</span>
+              <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
+                <span>(-1.71%)</span>
               </div>
             </div>
           </div>
@@ -205,13 +205,3 @@ export default {
 };
 
 </script>
-<style>
-.hero-graph img{
-    max-height: 700px;
-}
-@media screen and (max-width: 1440px) {
-  .hero-graph img{
-   height: 500px;
-}
-}
-</style>

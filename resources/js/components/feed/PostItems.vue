@@ -69,7 +69,7 @@
           </div>
       </div>
        <!-- Poll Post Type  -->
-      <div class="post shadow-radius mb-4">
+      <div class="post shadow mb-4">
           <div class="post-wrapper">
               <div class="post-heading p-3">
                   <div class="d-flex justify-content-between align-items-center">
@@ -104,7 +104,7 @@
               <div class="post-description">
                   <p class="px-3">Which of the following are you most familiar with</p>
                   <div class="container-fluid px-5">
-                      <div class="container shadow-radius border border-light-grey py-4">
+                      <div class="container shadow border border-light-grey py-4">
                           <h5>Are you currently seeking new opportunity?</h5>
                           <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank" class="astronaut-blue fw-6 fs-6">Learn more</a></span>
                           <div class="py-4" id="poll-options">
@@ -169,7 +169,7 @@
           </div>
       </div>
        <!-- Video Post Type  -->
-      <div class="post shadow-radius mb-4">
+      <div class="post shadow mb-4">
           <div class="post-wrapper">
               <div class="post-heading p-3">
                   <div class="d-flex justify-content-between align-items-center">
@@ -237,7 +237,7 @@
       </div>
        <!-- Image Post Type  -->
 
-      <div class="post shadow-radius mb-4">
+      <div class="post shadow mb-4">
           <div class="post-wrapper">
               <div class="post-heading p-3">
                   <div class="d-flex justify-content-between align-items-center">

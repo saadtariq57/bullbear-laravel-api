@@ -2,9 +2,6 @@
   <!-- Hero Section Start  -->
   <Hero />
   <!-- Hero Section End  -->
-  <!-- FEATURED VIDEOS Section Start -->
-  <FeaturedVideo />
-  <!-- FEATURED VIDEOS Section End -->
   <!-- advanced-features-section Start -->
   <section class="advanced-features-section container-fluid bg-smoke py-80">
     <div class="container">
@@ -216,12 +213,11 @@
                     may
                     buy and sell shares of securities or options of the issuers mentioned on
                     this
-                    website at any time. <a class="arrow-down show-more cursor-pointer" rel="nofollow"
-                      aria-label="See All"> See
-                      more</a></p>
+                    website at any time.
+                  </p>
                 </div>
                 <div class="slide-up-down">
-                  <p style="display: none;" class="fs-18 lh-base">Stock market investing is
+                  <p class="fs-18 lh-base">Stock market investing is
                     inherently
                     risky. Rich TV is
                     not
@@ -236,8 +232,7 @@
                     any
                     investment decision. For more information on stock market investing, visit
                     the
-                    Securities and Exchange Commission ("SEC") at www.sec.gov. <a
-                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less"> See less</a>
+                    Securities and Exchange Commission ("SEC") at www.sec.gov.
                   </p>
                 </div>
               </div>
@@ -265,17 +260,10 @@ export default {
     NewsLetter,
     StockQuote,
   },
+  methods: {
+  },
   mounted() {
-    $(".show-more").click(function () {
-      $(".slide-up-down p").slideToggle();
-      $(this).hide();
-    });
-    $(".show-less").click(function () {
-      $(".slide-up-down p").slideToggle();
-      setTimeout(function () {
-        $(".show-more").show();
-      }, 500);
-    });
+    this.$root.$emit('component-loaded');
     $('.testimonial-slider').slick({
       // centerMode: true,
       // centerPadding: '300px',
@@ -317,5 +305,3 @@ export default {
   }
 };
 </script>
-<style>
-</style>

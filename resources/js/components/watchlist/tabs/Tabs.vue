@@ -234,8 +234,8 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="6">
+                        <tr class="position-relative news-para">
+                            <td class="position-absolute d-flex align-items-center">
                                 <div class="fw-bold fs-16">
                                     <a href="#" class="text-black">
                                         Tesla’s Q3 conference call was the definition of a disaster,
