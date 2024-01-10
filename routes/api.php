@@ -86,3 +86,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
+Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
