@@ -214,10 +214,7 @@
                     buy and sell shares of securities or options of the issuers mentioned on
                     this
                     website at any time.
-                     <!-- <a class="arrow-down show-more cursor-pointer" rel="nofollow"
-                      aria-label="See All" @click="toggleShowMore"> See
-                      more</a> -->
-                    </p>
+                  </p>
                 </div>
                 <div class="slide-up-down">
                   <p class="fs-18 lh-base">Stock market investing is
@@ -236,8 +233,6 @@
                     investment decision. For more information on stock market investing, visit
                     the
                     Securities and Exchange Commission ("SEC") at www.sec.gov.
-                     <!-- <a
-                      class="arrow-down show-less cursor-pointer" rel="nofollow" aria-label="See less" @click="toggleShowLess"> See less</a> -->
                   </p>
                 </div>
               </div>
@@ -266,19 +261,9 @@ export default {
     StockQuote,
   },
   methods: {
-    // toggleShowMore() {
-    //   $(".slide-up-down p").slideToggle();
-    //   $(".show-more").hide();
-    // },
-    // toggleShowLess() {
-    //   $(".slide-up-down p").slideToggle();
-    //   setTimeout(function () {
-    //     $(".show-more").show();
-    //   }, 500);
-    // }
   },
   mounted() {
-    
+    this.$root.$emit('component-loaded');
     $('.testimonial-slider').slick({
       // centerMode: true,
       // centerPadding: '300px',

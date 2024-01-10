@@ -81,6 +81,11 @@ const routes = [
         component: () => import('./components/home/HomeMain.vue'),
 
     },
+    {
+        path: '/trading-school',
+        name: 'TradingBooks',
+        component: () => import('./components/widgets/TradingBooks.vue'),
+    },
 ];
 
 // Create router instance
