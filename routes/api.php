@@ -28,6 +28,8 @@ Route::get('/check-login', function () {
 });
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
+Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
+Route::post('/create-post', [PostController::class, 'createPost']);
 
 //Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {
