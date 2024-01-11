@@ -18,6 +18,7 @@
     @include('layouts.head-css')
 </head>
 @yield('body')
+<div class="overlay_loader" id="overlay_loader"></div>
 <!-- Begin page -->
 <div id="app">
     <div id="layout-wrapper">
@@ -41,6 +42,21 @@
 
     <!-- vendor-scripts -->
     @include('layouts.vendor-scripts')
+    <script>
+        let overlayLoader = document.getElementById('overlay_loader');
+      let timeoutId;
+
+      function myFunction() {
+        timeoutId = setTimeout(alertFunc, 1000);
+      }
+
+      function alertFunc() {
+        overlayLoader.style.display = 'none';
+      }
+
+      // Call myFunction when the window has finished loading
+      window.addEventListener('load', myFunction);
+    </script>
 </div>
 </body>
 

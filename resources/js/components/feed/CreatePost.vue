@@ -47,7 +47,7 @@
                     </span>
                   </abbr>
                 </form>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-center">
                   <!-- Show Color Options -->
                   <div id="user-color-con" class="position-relative" v-show="showColorOptions">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
