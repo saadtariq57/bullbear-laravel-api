@@ -25,7 +25,8 @@ class Post extends Model
         'post_file_name',
         'colored_post_id',
         'comments_status',
-        'active'
+        'active',
+        'post_privacy'
     ];
 
     public function user()
