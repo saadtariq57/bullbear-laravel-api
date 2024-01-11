@@ -22,7 +22,6 @@
                             <button type="button" class="btn-close ms-2 align-middle" aria-label="Close"></button>
                         </div>
                     </div>
-                    </div>
                 </li>
             </ul>
         </div>

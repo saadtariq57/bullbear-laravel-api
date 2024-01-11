@@ -33,7 +33,7 @@
                                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 FINANCIAL NEWS
                                             </button>
-                                            <ul class="dropdown-menu px-4 py-3 mega-menu">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="https://richtv.io/category/press-release/">Press
                                                         Release</a>
@@ -272,7 +272,7 @@
                                                     <div id="collapseMarket_analysis" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionMobilenavbar">
                                                         <div class="accordion-body">
-                                                            <ul class="list-unstyled">
+                                                            <ul class="list-unstyled mega-menu-dropdown">
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1" href="#">Press
                                                                         Release</a>
@@ -317,7 +317,7 @@
                                                     <div id="collapseGroup_chat" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionMobilenavbar">
                                                         <div class="accordion-body">
-                                                            <ul class="list-unstyled">
+                                                            <ul class="list-unstyled mega-menu-dropdown">
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1" href="#">Press
                                                                         Release</a>
@@ -362,7 +362,7 @@
                                                     <div id="collapseTrading_guide" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionMobilenavbar">
                                                         <div class="accordion-body">
-                                                            <ul class="list-unstyled">
+                                                            <ul class="list-unstyled mega-menu-dropdown">
                                                                 <li><b class="fs-5 py-2 d-block">STRATEGIES</b></li>
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1" href="/">Penny
@@ -495,7 +495,7 @@
                                                     <div id="collapseVector_smart" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionMobilenavbar">
                                                         <div class="accordion-body">
-                                                            <ul class="list-unstyled">
+                                                            <ul class="list-unstyled mega-menu-dropdown">
                                                                 <li><b class="fs-5 py-2 d-block">SOURCE</b></li>
                                                                 <li>
                                                                     <a class="dropdown-item nav-link PY-1" href="/">RICH TV
