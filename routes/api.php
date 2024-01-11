@@ -40,7 +40,7 @@ Route::prefix('watchlist')->name('watchlist.')->group(function() {
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
     Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
-    // Route::delete('delete/{watchlist}', [WatchlistController::class, 'destroy'])->name('destroy');
+    Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
 });
 
 //Exam Routes
@@ -88,3 +88,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
+Route::get('/symbol/groups', [SymbolController::Class, 'groups']);

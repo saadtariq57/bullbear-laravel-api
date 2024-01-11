@@ -10,7 +10,7 @@
       </div>
       <div class="add-symbol">
         <a href="javascript:void(0)"
-          class="border-start border-dark px-3 text-decoration-underline fw-bold add-symbol-btn">Add Symbol
+          class="border-start border-dark px-3 text-decoration-underline fw-bold add-symbol-btn" @click="toggleSearch();">Add Symbol
           <svg width="10" height="10" viewBox="0 0 8 8" fill="#fff" role="img" data-analytic-id="add-icon"
             xmlns="http://www.w3.org/2000/svg" class="Watchlist-navicon">
             <path d="M3.36842 8V4.63158H0V3.36842H3.36842V0H4.63158V3.36842H8V4.63158H4.63158V8H3.36842Z">
@@ -117,6 +117,9 @@ export default {
           this.error = 'Error while adding symbol';
           console.log(error)
         });
+    },
+    toggleSearch(){
+        $('.symbol-search-form').toggle();
     },
     handleInput() {
       clearTimeout(this.inputTimeout);

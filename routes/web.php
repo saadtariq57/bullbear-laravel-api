@@ -30,6 +30,9 @@ Route::get('/ceo-single', function () {
 Route::get('/earning-calender', function () {
     return view('earning-calender');
 })->name('earning-calender');
+Route::get('/economic-calender', function () {
+    return view('economic-calender');
+})->name('economic-calender');
 
 Route::get('/trading-school', function () {
     return view('trading-school');
@@ -46,6 +49,14 @@ Route::get('/exams', function () {
 Route::get('/quote/{symbol}', function () {
     return view('single-stock');
 })->name('single-stock');
+Route::get('/email-alerts', function () {
+    return view('email-alerts');
+})->name('email-alerts');
+
+// Profile route
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
 
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {
@@ -53,9 +64,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
 
     // Profile route
-    Route::get('/profile/{id}', function () {
+    Route::get('/profile', function () {
         return view('profile.index');
     })->name('profile.index');
+    Route::get('/profile/setting', function () {
+        return view('profile.setting');
+    })->name('profile.setting');
 
 
     // Single Exam route

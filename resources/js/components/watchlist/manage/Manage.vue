@@ -1,6 +1,6 @@
 <template>
     <ul ref="sortableList" class="px-0">
-      <li v-for="watchlist in watchlists" :key="watchlist.id" class="d-flex align-items-center">
+      <li v-for="watchlist in watchlists" :key="watchlist.id" class="d-flex align-items-center" :id="watchlist.id">
         <div class="d-flex align-items-center flex-fill">
           <div class="px-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
@@ -16,40 +16,40 @@
         </div>
       </li>
     </ul>
-    <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" modalId="delete-watchlist" />
+    <!-- <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" modalId="delete-watchlist" /> -->
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  Launch static backdrop modal
-</button>
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
+    <div class="modal fade" id="delete-watchlist" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog" v-if="modalData!=undefined">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">{{ modalData.title }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete 
+              {{ modalData.title }}
+              watchlist ?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal" aria-label="Close">DON’T DELETE</button>
+                <button type="button" class="btn btn-primary"
+                data-bs-dismiss="modal" @click="ConfirmDelete(modalData.id)">DELETE</button>
+            </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 </template>
 <script>
   import "vue-skeletor/dist/vue-skeletor.css";
   import { Skeletor } from "vue-skeletor";
   import axios from "axios";
-  import Confirm from '../../shared/confirm.vue';
+  // import Confirm from '../../shared/confirm.vue';
   import Sortable from "sortablejs";
   export default {
     components: {
       Skeletor,
       Sortable,
-      Confirm
+      // Confirm
     },
     props: {
       user: {
@@ -60,8 +60,9 @@
       return {
         watchlists: [],
         sortableInstance: null,
-        modalData: undefined,
+        modalData: {},
         isModalOpen:false,
+        watchlistData: undefined
       };
     },
     methods: {
@@ -84,16 +85,27 @@
         }
       },
       deleteWatchlist(id, title) {
-        console.log(id + ' ' + title);
-        this.isModalOpen = true;
+        // $('#delete-watchlist').modal('toggle');
+        // console.log(id + ' ' + title);
+        // this.isModalOpen = true;
         this.modalData = { 
           id: id, 
-          modalId: 'delete-symbol', 
           title: title, 
-          formId: 'deleteWatchListForm',
-          formAction: '',
-          body: `Are you sure you want to delete symbol: ${title}?`
         };
+      },
+      async ConfirmDelete(watchlistid) {
+          try {
+              const response = await axios.delete(`/api/watchlist/deletewatchlist?id=${watchlistid}`, {
+                withCredentials: true,
+                headers: {
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+              });
+              this.watchlists = this.watchlists.filter(watchlist => watchlist.id !== watchlistid);
+              console.log('Deleted:', response.data);
+          } catch (error) {
+              console.error('Error deleting watchlist:', error);
+          }
       },
       initSortable() {
         if (this.sortableInstance) {
@@ -130,6 +142,7 @@
         })
         .then(response => {
           console.log('Positions updated successfully:', response.data);
+          
         })
         .catch(error => {
           console.error('Error updating positions:', error);

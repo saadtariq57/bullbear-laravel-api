@@ -1,9 +1,9 @@
 <template>
-  <div class="user-post-panel shadow rounded bg-white px-4 pt-3">
+  <div class="user-post-panel shadow rounded bg-white px-4 pt-4">
     <div class="d-flex align-items-center gap-3">
       <div>
         <a href="#">
-          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="userData.avatar">
+          <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary" :src="'/' + userData.avatar">
         </a>
       </div>
       <div class="flex-fill">
@@ -112,6 +112,7 @@
                   <div id="user-color-con" class="position-relative" v-show="showColorOptions">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
                       <div class="d-flex gap-2">
+
                         <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style"
                              :style="{ 'background-image': style.background }" @click="selectColor(style)">
                         </div>
@@ -220,6 +221,7 @@ export default {
       selectedColorId: null,
       textColor: '',
       textContent: '',
+
       colorStyles: [],
       showColorOptions: false,
       showEmojiPicker: false,
