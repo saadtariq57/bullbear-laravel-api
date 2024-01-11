@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import Navigation from "./components/header/Navigation.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import store from './store';
-
 // Define routes with lazy loading
 const routes = [
     {

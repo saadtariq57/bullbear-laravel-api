@@ -1,75 +1,85 @@
 <template>
-      <!-- Poll Post trigger modal -->
-      <button type="button" class="btn fs-5" data-bs-toggle="modal" data-bs-target="#pollpostModal">
-        <i class="bi bi-bar-chart-line-fill me-2"></i>
-        <span>Poll</span>
-      </button>
-      <!-- Poll Post Modal -->
-      <div class="modal fade" id="pollpostModal" tabindex="-1" aria-labelledby="pollpostModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="pollpostModal">Create a poll</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="" id="myForm">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5" id="pollpostModal">Create a poll</h1>
+    </div>
+    <div class="modal-body">
+      <form @submit.prevent="submitPoll">
+        <div class="mb-3">
+          <label for="pollQuestion" class="form-label">Your question</label>
+          <textarea class="form-control border border-dark" id="pollQuestion" rows="3" v-model="pollQuestion" placeholder="E.g., How do you commute to work?"></textarea>
+        </div>
 
-                <div class="mb-3">
-                  <label for="exampleFormControlTextarea1" class="form-label">Your question</label>
-                  <textarea class="form-control border border-dark" id="exampleFormControlTextarea1" rows="3"
-                    placeholder="E.g., How do you commute to work?"></textarea>
-                </div>
-
-                <div class="options-container">
-                  <div class="mb-3 option-group">
-                    <label class="form-label">Option 1</label>
-                    <input type="text" class="form-control border border-dark" placeholder="E.g., Public transportation">
-                  </div>
-                  <div class="mb-3 option-group">
-                    <label class="form-label">Option 2</label>
-                    <input type="text" class="form-control border border-dark" placeholder="E.g., Drive myself">
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <button type="button" id="addOptionBtn" class="btn btn-primary">Add Option</button>
-                </div>
-                <div class="mb-3">
-                  <select class="form-select border border-dark" aria-label="Default select example">
-                    <option value="1" selected>1 day</option>
-                    <option value="3">3 day</option>
-                    <option value="7">1 week</option>
-                    <option value="14">2 week</option>
-                  </select>
-                </div>
-              </form>
-
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-              <button type="button" class="btn btn-primary">Done</button>
-            </div>
+        <div class="options-container">
+          <div class="mb-3 option-group" v-for="(option, index) in pollOptions" :key="index">
+            <label class="form-label">Option {{ index + 1 }}</label>
+            <input type="text" class="form-control border border-dark" v-model="pollOptions[index]" placeholder="Enter option">
+            <button type="button" class="deleteOptionBtn btn text-danger" @click="deleteOption(index)" v-if="pollOptions.length > 2">Delete</button>
           </div>
         </div>
-      </div>
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" @click="addOption">Add Option</button>
+        </div>
+        <div class="mb-3">
+          <select class="form-select border border-dark" v-model="pollDuration" aria-label="Poll Duration">
+            <option value="1">1 day</option>
+            <option value="3">3 days</option>
+            <option value="7">1 week</option>
+            <option value="14">2 weeks</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" @click="backToPostModalAndReset">Back</button>
+      <button type="button" class="btn btn-primary" @click="submitPoll" :disabled="!isPollValid">Done</button>
+    </div>
+  </div>
 </template>
 
 <script>
-$(document).ready(function () {
-  // Add Option
-  $("#addOptionBtn").on("click", function () {
-    var optionGroup = $(".option-group:first").clone();
-    optionGroup.find("input").val(""); // Clear the input value
-    optionGroup.append('<button type="button" class="deleteOptionBtn btn text-danger">Delete</button>');
-    $(".options-container").append(optionGroup);
-  });
-
-  // Delete Option
-  $(document).on("click", ".deleteOptionBtn", function () {
-    if ($(this).closest(".option-group").index() > 1) {
-      $(this).closest(".option-group").remove();
+export default {
+  emits: ['backFromPoll', 'pollCreated'],
+  data() {
+    return {
+      pollQuestion: '',
+      pollOptions: ['', ''],
+      pollDuration: '1'
+    };
+  },
+  computed: {
+    isPollValid() {
+      return this.pollQuestion.trim() !== '' &&
+             this.pollOptions[0].trim() !== '' &&
+             this.pollOptions[1].trim() !== '';
     }
-  });
-});
+  },
+  methods: {
+    addOption() {
+      this.pollOptions.push('');
+    },
+    deleteOption(index) {
+      this.pollOptions.splice(index, 1);
+    },
+    backToPostModalAndReset() {
+      this.resetPoll();
+      this.$emit('backFromPoll');
+    },
+    submitPoll() {
+      if (this.isPollValid) {
+        const pollData = {
+          question: this.pollQuestion,
+          options: this.pollOptions.filter(option => option.trim() !== ''),
+          duration: this.pollDuration
+        };
+        this.$emit('pollCreated', pollData);
+      }
+    },
+    resetPoll() {
+      this.pollQuestion = '';
+      this.pollOptions = ['', ''];
+      this.pollDuration = '1';
+    }
+  }
+};
 </script>
