@@ -1287,7 +1287,7 @@ ul.dropdown-menu li {
     font-size: 16px;
     min-width: max-content;
 }
-.mega-menu li ul li a ,.mega-menu li a{
+.mega-menu li ul li a ,.mega-menu-dropdown li a{
     font-weight: 600 !important;
     font-size: 15px !important;
 }
@@ -2718,7 +2718,7 @@ border: 1px solid #367F2E;
     height: 100vh;
     z-index: 999;
     background: rgba(255, 255, 255) url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/ajax-loader.gif) center no-repeat;
-    display: none;
+    /* display: block; */
 }
 /* email alert css end */
 

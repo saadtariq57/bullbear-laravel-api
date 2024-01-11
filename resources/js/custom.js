@@ -1,18 +1,3 @@
-// Header Scroll JS Start
-const header = document.querySelector('.main-header');
-
-window.addEventListener('scroll', () => {
-    if (header && window.scrollY >= 50) {
-        header.classList.add('scroll');
-    } else if (header) {
-        header.classList.remove('scroll');
-    }
-});
-// Header Scroll JS end
-// slick slider js
-$(document).ready(function () {
-   
-});
 
 
 // slick slider js end
