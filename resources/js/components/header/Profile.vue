@@ -10,12 +10,12 @@
                     <div class="dropdown-item px-3 py-3 d-flex align-items-center justify-content-between border-bottom"
                         type="button">
                         <div class="d-flex align-items-center gap-3">
-
                             <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                        </div>
+                            
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
+                        </div>
                         </div>
                         <div>
                             <button class="btn btn-primary px-2 pt-1 pb-0"><i class="bi bi-check2-all fs-5"></i></button>
@@ -70,42 +70,7 @@
                 <li class="py-0"><a href="/groups" class="dropdown-item text-center py-2"><span>See All</span></a></li>
             </ul>
         </div>
-        <div class="btn-group">
-            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
-                data-bs-display="static" aria-expanded="false">
-                <i class="bi bi-bell-fill fs-4"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li><button class="dropdown-item ps-2 pe-5 fw-6 d-flex align-items-center py-0" type="button"><i
-                            class="bi bi-volume-up pe-2 fs-3"></i><span class="fs-6">Turn off notification
-                            sound</span></button>
-                </li>
-                <li class="notifications-list p-0">
-                    <div class="d-flex justify-content-center align-items-center empty-notifications mb-5">
-                        <div>
-                            <span
-                                class="bg-secondary rounded-circle empty-notifications-icon d-flex justify-content-center align-items-center mx-auto"><i
-                                    class="bi bi-bell-slash-fill text-white fs-2"></i></span>
-                            <p class="m-0 text-secondary">You do not have any notifications</p>
-                        </div>
-                    </div>
-                    <div class="fs-6 fw-5">25 W</div>
-                </button></li>
-            <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
-                    type="button">
-                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                    <div>
-                        <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                        <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                            bullish
-                            sentiment
-                        </p>
-                    </div>
-                    <div class="fs-6 fw-5">25 W</div>
-                </button></li>
-            <li class="py-0"><a href="/groups" class="dropdown-item text-center py-2"><span>See All</span></a></li>
-        </ul>
-    </div>
+        
     <div class="btn-group">
         <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
             data-bs-display="static" aria-expanded="false">

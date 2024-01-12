@@ -5,12 +5,25 @@
       <h1 class="modal-title fs-5" id="mediapostModalLabel">Upload Media</h1>
     </div>
 
-    <div class="modal-body row">
+    <div class="modal-body">
+      <div class="d-flex align-items-center justify-content-center modal-row" v-if="!uploadimageSelected">
+      <div class="text-center">
+              <img src="https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
+                class="mb-3" width="200">
+              <h2>Select files to begin</h2>
+              <p>Share images or a single video in your post.</p>
+              
+        <label class="btn btn-primary">
+          <input ref="fileInput" type="file" @change="handleFileChange" multiple accept="image/gif,image/jpeg,image/jpg,image/png" class="upload-media-post">
+                  Upload from computer
+                </label>
+                </div>
+              </div>
+                <div class="row modal-row gy-4" v-if="uploadimageSelected">
       <!-- Left Column -->
       <div class="col-lg-8">
-        <input ref="fileInput" type="file" @change="handleFileChange" multiple accept="image/gif,image/jpeg,image/jpg,image/png">
         <!-- Image Preview Area -->
-        <div v-if="selectedImage" class="image-preview-container mb-3">
+        <div v-if="selectedImage" class="image-preview-container mb-3 d-flex align-items-center justify-content-center modal-row">
           <vue-cropper
             v-if="isEditing"
             ref="cropper"
@@ -31,12 +44,12 @@
         </div>
 
         <!-- Edit and Alt Text Buttons -->
-        <div v-if="selectedImage" class="d-flex justify-content-start mb-3">
-          <button class="btn" @click="toggleEditing">
-            <i class="bi bi-pencil-square"></i> 
+        <div v-if="selectedImage" class="d-flex justify-content-center gap-3">
+          <button class="btn icons-hover d-flex justify-content-center align-items-center" @click="toggleEditing">
+            <i class="bi bi-pencil fs-4 text-secondary icon-bold"></i>
           </button>
-          <button class="btn" @click="toggleAltText">
-            <i class="bi bi-chat-text"></i>
+          <button class="btn icons-hover d-flex justify-content-center align-items-center" @click="toggleAltText">
+            <span class="text-secondary fw-bold fs-6">ALT</span>
           </button>
         </div>
       </div>
@@ -44,15 +57,33 @@
       <!-- Right Column -->
       <div class="col-lg-4">
         <!-- Thumbnails or Editing Tools Based on State -->
-        <div v-if="!isEditing && !showAltText">
-            <div v-for="(file, index) in selectedFiles" :key="index" class="thumbnail mb-2 d-flex align-items-center">
-              <button class="btn btn-sm" @click="moveImage(index, 'left')">&lt;</button>
-              <img :src="file.preview" alt="Thumbnail" class="img-thumbnail" @click="selectImageForEdit(file)">
-              <button class="btn btn-sm" @click="moveImage(index, 'right')">&gt;</button>
+        <div v-if="!mutipleimagesSelected">
+        <button class="btn icons-hover" @click="backtoEditing"><i class="bi bi-arrow-left fs-5"></i></button>
+        <div class="d-flex align-items-center justify-content-center modal-row">
+        <div class="text-center">
+              <img src="https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
+                class="mb-3" width="200">
+              <h2>Select files to begin</h2>
+              <p>Share images or a single video in your post.</p>
+              
+        <label class="btn btn-primary">
+          <input ref="fileInput" type="file" @change="handleFileChange" multiple accept="image/gif,image/jpeg,image/jpg,image/png" class="upload-media-post">
+                  Upload from computer
+                </label>
+                </div>
+              </div>
             </div>
-            <div v-if="cannotGoBack">
-              <button class="btn btn-primary" @click="additionalImageUpload">Upload More</button>
-              <button class="btn btn-danger" @click="removeImage">Delete</button>
+        <div v-if="!isEditing && !showAltText && mutipleimagesSelected" class="d-flex justify-content-between align-items-center flex-column modal-row">
+          <div class="thumbnail-wrapper d-flex flex-wrap justify-content-center gap-4 position-relative">
+            <div v-for="(file, index) in selectedFiles" :key="index" class="thumbnail position-relative">
+              <button class="btn btn-sm btn-left-index btn-index-arrows position-absolute" @click="moveImage(index, 'left')">&lt;</button>
+              <img :src="file.preview" alt="Thumbnail" class="img-thumbnail" @click="selectImageForEdit(file)">
+              <button class="btn btn-sm btn-right-index btn-index-arrows position-absolute" @click="moveImage(index, 'right')">&gt;</button>
+            </div>
+          </div>
+            <div v-if="cannotGoBack" class="align-self-center mt-4">
+              <button class="btn icons-hover btn icons-hover d-inline-flex justify-content-center align-items-center me-3" @click="additionalImageUpload"><i class="bi bi-plus-circle fs-4"></i></button>
+              <button class="btn icons-hover btn icons-hover d-inline-flex justify-content-center align-items-center" @click="removeImage"><i class="bi bi-trash fs-4"></i></button>
             </div>
         </div>
             
@@ -81,9 +112,10 @@
         </div>
       </div>
     </div>
+    </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary" @click="backToPostModal" :disabled="cannotGoBack">Back</button>
+      <button type="button" class="btn rounded-2 border-btn px-4" @click="backToPostModal" :disabled="cannotGoBack">Back</button>
       <button type="button" class="btn btn-primary" @click="proceedToNextStep" :disabled="!selectedFiles.length">Next</button>
     </div>
   </div>
@@ -104,7 +136,9 @@ export default {
       selectedImage: null,
       showAltText: false,
       altText: "",
-      isEditing: false
+      isEditing: false,
+      uploadimageSelected: false,
+      mutipleimagesSelected: true,
     };
   },
   computed: {
@@ -123,13 +157,19 @@ export default {
     proceedToNextStep() {
       this.$emit('mediaUploaded', {
         files: this.selectedFiles,
-        multiImage: this.multiImage
+        multiImage: this.multiImage,
       });
+      const textarea = document.getElementById('textarea-modalpost');
+      if (textarea) {
+        textarea.style.height = '100px';
+      }
+      this.uploadimageSelected = false;
     },
     handleFileChange(event) {
       const files = event.target.files;
       const validTypes = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png'];
-
+      this.uploadimageSelected = true;
+      this.mutipleimagesSelected = true;
       if (files && files.length > 0) {
         const filteredFiles = Array.from(files).filter(file => validTypes.includes(file.type));
 
@@ -171,6 +211,7 @@ export default {
     },
     toggleAltText() {
       this.showAltText = !this.showAltText;
+      this.mutipleimagesSelected = true;
     },
     applyAltText() {
       if (this.selectedImage) {
@@ -183,6 +224,7 @@ export default {
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
+      this.mutipleimagesSelected = true;
       if (!this.isEditing) {
         // Update the preview to the final cropped image
         this.applyCropping();
@@ -222,9 +264,17 @@ export default {
     removeImage(index) {
       this.selectedFiles.splice(index, 1);
       this.selectedImage = this.selectedFiles.length > 0 ? this.selectedFiles[0] : null;
+      this.uploadimageSelected = false;
+      this.mutipleimagesSelected = true;
     },
     additionalImageUpload() {
-      this.$refs.fileInput.click();
+      this.mutipleimagesSelected = false;
+      setTimeout(() => {
+        this.$refs.fileInput.click();
+      }, 200);
+    },
+    backtoEditing() {
+      this.mutipleimagesSelected = true;
     },
     resetState() {
       if (!this.cannotGoBack) {
@@ -242,9 +292,12 @@ export default {
 };
 </script>
 <style>
+.modal-row{
+  min-height: 65vh;
+}
 .img-preview {
-  height: auto;
-  object-fit: cover;
+  max-height: 500px;
+  object-fit: contain;
 }
 .image-collage {
   display: flex;
@@ -255,10 +308,48 @@ export default {
   cursor: pointer;
   margin-bottom: 10px;
 }
+.thumbnail-wrapper{
+  height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.thumbnail{
+  height: 200px;
+  width: 160px;
+}
 .img-thumbnail {
-  max-width: 100px;
+  /* max-width: 100px; */
   margin-right: 10px;
   margin-bottom: 10px;
   cursor: pointer;
+  object-fit: contain;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--astronaut-blue)
+}
+.btn-left-index{
+  left: 5px;
+}
+.btn-right-index{
+  right: 5px;
+}
+.btn-index-arrows{
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: var(--white);
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
+}
+.btn-index-arrows:hover{
+  background-color: rgba(0, 0, 0, 0.39);
+  color: var(--white);
 }
 </style>

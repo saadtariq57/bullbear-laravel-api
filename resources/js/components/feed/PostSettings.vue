@@ -35,7 +35,7 @@
 	  </div>
 	</div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" @click="emitBack">Back</button>
+      <button type="button" class="btn rounded-2 border-btn px-3" @click="emitBack">Back</button>
       <button type="button" class="btn btn-primary" :disabled="!settingsChanged" @click="emitNext">Next</button>
     </div>
 	</div>

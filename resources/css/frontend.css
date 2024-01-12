@@ -2046,14 +2046,13 @@ p.user-message {
 
 #mediapostModal .modal-dialog {
     max-width: 70%;
-    height: 93vh;
   }
   
   #mediapostModal .modal-dialog .modal-content {
-    height: 100%;
+    min-height: 90vh;
   }
   
-  input[type="file"] {
+  .upload-media-post[type="file"] {
     display: none;
   }
   
@@ -2072,7 +2071,7 @@ p.user-message {
     height: 55px;
     background-color: rgb(244, 242, 238);
     border-radius: 50%;
-    cursor: pointer;
+    border: none;
   }
   .clear-color {
     position:absolute;
@@ -2090,6 +2089,15 @@ p.user-message {
     box-shadow:
       rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
       rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;
+  }
+  .icons-hover{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+  }
+  .icons-hover:hover{
+    background-color: rgba(0,0,0,0.08);
   }
 /* feed page CSS End */
 /* profile page css Start */
