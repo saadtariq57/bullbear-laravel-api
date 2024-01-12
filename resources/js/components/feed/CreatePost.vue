@@ -155,7 +155,7 @@
                 <div class="d-flex gap-3 my-2">
                   <!-- Add Media Button -->
                   <abbr title="Add Media">
-                    <button class="post-icon-bg d-flex justify-content-center align-items-center"
+                    <button class="icons-hover d-flex justify-content-center align-items-center"
                       @click="showMediaPostModal" :disabled="currentPostType && currentPostType !== 'photo'">
                       <i class="bi bi-image fs-4"></i>
                     </button>
@@ -163,7 +163,7 @@
 
                   <!-- Create a Poll Button -->
                   <abbr title="Create a Poll">
-                    <button class="post-icon-bg d-flex justify-content-center align-items-center"
+                    <button class="icons-hover d-flex justify-content-center align-items-center"
                       @click="showPollPostModal" :disabled="currentPostType && currentPostType !== 'poll'">
                       <i class="bi bi-bar-chart-line-fill fs-4"></i>
                     </button>
@@ -171,7 +171,7 @@
 
                   <!-- Color Posts Button -->
                   <abbr title="Color Posts">
-                    <button class="post-icon-bg d-flex justify-content-center align-items-center" @click="showColor"
+                    <button class="icons-hover d-flex justify-content-center align-items-center" @click="showColor"
                       :disabled="currentPostType && currentPostType !== 'color'">
                       <i class="bi bi-palette-fill fs-4"></i>
                     </button>
@@ -678,7 +678,7 @@ export default {
 } */
 .v3-emoji-picker {
   position: absolute;
-  top: 5px;
+  top: 90px;
 }
 
 @media screen and (max-width: 768px) {

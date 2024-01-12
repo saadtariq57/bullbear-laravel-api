@@ -2095,6 +2095,8 @@ p.user-message {
     height: 50px;
     border-radius: 50%;
     border: none;
+    background-color: rgba(0, 0, 0, 0.021);
+    transition: .3s ease;
   }
   .icons-hover:hover{
     background-color: rgba(0,0,0,0.08);
