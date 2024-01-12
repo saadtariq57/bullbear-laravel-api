@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
+    <div class="container px-0 px-sm-3">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
                     <div>
                         <CreatePost context="feed" />

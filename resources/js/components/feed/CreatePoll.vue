@@ -31,7 +31,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" @click="backToPostModalAndReset">Back</button>
+      <button type="button" class="btn rounded-2 border-btn px-4" @click="backToPostModalAndReset">Back</button>
       <button type="button" class="btn btn-primary" @click="submitPoll" :disabled="!isPollValid">Done</button>
     </div>
   </div>
@@ -67,6 +67,10 @@ export default {
     },
     submitPoll() {
       if (this.isPollValid) {
+        const textarea = document.getElementById('textarea-modalpost');
+      if (textarea) {
+        textarea.style.height = '100px';
+      }
         const pollData = {
           question: this.pollQuestion,
           options: this.pollOptions.filter(option => option.trim() !== ''),
