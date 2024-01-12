@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex gap-3">
-        <div class="btn-group">
+        <div class="btn-group dropdown-hover">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
                 data-bs-display="static" aria-expanded="false">
                 <i class="bi bi-person-fill-add fs-4"></i>
@@ -25,7 +25,7 @@
                 </li>
             </ul>
         </div>
-        <div class="btn-group">
+        <div class="btn-group dropdown-hover">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
                 data-bs-display="static" aria-expanded="false">
                 <i class="bi bi-chat-dots fs-4"></i>
@@ -71,7 +71,7 @@
             </ul>
         </div>
         
-    <div class="btn-group">
+    <div class="btn-group dropdown-hover">
         <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
             data-bs-display="static" aria-expanded="false">
             <i class="bi bi-bell-fill fs-4"></i>
@@ -93,7 +93,7 @@
             </li>
         </ul>
     </div>
-    <div class="dropdown-center">
+    <div class="dropdown-center dropdown-hover">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div class="img">
@@ -135,3 +135,11 @@ export default {
     computed: mapState(['userData']),
 };
 </script>
+<style>
+.dropdown-hover:hover .dropdown-menu{
+    display: block;
+    right: 0;
+    left: auto;
+    top: 100%!important;
+}
+</style>
