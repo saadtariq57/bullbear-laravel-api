@@ -770,7 +770,13 @@ section.featured-video {
     border-radius: 8px;
     box-shadow: 3px 3px 5px #cccccc9e;
 }
-
+.manage-watchlist .Manage-list input{
+    background: transparent;
+    border: none;
+    font-size: 25px;
+    font-weight: 700;
+    padding: 10px;
+}
 .top-cryptocurrency-heading {
     padding: 10px 15px;
     border-bottom: 1px solid #dee2e6;
@@ -1405,7 +1411,9 @@ meter::-moz-meter-bar {
 section.manage-watchlist ul li {
     cursor: grab;
 }
-
+section.manage-watchlist ul li:active{
+    cursor: grabbing;
+}
 .Manage-list {
     background-color: #f8f8f8;
 }
