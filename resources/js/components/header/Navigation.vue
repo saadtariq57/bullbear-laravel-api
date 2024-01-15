@@ -205,9 +205,9 @@
                                             </ul>
                                         </div>
                                     </li>
-                                    <!-- <li>
+                                    <li>
                                         <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">CEO INTERVIEWS</a>
-                                    </li> -->
+                                    </li>
                                 </ul>
 
                                 <template v-if="userData">

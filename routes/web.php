@@ -70,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/setting', function () {
         return view('profile.setting');
     })->name('profile.setting');
+    Route::get('/profile/notification', function () {
+        return view('profile.notification');
+    })->name('profile.notification');
 
 
     // Single Exam route
