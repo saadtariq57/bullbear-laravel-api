@@ -25,6 +25,11 @@ const routes = [
         component: () => import('./components/profile/ProfileSetting.vue'),
     },
     {
+        path: '/profile/notification',
+        name: 'profile.notification',
+        component: () => import('./components/profile/ProfileNotification.vue'),
+    },
+    {
         path: "/watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
         children: [

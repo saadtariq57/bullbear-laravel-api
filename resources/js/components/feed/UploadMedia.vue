@@ -106,11 +106,13 @@
             <!-- Aspect Ratio Buttons -->
             <div class="ratios  mb-4">
               <span class="d-block mb-3">Aspect Ratio</span>
-              <div class="d-flex justify-content-around">
-                <button class="btn icons-hover" @click="setAspectRatio(1)">1:1</button>
-                <button class="btn icons-hover" @click="setAspectRatio(16 / 9)">16:9</button>
-                <button class="btn icons-hover" @click="setAspectRatio(4 / 5)">4:5</button>
-                <button class="btn icons-hover" @click="setAspectRatio(3 / 2)">3:2</button>
+              <div class="d-flex flex-wrap gap-3">
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(null)">Original Size</button>
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio('square')">Square</button>
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(1)">1:1</button>
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(3 / 2)">3:2</button>
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(4 / 5)">4:5</button>
+                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(16 / 9)">16:9</button>
               </div>
             </div>
 
@@ -165,6 +167,7 @@ export default {
       isEditing: false,
       uploadimageSelected: false,
       mutipleimagesSelected: true,
+      aspectRatio: null,
     };
   },
   computed: {
@@ -237,6 +240,7 @@ export default {
     },
     toggleAltText() {
       this.showAltText = !this.showAltText;
+      this.isEditing = false;
       this.mutipleimagesSelected = true;
     },
     applyAltText() {
@@ -250,6 +254,7 @@ export default {
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
+      this.showAltText= false;
       this.mutipleimagesSelected = true;
       if (!this.isEditing) {
         // Update the preview to the final cropped image
@@ -257,8 +262,14 @@ export default {
       }
     },
     setAspectRatio(ratio) {
-      this.aspectRatio = ratio;
-      this.$refs.cropper.setAspectRatio(ratio);
+      // this.aspectRatio = ratio;
+      // this.$refs.cropper.setAspectRatio(ratio);
+      if (ratio === 'square') {
+        this.aspectRatio = 1;
+      } else {
+        this.aspectRatio = ratio;
+      }
+      this.$refs.cropper.setAspectRatio(this.aspectRatio);
     },
     rotateImage(degrees) {
       this.$refs.cropper.rotate(degrees);
