@@ -74,6 +74,11 @@ Route::middleware(['auth'])->group(function () {
         return view('profile.follow');
     })->name('profile.follow');
 
+    Route::get('/profile/notification', function () {
+        return view('profile.notification');
+    })->name('profile.notification');
+
+
 
     // Single Exam route
     Route::get('/exam/{examName}/question/{questionId}', [ExamController::class, 'getExamQuestions'])

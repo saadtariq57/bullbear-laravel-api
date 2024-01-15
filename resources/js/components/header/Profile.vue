@@ -81,7 +81,44 @@
                         class="bi bi-volume-up pe-2 fs-3"></i><span class="fs-6">Turn off notification
                         sound</span></button>
             </li>
-            <li class="notifications-list p-0">
+            <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+                        type="button">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <div>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
+                                sentiment
+                            </p>
+                        </div>
+                        <div class="fs-6 fw-5">25 W</div>
+                    </button></li>
+                    <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+                        type="button">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <div>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
+                                sentiment
+                            </p>
+                        </div>
+                        <div class="fs-6 fw-5">25 W</div>
+                    </button></li>
+                    <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+                        type="button">
+                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                        <div>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
+                                bullish
+                                sentiment
+                            </p>
+                        </div>
+                        <div class="fs-6 fw-5">25 W</div>
+                    </button></li>
+                    <li class="py-0"><a href="/profile/notification" class="dropdown-item text-center py-2"><span>See All</span></a></li>
+            <li class="notifications-list p-0 d-none">
                 <div class="d-flex justify-content-center align-items-center empty-notifications mb-5">
                     <div>
                         <span

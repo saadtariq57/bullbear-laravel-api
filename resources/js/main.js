@@ -28,6 +28,10 @@ const routes = [
         path: '/profile/follow',
         name: 'profile.follow',
         component: () => import('./components/profile/ProfileFollowers.vue'),
+        path: '/profile/notification',
+        name: 'profile.notification',
+        component: () => import('./components/profile/ProfileNotification.vue'),
+
     },
     {
         path: "/watchlist",
