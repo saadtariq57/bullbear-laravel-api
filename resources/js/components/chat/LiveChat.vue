@@ -3,7 +3,7 @@
         <div class="chat-text-sec px-5 py-4">
             <div class="d-flex pt-3">
                 <div>
-                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/05/NB7ylf3u6A7AzAGfVpwZ_02_e87af182a32d381c032edd34f1be5815_avatar.jpg?cache=1646326623"
+                    <img src="/upload/photos/d-avatar.jpg"
                         alt="" class="rounded-circle me-2" width="30" height="30">
                 </div>
                 <div class="bg-light-grey rounded-2 position-relative">
@@ -40,7 +40,7 @@
             </div>
             <div class="d-flex pt-3">
                 <div>
-                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/05/NB7ylf3u6A7AzAGfVpwZ_02_e87af182a32d381c032edd34f1be5815_avatar.jpg?cache=1646326623"
+                    <img src="/upload/photos/d-avatar.jpg"
                         alt="" class="rounded-circle me-2" width="30" height="30">
                 </div>
                 <div class="bg-light-grey rounded-2 position-relative">

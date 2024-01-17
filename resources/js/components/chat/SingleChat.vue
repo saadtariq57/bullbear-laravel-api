@@ -48,8 +48,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -70,8 +70,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -92,8 +92,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -114,8 +114,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -136,8 +136,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -158,8 +158,8 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
-                                            class="w-75 h-50">
+                                        <img src="/build/images/play-icon.png"
+                                            class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>

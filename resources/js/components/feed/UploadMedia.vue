@@ -192,7 +192,7 @@ export default {
       if (textarea) {
         textarea.style.height = '100px';
       }
-      this.uploadimageSelected = false;
+      this.uploadimageSelected = true;
     },
     handleFileChange(event) {
       const files = event.target.files;
@@ -301,8 +301,17 @@ export default {
     removeImage(index) {
       this.selectedFiles.splice(index, 1);
       this.selectedImage = this.selectedFiles.length > 0 ? this.selectedFiles[0] : null;
-      this.uploadimageSelected = false;
-      this.mutipleimagesSelected = true;
+      
+      // Check if there are selectedFiles
+    if (this.selectedImage != null) {
+        this.isEditing = false;
+        this.showAltText = false;
+        this.uploadimageSelected = true;
+    } else {
+        this.uploadimageSelected = false;
+        this.mutipleimagesSelected = true;
+    }
+      
     },
     additionalImageUpload() {
       this.mutipleimagesSelected = false;
