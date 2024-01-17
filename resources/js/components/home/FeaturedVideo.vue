@@ -20,14 +20,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>
@@ -49,14 +50,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>
@@ -78,14 +80,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>
@@ -107,14 +110,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>
@@ -136,14 +140,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>
@@ -165,14 +170,15 @@
                     </div>
                   </form>
                   <div class="video-featured position-relative">
-
+                    <a href="#">
                     <img src="https://i.ytimg.com/vi/ZKT8NghOdhs/mqdefault.jpg" alt="thumbnail_card_img"
                       class="thumbnail-card w-100">
+                      </a>
                   </div>
                 </div>
                 <div class="video-bio px-3 pt-2 pb-1">
                   <div class="artical-au d-flex justify-content-between pb-3">
-                    <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                    <a href="" class="by-name"><i><span>RICH TV LIVE</span></i></a>
                     <div class="d-flex">
                       <span>Oct 18 2023</span>
                     </div>

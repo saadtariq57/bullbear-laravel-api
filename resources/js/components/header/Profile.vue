@@ -140,7 +140,7 @@
         </button>
         <ul class="dropdown-menu bg-light dropdown-menu-end m-0 p-0">
             <li class="px-4 py-4">
-                <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/profile" class="d-flex align-items-center gap-2">
+                <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/feed" class="d-flex align-items-center gap-2">
                         <img :src="'/' + userData.avatar" class="rounded-circle" width="40" height="40"
                             alt="profile picture">
                         <b class="text-uppercase text-black">{{ userData.name }}</b></a>
