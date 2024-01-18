@@ -14,15 +14,15 @@
       <div>
         
         <div class="d-flex justify-content-around mt-2 create-post-wrapper">
-          <button type="button" class="btn fs-5 " @click="showPostModal">
+          <button type="button" class="btn fs-5 btn-feed-hover" @click="showPostModal">
             <i class="bi bi-pen me-2"></i>
             <span>Write Post</span>
           </button>
-          <button type="button" class="btn fs-5" @click="showMediaPostModal">
+          <button type="button" class="btn fs-5 btn-feed-hover" @click="showMediaPostModal">
             <i class="bi bi-image me-2 media-icon"></i>
             <span>Upload Media</span>
           </button>
-          <button type="button" class="btn fs-5" @click="showPollPostModal">
+          <button type="button" class="btn fs-5 btn-feed-hover" @click="showPollPostModal">
             <i class="bi bi-bar-chart-line-fill me-2"></i>
             <span>Create Poll</span>
           </button>
@@ -109,7 +109,7 @@
                  
                 </div>
                 <!-- Link Preview -->
-                <div v-if="showLinkPreview && currentPostType === 'link'" class="link-preview-container position-relative">
+                <div v-if="showLinkPreview && currentPostType === 'link'" class="link-preview-container px-sm-4 position-relative">
                   <div class="card preview-wrapper shadow mb-3">
                     <div class="link-preview-wrapper text-center rounded-top">
                     <img :src="linkData.image" alt="Link preview" class="link-image img-fluid rounded-top">
@@ -637,7 +637,7 @@ export default {
   width: 700px;
 }
 .link-preview-wrapper{
-  background-color: #1b1f23;
+  background-color: #000000;
 }
 /* #mediapostModal .modal-dialog {
   max-width: 70%;

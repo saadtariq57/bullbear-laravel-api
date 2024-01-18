@@ -86,9 +86,9 @@
           <div v-if="isEditing" class="editing-tools">
             <!-- Aspect Ratio, Rotation, Flip, Zoom, and Apply Buttons -->
             <button class="btn icons-hover d-block mb-4" @click="toggleEditing">
-              <span v-if="isEditing"><i class="bi bi-arrow-left fs-4"></i></span>
-              <span v-else>Edit</span>
+              <span><i class="bi bi-arrow-left fs-4"></i></span>
             </button>
+            <div class="px-3">
             <div class="crop-setting mb-4">
               <!-- Rotation and Flip Buttons -->
               <span class="d-block mb-3">Crop</span>
@@ -106,7 +106,7 @@
             <!-- Aspect Ratio Buttons -->
             <div class="ratios  mb-4">
               <span class="d-block mb-3">Aspect Ratio</span>
-              <div class="d-flex flex-wrap gap-3">
+              <div class="d-flex flex-wrap gap-2">
                 <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(null)">Original Size</button>
                 <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio('square')">Square</button>
                 <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(1)">1:1</button>
@@ -126,8 +126,12 @@
             <!-- Apply Button -->
             <button class="btn btn-primary w-100 my-3" @click="applyCropping">Apply</button>
           </div>
-
+          </div>
           <div v-if="showAltText" class="alt-text-input">
+            <button class="btn icons-hover d-block mb-4" @click="toggleAltText">
+              <span><i class="bi bi-arrow-left fs-4"></i></span>
+            </button>
+            <div class="px-3">
             <!-- Input and Apply Button for Alt Text -->
             <span>Alt text describes images for people who can’t see them. <br><br>There may be an automatically generated
               description. You can edit it anytime.</span>
@@ -135,6 +139,7 @@
               placeholder="How Would You Discribe This Image">
 
             <button class="btn btn-primary w-100" @click="applyAltText">Apply</button>
+          </div>
           </div>
         </div>
       </div>
@@ -330,6 +335,7 @@ export default {
       }
     },
     resetStateParent() {
+      this.uploadimageSelected = false;
       this.selectedFiles = [];
       this.selectedImage = null;
       this.isEditing = false;
@@ -364,12 +370,12 @@ export default {
   overflow-x: hidden;
 }
 
-.thumbnail {
-  height: 200px;
-  width: 46%;
+.thumbnail-wrapper .thumbnail {
+  height: 150px;
+  width: 150px;
 }
 
-.img-thumbnail {
+.thumbnail-wrapper .img-thumbnail {
   /* max-width: 100px; */
   margin-right: 10px;
   margin-bottom: 10px;
