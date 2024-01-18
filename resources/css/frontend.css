@@ -1919,7 +1919,7 @@ p.user-message {
 .wow_side_loggd_usr_hdr .avatar {
     width: 70px;
     height: 70px;
-    margin: -50px auto 13px;
+    margin: -40px auto 13px;
 }
 
 .create_new a.plus-icon-feed {
@@ -2107,7 +2107,7 @@ p.user-message {
   background-color: rgba(0, 0, 0, 0.021);
   transition: .3s ease;
 }
-.icons-hover:hover{
+.btn-feed-hover:hover , .icons-hover:hover{
   background-color: rgba(0,0,0,0.08);
 }
 /* feed page CSS End */
