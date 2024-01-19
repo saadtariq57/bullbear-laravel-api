@@ -1,111 +1,96 @@
 <template>
   <div class="mt-3">
     <div v-if="allPosts.length > 0">
-    <div v-for="post in allPosts" :key="post.id" class="post shadow mb-4 rounded-2">
-      <!-- Post heading section -->
-      <div class="post-wrapper">
-        <div class="post-heading p-3">
-          <div class="d-flex justify-content-between">
-            <div class="user-avatar d-flex gap-2">
-              <div class="img">
-                <img :src="post.user.avatar" class="rounded-circle" :alt="post.user.name + ' profile picture'">
-              </div>
-              <div class="user-info">
-                <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
-                <div class="time">
-                  <span>{{ formatDateTime(post.created_at) }}</span>
+      <div v-for="post in allPosts" :key="post.id" class="post shadow mb-4 rounded-2">
+        <!-- Post heading section -->
+        <div class="post-wrapper">
+          <div class="post-heading p-3">
+            <div class="d-flex justify-content-between">
+              <div class="user-avatar d-flex gap-2">
+                <div class="img">
+                  <img :src="post.user.avatar" class="rounded-circle" :alt="post.user.name + ' profile picture'">
+                </div>
+                <div class="user-info">
+                  <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
+                  <div class="time">
+                    <span>{{ formatDateTime(post.created_at) }}</span>
+                  </div>
                 </div>
               </div>
+              <!-- Post settings -->
+              <!-- Include Post Settings Dropdown Here -->
             </div>
-            <!-- Post settings -->
-            <!-- Include Post Settings Dropdown Here -->
           </div>
-        </div>
 
-        <!-- Post Content -->
-        <div v-if="post.post_text" class="post-description px-3">
-          <p>{{ post.post_text }}</p>
-        </div>
-
-        <!-- Post Media -->
-        <div v-if="post.post_type === 'photo'" class="post-file">
-          <div v-for="photo in post.photos" :key="photo.id">
-            <img :src="photo.image" alt="Post image" class="img-fluid">
+          <!-- Post Content -->
+          <div v-if="post.post_text" class="post-description px-3">
+            <p>{{ post.post_text }}</p>
           </div>
-        </div>
 
-        <!-- Poll Content -->
-        <div v-if="post.post_type === 'poll' && post.poll" class="post-poll">
-          <div class="container-fluid px-5">
-            <div class="container shadow border border-light-grey py-4">
-              <h5>{{ post.poll.text }}</h5>
-              <div class="py-4">
-                <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
-                  <button class="w-100 btn rounded-5 border-btn border-2 fw-6">{{ option.option_text }}</button>
+          <!-- Post Media -->
+          <div v-if="post.post_type === 'photo'" class="post-file">
+            <div v-for="photo in post.photos" :key="photo.id">
+              <img :src="photo.image" alt="Post image" class="img-fluid">
+            </div>
+          </div>
+
+          <!-- Poll Content -->
+          <div v-if="post.post_type === 'poll' && post.poll" class="post-poll">
+            <div class="container-fluid px-5">
+              <div class="container shadow border border-light-grey py-4">
+                <h5>{{ post.poll.text }}</h5>
+                <div class="py-4">
+                  <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
+                    <button class="w-100 btn rounded-5 border-btn border-2 fw-6">{{ option.option_text }}</button>
+                  </div>
                 </div>
+                <!-- Progress bars and other poll details can be added here -->
               </div>
-              <!-- Progress bars and other poll details can be added here -->
             </div>
           </div>
-        </div>
 
-        <!-- Interaction buttons and Like/Comment counts -->
-        <div class="like-comment-count d-flex justify-content-between p-3">
-          <div class="like-count">
-            <div class="reaction-icons">
-              <span v-for="(reaction, index) in post.reactions.slice(0, 3)" :key="reaction.id">
-                <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ post.reactions_count }}
-              </span>
-              <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
-            </div>
-          </div>
-          <div class="comment-count">
-            <button @click="toggleComments(post.id)">
-              <i class="bi bi-chat pe-2"></i> {{ post.comments_count }} comments
-            </button>
-          </div>
-        </div>
-
-        <div class="post-reach row mb-3">
-          <div class="col-4 text-center ">
-            <span class="py-2 d-block cursor-pointer"
-                  @mouseover="onReactionHover(post.id)"
-                  @mouseleave="hideReactionsForPost(post.id)"
-                  @click="handleDefaultReaction(post.id)">
-              <i v-if="!userReactions[post.id]" class="bi bi-hand-thumbs-up pe-2"></i>
-              <i v-else :class="getReactionName(userReactions[post.id])"></i>
-
-              {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
-              <div v-if="showReactionsForPost[post.id]" class="reaction-icons">
-                <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                      @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
-                  <img :src="reactionType.icon" class="reaction-icons-img">
+          <!-- Interaction buttons and Like/Comment counts -->
+          <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+            <div class="like-count">
+              <div class="reaction-icons">
+                <span v-for="(reaction, index) in post.reactions.slice(0, 3)" :key="reaction.id">
+                  <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ post.reactions_count }}
                 </span>
+                <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
               </div>
-            </span>
+            </div>
+            <div class="comment-count">
+              <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
+                <i class="bi bi-chat pe-2"></i> {{ post.comments_count }} comments
+              </button>
+            </div>
           </div>
-          <div class="col-4 text-center">
-            <span class="py-2 d-block cursor-pointer" @click="toggleComments(post.id)"><i class="bi bi-chat pe-2"></i>Comment</span>
+          <div class="row post-reach pb-2 px-4">
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4" @mouseover="onReactionHover(post.id)"
+                @mouseleave="hideReactionsForPost(post.id)" @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]" class="bi bi-hand-thumbs-up pe-2"></i>
+                <i v-else :class="getReactionName(userReactions[post.id])"></i>
+                {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
+                <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                  <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                    @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
+                    <img :src="reactionType.icon" class="reaction-icons-img">
+                  </span>
+                </div>
+              </button>
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id)"><i
+                  class="bi bi-chat pe-2"></i><span>Comment</span></button>
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i class="bi bi-share pe-2"></i><span>Share</span></button>
           </div>
-          <div class="col-4 text-center">
-            <span class="py-2 d-block cursor-pointer" @click="sharePost"><i class="bi bi-share pe-2"></i>Share</span>
-          </div>
-        </div>
 
-        <!-- Comments Section -->
-        <PostComment
-          v-if="fetchedCommentsFlags[post.id]"
-          :userId="userData.id"
-          :postId="post.id"
-          :fetchedCommentsFlags="fetchedCommentsFlags"
-          :userAvatar="userData.avatar"
-          @fetch-comments="handleFetchComments"
-        />
+          <!-- Comments Section -->
+          <PostComment v-if="fetchedCommentsFlags[post.id]" :userId="userData.id" :postId="post.id"
+            :fetchedCommentsFlags="fetchedCommentsFlags" :userAvatar="userData.avatar"
+            @fetch-comments="handleFetchComments" />
+        </div>
       </div>
     </div>
-  </div>
-      <div v-else>
-      <p>Loading posts...</p> 
+    <div v-else>
+      <p>Loading posts...</p>
     </div>
   </div>
 </template>
@@ -146,16 +131,16 @@ export default {
         });
         this.allPosts = response.data.data;
         // Reset userReactions
-       this.userReactions = {};
-       this.allPosts.forEach(post => {
-        // Check if reactions array exists and is not empty
-        if (post.reactions && post.reactions.length > 0) {
-          const userReaction = post.reactions.find(reaction => reaction.user_id === this.userData.id);
-          if (userReaction) {
-            this.userReactions[post.id] = userReaction.reaction_type_id;
+        this.userReactions = {};
+        this.allPosts.forEach(post => {
+          // Check if reactions array exists and is not empty
+          if (post.reactions && post.reactions.length > 0) {
+            const userReaction = post.reactions.find(reaction => reaction.user_id === this.userData.id);
+            if (userReaction) {
+              this.userReactions[post.id] = userReaction.reaction_type_id;
+            }
           }
-        }
-      });
+        });
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -327,12 +312,22 @@ export default {
 };
 </script>
 <style>
-  .user-avatar img, .reaction-icons-img{
-    width: 48px;
-    height: 48px;
-  }
-  .reaction-icon{
-    width: 24px;
-    height: 24px;
-  }
+.btn-feed-hover:focus{
+  background-color: #00000014 !important;
+}
+.user-avatar img,
+.reaction-icons-img {
+  width: 30px;
+  height: 30px;
+}
+.reaction-icons-wrapper{
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.reaction-icon {
+  vertical-align: sub;
+  width: 20px;
+  height: 20px;
+}
 </style>
