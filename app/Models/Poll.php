@@ -19,4 +19,8 @@ class Poll extends Model
     {
         return $this->belongsTo(Post::class);
     }
+    public function options()
+    {
+        return $this->hasMany(PollOption::class);
+    }
 }

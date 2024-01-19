@@ -20,7 +20,9 @@
 @yield('body')
 <div class="overlay_loader" id="overlay_loader"></div>
 <!-- Begin page -->
+
 <div id="app">
+    <?php //phpinfo(); ?>
     <div id="layout-wrapper">
         <!-- topbar -->
             <Navigation></Navigation>

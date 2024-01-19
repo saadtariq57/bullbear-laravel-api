@@ -94,5 +94,15 @@ class User extends Authenticatable
         // This assumes your Follower model is named 'Follower'
         return $this->hasMany(Follower::class, 'following_id');
     }
+    
+    public function groupMemberships()
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id');
+    }
 
 }
