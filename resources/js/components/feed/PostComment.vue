@@ -30,7 +30,7 @@
               <img :src="comment.user.avatar" class="rounded-circle" width="40" height="40">
             </a>
           </div>
-          <div class="comment-body position-relative bg-light-grey w-100 px-3 py-1">
+          <div class="comment-body position-relative bg-light-grey w-100 px-3 py-2">
             <!-- Comment content -->
             <div class="comment-heading position-relative">
               <span class="user-popover d-flex gap-1 align-items-center mb-2">
@@ -41,7 +41,7 @@
               </span>
 
               <!-- Comment Edit/Delete Options -->
-              <div v-if="userId === comment.user.id" class="comment-eidt position-absolute">
+              <div v-if="userId === comment.user.id" class="comment-edit position-absolute">
                 <div class="btn-group">
                 <button 
                   type="button" 
@@ -52,7 +52,7 @@
                   aria-expanded="false">
                   <i class="bi bi-three-dots fs-4"></i>
                 </button>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                  <ul class="dropdown-menu dropdown-menu-end">
                       <li><button class="dropdown-item" @click="editComment(comment.id)"><i class="bi bi-pencil-fill me-2"></i>Edit</button></li>
                       <li><button class="dropdown-item" @click="deleteComment(comment.id)"><i class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                   </ul>
@@ -71,9 +71,8 @@
               </div>
             </div>
             <div class="comment-options">
-              <div class="like-comment-count d-flex gap-3">
-                <div class="col-4 text-center ">
-                  <span class="py-2 d-block cursor-pointer"
+              <div class="like-comment-count d-flex align-items-center gap-3">
+                <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative"
                         @mouseover="onReactionHover(comment.id)"
                         @mouseleave="hideReactionsForComment(comment.id)"
                         @click="handleDefaultReaction(comment.id, false)">
@@ -81,17 +80,16 @@
                     <i v-else :class="getReactionName(userReactions[comment.id])"></i>
 
                     {{ userReactions[comment.id] ? getReactionName(userReactions[comment.id]) : 'Like' }}
-                    <div v-if="showReactionsForComment[comment.id]" class="reaction-icons">
+                    <div v-if="showReactionsForComment[comment.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                       <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                             @click.stop="addOrUpdateCommentReaction(comment.id, 'comment_id', reactionType.id, false)">
-                        <img :src="reactionType.icon" class="reaction-icons-img">
+                        <img :src="reactionType.icon" class="reply-reaction-icons-img">
                       </span>
                     </div>
-                  </span>
-                </div>
+                  </button>
                 <!-- Reaction Icons and Count -->
                 <div class="like-count">
-                  <div class="reaction-icons">
+                  <div class="reaction-icons d-flex align-items-center gap-2">
                     <span v-for="(reaction, index) in comment.reactions.slice(0, 3)" :key="reaction.id">
                       <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ comment.reactions_count }}
                     </span>
@@ -99,7 +97,7 @@
                   </div>
                 </div>
                 <div class="reply">
-                  <button @click="toggleReplyInput(comment.id)">
+                  <button @click="toggleReplyInput(comment.id)" type="button" class="btn fs-5 btn-feed-hover border-0">
                     Reply
                   </button>
                 </div>
@@ -123,15 +121,15 @@
                 </form>
               </div>
             </div>
-            <div class="nested-replies">
+            <div class="nested-replies mt-2">
               <div v-for="reply in comment.replies" :key="reply.id" class="reply-container">
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 position-relative">
                   <div class="user-icon">
                     <a :href="`/${reply.user.username}`">
                       <img :src="reply.user.avatar" class="rounded-circle" width="40" height="40">
                     </a>
                   </div>
-                  <div class="comment-body position-relative w-100">
+                  <div class="comment-body pt-1 w-100">
                     <div class="comment-heading">
                       <span class="user-popover d-flex gap-1 align-items-center mb-2">
                         <a :href="`/${reply.user.username}`" class="text-black">
@@ -140,7 +138,49 @@
                         <span class="time-comment fs-10">{{ formatDateTime(reply.created_at) }}</span>
                       </span>
                       <!-- Reply options (Edit/Delete) -->
-                        <div v-if="userId === reply.user.id" class="comment-edit position-absolute">
+                        
+                        <div v-if="editingReplyId === reply.id" class="reply-edit-form">
+                          <textarea v-model="editedReplyText" rows="2" class="form-control mb-2"></textarea>
+                          <button class="btn btn-primary btn-sm" @click="applyEditReply(reply.id)">Apply</button>
+                          <button class="btn btn-secondary btn-sm" @click="cancelEditReply">Cancel</button>
+                        </div>
+                        <div v-else class="comment-text">
+                          <p>{{ reply.text }}</p>
+                        </div>
+                      <!-- Reply reaction options -->
+                      <div class="reply-options">
+                        <!-- Dynamic Like/Liked Button -->
+                        <div class="like-comment-count d-flex align-items-center gap-3">
+                          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative"
+                                  @mouseover="onReactionHover(reply.id)"
+                                  @mouseleave="hideReactionsForComment(reply.id)"
+                                  @click="handleDefaultReaction(reply.id, true)">
+                              <i v-if="!userReactions[reply.id]" class="bi bi-hand-thumbs-up pe-2"></i>
+                              <i v-else :class="getReactionName(userReactions[reply.id])"></i>
+
+                              {{ userReactions[reply.id] ? getReactionName(userReactions[reply.id]) : 'Like' }}
+                              <div v-if="showReactionsForComment[reply.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                                <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                                      @click.stop="addOrUpdateCommentReaction(reply.id, 'comment_id', reactionType.id, true)">
+                                  <img :src="reactionType.icon" class="reply-reaction-icons-img">
+                                </span>
+                              </div>
+                            </button>
+                            <!-- Reaction Icons and Count -->
+                        <div class="like-count">
+                          <div class="reaction-icons">
+                            <span v-for="(reaction, index) in reply.reactions.slice(0, 3)" :key="reaction.id">
+                              <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ reply.reactions_count }}
+                            </span>
+                            <span v-if="reply.reactions.length > 3">+{{ reply.reactions_count }}</span>
+                          </div>
+                        </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="userId === reply.user.id" class="comment-edit position-absolute">
                           <div class="btn-group">
                             <button 
                               type="button" 
@@ -156,48 +196,6 @@
                             </ul>
                           </div>
                         </div>
-                        <div v-if="editingReplyId === reply.id" class="reply-edit-form">
-                          <textarea v-model="editedReplyText" rows="2" class="form-control mb-2"></textarea>
-                          <button class="btn btn-primary btn-sm" @click="applyEditReply(reply.id)">Apply</button>
-                          <button class="btn btn-secondary btn-sm" @click="cancelEditReply">Cancel</button>
-                        </div>
-                        <div v-else class="comment-text">
-                          <p>{{ reply.text }}</p>
-                        </div>
-                      <!-- Reply reaction options -->
-                      <div class="reply-options">
-                        <!-- Dynamic Like/Liked Button -->
-                        <div class="like-comment-count d-flex gap-3">
-                          <div class="col-4 text-center ">
-                            <span class="py-2 d-block cursor-pointer"
-                                  @mouseover="onReactionHover(reply.id)"
-                                  @mouseleave="hideReactionsForComment(reply.id)"
-                                  @click="handleDefaultReaction(reply.id, true)">
-                              <i v-if="!userReactions[reply.id]" class="bi bi-hand-thumbs-up pe-2"></i>
-                              <i v-else :class="getReactionName(userReactions[reply.id])"></i>
-
-                              {{ userReactions[reply.id] ? getReactionName(userReactions[reply.id]) : 'Like' }}
-                              <div v-if="showReactionsForComment[reply.id]" class="reaction-icons">
-                                <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                                      @click.stop="addOrUpdateCommentReaction(reply.id, 'comment_id', reactionType.id, true)">
-                                  <img :src="reactionType.icon" class="reaction-icons-img">
-                                </span>
-                              </div>
-                            </span>
-                          </div>
-                        </div>
-                        <!-- Reaction Icons and Count -->
-                        <div class="like-count">
-                          <div class="reaction-icons">
-                            <span v-for="(reaction, index) in reply.reactions.slice(0, 3)" :key="reaction.id">
-                              <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ reply.reactions_count }}
-                            </span>
-                            <span v-if="reply.reactions.length > 3">+{{ reply.reactions_count }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -666,3 +664,9 @@ export default {
   }
 };
 </script>
+<style>
+.reply-reaction-icons-img{
+  width: 25px;
+  height: 25px;
+}
+</style>
