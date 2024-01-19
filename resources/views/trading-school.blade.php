@@ -21,9 +21,9 @@
             <router-view></router-view>
         </div>
     </section>
-    {{-- <section class="container-fluid">
+    <section class="container-fluid">
         <div class="container">
-            <div class="tradind-videos-wrapper bg-white px-5 py-4 border-1 border rounded-2 shadow-sm">
+            <div class="tradind-videos-wrapper bg-white px-sm-4 py-4 border-1 border rounded-2 shadow-sm">
                 <div class="text-center">
                     <h1 class="fw-bold fs-1 text-uppercase">TRADING VIDEOS <span
                             class="videos-count fs-12 fw-light">(204)</span></h1>
@@ -262,7 +262,7 @@
                 <button class="btn btn-primary">VIEW MORE</button>
             </div>
         </div>
-    </section> --}}
+    </section>
     <section class="pre-footer container-fluid py-80 bg-smoke">
         <div class="container pb-120">
             <div class="row">

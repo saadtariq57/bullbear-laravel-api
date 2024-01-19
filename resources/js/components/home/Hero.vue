@@ -4,103 +4,133 @@
     <div class="widgets-slide-section">
       <div class="widgets-slide-wrapper position-relative z-3">
         <div class="widgets-slider mb-0">
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
               <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
             <div class="market-data">
               <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
               <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
                 <span>(-1.71%)</span>
               </div>
             </div>
+          </a>
           </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
               <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
             <div class="market-data">
               <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
               <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
                 <span>(+1.71%)</span>
               </div>
             </div>
+          </a>
           </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
               <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
             <div class="market-data">
               <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
+                <span>(-1.71%)</span>
+              </div>
+            </div>
+          </a>
+          </div>
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
+            </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
               <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
                 <span>(+1.71%)</span>
               </div>
             </div>
+          </a>
           </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
               <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
             <div class="market-data">
               <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
+                <span>(-1.71%)</span>
+              </div>
+            </div>
+          </a>
+          </div>
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
+            </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
               <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
                 <span>(+1.71%)</span>
               </div>
             </div>
+          </a>
           </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
             <div class="brand-icon">
               <img src="build/images/brands/cryptocurrency_btc.png" alt="">
             </div>
             <div class="market-data">
               <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
+                <span class="fw-bolder fs-16">36702.25</span>
+              </h3>
+              <div class="Red fs-14 fw-bolder text-start"><span>-645.92</span>
+                <span>(-1.71%)</span>
+              </div>
+            </div>
+          </a>
+          </div>
+          <div class="market-summary">
+            <a href="#" class="d-flex justify-content-center align-items-center gap-3">
+            <div class="brand-icon">
+              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
+            </div>
+            <div class="market-data">
+              <h3 class="lh-1">
+                <span href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</span><br>
                 <span class="fw-bolder fs-16">36702.25</span>
               </h3>
               <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
                 <span>(+1.71%)</span>
               </div>
             </div>
-          </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
-            <div class="brand-icon">
-              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
-            </div>
-            <div class="market-data">
-              <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
-                <span class="fw-bolder fs-16">36702.25</span>
-              </h3>
-              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                <span>(+1.71%)</span>
-              </div>
-            </div>
-          </div>
-          <div class="market-summary d-flex justify-content-center align-items-center gap-3">
-            <div class="brand-icon">
-              <img src="build/images/brands/cryptocurrency_btc.png" alt="">
-            </div>
-            <div class="market-data">
-              <h3 class="lh-1">
-                <a href="" class="fw-bolder fw-bolder fs-16 ">BTC-USD</a><br>
-                <span class="fw-bolder fs-16">36702.25</span>
-              </h3>
-              <div class="Green fs-14 fw-bolder text-start"><span>+645.92</span>
-                <span>(+1.71%)</span>
-              </div>
-            </div>
+          </a>
           </div>
         </div>
       </div>

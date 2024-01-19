@@ -2,6 +2,9 @@
   <!-- Hero Section Start  -->
   <Hero />
   <!-- Hero Section End  -->
+   <!-- FeaturedVideo Section Start  -->
+  <FeaturedVideo />
+  <!-- FeaturedVideo Section End  -->
   <!-- advanced-features-section Start -->
   <section class="advanced-features-section container-fluid bg-smoke py-80">
     <div class="container">
@@ -67,6 +70,7 @@
     </div>
   </section>
   <!-- advanced-features-section End -->
+  
   <!-- Top Tables Section -->
   <TopStocks />
   <!-- Top Tables Section End-->

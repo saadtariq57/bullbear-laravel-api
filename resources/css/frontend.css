@@ -43,7 +43,9 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
-
+.shadow {
+    box-shadow: 0 1px 15px #00000026!important;
+}
 .responsive-iframe {
     padding-bottom: 56.25%;
     position: relative;
@@ -306,8 +308,7 @@ ul {
     font-weight: 500;
 }
 
-.fw-6,
-.icon-bold::before {
+.fw-6 {
     font-weight: 600 !important;
 }
 
@@ -455,7 +456,9 @@ td {
 .slick-next:before {
     content: '>';
 }
-
+.widgets-slider .slick-next{
+    transform: translateY(-100%);
+}
 .widgets-slider .slick-next:before {
     content: url(../images/arrow_hero_slider.png);
     filter: invert(1);
@@ -770,7 +773,13 @@ section.featured-video {
     border-radius: 8px;
     box-shadow: 3px 3px 5px #cccccc9e;
 }
-
+.manage-watchlist .Manage-list input{
+    background: transparent;
+    border: none;
+    font-size: 25px;
+    font-weight: 700;
+    padding: 10px;
+}
 .top-cryptocurrency-heading {
     padding: 10px 15px;
     border-bottom: 1px solid #dee2e6;
@@ -1076,6 +1085,9 @@ section.featured-video {
     max-width: 700px;
     margin: auto
 }
+.form-checkboxgrp-checkbox , .form-checkboxgrp-checkbox + label{
+    cursor: pointer;
+}
 
 /* newsletter section css end */
 /* DISCLAIMER section css start */
@@ -1213,7 +1225,6 @@ header {
 
 .main-header {
     border-bottom: 0.5px solid #183b562b;
-    top: 0;
     z-index: 11;
     position: sticky;
     top: 0;
@@ -1405,7 +1416,9 @@ meter::-moz-meter-bar {
 section.manage-watchlist ul li {
     cursor: grab;
 }
-
+section.manage-watchlist ul li:active{
+    cursor: grabbing;
+}
 .Manage-list {
     background-color: #f8f8f8;
 }
@@ -1906,7 +1919,7 @@ p.user-message {
 .wow_side_loggd_usr_hdr .avatar {
     width: 70px;
     height: 70px;
-    margin: -50px auto 13px;
+    margin: -40px auto 13px;
 }
 
 .create_new a.plus-icon-feed {
@@ -2016,10 +2029,6 @@ p.user-message {
     height: 40px;
 }
 
-.shadow {
-    box-shadow: 0 1px 15px #00000026!important;
-}
-
 .focus-overlay {
     width: 100%;
     height: 100%;
@@ -2046,51 +2055,61 @@ p.user-message {
 
 #mediapostModal .modal-dialog {
     max-width: 70%;
-    height: 93vh;
   }
   
-  #mediapostModal .modal-dialog .modal-content {
-    height: 100%;
-  }
-  
-  input[type="file"] {
-    display: none;
-  }
-  
-  #postModal .modal-dialog {
-    max-width: 50%;
-  }
-  
-  .post-textarea textarea {
-    resize: none;
-    height: 300px;
-    padding: 10px 15px;
-  }
-  
-  .post-icon-bg {
-    width: 55px;
-    height: 55px;
-    background-color: rgb(244, 242, 238);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .clear-color {
-    position:absolute;
-    top:20px;
-    right:20px;
-    width:30px;
-    height:30px;
-  }
-  .v3-emoji-picker{
-    position: absolute;
-    top:5px;
-  }
-  
-  .post-icon-bg:hover , .all_colors_style{
-    box-shadow:
-      rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
-      rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;
-  }
+#mediapostModal .modal-dialog .modal-content {
+  min-height: 90vh;
+}
+
+.upload-media-post[type="file"] {
+  display: none;
+}
+
+#postModal .modal-dialog {
+  max-width: 50%;
+}
+
+.post-textarea textarea {
+  resize: none;
+  height: 300px;
+  padding: 10px 15px;
+}
+
+.post-icon-bg {
+  width: 55px;
+  height: 55px;
+  background-color: rgb(244, 242, 238);
+  border-radius: 50%;
+  border: none;
+}
+.clear-color {
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:30px;
+  height:30px;
+}
+.v3-emoji-picker{
+  position: absolute;
+  top:5px;
+}
+
+.post-icon-bg:hover , .all_colors_style{
+  box-shadow:
+    rgba(140, 140, 140, 0.2) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.3) 0px 4px 4px 0px;
+}
+.icons-hover{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.021);
+  transition: .3s ease;
+}
+.btn-feed-hover:hover , .icons-hover:hover{
+  background-color: rgba(0,0,0,0.08);
+}
 /* feed page CSS End */
 /* profile page css Start */
 .user-li-navbtn {
@@ -2296,7 +2315,7 @@ p.user-message {
 
 .video-play-btn {
     left: 35px;
-    top: 13px;
+    top: 15px;
 }
 
 /* single-chats page end css */
