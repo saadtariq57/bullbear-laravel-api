@@ -36,8 +36,12 @@ class Group extends Model
         return $this->belongsTo(GroupCategory::class, 'category_id');
     }
 
-    public function members()
+/*    public function members()
     {
         return $this->hasMany(GroupMember::class);
+    }*/
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'user_id');
     }
 }

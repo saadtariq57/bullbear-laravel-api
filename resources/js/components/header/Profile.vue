@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="fs-6 fw-5">25 W</div>
-                </button></li>
+                </li>
             <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
                     type="button">
                     <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">

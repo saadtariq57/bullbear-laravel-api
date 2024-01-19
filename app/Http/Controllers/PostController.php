@@ -8,7 +8,12 @@ use App\Models\ColoredPost;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\AlbumMedia;
+use App\Models\Group;
+use App\Models\Comment;
+use App\Models\Reaction;
+use App\Models\ReactionType;
 use Illuminate\Http\Request;
+use App\Events\NewPost;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -89,106 +94,220 @@ class PostController extends Controller
                 break;
         }
 
+        broadcast(new \App\Events\NewPost($post));
         return response()->json(['message' => 'Post created successfully', 'post' => $post]);
     }
 
-    public function getUserPosts(Request $request)
+    public function getUserFeed(Request $request)
     {
-        $userPosts = auth()->user()->posts()
-            ->with(['photos', 'polls', 'comments.user', 'reactions.user', 'reactions.reactionType'])
-            ->paginate(10);
+        $user = $request->user();
 
-        return response()->json($userPosts);
-    }
-     
-     
-    public function getTextPosts(Request $request)
-    {
-        $textPosts = auth()->user()->posts()->where('post_type', 'text')->paginate(10);
-        return response()->json($textPosts);
-    }
+        $groupIds = $user->groupMemberships()->pluck('group_id');
 
-    public function getImagePosts(Request $request)
-    {
-        $imagePosts = auth()->user()->posts()->where('post_type', 'photo')->get();
-                foreach ($imagePosts as $post) {
-                if ($post->multi_image === '1') {
-                    $post->photos = $post->photos; // Assuming photos relationship in Post model
-                }
+        // Create a query combining posts from groups, followed users, and user's own posts
+        $postsQuery = Post::with([
+                            'user:id,name,avatar',
+                            'photos', 
+                            'poll.options', 
+                            'coloredPost', 
+                            'reactions' => function($query) {
+                                $query->with('reactionType:id,name,icon');
+                            }
+                        ])
+                        ->withCount(['comments', 'reactions'])
+                        ->whereIn('group_id', $groupIds)
+                        ->orWhereIn('user_id', $user->followers()->pluck('follower_id'))
+                        ->orWhere('user_id', $user->id)
+                        ->orderByDesc('created_at');
+
+        // Paginate the results
+        $posts = $postsQuery->paginate(10);
+
+        // Customize the collection to include additional data based on post type
+        $posts->transform(function ($post) {
+            // Check and handle each post type
+            switch ($post->post_type) {
+                case 'photo':
+                    break;
+
+                case 'poll':
+                    // If it's a poll, attach options to the poll object and remove pollDetails
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                    }
+                    unset($post->pollDetails);
+                    break;
+
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
             }
-        return response()->json($imagePosts);
+
+            return $post;
+        });
+
+        return response()->json($posts);
     }
 
-
-     public function getVideoPosts(Request $request)
+    public function fetchPostComments(Request $request, $postId)
     {
-        $videoPosts = auth()->user()->posts()->where('post_type', 'video')->paginate(10);
-        return response()->json($videoPosts);
+        // Fetch root level comments for the given post ID along with their replies and reactions
+        $comments = Comment::with([
+                            'user:id,name,avatar',
+                            'replies' => function($query) {
+                                $query->with('user:id,name,avatar')
+                                      ->with('reactions.reactionType:id,name,icon')
+                                      ->withCount('reactions');
+                            },
+                            'reactions.reactionType:id,name,icon'
+                        ])
+                        ->withCount(['replies', 'reactions'])
+                        ->where('post_id', $postId)
+                        ->whereNull('parent_id')
+                        ->get();
+
+        return response()->json($comments);
     }
 
-    public function getRecentPosts(Request $request)
+    public function submitComment(Request $request)
     {
-        $recentPosts = auth()->user()->posts()->latest()->paginate(10);
-        return response()->json($recentPosts);
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'post_id' => 'required|exists:posts,id',
+            'text' => 'required|string|max:1000',
+            // Include other fields if necessary
+        ]);
+
+        $comment = Comment::create([
+            'user_id' => $request->user()->id, // Assuming you're using Laravel's authentication
+            'post_id' => $request->post_id,
+            'text' => $request->text,
+            // Set other fields if they're in the request
+        ]);
+
+        return response()->json([
+            'message' => 'Comment successfully added',
+            'comment' => $comment
+        ]);
+    }
+    public function submitReply(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'post_id' => 'required|exists:posts,id',
+            'parent_id' => 'required|exists:comments,id',
+            'text' => 'required|string|max:1000',
+            // Include other fields if necessary
+        ]);
+
+        $comment = Comment::create([
+            'user_id' => $request->user()->id,
+            'parent_id' => $request->parent_id,
+            'post_id' => $request->post_id,
+            'text' => $request->text,
+            // Set other fields if they're in the request
+        ]);
+
+        return response()->json([
+            'message' => 'Comment successfully added',
+            'comment' => $comment
+        ]);
+    }
+    // Method to edit a comment
+    public function editComment(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'text' => 'required|string|max:255',
+        ]);
+
+        $comment = Comment::find($request->id);
+
+        // Ensure the logged-in user is the owner of the comment
+        if ($comment && $comment->user_id === Auth::id()) {
+            $comment->text = $request->text;
+            $comment->save();
+
+            return response()->json([
+                'message' => 'Comment updated successfully.',
+                'comment' => $comment
+            ]);
+        }
+
+        return response()->json(['message' => 'Unauthorized action.'], 403);
     }
 
-    public function getBookmarkedPosts(Request $request)
+    // Method to delete a comment
+    public function deleteComment(Request $request)
     {
-        // Assuming there is a 'bookmarks' relationship or similar logic
-        $bookmarkedPosts = auth()->user()->bookmarks()->paginate(10);
-        return response()->json($bookmarkedPosts);
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        $comment = Comment::find($request->id);
+
+        // Ensure the logged-in user is the owner of the comment
+        if ($comment && $comment->user_id === Auth::id()) {
+            $comment->delete();
+
+            return response()->json(['message' => 'Comment deleted successfully.']);
+        }
+
+        return response()->json(['message' => 'Unauthorized action.'], 403);
+    }
+    // Fetch all reaction types
+    public function getReactionTypes()
+    {
+        $reactionTypes = ReactionType::take(6)->get();
+        return response()->json($reactionTypes);
     }
 
-    public function index()
+    // Add or Update a Reaction to a Post
+    public function addOrUpdateReaction(Request $request)
     {
-        //
+        $userId = Auth::id();
+        $reactionTypeId = $request->reaction_type_id;
+
+        $reactionData = [
+            'user_id' => $userId, 
+            'reaction_type_id' => $reactionTypeId
+        ];
+
+        // Check which type of ID is provided and use it
+        if ($request->has('post_id')) {
+            $reactionData['post_id'] = $request->post_id;
+        } elseif ($request->has('comment_id')) {
+            $reactionData['comment_id'] = $request->comment_id;
+        } elseif ($request->has('message_id')) {
+            $reactionData['message_id'] = $request->message_id;
+        }
+
+        $reaction = Reaction::updateOrCreate(
+            ['user_id' => $userId, 'post_id' => $reactionData['post_id'] ?? null, 'comment_id' => $reactionData['comment_id'] ?? null, 'message_id' => $reactionData['message_id'] ?? null],
+            ['reaction_type_id' => $reactionTypeId]
+        );
+
+        return response()->json(['message' => 'Reaction added/updated successfully', 'reaction' => $reaction]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function removeReaction(Request $request)
     {
-        //
+        $userId = Auth::id();
+
+        $query = Reaction::where('user_id', $userId);
+
+        // Check which type of ID is provided and use it
+        if ($request->has('post_id')) {
+            $query->where('post_id', $request->post_id);
+        } elseif ($request->has('comment_id')) {
+            $query->where('comment_id', $request->comment_id);
+        } elseif ($request->has('message_id')) {
+            $query->where('message_id', $request->message_id);
+        }
+
+        $query->delete();
+
+        return response()->json(['message' => 'Reaction removed successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Post $post)
-    {
-        //
-    }
 }

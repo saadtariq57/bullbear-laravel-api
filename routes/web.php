@@ -10,6 +10,7 @@ use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
 
 Auth::routes();
+Broadcast::routes();
 
 // Public routes
 Route::get('/', function () {

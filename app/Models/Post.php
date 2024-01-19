@@ -46,7 +46,7 @@ class Post extends Model
 
     public function photos()
     {
-        return $this->hasMany(PostPhoto::class);
+        return $this->hasMany(AlbumMedia::class);
     }
 
     public function poll()
