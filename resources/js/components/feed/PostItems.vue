@@ -30,19 +30,23 @@
           <!-- Post Media -->
           <div v-if="post.post_type === 'photo'" class="post-file">
             <div v-for="photo in post.photos" :key="photo.id">
-              <img :src="photo.image" alt="Post image" class="img-fluid">
+              <img :src="photo.image" alt="Post image" class="img-fluid w-100">
             </div>
           </div>
 
           <!-- Poll Content -->
           <div v-if="post.post_type === 'poll' && post.poll" class="post-poll">
-            <div class="container-fluid px-5">
+            <div class="container-fluid px-sm-5">
               <div class="container shadow border border-light-grey py-4">
                 <h5>{{ post.poll.text }}</h5>
+                <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank" class="astronaut-blue fw-6 fs-6">Learn more</a></span>
                 <div class="py-4">
                   <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
                     <button class="w-100 btn rounded-5 border-btn border-2 fw-6">{{ option.option_text }}</button>
                   </div>
+                  <div class="text-secondary">
+                          <span>35</span> votes - <span>2w</span> left
+                      </div>
                 </div>
                 <!-- Progress bars and other poll details can be added here -->
               </div>
@@ -61,15 +65,17 @@
             </div>
             <div class="comment-count">
               <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
-                <i class="bi bi-chat pe-2"></i> {{ post.comments_count }} comments
+                <i class="bi bi-chat pe-sm-2"></i> {{ post.comments_count }} comments
               </button>
             </div>
           </div>
-          <div class="row post-reach pb-2 px-4">
+          <div class="row post-reach pb-2 px-sm-4">
             <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4" @mouseover="onReactionHover(post.id)"
-                @mouseleave="hideReactionsForPost(post.id)" @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]" class="bi bi-hand-thumbs-up pe-2"></i>
+                @mouseleave="hideReactionsForPost(post.id)" @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]" class="bi bi-hand-thumbs-up pe-sm-2"></i>
                 <i v-else :class="getReactionName(userReactions[post.id])"></i>
+                <span :class="getReactionName(userReactions[post.id])">
                 {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
+              </span>
                 <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                   <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                     @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
@@ -78,8 +84,8 @@
                 </div>
               </button>
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id)"><i
-                  class="bi bi-chat pe-2"></i><span>Comment</span></button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i class="bi bi-share pe-2"></i><span>Share</span></button>
+                  class="bi bi-chat pe-sm-2"></i><span>Comment</span></button>
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i class="bi bi-share pe-sm-2"></i><span>Share</span></button>
           </div>
 
           <!-- Comments Section -->
@@ -312,22 +318,97 @@ export default {
 };
 </script>
 <style>
-.btn-feed-hover:focus{
+/* .btn-feed-hover:focus{
   background-color: #00000014 !important;
+} */
+.btn-feed-hover:active{
+  background-color: transparent !important;
 }
 .user-avatar img,
 .reaction-icons-img {
   width: 30px;
   height: 30px;
 }
+.reaction-icons-img:hover{
+  transform: scale(1.1);
+  transition: ease-in-out .5s;
+}
 .reaction-icons-wrapper{
   top: -30px;
   left: 50%;
+  padding-bottom: 5px;
   transform: translateX(-50%);
+  /* transform: translateY(-10px); */
 }
 .reaction-icon {
   vertical-align: sub;
   width: 20px;
   height: 20px;
+}
+.post-reach span.like::before,.post-reach span.love::before,.post-reach span.haha::before,.post-reach span.wow::before,.post-reach span.sad::before,.post-reach span.angry::before{
+  content: "";
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+.love{
+  color: #EE3757;
+}
+.post-reach span.love::before{
+  background-image: url('/upload/icons/love.png');
+  
+}
+.like{
+color: #378FE9;
+}
+.post-reach span.like::before{
+  background-image: url('/upload/icons/like.png');
+}
+.haha ,.wow, .sad{
+color: #F2B43B;
+}
+.post-reach span.haha::before{
+  background-image: url('/upload/icons/haha.png');
+}
+.post-reach span.wow::before{
+  background-image: url('/upload/icons/wow.png');
+}
+.post-reach span.sad::before{
+  background-image: url('/upload/icons/sad.png');
+}
+.angry{
+color: #E57D28;
+}
+.post-reach span.angry::before{
+  background-image: url('/upload/icons/angry.png');
+}
+
+@media screen and (max-width: 506px) {
+ .post-reach button{
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 13px !important;
+  }
+}
+@media screen and (max-width: 350px) {
+  .post-reach button i {
+    margin-right: 3px !important;
+  }
+  .user-icon img{
+    width: 30px;
+    height: 30px;
+  }
+  .user-info a{
+    margin-left: -25px;
+  }
+  .post-reach span.like::before,.post-reach span.love::before,.post-reach span.haha::before,.post-reach span.wow::before,.post-reach span.sad::before,.post-reach span.angry::before{
+    width: 15px;
+    height: 15px;
+    vertical-align: top;
+  }
 }
 </style>

@@ -2107,9 +2107,13 @@ p.user-message {
   background-color: rgba(0, 0, 0, 0.021);
   transition: .3s ease;
 }
+.btn-feed-hover::after:hover{
+    content: "";
+}
 .btn-feed-hover:hover , .icons-hover:hover{
   background-color: rgba(0,0,0,0.08);
 }
+
 /* feed page CSS End */
 /* profile page css Start */
 .user-li-navbtn {
