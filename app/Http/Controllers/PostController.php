@@ -92,6 +92,26 @@ class PostController extends Controller
                         }
                 }
                 break;
+            case 'link':
+                // Handle video data storage logic
+                try {
+                    // $linkPath = $request-> file('link')->store("upload/links/" . now()->year . "/" . now()->month, 'public');
+                    $linkPath = $request->post_link;
+                    $linktitle = $request->post_link_title;
+                    $linkimage = $request->post_link_image;
+                    
+                    Post::create([
+                        'post_id' => $post->id,
+                        'post_link' => $linkPath,
+                        'post_link_title' => $linktitle,
+                        'post_link_image' => $linkimage,
+                    ]);
+                    Log::info("Video uploaded successfully: " . $linkPath);
+                } catch (\Exception $e) {
+                    Log::error("Video upload failed: " . $e->getMessage());
+                    return response()->json(['error' => 'Video upload failed'], 500);
+                }
+                break;
         }
 
         broadcast(new \App\Events\NewPost($post));
