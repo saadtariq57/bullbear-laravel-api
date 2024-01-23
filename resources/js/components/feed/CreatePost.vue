@@ -518,7 +518,7 @@ export default {
       formData.append('post_privacy', this.post_privacy);
       formData.append('comments_status', this.comment_status);
       formData.append('post_text', this.textContent);
-
+      console.log(this.currentPostType);
       switch (this.currentPostType) {
         case 'color':
           formData.append('colored_post_id', this.selectedColorId);
@@ -538,6 +538,11 @@ export default {
               formData.append(`images[${index}]`, mediaItem.file);
             }
           });
+          break;
+        case 'link':
+          formData.append('post_link', this.linkData.url); // Assuming you have a reference to the video file in this.videoFile
+          formData.append('post_link_title', this.linkData.title);
+          formData.append('post_link_image', this.linkData.image);
           break;
         // Add other cases as necessary
       }

@@ -52,7 +52,16 @@
               </div>
             </div>
           </div>
-
+          <!-- link Media -->
+          <div v-if="post.post_type === 'link'" class="link-file">
+            <a :href="post.post_link" target="_blank">
+              <img :src="post.post_link_image" alt="Post image" class="img-fluid w-100">
+              <div class="link-post-details px-3 pt-3">
+                      <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
+                      <span class="Blue fs-12">{{post.post_link}}</span>
+                    </div>
+            </a>
+          </div>
           <!-- Interaction buttons and Like/Comment counts -->
           <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
             <div class="like-count">
@@ -321,6 +330,14 @@ export default {
 /* .btn-feed-hover:focus{
   background-color: #00000014 !important;
 } */
+.link-file {
+    max-height: 700px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.link-file a img{
+  max-height: 600px;
+}
 .btn-feed-hover:active{
   background-color: transparent !important;
 }
@@ -328,6 +345,7 @@ export default {
 .reaction-icons-img {
   width: 30px;
   height: 30px;
+  transition: ease-in-out .4s;
 }
 .reaction-icons-img:hover{
   transform: scale(1.1);
@@ -386,7 +404,11 @@ color: #E57D28;
 .post-reach span.angry::before{
   background-image: url('/upload/icons/angry.png');
 }
-
+@media screen and (max-width: 767px){
+  .user-info a{
+    margin-left: -40px;
+  }
+}
 @media screen and (max-width: 506px) {
  .post-reach button{
     padding-left: 2px;
@@ -402,9 +424,7 @@ color: #E57D28;
     width: 30px;
     height: 30px;
   }
-  .user-info a{
-    margin-left: -25px;
-  }
+ 
   .post-reach span.like::before,.post-reach span.love::before,.post-reach span.haha::before,.post-reach span.wow::before,.post-reach span.sad::before,.post-reach span.angry::before{
     width: 15px;
     height: 15px;

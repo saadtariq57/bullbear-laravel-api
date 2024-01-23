@@ -48,7 +48,7 @@
         let overlayLoader = document.getElementById('overlay_loader');
       let timeoutId;
 
-      function myFunction() {
+      function hideLoder() {
         timeoutId = setTimeout(alertFunc, 1000);
       }
 
@@ -57,7 +57,7 @@
       }
 
       // Call myFunction when the window has finished loading
-      window.addEventListener('load', myFunction);
+      window.addEventListener('load', hideLoder);
     </script>
 </div>
 </body>
