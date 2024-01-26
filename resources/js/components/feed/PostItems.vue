@@ -24,13 +24,17 @@
 
           <!-- Post Content -->
           <div v-if="post.post_text" class="post-description px-3">
-            <p>{{ post.post_text }}</p>
+            <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center">
+              <p>{{ post.post_text }}</p>
+            </div>
+            <p v-else>{{ post.post_text }}</p>
           </div>
 
           <!-- Post Media -->
           <div v-if="post.post_type === 'photo'" class="post-file">
-            <div v-for="photo in post.photos" :key="photo.id">
-              <img :src="photo.image" alt="Post image" class="img-fluid w-100">
+            <div v-for="photo in post.photos" :key="photo.id" class="text-center">
+              <!-- <img :src="photo.image" alt="Post image" class="img-fluid"> -->
+              <img :src="photo.image" alt="Post image" class="img-fluid">
             </div>
           </div>
 
@@ -39,14 +43,15 @@
             <div class="container-fluid px-sm-5">
               <div class="container shadow border border-light-grey py-4">
                 <h5>{{ post.poll.text }}</h5>
-                <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank" class="astronaut-blue fw-6 fs-6">Learn more</a></span>
+                <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank"
+                    class="astronaut-blue fw-6 fs-6">Learn more</a></span>
                 <div class="py-4">
                   <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
                     <button class="w-100 btn rounded-5 border-btn border-2 fw-6">{{ option.option_text }}</button>
                   </div>
                   <div class="text-secondary">
-                          <span>35</span> votes - <span>2w</span> left
-                      </div>
+                    <span>35</span> votes - <span>2w</span> left
+                  </div>
                 </div>
                 <!-- Progress bars and other poll details can be added here -->
               </div>
@@ -57,44 +62,317 @@
             <a :href="post.post_link" target="_blank">
               <img :src="post.post_link_image" alt="Post image" class="img-fluid w-100">
               <div class="link-post-details px-3 pt-3">
-                      <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
-                      <span class="Blue fs-12">{{post.post_link}}</span>
-                    </div>
+                <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
+                <span class="Blue fs-12">{{ post.post_link }}</span>
+              </div>
             </a>
           </div>
           <!-- Interaction buttons and Like/Comment counts -->
           <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
             <div class="like-count">
+              <!-- Reaction Post trigger modal -->
               <div class="reaction-icons">
                 <span v-for="(reaction, index) in post.reactions.slice(0, 3)" :key="reaction.id">
-                  <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ post.reactions_count }}
+                  <button class="btn" data-bs-toggle="modal" data-bs-target="#reactionPostModal"><img
+                      :src="reaction.reaction_type.icon" class="reaction-icon me-sm-2 me-1"><span> {{ post.reactions_count
+                      }}</span></button>
                 </span>
                 <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
+                <!-- Reaction Post Modal Start -->
+                <div class="modal fade" id="reactionPostModal" tabindex="-1" aria-labelledby="reactionPostModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header pb-0 border-0">
+                        <h1 class="modal-title fs-5" id="reactionPostModalLabel">Reactions</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="mt-2 reactions-post-wrapper mx-3">
+                        <ul class="nav border-0 nav-tabs gap-1 flex-nowrap" id="reactions-post-Followers-tab"
+                          role="tablist">
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap active"
+                              id="allreactions-tab" data-bs-toggle="tab" data-bs-target="#allreactions-tab-pane"
+                              type="button" role="tab" aria-controls="allreactions-tab-pane" aria-selected="false"><span
+                                class="me-1">All</span><span>6</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="likereactions-tab" data-bs-toggle="tab" data-bs-target="#likereactions-tab-pane"
+                              type="button" role="tab" aria-controls="likereactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/like.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="lovereactions-tab" data-bs-toggle="tab" data-bs-target="#lovereactions-tab-pane"
+                              type="button" role="tab" aria-controls="lovereactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/love.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="hahareactions-tab" data-bs-toggle="tab" data-bs-target="#hahareactions-tab-pane"
+                              type="button" role="tab" aria-controls="hahareactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/haha.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py- d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="wowreactions-tab" data-bs-toggle="tab" data-bs-target="#wowreactions-tab-pane"
+                              type="button" role="tab" aria-controls="wowreactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/wow.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py- d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="sadreactions-tab" data-bs-toggle="tab" data-bs-target="#sadreactions-tab-pane"
+                              type="button" role="tab" aria-controls="sadreactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/sad.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                          <li class="nav-item" role="presentation">
+                            <button
+                              class="nav-link border-0 fs-6 text-black px-2 py-2  d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
+                              id="angryreactions-tab" data-bs-toggle="tab" data-bs-target="#angryreactions-tab-pane"
+                              type="button" role="tab" aria-controls="angryreactions-tab-pane" aria-selected="false"><img
+                                src="/upload/icons/angry.png" alt="" width="18px" class="me-1"><span>1</span></button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="modal-body">
+
+                        <div class="list-group">
+                          <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="allreactions-tab-pane" role="tabpanel"
+                              aria-labelledby="allreactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative">
+                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="40" height="40">
+                                    <span class="user-reaction position-absolute bg-white rounded-5">
+                                      <img src="/upload/icons/angry.png" alt="" width="15px" height="15px">
+                                    </span>
+                                  </div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="likereactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="lovereactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="hahareactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="wowreactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="sadreactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                            <div class="tab-pane fade" id="angryreactions-tab-pane" role="tabpanel"
+                              aria-labelledby="likereactions-tab" tabindex="0">
+                              <a href="#"
+                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
+                                <div>
+                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
+                                      alt="" width="40" height="40"></div>
+                                </div>
+                                <div class="flex-fill border-bottom py-3">
+                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
+                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
+                                    Commercialization | Growth @ Trinity Consulting
+                                  </p>
+
+                                </div>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Reaction Post Modal End-->
               </div>
             </div>
             <div class="comment-count">
               <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
-                <i class="bi bi-chat pe-sm-2"></i> {{ post.comments_count }} comments
+                <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
               </button>
             </div>
           </div>
           <div class="row post-reach pb-2 px-sm-4">
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4" @mouseover="onReactionHover(post.id)"
-                @mouseleave="hideReactionsForPost(post.id)" @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]" class="bi bi-hand-thumbs-up pe-sm-2"></i>
-                <i v-else :class="getReactionName(userReactions[post.id])"></i>
-                <span :class="getReactionName(userReactions[post.id])">
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
+              @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
+              @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]"
+                class="bi bi-hand-thumbs-up pe-sm-2 pe-1"></i>
+              <i v-else :class="getReactionName(userReactions[post.id])"></i>
+              <span :class="getReactionName(userReactions[post.id])">
                 {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
               </span>
-                <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                  <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                    @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
-                    <img :src="reactionType.icon" class="reaction-icons-img">
-                  </span>
-                </div>
-              </button>
+              <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                  @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
+                  <img :src="reactionType.icon" class="reaction-icons-img">
+                </span>
+              </div>
+            </button>
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id)"><i
-                  class="bi bi-chat pe-sm-2"></i><span>Comment</span></button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i class="bi bi-share pe-sm-2"></i><span>Share</span></button>
+                class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i
+                class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
           </div>
 
           <!-- Comments Section -->
@@ -136,6 +414,12 @@ export default {
     ...mapState(['userData'])
   },
   methods: {
+    isSquare(aspectRatio) {
+      return aspectRatio <= 1; // Check if aspect ratio is less than or equal to 1
+    },
+    isLandscape(aspectRatio) {
+      return aspectRatio > 1; // Check if aspect ratio is greater than 1
+    },
     async fetchUserPosts() {
       try {
         const response = await axios.get('/api/user-feed', {
@@ -331,39 +615,51 @@ export default {
   background-color: #00000014 !important;
 } */
 .link-file {
-    max-height: 700px;
-    overflow: hidden;
-    cursor: pointer;
+  max-height: 700px;
+  overflow: hidden;
+  cursor: pointer;
 }
-.link-file a img{
+
+.link-file a img {
   max-height: 600px;
 }
-.btn-feed-hover:active{
+
+.btn-feed-hover:active {
   background-color: transparent !important;
 }
+
 .user-avatar img,
 .reaction-icons-img {
   width: 30px;
   height: 30px;
   transition: ease-in-out .4s;
 }
-.reaction-icons-img:hover{
+
+.reaction-icons-img:hover {
   transform: scale(1.1);
   transition: ease-in-out .5s;
 }
-.reaction-icons-wrapper{
+
+.reaction-icons-wrapper {
   top: -30px;
   left: 50%;
   padding-bottom: 5px;
   transform: translateX(-50%);
   /* transform: translateY(-10px); */
 }
+
 .reaction-icon {
   vertical-align: sub;
   width: 20px;
   height: 20px;
 }
-.post-reach span.like::before,.post-reach span.love::before,.post-reach span.haha::before,.post-reach span.wow::before,.post-reach span.sad::before,.post-reach span.angry::before{
+
+.post-reach span.like::before,
+.post-reach span.love::before,
+.post-reach span.haha::before,
+.post-reach span.wow::before,
+.post-reach span.sad::before,
+.post-reach span.angry::before {
   content: "";
   background-repeat: no-repeat;
   background-size: cover;
@@ -373,59 +669,123 @@ export default {
   margin-right: 5px;
   vertical-align: text-top;
 }
-.love{
+
+.love {
   color: #EE3757;
 }
-.post-reach span.love::before{
+
+.post-reach span.love::before {
   background-image: url('/upload/icons/love.png');
-  
+
 }
-.like{
-color: #378FE9;
+
+.like {
+  color: #378FE9;
 }
-.post-reach span.like::before{
+
+.post-reach span.like::before {
   background-image: url('/upload/icons/like.png');
 }
-.haha ,.wow, .sad{
-color: #F2B43B;
+
+.haha,
+.wow,
+.sad {
+  color: #F2B43B;
 }
-.post-reach span.haha::before{
+
+.post-reach span.haha::before {
   background-image: url('/upload/icons/haha.png');
 }
-.post-reach span.wow::before{
+
+.post-reach span.wow::before {
   background-image: url('/upload/icons/wow.png');
 }
-.post-reach span.sad::before{
+
+.post-reach span.sad::before {
   background-image: url('/upload/icons/sad.png');
 }
-.angry{
-color: #E57D28;
+
+.angry {
+  color: #E57D28;
 }
-.post-reach span.angry::before{
+
+.post-reach span.angry::before {
   background-image: url('/upload/icons/angry.png');
 }
-@media screen and (max-width: 767px){
-  .user-info a{
+
+.colored-post-text {
+  color: rgb(255, 255, 255);
+  background-image: linear-gradient(45deg, rgb(255, 154, 139) 0%, rgb(255, 106, 136) 100%);
+  min-height: 400px;
+}
+
+.colored-post-text p {
+  font-size: 2.5rem;
+}
+
+#reactionPostModal .modal-dialog-scrollable .modal-content {
+  height: 600px;
+}
+
+.reactions-post-wrapper {
+  min-height: 39px;
+  overflow: auto;
+  border-bottom: 1px solid #00000014;
+}
+
+.reactions-post-wrapper ul {
+  max-width: fit-content;
+  height: 38px;
+}
+
+.reactions-post-wrapper::-webkit-scrollbar {
+  height: 0PX;
+}
+
+.reactions-post-nav-btn.active {
+  background-color: #00000014 !important;
+  border-bottom: 1px solid #000000 !important;
+}
+
+.user-reaction {
+  right: 0;
+  bottom: 0;
+  padding-left: 1px;
+  padding-right: 1px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+@media screen and (max-width: 767px) {
+  .user-info a {
     margin-left: -40px;
   }
 }
+
 @media screen and (max-width: 506px) {
- .post-reach button{
+  .post-reach button {
     padding-left: 2px;
     padding-right: 2px;
     font-size: 13px !important;
   }
 }
+
 @media screen and (max-width: 350px) {
   .post-reach button i {
     margin-right: 3px !important;
   }
-  .user-icon img{
+
+  .user-icon img {
     width: 30px;
     height: 30px;
   }
- 
-  .post-reach span.like::before,.post-reach span.love::before,.post-reach span.haha::before,.post-reach span.wow::before,.post-reach span.sad::before,.post-reach span.angry::before{
+
+  .post-reach span.like::before,
+  .post-reach span.love::before,
+  .post-reach span.haha::before,
+  .post-reach span.wow::before,
+  .post-reach span.sad::before,
+  .post-reach span.angry::before {
     width: 15px;
     height: 15px;
     vertical-align: top;
