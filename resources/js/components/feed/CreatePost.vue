@@ -7,12 +7,13 @@
             :src="'/' + userData.avatar">
         </a>
         <!-- Model Handleing Buttons -->
-        <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3" @click="showPostModal">
+        <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3"
+          @click="showPostModal">
           <span class="fs-5">Start a post</span>
         </button>
       </div>
       <div>
-        
+
         <div class="d-flex justify-content-around mt-2 create-post-wrapper">
           <button type="button" class="btn fs-5 btn-feed-hover" @click="showPostModal">
             <i class="bi bi-pen me-2"></i>
@@ -52,79 +53,86 @@
               </div>
               <div class="modal-body">
                 <div class="write-post-wrapper">
-                <!-- Content for create post modal -->
-                <form action="" class="post-textarea">
-                  <textarea v-model="textContent" :class="[postClass, { 'color-textarea': currentPostType === 'color' }]"
-                    :maxlength="textAreaMaxLength" class="w-100 border-0" :style="textareaStyle"
-                    placeholder="How are you trading the markets?" :disabled="loadingLinkData" id="textarea-modalpost"></textarea>
-                  <!-- Loading Spinner -->
-                  <div v-if="loadingLinkData" class="loading-spinner">
-                    Loading...
-                  </div>
-                  <!-- Clear Color Button -->
-                  <abbr title="Clear Color" v-if="currentPostType === 'color'">
-                    <span class="post-icon-bg d-flex justify-content-center clear-color" @click="clearColor()">
-                      <i class="bi bi-x-lg fs-4"></i>
-                    </span>
-                  </abbr>
-                </form>
-                <!-- Previews -->
-                <!-- Media Preview -->
-                <div v-if="showMediaPreview && currentPostType === 'photo'" class="media-preview-container position-relative">
-                  <div class="preview-wrapper" v-if="uploadedMedia.length === 1">
-                    <!-- For single image, use uploadedMedia[0].preview -->
-                    <img :src="uploadedMedia[0].preview" alt="Media preview" class="img-fluid">
-                    <div class="preview-actions">
-                      <i class="bi bi-pencil" @click="showMediaPostModal"></i>
-                      <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
+                  <!-- Content for create post modal -->
+                  <form action="" class="post-textarea">
+                    <textarea v-model="textContent"
+                      :class="[postClass, { 'color-textarea': currentPostType === 'color' }]"
+                      :maxlength="textAreaMaxLength" class="w-100 border-0" :style="textareaStyle"
+                      placeholder="How are you trading the markets?" :disabled="loadingLinkData"
+                      id="textarea-modalpost"></textarea>
+                    <!-- Loading Spinner -->
+                    <div v-if="loadingLinkData" class="loading-spinner">
+                      Loading...
                     </div>
-                  </div>
-                  <div v-if="isMultiImage" class="multi-image-preview position-relative">
-                    <!-- For multiple images, iterate over uploadedMedia and use media.preview -->
-                    <div v-for="(media, index) in uploadedMedia" :key="index" class="image-container">
-                      <img :src="media.preview" alt="Media preview" class="img-thumbnail">
-                    </div>
-                    <div class="preview-actions">
-                      <i class="bi bi-pencil" @click="showMediaPostModal"></i>
-                      <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
-                    </div>
-                  </div>
-                </div>
-                <!-- Poll Preview -->
-                <div v-if="showPollPreview && currentPostType === 'poll'" class="poll-preview-container px-md-3">
-                  <div class="container shadow border border-light-grey py-4 position-relative">
-                          <h5>{{ pollData.question }}</h5>
-                          <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank" class="astronaut-blue fw-6 fs-6">Learn more</a></span>
-                          <div class="py-4" id="poll-options">
-                          <button v-for="(option, index) in pollData.options" :key="index" class="w-100 btn rounded-5 mb-2 border-btn border-2 fw-6">{{ option }}</button>
+                    <!-- Clear Color Button -->
+                    <abbr title="Clear Color" v-if="currentPostType === 'color'">
+                      <span class="post-icon-bg d-flex justify-content-center clear-color" @click="clearColor()">
+                        <i class="bi bi-x-lg fs-4"></i>
+                      </span>
+                    </abbr>
+                  </form>
+                  <!-- Previews -->
+                  <!-- Media Preview -->
+                  <div v-if="showMediaPreview && currentPostType === 'photo'"
+                    class="media-preview-container position-relative">
+                    <div class="preview-wrapper" v-if="uploadedMedia.length === 1">
+                      <!-- For single image, use uploadedMedia[0].preview -->
+                      <img :src="uploadedMedia[0].preview" alt="Media preview" class="img-fluid">
+                      <div class="preview-actions">
+                        <i class="bi bi-pencil" @click="showMediaPostModal"></i>
+                        <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
                       </div>
-                      <div class="text-secondary">
-                          <span>35</span> votes - <span>{{ pollData.duration }} days</span> left - <a href="" class="Blue">Show reasult</a>
+                    </div>
+                    <div v-if="isMultiImage" class="multi-image-preview position-relative">
+                      <!-- For multiple images, iterate over uploadedMedia and use media.preview -->
+                      <div v-for="(media, index) in uploadedMedia" :key="index" class="image-container">
+                        <img :src="media.preview" alt="Media preview" class="img-thumbnail">
                       </div>
                       <div class="preview-actions">
-                      <i class="bi bi-pencil" @click="showPollPostModal"></i>
-                      <i class="bi bi-x-lg" @click="backFromCreatePoll"></i>
-                    </div>
+                        <i class="bi bi-pencil" @click="showMediaPostModal"></i>
+                        <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
                       </div>
-                 
-                </div>
-                <!-- Link Preview -->
-                <div v-if="showLinkPreview && currentPostType === 'link'" class="link-preview-container px-sm-4 position-relative">
-                  <div class="card preview-wrapper shadow mb-3">
-                    <div class="link-preview-wrapper text-center rounded-top">
-                    <img :src="linkData.image" alt="Link preview" class="link-image img-fluid rounded-top">
-                  </div>
-                    <div class="link-details card-body">
-                      <h3 class="link-title fs-5">{{ linkData.title }}</h3>
-                      <p class="link-site-name fw-5">{{ linkData.siteName }}</p>
-                      <a :href="linkData.url" target="_blank" class="Blue fs-12">{{ linkData.url }}</a>
-                    </div>
-                    <div class="preview-actions">
-                      <i class="bi bi-x-lg" @click="clearLinkPreview"></i>
                     </div>
                   </div>
+                  <!-- Poll Preview -->
+                  <div v-if="showPollPreview && currentPostType === 'poll'" class="poll-preview-container px-md-3">
+                    <div class="container shadow border border-light-grey py-4 position-relative">
+                      <h5>{{ pollData.question }}</h5>
+                      <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank"
+                          class="astronaut-blue fw-6 fs-6">Learn more</a></span>
+                      <div class="py-4" id="poll-options">
+                        <button v-for="(option, index) in pollData.options" :key="index"
+                          class="w-100 btn rounded-5 mb-2 border-btn border-2 fw-6">{{ option }}</button>
+                      </div>
+                      <div class="text-secondary">
+                        <span>35</span> votes - <span>{{ pollData.duration }} days</span> left - <a href=""
+                          class="Blue">Show reasult</a>
+                      </div>
+                      <div class="preview-actions">
+                        <i class="bi bi-pencil" @click="showPollPostModal"></i>
+                        <i class="bi bi-x-lg" @click="backFromCreatePoll"></i>
+                      </div>
+                    </div>
+
+                  </div>
+                  <!-- Link Preview -->
+                  <div v-if="showLinkPreview && currentPostType === 'link'"
+                    class="link-preview-container px-sm-4 position-relative">
+                    <div class="card preview-wrapper shadow mb-3">
+                      <div class="link-preview-wrapper text-center rounded-top">
+                        <img :src="linkData.image" alt="Link preview" class="link-image img-fluid rounded-top">
+                      </div>
+                      <div class="link-details card-body">
+                        <h3 class="link-title fs-5">{{ linkData.title }}</h3>
+                        <p class="link-site-name fw-5">{{ linkData.siteName }}</p>
+                        <a :href="linkData.url" target="_blank" class="Blue fs-12">{{ linkData.url }}</a>
+                      </div>
+                      <div class="preview-actions">
+                        <i class="bi bi-x-lg" @click="clearLinkPreview"></i>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
                 <!-- Previews End -->
                 <div class="d-flex justify-content-between align-content-center">
                   <!-- Show Color Options -->
@@ -276,6 +284,7 @@ export default {
         siteName: '',
         url: ''
       },
+      feedMediaimaged: false,
     };
   },
   computed: {
@@ -465,7 +474,7 @@ export default {
         .catch(error => {
           console.error('Error fetching link data:', error);
         });
-        
+
     },
     clearLinkPreview() {
       this.linkData = { title: '', image: '', siteName: '', url: '' };
@@ -633,17 +642,21 @@ export default {
   font-size: 17px;
   cursor: pointer;
 }
+
 .write-post-wrapper {
   height: 400px;
   overflow-y: auto;
 }
-.link-image{
+
+.link-image {
   height: 500px;
   width: 700px;
 }
-.link-preview-wrapper{
+
+.link-preview-wrapper {
   background-color: #000000;
 }
+
 /* #mediapostModal .modal-dialog {
   max-width: 70%;
   height: 93vh;
@@ -687,17 +700,21 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  #mediapostModal .modal-dialog ,#postModal .modal-dialog {
+
+  #mediapostModal .modal-dialog,
+  #postModal .modal-dialog {
     max-width: 95%;
   }
 }
+
 @media screen and (max-width: 506px) {
-  .create-post-wrapper button{
+  .create-post-wrapper button {
     padding-left: 0px;
     padding-right: 0px;
     font-size: 12px !important;
   }
 }
+
 @media screen and (max-width: 350px) {
   .create-post-wrapper button i {
     margin-right: 3px !important;
