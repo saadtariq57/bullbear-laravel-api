@@ -47,7 +47,6 @@
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import axios from "axios";
-// import Confirm from '../../shared/confirm.vue';
 import Sortable from "sortablejs";
 import Swal from 'sweetalert2';
 export default {
@@ -146,26 +145,11 @@ export default {
         .then(response => {
           console.log('Positions updated successfully:', response.data);
           Swal.fire({
-            position: "top-end",
             icon: 'success',
             title: 'Positions updated successfully',
             timer: 2000,
             showConfirmButton: false,
             timerProgressBar: true,
-            showClass: {
-              popup: `
-      animate__animated
-      animate__fadeInUp
-      animate__faster
-    `
-            },
-            hideClass: {
-              popup: `
-      animate__animated
-      animate__fadeOutDown
-      animate__faster
-    `
-            }
           });
         })
         .catch(error => {

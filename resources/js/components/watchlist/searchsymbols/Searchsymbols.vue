@@ -10,7 +10,8 @@
       </div>
       <div class="add-symbol">
         <a href="javascript:void(0)"
-          class="border-start border-dark px-3 text-decoration-underline fw-bold add-symbol-btn" @click="toggleSearch();">Add Symbol
+          class="border-start border-dark px-3 text-decoration-underline fw-bold add-symbol-btn"
+          @click="toggleSearch();">Add Symbol
           <svg width="10" height="10" viewBox="0 0 8 8" fill="#fff" role="img" data-analytic-id="add-icon"
             xmlns="http://www.w3.org/2000/svg" class="Watchlist-navicon">
             <path d="M3.36842 8V4.63158H0V3.36842H3.36842V0H4.63158V3.36842H8V4.63158H4.63158V8H3.36842Z">
@@ -82,6 +83,7 @@ import { Skeletor } from "vue-skeletor";
 import axios from "axios";
 import Confirm from '../../shared/confirm.vue';
 import Sortable from "sortablejs";
+import Swal from 'sweetalert2';
 
 export default {
   components: {
@@ -108,18 +110,18 @@ export default {
         watchlist_id: this.watchlist.id,
         symbol_id: symbolId
       }
-        axios.post('/api/watchlist/symbol', postData).then(response => {
-          if(response.data){
-            this.watchlistData = response.data;
-            this.search = '';
-          }
-        }).catch(error => {
-          this.error = 'Error while adding symbol';
-          console.log(error)
-        });
+      axios.post('/api/watchlist/symbol', postData).then(response => {
+        if (response.data) {
+          this.watchlistData = response.data;
+          this.search = '';
+        }
+      }).catch(error => {
+        this.error = 'Error while adding symbol';
+        console.log(error)
+      });
     },
-    toggleSearch(){
-        $('.symbol-search-form').toggle();
+    toggleSearch() {
+      $('.symbol-search-form').toggle();
     },
     handleInput() {
       clearTimeout(this.inputTimeout);
@@ -141,14 +143,14 @@ export default {
       }
     },
     deleteWatchlistSymbol(id) {
-        axios.delete(`/api/watchlist/symbol?id=${id}&watchlist_id=${this.watchlist.id}`).then(response => {
-          if(response.data){
-            this.watchlistData = response.data;
-          }
-        }).catch(error => {
-          this.error = 'Error while deleting symbol';
-          console.log(error)
-        });
+      axios.delete(`/api/watchlist/symbol?id=${id}&watchlist_id=${this.watchlist.id}`).then(response => {
+        if (response.data) {
+          this.watchlistData = response.data;
+        }
+      }).catch(error => {
+        this.error = 'Error while deleting symbol';
+        console.log(error)
+      });
     },
     initValues() {
       this.error = '';
@@ -156,10 +158,10 @@ export default {
     },
     openModal(item) {
       this.modalData = { id: item.id, modalId: 'delete-symbol', title: item.symbol.name, body: `Are you sure you want to delete symbol : ${item.symbol.name}?` },
-      this.isModalOpen = true
+        this.isModalOpen = true
     },
     handleActionFromModal(response) {
-      if(response.type == 'confirm'){
+      if (response.type == 'confirm') {
         this.deleteWatchlistSymbol(response.id);
       }
     },
@@ -178,24 +180,42 @@ export default {
     handleItemReordering(event) {
       const movedItem = this.watchlistData.watchlist_symbols.splice(event.oldIndex, 1)[0];
       this.watchlistData.watchlist_symbols.splice(event.newIndex, 0, movedItem);
+
       // Create a new array with updated positions
       const updatedPositions = this.watchlistData.watchlist_symbols.map((symbol, index) => ({
         id: symbol.id,
         position: index + 1,
       }));
+
       console.log('Frontend payload:', { symbol_positions: updatedPositions });
 
-
       const watchlistId = this.watchlist.id;
+
       axios.put(`/api/watchlist/update/${watchlistId}`, {
         symbol_positions: updatedPositions,
       })
-      .then((response) => {
-        console.log('Positions updated successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error updating positions:', error);
-      });
+        .then((response) => {
+          console.log('Positions updated successfully:', response.data);
+
+          // Show SweetAlert on success
+          Swal.fire({
+            icon: 'success',
+            title: 'Positions updated successfully',
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+          });
+        })
+        .catch((error) => {
+          console.error('Error updating positions:', error);
+
+          // Show SweetAlert on error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error updating positions',
+            text: 'An error occurred while updating positions. Please try again.',
+          });
+        });
     }
   },
   mounted() {
