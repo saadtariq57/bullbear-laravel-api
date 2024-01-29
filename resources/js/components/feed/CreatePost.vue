@@ -187,7 +187,8 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="publishPost" :disabled="!isPublishable">Publish
+                <button type="button" class="btn btn-primary" @click="publishPost"
+                  :disabled="!isPublishable || isPublishing">Publish
                   Post</button>
               </div>
             </div>
@@ -285,6 +286,7 @@ export default {
         url: ''
       },
       feedMediaimaged: false,
+      isPublishing: false,
     };
   },
   computed: {
@@ -521,7 +523,7 @@ export default {
     publishPost() {
       const formData = new FormData();
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
+      this.isPublishing = true;
       formData.append('user_id', this.userData.id);
       formData.append('post_type', this.currentPostType || 'text');
       formData.append('post_privacy', this.post_privacy);
@@ -566,9 +568,11 @@ export default {
           console.log('Post published:', response.data);
           this.clearPostType();
           this.hidePostModal();
+          this.isPublishing = false;
         })
         .catch(error => {
           console.error('Error publishing post:', error);
+          this.isPublishing = false;
           // Handle error
         });
     }
