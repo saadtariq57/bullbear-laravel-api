@@ -56,7 +56,7 @@
 
                 <!-- Comment Text -->
                 <div v-if="!isEditing(comment.id)" class="comment-text">
-                  <p>{{ comment.text }}</p>
+                  <p class="text-start">{{ comment.text }}</p>
                 </div>
 
                 <div v-else>
@@ -68,7 +68,8 @@
               </div>
               <div class="comment-options">
                 <div class="like-comment-count row align-items-center px-sm-3 px-1">
-                  <button type="button" class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
+                  <button type="button"
+                    class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                     @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
                     @click="handleDefaultReaction(comment.id, false)">
                     <i v-if="!userReactions[comment.id]" class="bi bi-hand-thumbs-up"></i>
@@ -85,7 +86,7 @@
                     </div>
                   </button>
                   <!-- Reaction Icons and Count -->
-                  <div class="like-count col-2 col-sm-1 px-sm-2 px-0">
+                  <div class="like-count col-2 col-sm-1 px-sm-2 px-0 min-max-content">
                     <div class="reaction-icons d-flex align-items-center justify-content-center">
                       <span v-for="(reaction, index) in comment.reactions.slice(0, 3)" :key="reaction.id">
                         <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ comment.reactions_count }}
@@ -97,7 +98,7 @@
                     <button @click="toggleReplyInput(comment.id)" type="button"
                       class="btn fs-6 btn-feed-hover border-0">Reply</button>
                   </div>
-                  <div class="reply-count col-sm-2 col-3 px-sm-2 px-1 ms-sm-4 w-auto fs-6">
+                  <div class="reply-count col-sm-2 col-3 px-sm-2 w-auto fs-6">
                     <span @click="nestedReplies()">
                       {{ comment.replies_count === 0 ? '' : `${comment.replies_count} Reply` }}
                     </span>
@@ -158,14 +159,14 @@
                         <button class="btn rounded-2 btn-sm border-btn py-2 px-3" @click="cancelEditReply">Cancel</button>
                       </div>
                       <div v-else class="comment-text">
-                        <p>{{ reply.text }}</p>
+                        <p class="text-start">{{ reply.text }}</p>
                       </div>
                       <!-- Reply reaction options -->
                       <div class="reply-options">
                         <!-- Dynamic Like/Liked Button -->
                         <div class="like-comment-count row align-items-center justify-content-start gap-2">
                           <button type="button"
-                            class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
+                            class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                             @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
                             @click="handleDefaultReaction(reply.id, true)">
                             <i v-if="!userReactions[reply.id]" class="bi bi-hand-thumbs-up pe-1"></i>
@@ -670,6 +671,10 @@ export default {
   height: 25px;
 }
 
+.min-max-content {
+  min-width: max-content;
+}
+
 @media screen and (max-width: 506px) {
 
   .like-comment-count button,
@@ -693,5 +698,4 @@ export default {
   .like-comment-count {
     justify-content: space-evenly;
   }
-}
-</style>
+}</style>
