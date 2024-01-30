@@ -49,7 +49,6 @@
         function hideLoader() {
             const overlayLoader = document.getElementById('overlay_loader');
             overlayLoader.style.display = 'none';
-            console.log("hello");
         }
 
         // Define a function to check if all data is displayed
