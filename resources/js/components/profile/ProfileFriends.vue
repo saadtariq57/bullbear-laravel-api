@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3 ps-3 pt-3 pb-3  bg-white shadow mt-4 rounded">
+  <div class="mb-3 ps-3 pt-3 pb-3  bg-white shadow rounded">
                                 <div class="d-flex align-items-baseline justify-content-between">
                                     <div>
                                         <div class="d-flex align-items-center gap-3">
