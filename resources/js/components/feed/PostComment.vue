@@ -2,15 +2,24 @@
   <!-- Comment box -->
   <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
-      <img class="avatar rounded-circle" :src="userAvatar" width="40" height="40">
+      <img class="avatar rounded-circle" :src="`/${userAvatar}`" width="40" height="40">
     </div>
     <div class="comment-form w-100">
       <form @submit.prevent="submitComment" class="position-relative">
         <input type="text" v-model="newComment" :disabled="isSubmitting" placeholder="Write a comment and press enter"
           class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary" />
-
-        <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
+        <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-1 position-absolute">
           <!-- Add emoji and image upload functionality -->
+          <!-- Emojis Model Button-->
+          <div class="position-relative comment-emoji-picker">
+            <button class="btn px-1 py-0" v-on:click="toggleEmojiPicker">
+              <abbr title="Open Emoji">
+                <i class="bi bi-emoji-smile fs-5"></i>
+              </abbr>
+            </button>
+            <EmojiPicker v-if="showCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
+          </div>
+          <button type="submit" class="btn btn-sm p-0 pt-1 border-0"><i class="bi bi-send fs-5"></i></button>
         </div>
       </form>
     </div>
@@ -23,7 +32,7 @@
         <div class="d-flex gap-2">
           <div class="user-icon">
             <a :href="`/${comment.user.username}`">
-              <img :src="comment.user.avatar" class="rounded-circle" width="40" height="40">
+              <img :src="`/${comment.user.avatar}`" class="rounded-circle" width="40" height="40">
             </a>
           </div>
           <div class="comment-body w-100">
@@ -81,7 +90,7 @@
                       class="reaction-icons-wrapper position-absolute d-flex gap-1">
                       <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                         @click.stop="addOrUpdateCommentReaction(comment.id, 'comment_id', reactionType.id, false)">
-                        <img :src="reactionType.icon" class="reply-reaction-icons-img">
+                        <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
                       </span>
                     </div>
                   </button>
@@ -89,7 +98,7 @@
                   <div class="like-count col-2 col-sm-1 px-sm-2 px-0 min-max-content">
                     <div class="reaction-icons d-flex align-items-center justify-content-center">
                       <span v-for="(reaction, index) in comment.reactions.slice(0, 3)" :key="reaction.id">
-                        <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ comment.reactions_count }}
+                        <img :src="`/${reaction.reaction_type.icon}`" class="reaction-icon"> {{ comment.reactions_count }}
                       </span>
                       <span v-if="comment.reactions.length > 3">+{{ comment.reactions_count }}</span>
                     </div>
@@ -108,14 +117,24 @@
               <!-- Replies -->
               <div v-if="showReplyInput[comment.id]" class="reply-input-area d-flex align-items-center gap-2 mt-2">
                 <div class="user-icon">
-                  <img class="avatar rounded-circle" :src="userAvatar" width="40" height="40">
+                  <img class="avatar rounded-circle" :src="`/${userAvatar}`" width="40" height="40">
                 </div>
                 <div class="comment-form w-100">
                   <form @submit.prevent="submitReply(comment.id)" class="position-relative">
-                    <textarea v-model="newReply" rows="1" placeholder="Write a reply and press enter"
-                      class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
-                    <button type="submit" class="btn btn-sm position-absolute top-0 end-0 py-2 pe-3 border-0"><i
-                        class="bi bi-send fs-5"></i></button>
+                    <input type="text" v-model="newReply" rows="1" placeholder="Write a reply and press enter"
+                      class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary">
+                    <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-1 position-absolute">
+                      <div class="position-relative comment-emoji-picker">
+                        <button class="btn px-1 py-0" v-on:click="toggleNestedCommentEmojiPicker">
+                          <abbr title="Open Emoji">
+                            <i class="bi bi-emoji-smile fs-5"></i>
+                          </abbr>
+                        </button>
+                        <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true"
+                          @select="onSelectNestedCommentEmoji" />
+                      </div>
+                      <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
+                    </div>
                   </form>
                 </div>
               </div>
@@ -126,7 +145,7 @@
                 <div class="d-flex gap-2">
                   <div class="user-icon">
                     <a :href="`/${reply.user.username}`">
-                      <img :src="reply.user.avatar" class="rounded-circle" width="40" height="40">
+                      <img :src="`/${reply.user.avatar}`" class="rounded-circle" width="40" height="40">
                     </a>
                   </div>
                   <div class="comment-body w-100 bg-light-grey px-sm-3 px-2 py-2">
@@ -178,7 +197,7 @@
                               class="reaction-icons-wrapper position-absolute d-flex gap-1">
                               <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                                 @click.stop="addOrUpdateCommentReaction(reply.id, 'comment_id', reactionType.id, true)">
-                                <img :src="reactionType.icon" class="reply-reaction-icons-img">
+                                <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
                               </span>
                             </div>
                           </button>
@@ -186,17 +205,16 @@
                           <div class="like-count col-4 px-sm-3 px-1 w-auto">
                             <div class="reaction-icons">
                               <span v-for="(reaction, index) in reply.reactions.slice(0, 3)" :key="reaction.id">
-                                <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ reply.reactions_count }}
+                                <img :src="`/${reaction.reaction_type.icon}`" class="reaction-icon"> {{
+                                  reply.reactions_count }}
                               </span>
                               <span v-if="reply.reactions.length > 3">+{{ reply.reactions_count }}</span>
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -210,7 +228,10 @@
 <script>
 import { Dropdown } from 'bootstrap';
 import axios from "axios";
+import EmojiPicker from 'vue3-emoji-picker';
+import 'vue3-emoji-picker/css';
 export default {
+  components: { EmojiPicker },
   props: {
     userId: Number,
     postId: Number,
@@ -231,7 +252,9 @@ export default {
       editedReplyText: '',
       showReactionsForComment: {},
       userReactions: {},
-      reactionTypes: []
+      reactionTypes: [],
+      showCommentEmojiPicker: false,
+      showNestedCommentEmojiPicker: false
     };
   },
   watch: {
@@ -657,7 +680,19 @@ export default {
       const dropdownElement = event.target.closest('.dropdown-toggle');
       const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
       dropdownInstance.toggle();
-    }
+    },
+    toggleNestedCommentEmojiPicker() {
+      this.showNestedCommentEmojiPicker = !this.showNestedCommentEmojiPicker;
+    },
+    toggleEmojiPicker() {
+      this.showCommentEmojiPicker = !this.showCommentEmojiPicker;
+    },
+    onSelectCommentEmoji(emoji) {
+      this.newComment += emoji.i;
+    },
+    onSelectNestedCommentEmoji(emoji) {
+      this.newReply += emoji.i;
+    },
   },
   mounted() {
     this.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -673,6 +708,12 @@ export default {
 
 .min-max-content {
   min-width: max-content;
+}
+
+.comment-emoji-picker .v3-emoji-picker {
+  position: absolute;
+  top: 35px;
+  z-index: 1;
 }
 
 @media screen and (max-width: 506px) {
@@ -698,4 +739,5 @@ export default {
   .like-comment-count {
     justify-content: space-evenly;
   }
-}</style>
+}
+</style>
