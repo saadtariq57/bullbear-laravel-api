@@ -10,7 +10,7 @@
                 <div class="img">
                   <img :src="`/${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
-                <div class="user-info">
+                <div class="user-info text-start">
                   <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
                   <div class="time">
                     <span>{{ formatDateTime(post.created_at) }}</span>
@@ -69,7 +69,7 @@
                                       <img :src="`/${post.user.avatar}`" class="rounded-circle"
                                         :alt="post.user.name + ' profile picture'">
                                     </div>
-                                    <div class="user-info">
+                                    <div class="user-info text-start">
                                       <a href="" class="text-black d-inline-block text-start fw-bold modal-username">{{
                                         post.user.name
                                       }}</a>
@@ -896,15 +896,6 @@ export default {
   height: 100%;
 }
 
-.modal-username {
-  margin-left: -40px;
-}
-
-@media screen and (max-width: 767px) {
-  .user-info a {
-    margin-left: -40px;
-  }
-}
 
 @media screen and (max-width: 506px) {
   .post-reach button {

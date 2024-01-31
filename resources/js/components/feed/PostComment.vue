@@ -121,8 +121,8 @@
                 </div>
                 <div class="comment-form w-100">
                   <form @submit.prevent="submitReply(comment.id)" class="position-relative">
-                    <textarea v-model="newReply" rows="1" placeholder="Write a reply and press enter"
-                      class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
+                    <input type="text" v-model="newReply" rows="1" placeholder="Write a reply and press enter"
+                      class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary">
                     <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-1 position-absolute">
                       <div class="position-relative comment-emoji-picker">
                         <button class="btn px-1 py-0" v-on:click="toggleNestedCommentEmojiPicker">
@@ -130,7 +130,8 @@
                             <i class="bi bi-emoji-smile fs-5"></i>
                           </abbr>
                         </button>
-                        <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
+                        <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true"
+                          @select="onSelectNestedCommentEmoji" />
                       </div>
                       <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
                     </div>
@@ -687,7 +688,10 @@ export default {
       this.showCommentEmojiPicker = !this.showCommentEmojiPicker;
     },
     onSelectCommentEmoji(emoji) {
-      this.textContent += emoji.i;
+      this.newComment += emoji.i;
+    },
+    onSelectNestedCommentEmoji(emoji) {
+      this.newReply += emoji.i;
     },
   },
   mounted() {
