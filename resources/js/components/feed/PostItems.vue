@@ -11,9 +11,9 @@
             <div class="d-flex justify-content-between">
               <div class="user-avatar d-flex gap-2">
                 <div class="img">
-                  <img :src="post.user.avatar" class="rounded-circle" :alt="post.user.name + ' profile picture'">
+                  <img :src="`/${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
-                <div class="user-info">
+                <div class="user-info text-start">
                   <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
                   <div class="time">
                     <span>{{ formatDateTime(post.created_at) }}</span>
@@ -34,11 +34,127 @@
 
           <!-- Post Media -->
           <div v-if="post.post_type === 'photo'" class="post-file">
-            <div v-for="photo in post.photos" :key="photo.id" class="text-center">
-              <img :src="photo.image" alt="Post image" class="img-fluid">
+            <div v-if="post.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
+              <div v-for="(photo, index) in  post.photos " :key="photo.id"
+                class="multi-post-img-wrapper text-center btn p-0" data-bs-toggle="modal" data-bs-target="#postPreview">
+                <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
+                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
+                    <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
+                  </div>
+                </div>
+                <div v-else-if="post.photos.length === 3" class="multi-post-img">
+                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
+                    :class="{ 'w-100': index === 2 }">
+                </div>
+                <div v-else>
+                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                </div>
+                <!-- Post Preview Modal Start -->
+                <div class="modal fade" id="postPreview" tabindex="-1" aria-labelledby="postPreviewLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable mx-auto">
+                    <div class="modal-content">
+                      <div class="row">
+                        <div class="col-xl-8 col-md-6">
+                          <div class="modal-header">
+                            <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
+                          </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6">
+                          <div class="modal-body ps-0 pb-0 border-0">
+                            <div class="post-preview-scroll">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between">
+                                  <div class="user-avatar d-flex gap-2">
+                                    <div class="img">
+                                      <img :src="`/${post.user.avatar}`" class="rounded-circle"
+                                        :alt="post.user.name + ' profile picture'">
+                                    </div>
+                                    <div class="user-info text-start">
+                                      <a href="" class="text-black d-inline-block text-start fw-bold modal-username">{{
+                                        post.user.name
+                                      }}</a>
+                                      <div class="time">
+                                        <span>{{ formatDateTime(post.created_at) }}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- Post settings -->
+                                  <!-- Include Post Settings Dropdown Here -->
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                              </div>
+                              <div>
+                                <div class="post description pt-3 ">
+                                  <p class="text-start">{{ post.post_text }}</p>
+                                </div>
+                                <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+                                  <div class="like-count">
+                                    <!-- Reaction Post trigger modal -->
+                                    <div class="reaction-icons">
+                                      <span v-for="( reaction, index ) in  post.reactions.slice(0, 3) "
+                                        :key="reaction.id">
+                                        <button class="btn"><img :src="`/${reaction.reaction_type.icon}`"
+                                            class="reaction-icon me-sm-2 me-1"><span> {{
+                                              post.reactions_count
+                                            }}</span></button>
+                                      </span>
+                                      <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
+
+                                    </div>
+                                  </div>
+                                  <div class="comment-count">
+                                    <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
+                                      <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
+                                    </button>
+                                  </div>
+                                </div>
+                                <div class="row post-reach pb-2 px-sm-4">
+                                  <button type="button"
+                                    class="btn fs-6 px-1 btn-feed-hover border-0 position-relative col-4"
+                                    @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
+                                    @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]"
+                                      class="bi bi-hand-thumbs-up pe-sm-2 pe-1"></i>
+                                    <i v-else :class="getReactionName(userReactions[post.id])"></i>
+                                    <span :class="getReactionName(userReactions[post.id])">
+                                      {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
+                                    </span>
+                                    <div v-if="showReactionsForPost[post.id]"
+                                      class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                                      <span v-for=" reactionType  in  reactionTypes " :key="reactionType.id"
+                                        @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
+                                        <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
+                                      </span>
+                                    </div>
+                                  </button>
+                                  <button type="button" class="btn fs-6 px-1 btn-feed-hover border-0 col-4"
+                                    @click="toggleComments(post.id)"><i
+                                      class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
+                                  <button type="button" class="btn fs-6 px-1 btn-feed-hover border-0 col-4"
+                                    @click="sharePost"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
+                                </div>
+                                <PostComment v-if="fetchedCommentsFlags[post.id]" :userId="userData.id" :postId="post.id"
+                                  :fetchedCommentsFlags="fetchedCommentsFlags" :userAvatar="userData.avatar"
+                                  @fetch-comments="handleFetchComments" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-center">
+              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" data-bs-toggle="modal"
+                data-bs-target="#postPreview">
+                <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
+              </div>
             </div>
           </div>
-
           <!-- Poll Content -->
 
           <div v-if="post.post_type === 'poll' && post.poll && post.poll.isActive" class="post-poll">
@@ -312,7 +428,7 @@ export default {
 }
 
 .link-file a img {
-  max-height: 600px;
+  max-height: 500px;
 }
 
 .btn-feed-hover:active {
@@ -335,7 +451,7 @@ export default {
   top: -30px;
   left: 50%;
   padding-bottom: 5px;
-  transform: translateX(-50%);
+  transform: translateX(-40%);
   /* transform: translateY(-10px); */
 }
 
@@ -447,11 +563,36 @@ export default {
   padding-bottom: 0px;
 }
 
-@media screen and (max-width: 767px) {
-  .user-info a {
-    margin-left: -40px;
-  }
+#postPreview .modal-dialog {
+  max-width: 80%;
 }
+
+.post-preview-scroll {
+  max-height: 88vh;
+}
+
+.multi-post-img-wrapper {
+  width: 49%;
+}
+
+.multi-post-img {
+  height: 285px;
+}
+
+.multi-post-img-wrapper:has(.multi-post-img.w-100) {
+  width: 100% !important;
+}
+
+.overlay-post-gallery {
+  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 
 @media screen and (max-width: 506px) {
   .post-reach button {

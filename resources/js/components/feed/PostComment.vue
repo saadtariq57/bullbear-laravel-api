@@ -12,6 +12,16 @@
             class="bi bi-send fs-5"></i></button>
         <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
           <!-- Add emoji and image upload functionality -->
+          <!-- Emojis Model Button-->
+          <div class="position-relative comment-emoji-picker">
+            <button class="btn px-1 py-0" v-on:click="toggleEmojiPicker">
+              <abbr title="Open Emoji">
+                <i class="bi bi-emoji-smile fs-5"></i>
+              </abbr>
+            </button>
+            <EmojiPicker v-if="showCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
+          </div>
+          <button type="submit" class="btn btn-sm p-0 pt-1 border-0"><i class="bi bi-send fs-5"></i></button>
         </div>
       </form>
     </div>
@@ -24,7 +34,7 @@
         <div class="d-flex gap-2">
           <div class="user-icon">
             <a :href="`/${comment.user.username}`">
-              <img :src="comment.user.avatar" class="rounded-circle" width="40" height="40">
+              <img :src="`/${comment.user.avatar}`" class="rounded-circle" width="40" height="40">
             </a>
           </div>
           <div class="comment-body w-100">
@@ -60,7 +70,7 @@
 
                 <!-- Comment Text -->
                 <div v-if="!isEditing(comment.id)" class="comment-text">
-                  <p>{{ comment.text }}</p>
+                  <p class="text-start">{{ comment.text }}</p>
                 </div>
 
                 <div v-else>
@@ -72,7 +82,8 @@
               </div>
               <div class="comment-options">
                 <div class="like-comment-count row align-items-center px-sm-3 px-1">
-                  <button type="button" class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
+                  <button type="button"
+                    class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                     @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
                     @click="handleReaction(comment.id, 1, null, false)">
                     <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
@@ -89,7 +100,7 @@
                     </div>
                   </button>
                   <!-- Reaction Icons and Count -->
-                  <div class="like-count col-2 col-sm-1 px-sm-2 px-0">
+                  <div class="like-count col-2 col-sm-1 px-sm-2 px-0 min-max-content">
                     <div class="reaction-icons d-flex align-items-center justify-content-center">
                       <button @click="emitShowReactions(postId, comment.organizedReactions)">
                       <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)" :key="index">
@@ -103,7 +114,7 @@
                     <button @click="toggleReplyInput(comment.id)" type="button"
                       class="btn fs-6 btn-feed-hover border-0">Reply</button>
                   </div>
-                  <div class="reply-count col-sm-2 col-3 px-sm-2 px-1 ms-sm-4 w-auto fs-6">
+                  <div class="reply-count col-sm-2 col-3 px-sm-2 w-auto fs-6">
                     <span @click="nestedReplies()">
                       {{ comment.replies_count === 0 ? '' : `${comment.replies_count} Reply` }}
                     </span>
@@ -119,10 +130,18 @@
                   <form @submit.prevent="submitComment(postId, comment.id, true)" class="position-relative">
                     <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Reply and hit submit"
                       class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
-                    <button type="submit" class="btn btn-sm position-absolute top-0 end-0 py-2 pe-3 border-0"><i
-                        class="bi bi-send fs-5"></i></button>
                     <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
                       <!-- Add emoji and image upload functionality -->
+                      <div class="position-relative comment-emoji-picker">
+                        <button class="btn px-1 py-0" v-on:click="toggleNestedCommentEmojiPicker">
+                          <abbr title="Open Emoji">
+                            <i class="bi bi-emoji-smile fs-5"></i>
+                          </abbr>
+                        </button>
+                        <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true"
+                          @select="onSelectNestedCommentEmoji" />
+                      </div>
+                      <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
                     </div>
                   </form>
                 </div>
@@ -134,7 +153,7 @@
                 <div class="d-flex gap-2">
                   <div class="user-icon">
                     <a :href="`/${reply.user.username}`">
-                      <img :src="reply.user.avatar" class="rounded-circle" width="40" height="40">
+                      <img :src="`/${reply.user.avatar}`" class="rounded-circle" width="40" height="40">
                     </a>
                   </div>
                   <div class="comment-body w-100 bg-light-grey px-sm-3 px-2 py-2">
@@ -167,13 +186,14 @@
                         <button class="btn rounded-2 btn-sm border-btn py-2 px-3" @click="cancelEdit(reply.id)">Cancel</button>
                       </div>
                       <div v-else class="comment-text">
-                        <p>{{ reply.text }}</p>
+                        <p class="text-start">{{ reply.text }}</p>
                       </div>
                       <!-- Reply reaction options -->
                       <div class="reply-options">
                         <!-- Dynamic Like/Liked Button -->
                         <div class="like-comment-count row align-items-center justify-content-start gap-2">
-                          <button type="button" class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
+                          <button type="button"
+                            class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                             @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
                             @click="handleReaction(reply.id, 1, comment.id, true)">
                             <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
@@ -201,11 +221,9 @@
                             </div>
                           </div>
                         </div>
-                        <!-- Dynamic Like/Liked Button -->
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -219,13 +237,15 @@
 import { mapState, mapActions } from 'vuex';
 import { formatDateTime } from '../../utils';
 import { Dropdown } from 'bootstrap';
-
+import EmojiPicker from 'vue3-emoji-picker';
+import 'vue3-emoji-picker/css';
 export default {
   emits: ['show-reactions'],
   props: {
     postId: Number,
     reactionTypes: Array,
   },
+  components: { EmojiPicker },
   data() {
     return {
       newContent: '',
@@ -234,6 +254,8 @@ export default {
       editedText: '',
       isSubmitting: false,
       showReactionsForComment: {},
+      showCommentEmojiPicker: false,
+      showNestedCommentEmojiPicker: false
     };
   },
   computed: {
@@ -264,7 +286,6 @@ export default {
         this.editedCommentText = comment.text;
       }
     },
-    //{postId, commentId, parentCommentId, text, isReply }
     submitComment(postId, commentId, isReply = false) {
       if (!this.newContent.trim()) return;
       this.isSubmitting = true;
@@ -356,6 +377,18 @@ export default {
             }
         }
     },
+    toggleNestedCommentEmojiPicker() {
+      this.showNestedCommentEmojiPicker = !this.showNestedCommentEmojiPicker;
+    },
+    toggleEmojiPicker() {
+      this.showCommentEmojiPicker = !this.showCommentEmojiPicker;
+    },
+    onSelectCommentEmoji(emoji) {
+      this.newContent += emoji.i;
+    },
+    onSelectNestedCommentEmoji(emoji) {
+      this.newContent += emoji.i;
+    },
   },
 };
 </script>
@@ -364,6 +397,16 @@ export default {
 .reply-reaction-icons-img {
   width: 25px;
   height: 25px;
+}
+
+.min-max-content {
+  min-width: max-content;
+}
+
+.comment-emoji-picker .v3-emoji-picker {
+  position: absolute;
+  top: 35px;
+  z-index: 1;
 }
 
 @media screen and (max-width: 506px) {

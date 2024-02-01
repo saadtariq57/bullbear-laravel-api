@@ -4,7 +4,7 @@
       <div class="d-flex align-items-center gap-3 px-sm-1 px-2">
         <a href="#">
           <img class="post-avatar img-fluid rounded-circle border-2 border-primary" width="50px"
-            :src="'/' + userData.avatar">
+            :src="`/${userData.avatar}`">
         </a>
         <!-- Model Handleing Buttons -->
         <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3"
@@ -39,7 +39,7 @@
                 <!-- Post Settings trigger button -->
                 <button class="btn d-flex gap-3 align-items-center" @click="showPostSettingModal">
                   <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary"
-                    :src="userData.avatar">
+                    :src="`/${userData.avatar}`">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
                       <span class="fs-4 fw-6">{{ userData.name }}</span>
@@ -77,7 +77,7 @@
                     class="media-preview-container position-relative">
                     <div class="preview-wrapper" v-if="uploadedMedia.length === 1">
                       <!-- For single image, use uploadedMedia[0].preview -->
-                      <img :src="uploadedMedia[0].preview" alt="Media preview" class="img-fluid">
+                      <img :src="`/${uploadedMedia[0].preview}`" alt="Media preview" class="img-fluid">
                       <div class="preview-actions">
                         <i class="bi bi-pencil" @click="showMediaPostModal"></i>
                         <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
@@ -86,7 +86,7 @@
                     <div v-if="isMultiImage" class="multi-image-preview position-relative">
                       <!-- For multiple images, iterate over uploadedMedia and use media.preview -->
                       <div v-for="(media, index) in uploadedMedia" :key="index" class="image-container">
-                        <img :src="media.preview" alt="Media preview" class="img-thumbnail">
+                        <img :src="`/${media.preview}`" alt="Media preview" class="img-thumbnail">
                       </div>
                       <div class="preview-actions">
                         <i class="bi bi-pencil" @click="showMediaPostModal"></i>
@@ -120,7 +120,7 @@
                     class="link-preview-container px-sm-4 position-relative">
                     <div class="card preview-wrapper shadow mb-3">
                       <div class="link-preview-wrapper text-center rounded-top">
-                        <img :src="linkData.image" alt="Link preview" class="link-image img-fluid rounded-top">
+                        <img :src="`/${linkData.image}`" alt="Link preview" class="link-image img-fluid rounded-top">
                       </div>
                       <div class="link-details card-body">
                         <h3 class="link-title fs-5">{{ linkData.title }}</h3>
@@ -187,7 +187,8 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="publishPost" :disabled="!isPublishable">Publish
+                <button type="button" class="btn btn-primary" @click="publishPost"
+                  :disabled="!isPublishable || isPublishing">Publish
                   Post</button>
               </div>
             </div>
@@ -284,6 +285,7 @@ export default {
         url: ''
       },
       feedMediaimaged: false,
+      isPublishing: false,
     };
   },
   computed: {
@@ -520,7 +522,7 @@ export default {
     publishPost() {
       const formData = new FormData();
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
+      this.isPublishing = true;
       formData.append('user_id', this.userData.id);
       formData.append('post_type', this.currentPostType || 'text');
       formData.append('post_privacy', this.post_privacy);
@@ -564,9 +566,11 @@ export default {
           console.log('Post published:', response.data);
           this.clearPostType();
           this.hidePostModal();
+          this.isPublishing = false;
         })
         .catch(error => {
           console.error('Error publishing post:', error);
+          this.isPublishing = false;
           // Handle error
         });
     }
