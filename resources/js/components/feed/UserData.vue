@@ -46,3 +46,8 @@ export default {
     computed: mapState(['userData']),
 };
 </script>
+<style>
+.wow_side_loggd_usr_cvr {
+    height: 210px;
+}
+</style>
