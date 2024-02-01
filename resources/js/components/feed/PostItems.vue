@@ -50,102 +50,7 @@
                 <div v-else>
                   <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                 </div>
-                <!-- Post Preview Modal Start -->
-                <div class="modal fade" id="postPreview" tabindex="-1" aria-labelledby="postPreviewLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable mx-auto">
-                    <div class="modal-content">
-                      <div class="row">
-                        <div class="col-xl-8 col-md-6">
-                          <div class="modal-header">
-                            <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
-                          </div>
-                        </div>
-                        <div class="col-xl-4 col-md-6">
-                          <div class="modal-body ps-0 pb-0 border-0">
-                            <div class="post-preview-scroll">
-                              <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex justify-content-between">
-                                  <div class="user-avatar d-flex gap-2">
-                                    <div class="img">
-                                      <img :src="`/${post.user.avatar}`" class="rounded-circle"
-                                        :alt="post.user.name + ' profile picture'">
-                                    </div>
-                                    <div class="user-info text-start">
-                                      <a href="" class="text-black d-inline-block text-start fw-bold modal-username">{{
-                                        post.user.name
-                                      }}</a>
-                                      <div class="time">
-                                        <span>{{ formatDateTime(post.created_at) }}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!-- Post settings -->
-                                  <!-- Include Post Settings Dropdown Here -->
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                  aria-label="Close"></button>
-                              </div>
-                              <div>
-                                <div class="post description pt-3 ">
-                                  <p class="text-start">{{ post.post_text }}</p>
-                                </div>
-                                <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
-                                  <div class="like-count">
-                                    <!-- Reaction Post trigger modal -->
-                                    <div class="reaction-icons">
-                                      <span v-for="( reaction, index ) in  post.reactions.slice(0, 3) "
-                                        :key="reaction.id">
-                                        <button class="btn"><img :src="`/${reaction.reaction_type.icon}`"
-                                            class="reaction-icon me-sm-2 me-1"><span> {{
-                                              post.reactions_count
-                                            }}</span></button>
-                                      </span>
-                                      <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
 
-                                    </div>
-                                  </div>
-                                  <div class="comment-count">
-                                    <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
-                                      <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
-                                    </button>
-                                  </div>
-                                </div>
-                                <div class="row post-reach pb-2 px-sm-4">
-                                  <button type="button"
-                                    class="btn fs-6 px-1 btn-feed-hover border-0 position-relative col-4"
-                                    @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
-                                    @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]"
-                                      class="bi bi-hand-thumbs-up pe-sm-2 pe-1"></i>
-                                    <i v-else :class="getReactionName(userReactions[post.id])"></i>
-                                    <span :class="getReactionName(userReactions[post.id])">
-                                      {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
-                                    </span>
-                                    <div v-if="showReactionsForPost[post.id]"
-                                      class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                                      <span v-for=" reactionType  in  reactionTypes " :key="reactionType.id"
-                                        @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
-                                        <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
-                                      </span>
-                                    </div>
-                                  </button>
-                                  <button type="button" class="btn fs-6 px-1 btn-feed-hover border-0 col-4"
-                                    @click="toggleComments(post.id)"><i
-                                      class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
-                                  <button type="button" class="btn fs-6 px-1 btn-feed-hover border-0 col-4"
-                                    @click="sharePost"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
-                                </div>
-                                <PostComment v-if="fetchedCommentsFlags[post.id]" :userId="userData.id" :postId="post.id"
-                                  :fetchedCommentsFlags="fetchedCommentsFlags" :userAvatar="userData.avatar"
-                                  @fetch-comments="handleFetchComments" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
             <div v-else class="text-center">
@@ -154,6 +59,7 @@
                 <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
               </div>
             </div>
+          
           </div>
           <!-- Poll Content -->
 
@@ -165,7 +71,8 @@
                   <!-- Display options if voting time is active and the user hasn't voted yet -->
                   <div v-if="!post.poll.userVoted">
                     <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
-                      <button @click="submitVote(post.poll.id, option.id)" class="w-100 btn rounded-5 border-btn border-2 fw-6">
+                      <button @click="submitVote(post.poll.id, option.id)"
+                        class="w-100 btn rounded-5 border-btn border-2 fw-6">
                         {{ option.option_text }}
                       </button>
                     </div>
@@ -175,10 +82,12 @@
                   <div v-else-if="post.poll.isActive">
                     <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
                       <div class="poll-result">
-                        {{ option.option_text }} - {{ option.votes }} votes ({{ calculatePercentage(option.votes, post.poll.totalVotes) }}%)
+                        {{ option.option_text }} - {{ option.votes }} votes ({{ calculatePercentage(option.votes,
+                          post.poll.totalVotes) }}%)
                       </div>
                     </div>
-                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)" class="btn undo-vote-btn">Undo Vote</button>
+                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)" class="btn undo-vote-btn">Undo
+                      Vote</button>
                   </div>
                   <div class="text-secondary">
                     Total votes: {{ post.poll.totalVotes }} - Time left: {{ post.poll.timeLeft }}
@@ -202,10 +111,12 @@
             <div class="like-count">
               <!-- Reaction Post trigger modal -->
               <div class="reaction-icons">
-                  <button @click="handleShowReactionsPost(post.id, post.organizedReactions)">
-                    <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)" :key="index">
+                <button @click="handleShowReactionsPost(post.id, post.organizedReactions)">
+                  <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
+                    :key="index">
                     <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
-                  <span v-if="Object.keys(post.organizedReactions).length > 3">+{{ Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                    <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
+                      Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
                   </span>
                 </button>
               </div>
@@ -231,27 +142,24 @@
                 </span>
               </div>
             </button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id, userData.id)"><i
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4"
+              @click="toggleComments(post.id, userData.id)"><i
                 class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i
                 class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
           </div>
 
           <!-- Comments Section -->
-          <PostComment v-if="fetchedCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
+          <PostComment v-if="fetchedCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes"
+            @show-reactions="handleShowReactions" />
         </div>
       </div>
     </div>
     <div v-else>
       <p>Loading posts...</p>
     </div>
-    <ReactionModal
-      ref="reactionModal"
-      v-if="activeReactionData"
-      :activeItem="activeReactionData"
-      @close-modal="activeReactionData = null"
-      @modal-mounted="handleModalMounted"
-    />
+    <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
+      @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
   </div>
 </template>
 
@@ -291,7 +199,6 @@ export default {
         if (post.post_type === 'poll' && post.poll) {
           const isActive = this.isPollActive(post.poll);
           const totalVotes = this.calculateTotalVotes(post.poll.options);
-
           updatedPost.poll = {
             ...post.poll,
             isActive: isActive,
@@ -318,11 +225,11 @@ export default {
   },
   methods: {
     ...mapActions('userFeed', [
-      'addOrUpdateReaction', 
-      'removeReaction', 
-      'fetchMorePosts', 
-      'addVote', 
-      'removeVote', 
+      'addOrUpdateReaction',
+      'removeReaction',
+      'fetchMorePosts',
+      'addVote',
+      'removeVote',
       'updateFetchedCommentsFlag'
     ]),
     ...mapActions('userFeedComment', ['fetchCommentsForPost']),
@@ -347,35 +254,35 @@ export default {
       this.activeReactionData = { postId, reactionData };
     },
     handleScroll() {
-        const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-        if (nearBottom) {
-            this.fetchMorePosts();
-        }
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+      if (nearBottom) {
+        this.fetchMorePosts();
+      }
     },
     toggleComments(postId, userId) {
       if (!this.fetchedCommentsFlags[postId]) {
-        this.fetchCommentsForPost({postId, userId});
+        this.fetchCommentsForPost({ postId, userId });
         this.updateFetchedCommentsFlag(postId);
       }
     },
     submitVote(pollId, optionId) {
       this.addVote({ pollId, optionId });
     },
-    
+
     undoVote(pollId) {
       this.removeVote(pollId);
     },
     calculatePercentage(votes, totalVotes) {
       return totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(2) : 0;
     },
-    
+
     isPollActive(poll) {
       const pollEndTime = new Date(poll.created_at).getTime() + poll.time * 24 * 60 * 60 * 1000;
       return Date.now() < pollEndTime;
     },
 
     timeLeft(poll) {
-      const pollEndTime = new Date(poll.created_at).getTime() + poll.time * 24 * 60 * 60 * 1000; 
+      const pollEndTime = new Date(poll.created_at).getTime() + poll.time * 24 * 60 * 60 * 1000;
       const timeLeft = pollEndTime - Date.now();
       if (timeLeft <= 0) {
         return 'Voting closed';
@@ -393,34 +300,62 @@ export default {
       this.showReactionsForPost[postId] = false;
     },
     handleReaction(post_id, reactionTypeId) {
-        const post = this.posts.find(p => p.id === post_id);
-        if (post) {
-            if (post.userReaction === reactionTypeId) {
-                // Remove the reaction
-                this.removeReaction(post_id);
-            } else {
-                // Add or update the reaction
-                this.addOrUpdateReaction({ post_id, reactionTypeId });
-            }
+      const post = this.posts.find(p => p.id === post_id);
+      if (post) {
+        if (post.userReaction === reactionTypeId) {
+          // Remove the reaction
+          this.removeReaction(post_id);
+        } else {
+          // Add or update the reaction
+          this.addOrUpdateReaction({ post_id, reactionTypeId });
         }
+      }
     },
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
-      window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   },
 };
 </script>
 
 <style>
-.fade-enter-active, .fade-leave-active {
+.preview-modal-item.carousel-item {
+  transition: unset !important;
+  vertical-align: middle;
+}
+
+.preview-modal-item.carousel-item.active {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  opacity: 1;
+}
+
+.preview-modal-item.carousel-item.active img {
+  align-self: center;
+}
+
+.post-preview-comments-modal {
+  max-height: 550px !important;
+  overflow-y: auto !important;
+}
+
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active in <2.1.8 */
+  {
   opacity: 0;
 }
+
 .link-file {
   max-height: 700px;
   overflow: hidden;
@@ -563,12 +498,13 @@ export default {
   padding-bottom: 0px;
 }
 
+
 #postPreview .modal-dialog {
-  max-width: 80%;
+  max-width: 100%;
 }
 
 .post-preview-scroll {
-  max-height: 88vh;
+  max-height: 100vh;
 }
 
 .multi-post-img-wrapper {

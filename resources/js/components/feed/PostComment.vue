@@ -21,7 +21,7 @@
             </button>
             <EmojiPicker v-if="showCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
           </div>
-          <button type="submit" class="btn btn-sm p-0 pt-1 border-0"><i class="bi bi-send fs-5"></i></button>
+          <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
         </div>
       </form>
     </div>
