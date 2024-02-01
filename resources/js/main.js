@@ -1,28 +1,35 @@
 import { createApp } from "vue";
 import Navigation from "./components/header/Navigation.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import store from './store';
+import store from './stores/index';
+import { initializeEcho } from './services/echoService';
+initializeEcho();
 
+// Set axios with common header
 import axios from 'axios';
+
+const token = document.head.querySelector('meta[name="csrf-token"]');
+
+if (token) {
+  axios.interceptors.request.use((config) => {
+    // Initialize headers and common if they don't exist
+    config.headers = config.headers || {};
+    config.headers.common = config.headers.common || {};
+
+    // Check if the URL is relative and doesn't start with http(s)://
+    if (!/^(http|https):\/\//.test(config.url)) {
+      config.headers.common['X-CSRF-TOKEN'] = token.content;
+    }
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  });
+} else {
+  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+}
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios = axios;
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-import Echo from 'laravel-echo';
-
-import Pusher from 'pusher-js';
-window.Pusher = Pusher;
-
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-    wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-    wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-    wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss'],
-});
 
 // Define routes with lazy loading
 const routes = [

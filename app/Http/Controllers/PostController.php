@@ -7,6 +7,7 @@ use \App\Models\User;
 use App\Models\ColoredPost;
 use App\Models\Poll;
 use App\Models\PollOption;
+use App\Models\UserPollVotes;
 use App\Models\AlbumMedia;
 use App\Models\Group;
 use App\Models\Comment;
@@ -77,7 +78,6 @@ class PostController extends Controller
 
             case 'photo':
                 // Loop through all files in the request
-
                 foreach ($request->file('images') as $image) {
                         try {
                             $path = $image->store("upload/photos/" . now()->year . "/" . now()->month, 'public');
@@ -92,24 +92,25 @@ class PostController extends Controller
                         }
                 }
                 break;
-            case 'link':
-                // Handle video data storage logic
-                try {
-                    // $linkPath = $request-> file('link')->store("upload/links/" . now()->year . "/" . now()->month, 'public');
-                    $linkPath = $request->post_link;
-                    $linktitle = $request->post_link_title;
-                    $linkimage = $request->post_link_image;
-                    
-                    Post::create([
-                        'post_id' => $post->id,
-                        'post_link' => $linkPath,
-                        'post_link_title' => $linktitle,
-                        'post_link_image' => $linkimage,
-                    ]);
-                    Log::info("Video uploaded successfully: " . $linkPath);
-                } catch (\Exception $e) {
-                    Log::error("Video upload failed: " . $e->getMessage());
-                    return response()->json(['error' => 'Video upload failed'], 500);
+        }
+
+        $post = Post::with([
+                        'user:id,name,avatar',
+                        'photos', 
+                        'poll.options', 
+                        'coloredPost', 
+                        'reactions' => function($query) {
+                            $query->with('reactionType:id,name,icon');
+                        }
+                    ])
+                    ->withCount(['comments', 'reactions'])
+                    ->findOrFail($post->id);
+
+        switch ($post->post_type) {
+            case 'poll':
+                // If it's a poll, attach options to the poll object
+                if ($post->poll) {
+                    $post->poll->options = $post->poll->options;
                 }
                 break;
         }
@@ -121,7 +122,6 @@ class PostController extends Controller
     public function getUserFeed(Request $request)
     {
         $user = $request->user();
-
         $groupIds = $user->groupMemberships()->pluck('group_id');
 
         // Create a query combining posts from groups, followed users, and user's own posts
@@ -129,9 +129,13 @@ class PostController extends Controller
                             'user:id,name,avatar',
                             'photos', 
                             'poll.options', 
+                            'poll.userVotes' => function($query) use ($user) {
+                                $query->where('user_id', $user->id);
+                            },
                             'coloredPost', 
                             'reactions' => function($query) {
-                                $query->with('reactionType:id,name,icon');
+                                $query->with('reactionType:id,name,icon')
+                                        ->with('user:id,name,avatar,about');
                             }
                         ])
                         ->withCount(['comments', 'reactions'])
@@ -139,21 +143,28 @@ class PostController extends Controller
                         ->orWhereIn('user_id', $user->followers()->pluck('follower_id'))
                         ->orWhere('user_id', $user->id)
                         ->orderByDesc('created_at');
+        if ($request->has('lastPostId')) {
+            $lastPostId = $request->get('lastPostId');
+            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
+        }
 
-        // Paginate the results
         $posts = $postsQuery->paginate(10);
-
-        // Customize the collection to include additional data based on post type
-        $posts->transform(function ($post) {
+        $posts->transform(function ($post) use ($user) {
             // Check and handle each post type
             switch ($post->post_type) {
                 case 'photo':
                     break;
 
                 case 'poll':
-                    // If it's a poll, attach options to the poll object and remove pollDetails
                     if ($post->poll) {
                         $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
                     }
                     unset($post->pollDetails);
                     break;
@@ -169,17 +180,23 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+
     public function fetchPostComments(Request $request, $postId)
     {
-        // Fetch root level comments for the given post ID along with their replies and reactions
         $comments = Comment::with([
-                            'user:id,name,avatar',
+                            'user:id,name,avatar,about',
                             'replies' => function($query) {
-                                $query->with('user:id,name,avatar')
-                                      ->with('reactions.reactionType:id,name,icon')
+                                $query->with('user:id,name,avatar,about')
+                                      ->with(['reactions' => function($reactionQuery) {
+                                          $reactionQuery->with('reactionType:id,name,icon')
+                                                        ->with('user:id,name,avatar,about');
+                                      }])
                                       ->withCount('reactions');
                             },
-                            'reactions.reactionType:id,name,icon'
+                            'reactions' => function($reactionQuery) {
+                                $reactionQuery->with('reactionType:id,name,icon')
+                                              ->with('user:id,name,avatar,about');
+                            }
                         ])
                         ->withCount(['replies', 'reactions'])
                         ->where('post_id', $postId)
@@ -192,48 +209,41 @@ class PostController extends Controller
     public function submitComment(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'post_id' => 'required|exists:posts,id',
             'text' => 'required|string|max:1000',
-            // Include other fields if necessary
-        ]);
-
-        $comment = Comment::create([
-            'user_id' => $request->user()->id, // Assuming you're using Laravel's authentication
-            'post_id' => $request->post_id,
-            'text' => $request->text,
-            // Set other fields if they're in the request
-        ]);
-
-        return response()->json([
-            'message' => 'Comment successfully added',
-            'comment' => $comment
-        ]);
-    }
-    public function submitReply(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'post_id' => 'required|exists:posts,id',
-            'parent_id' => 'required|exists:comments,id',
-            'text' => 'required|string|max:1000',
-            // Include other fields if necessary
         ]);
 
         $comment = Comment::create([
             'user_id' => $request->user()->id,
-            'parent_id' => $request->parent_id,
             'post_id' => $request->post_id,
+            'parent_id' => $request->parent_id,
             'text' => $request->text,
-            // Set other fields if they're in the request
         ]);
+
+        // Fetch the newly created comment in the same format as fetchPostComments
+        $comment = Comment::with([
+                            'user:id,name,avatar,about', // Include 'about'
+                            'replies' => function($query) {
+                                $query->with('user:id,name,avatar,about') // Include 'about'
+                                      ->with(['reactions' => function($reactionQuery) {
+                                          $reactionQuery->with('reactionType:id,name,icon')
+                                                        ->with('user:id,name,avatar,about');
+                                      }])
+                                      ->withCount('reactions');
+                            },
+                            'reactions' => function($reactionQuery) {
+                                $reactionQuery->with('reactionType:id,name,icon')
+                                              ->with('user:id,name,avatar,about');
+                            }
+                        ])
+                        ->withCount(['replies', 'reactions'])
+                        ->findOrFail($comment->id);
 
         return response()->json([
             'message' => 'Comment successfully added',
             'comment' => $comment
         ]);
     }
-    // Method to edit a comment
     public function editComment(Request $request)
     {
         $request->validate([
@@ -247,6 +257,25 @@ class PostController extends Controller
         if ($comment && $comment->user_id === Auth::id()) {
             $comment->text = $request->text;
             $comment->save();
+
+            // Fetch the updated comment in the same format as fetchPostComments
+            $comment = Comment::with([
+                            'user:id,name,avatar,about', // Include 'about'
+                            'replies' => function($query) {
+                                $query->with('user:id,name,avatar,about') // Include 'about'
+                                      ->with(['reactions' => function($reactionQuery) {
+                                          $reactionQuery->with('reactionType:id,name,icon')
+                                                        ->with('user:id,name,avatar,about'); // Include 'about'
+                                      }])
+                                      ->withCount('reactions');
+                            },
+                            'reactions' => function($reactionQuery) {
+                                $reactionQuery->with('reactionType:id,name,icon')
+                                              ->with('user:id,name,avatar,about'); // Include 'about'
+                            }
+                        ])
+                        ->withCount(['replies', 'reactions'])
+                        ->findOrFail($comment->id);
 
             return response()->json([
                 'message' => 'Comment updated successfully.',
@@ -286,14 +315,23 @@ class PostController extends Controller
     public function addOrUpdateReaction(Request $request)
     {
         $userId = Auth::id();
+
+        $request->validate([
+            'reaction_type_id' => 'required|integer',
+            // Ensure at least one of these IDs is provided
+            'post_id' => 'sometimes|integer',
+            'comment_id' => 'sometimes|integer',
+            'message_id' => 'sometimes|integer',
+        ]);
+
         $reactionTypeId = $request->reaction_type_id;
 
         $reactionData = [
-            'user_id' => $userId, 
-            'reaction_type_id' => $reactionTypeId
+            'user_id' => $userId,
+            'reaction_type_id' => $reactionTypeId,
         ];
 
-        // Check which type of ID is provided and use it
+        // Determine which ID is provided and use it
         if ($request->has('post_id')) {
             $reactionData['post_id'] = $request->post_id;
         } elseif ($request->has('comment_id')) {
@@ -302,13 +340,30 @@ class PostController extends Controller
             $reactionData['message_id'] = $request->message_id;
         }
 
+        // Additional validation based on the missing IDs
+        if (!isset($reactionData['post_id']) && !isset($reactionData['comment_id']) && !isset($reactionData['message_id'])) {
+            return response()->json(['message' => 'At least one of post_id, comment_id, or message_id must be provided.'], 400);
+        }
+
         $reaction = Reaction::updateOrCreate(
-            ['user_id' => $userId, 'post_id' => $reactionData['post_id'] ?? null, 'comment_id' => $reactionData['comment_id'] ?? null, 'message_id' => $reactionData['message_id'] ?? null],
+            [
+                'user_id' => $userId,
+                'post_id' => $reactionData['post_id'] ?? null,
+                'comment_id' => $reactionData['comment_id'] ?? null,
+                'message_id' => $reactionData['message_id'] ?? null,
+            ],
             ['reaction_type_id' => $reactionTypeId]
         );
 
-        return response()->json(['message' => 'Reaction added/updated successfully', 'reaction' => $reaction]);
+        // Load reaction type and user data to align with the initial structure
+        $reaction->load(['reactionType', 'user:id,name,avatar,about']);
+
+        return response()->json([
+            'message' => 'Reaction added/updated successfully', 
+            'reaction' => $reaction
+        ]);
     }
+
 
     public function removeReaction(Request $request)
     {
@@ -316,18 +371,92 @@ class PostController extends Controller
 
         $query = Reaction::where('user_id', $userId);
 
+        // Initialize variables to store the IDs
+        $postId = null;
+        $reactionTypeId = null;
+
         // Check which type of ID is provided and use it
         if ($request->has('post_id')) {
-            $query->where('post_id', $request->post_id);
+            $postId = $request->post_id;
+            $query->where('post_id', $postId);
         } elseif ($request->has('comment_id')) {
             $query->where('comment_id', $request->comment_id);
         } elseif ($request->has('message_id')) {
             $query->where('message_id', $request->message_id);
         }
 
-        $query->delete();
+        // Retrieve the reaction to get its type before deleting
+        $reaction = $query->first();
+        if ($reaction) {
+            $reactionTypeId = $reaction->reaction_type_id;
+            $reaction->delete();
+        }
 
-        return response()->json(['message' => 'Reaction removed successfully']);
+        return response()->json([
+            'message' => 'Reaction removed successfully',
+            'post_id' => $postId,
+            'reaction_type_id' => $reactionTypeId
+        ]);
+    }
+
+    public function addVote(Request $request)
+    {
+        $userId = Auth::id();
+
+        $request->validate([
+            'poll_id' => 'required|integer',
+            'option_id' => 'required|integer',
+        ]);
+
+        $pollId = $request->poll_id;
+        $optionId = $request->option_id;
+
+        // Check if user has already voted on this poll
+        $existingVote = UserPollVotes::where('user_id', $userId)->where('poll_id', $pollId)->first();
+
+        if ($existingVote) {
+            // User has already voted, update their vote
+            $existingVote->update(['option_id' => $optionId]);
+        } else {
+            // User has not voted yet, create a new vote
+            UserPollVotes::create([
+                'user_id' => $userId,
+                'poll_id' => $pollId,
+                'option_id' => $optionId
+            ]);
+        }
+
+        // Update votes count on the option
+        $option = PollOption::find($optionId);
+        $option->increment('votes');
+
+        return response()->json(['message' => 'Vote added successfully', 'poll_id' => $pollId, 'option_id' => $optionId]);
+    }
+    public function removeVote(Request $request)
+    {
+        $userId = Auth::id();
+
+        $request->validate([
+            'poll_id' => 'required|integer',
+        ]);
+
+        $pollId = $request->poll_id;
+
+        // Find and remove the user's vote
+        $vote = UserPollVotes::where('user_id', $userId)->where('poll_id', $pollId)->first();
+
+        if ($vote) {
+            $optionId = $vote->option_id;
+            $vote->delete();
+
+            // Decrement votes count on the option
+            $option = PollOption::find($optionId);
+            $option->decrement('votes');
+
+            return response()->json(['message' => 'Vote removed successfully', 'poll_id' => $pollId, 'option_id' => $optionId]);
+        }
+
+        return response()->json(['message' => 'No vote found to remove']);
     }
 
 }

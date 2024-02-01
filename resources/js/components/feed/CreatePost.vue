@@ -258,7 +258,6 @@ export default {
       selectedColorId: null,
       textColor: '',
       textContent: '',
-
       colorStyles: [],
       showColorOptions: false,
       showEmojiPicker: false,
@@ -381,7 +380,7 @@ export default {
         this.pollData = {
           question: pollData.question,
           options: pollData.options,
-          duration: pollData.duration  // Make sure to set the duration
+          duration: pollData.duration
         };
         this.showPollPreview = true;
         console.log('Poll created:', pollData);
@@ -496,7 +495,7 @@ export default {
       this.clearLinkPreview();
     },
     extractUrl(text) {
-      // Simple URL extraction (You may want to use a more robust method)
+      // Simple URL extraction
       const urlRegex = /(https?:\/\/[^\s]+)/g;
       const urls = text.match(urlRegex);
       return urls ? urls[0] : null;
@@ -549,11 +548,10 @@ export default {
           });
           break;
         case 'link':
-          formData.append('post_link', this.linkData.url); // Assuming you have a reference to the video file in this.videoFile
+          formData.append('post_link', this.linkData.url);
           formData.append('post_link_title', this.linkData.title);
           formData.append('post_link_image', this.linkData.image);
           break;
-        // Add other cases as necessary
       }
 
       axios.post('/api/create-post', formData, {

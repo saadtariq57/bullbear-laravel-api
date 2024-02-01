@@ -23,4 +23,8 @@ class Poll extends Model
     {
         return $this->hasMany(PollOption::class);
     }
+    public function userVotes()
+    {
+        return $this->hasMany(UserPollVotes::class);
+    }
 }

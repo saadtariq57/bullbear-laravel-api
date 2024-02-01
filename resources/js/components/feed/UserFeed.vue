@@ -4,12 +4,11 @@
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
                     <div>
-                        <CreatePost context="feed" />
+                        <CreatePost context="feed"/>
                     </div>
                     <div>
-                        <PostItems />
+                        <PostItems :posts="posts" :reactionTypes="reactionTypes" />
                     </div>
-
                 </section>
             </div>
             <div class="col-lg-4">
@@ -20,33 +19,32 @@
         </div>
     </div>
 </template>
+
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import CreatePost from './CreatePost.vue';
 import PostItems from './PostItems.vue';
 import UserData from './UserData.vue';
 
 export default {
+    name: 'UserFeed',
     components: {
         CreatePost,
         PostItems,
         UserData,
     },
-    computed: mapState(['userData']),
-    mounted() {
-        const userId = this.userData.id;
-        console.log(`Attempting to subscribe to feed.posts.${userId}`);
-        console.log('Echo instance:', window.Echo);
-
-    window.Echo.private(`feed.posts.${userId}`)
-        .listen('.App\\Events\\NewPost', (post) => {
-            console.log('NewPost event received:', post);
-        })
-        .error((error) => {
-            console.error(`Error subscribing to feed.posts.${userId}:`, error);
+    computed: {
+        ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
+    },
+    created() {
+        this.fetchPosts();
+        this.fetchReactionTypes();
+        this.$nextTick(() => {
+            this.initializeRealTimeUpdates();
         });
-
-        console.log(`Subscribed to feed.posts.${userId} (pending Echo confirmation)`);
+    },
+    methods: {
+        ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
     },
 };
 </script>

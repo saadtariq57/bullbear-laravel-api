@@ -1,7 +1,10 @@
 <template>
   <div class="mt-3">
-    <div v-if="allPosts.length > 0">
-      <div v-for="post in allPosts" :key="post.id" class="post shadow mb-4 rounded-2">
+    <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert">
+      <button @click="$store.commit('userFeed/shiftNewPost')">New Post Available - Click to View</button>
+    </div>
+    <div v-if="posts.length > 0">
+      <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
         <!-- Post heading section -->
         <div class="post-wrapper">
           <div class="post-heading p-3">
@@ -18,7 +21,6 @@
                 </div>
               </div>
               <!-- Post settings -->
-              <!-- Include Post Settings Dropdown Here -->
             </div>
           </div>
 
@@ -33,27 +35,39 @@
           <!-- Post Media -->
           <div v-if="post.post_type === 'photo'" class="post-file">
             <div v-for="photo in post.photos" :key="photo.id" class="text-center">
-              <!-- <img :src="photo.image" alt="Post image" class="img-fluid"> -->
               <img :src="photo.image" alt="Post image" class="img-fluid">
             </div>
           </div>
 
           <!-- Poll Content -->
-          <div v-if="post.post_type === 'poll' && post.poll" class="post-poll">
+
+          <div v-if="post.post_type === 'poll' && post.poll && post.poll.isActive" class="post-poll">
             <div class="container-fluid px-sm-5">
               <div class="container shadow border border-light-grey py-4">
                 <h5>{{ post.poll.text }}</h5>
-                <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank"
-                    class="astronaut-blue fw-6 fs-6">Learn more</a></span>
                 <div class="py-4">
-                  <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
-                    <button class="w-100 btn rounded-5 border-btn border-2 fw-6">{{ option.option_text }}</button>
+                  <!-- Display options if voting time is active and the user hasn't voted yet -->
+                  <div v-if="!post.poll.userVoted">
+                    <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
+                      <button @click="submitVote(post.poll.id, option.id)" class="w-100 btn rounded-5 border-btn border-2 fw-6">
+                        {{ option.option_text }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Display results if the user has voted or the voting time has expired -->
+                  <div v-else-if="post.poll.isActive">
+                    <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
+                      <div class="poll-result">
+                        {{ option.option_text }} - {{ option.votes }} votes ({{ calculatePercentage(option.votes, post.poll.totalVotes) }}%)
+                      </div>
+                    </div>
+                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)" class="btn undo-vote-btn">Undo Vote</button>
                   </div>
                   <div class="text-secondary">
-                    <span>35</span> votes - <span>2w</span> left
+                    Total votes: {{ post.poll.totalVotes }} - Time left: {{ post.poll.timeLeft }}
                   </div>
                 </div>
-                <!-- Progress bars and other poll details can be added here -->
               </div>
             </div>
           </div>
@@ -72,283 +86,16 @@
             <div class="like-count">
               <!-- Reaction Post trigger modal -->
               <div class="reaction-icons">
-                <span v-for="(reaction, index) in post.reactions.slice(0, 3)" :key="reaction.id">
-                  <button class="btn" data-bs-toggle="modal" data-bs-target="#reactionPostModal"><img
-                      :src="reaction.reaction_type.icon" class="reaction-icon me-sm-2 me-1"><span> {{ post.reactions_count
-                      }}</span></button>
-                </span>
-                <span v-if="post.reactions.length > 3">+{{ post.reactions_count }}</span>
-                <!-- Reaction Post Modal Start -->
-                <div class="modal fade" id="reactionPostModal" tabindex="-1" aria-labelledby="reactionPostModalLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                      <div class="modal-header pb-0 border-0">
-                        <h1 class="modal-title fs-5" id="reactionPostModalLabel">Reactions</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="mt-2 reactions-post-wrapper mx-3">
-                        <ul class="nav border-0 nav-tabs gap-1 flex-nowrap" id="reactions-post-Followers-tab"
-                          role="tablist">
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap active"
-                              id="allreactions-tab" data-bs-toggle="tab" data-bs-target="#allreactions-tab-pane"
-                              type="button" role="tab" aria-controls="allreactions-tab-pane" aria-selected="false"><span
-                                class="me-1">All</span><span>6</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="likereactions-tab" data-bs-toggle="tab" data-bs-target="#likereactions-tab-pane"
-                              type="button" role="tab" aria-controls="likereactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/like.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="lovereactions-tab" data-bs-toggle="tab" data-bs-target="#lovereactions-tab-pane"
-                              type="button" role="tab" aria-controls="lovereactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/love.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="hahareactions-tab" data-bs-toggle="tab" data-bs-target="#hahareactions-tab-pane"
-                              type="button" role="tab" aria-controls="hahareactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/haha.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py- d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="wowreactions-tab" data-bs-toggle="tab" data-bs-target="#wowreactions-tab-pane"
-                              type="button" role="tab" aria-controls="wowreactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/wow.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py- d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="sadreactions-tab" data-bs-toggle="tab" data-bs-target="#sadreactions-tab-pane"
-                              type="button" role="tab" aria-controls="sadreactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/sad.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button
-                              class="nav-link border-0 fs-6 text-black px-2 py-2  d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
-                              id="angryreactions-tab" data-bs-toggle="tab" data-bs-target="#angryreactions-tab-pane"
-                              type="button" role="tab" aria-controls="angryreactions-tab-pane" aria-selected="false"><img
-                                src="/upload/icons/angry.png" alt="" width="18px" class="me-1"><span>1</span></button>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="modal-body">
-
-                        <div class="list-group">
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="allreactions-tab-pane" role="tabpanel"
-                              aria-labelledby="allreactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="40" height="40">
-                                    <span class="user-reaction position-absolute bg-white rounded-5">
-                                      <img src="/upload/icons/angry.png" alt="" width="15px" height="15px">
-                                    </span>
-                                  </div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="likereactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="lovereactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="hahareactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="wowreactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="sadreactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                            <div class="tab-pane fade" id="angryreactions-tab-pane" role="tabpanel"
-                              aria-labelledby="likereactions-tab" tabindex="0">
-                              <a href="#"
-                                class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0">
-                                <div>
-                                  <div class="position-relative"><img src="/build/images/brands/cryptocurrency_btc.png"
-                                      alt="" width="40" height="40"></div>
-                                </div>
-                                <div class="flex-fill border-bottom py-3">
-                                  <h6 class=" fs-6 fw-6 clr-primary user-name">Anthony J James</h6>
-                                  <p class="mb-0 fs-12 text-wrap lh-base">CEO | Innovation | Technology | Global
-                                    Commercialization | Growth @ Trinity Consulting
-                                  </p>
-
-                                </div>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Reaction Post Modal End-->
+                  <button @click="handleShowReactionsPost(post.id, post.organizedReactions)">
+                    <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)" :key="index">
+                    <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
+                  <span v-if="Object.keys(post.organizedReactions).length > 3">+{{ Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                  </span>
+                </button>
               </div>
             </div>
             <div class="comment-count">
-              <button @click="toggleComments(post.id)" class="btn btn-feed-hover border-0">
+              <button @click="toggleComments(post.id, userData.id)" class="btn btn-feed-hover border-0">
                 <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
               </button>
             </div>
@@ -356,264 +103,208 @@
           <div class="row post-reach pb-2 px-sm-4">
             <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
               @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
-              @click="handleDefaultReaction(post.id)"><i v-if="!userReactions[post.id]"
-                class="bi bi-hand-thumbs-up pe-sm-2 pe-1"></i>
-              <i v-else :class="getReactionName(userReactions[post.id])"></i>
-              <span :class="getReactionName(userReactions[post.id])">
-                {{ userReactions[post.id] ? getReactionName(userReactions[post.id]) : 'Like' }}
+              @click="handleReaction(post.id, 1)">
+              <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
+              <span :class="getReactionName(post.userReaction)">
+                {{ getReactionName(post.userReaction) }}
               </span>
               <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                 <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                  @click.stop="addOrUpdateReaction(post.id, 'post_id', reactionType.id)">
+                  @click.stop="handleReaction(post.id, reactionType.id)">
                   <img :src="reactionType.icon" class="reaction-icons-img">
                 </span>
               </div>
             </button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id)"><i
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="toggleComments(post.id, userData.id)"><i
                 class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i
                 class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
           </div>
 
           <!-- Comments Section -->
-          <PostComment v-if="fetchedCommentsFlags[post.id]" :userId="userData.id" :postId="post.id"
-            :fetchedCommentsFlags="fetchedCommentsFlags" :userAvatar="userData.avatar"
-            @fetch-comments="handleFetchComments" />
+          <PostComment v-if="fetchedCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
         </div>
       </div>
     </div>
     <div v-else>
       <p>Loading posts...</p>
     </div>
+    <ReactionModal
+      ref="reactionModal"
+      v-if="activeReactionData"
+      :activeItem="activeReactionData"
+      @close-modal="activeReactionData = null"
+      @modal-mounted="handleModalMounted"
+    />
   </div>
 </template>
 
-
 <script>
-import axios from "axios";
-import { mapState } from 'vuex';
+import { formatDateTime } from '../../utils';
+import { Modal } from 'bootstrap';
+import { mapState, mapActions } from 'vuex';
 import SharePost from "./SharePost.vue";
 import PostComment from './PostComment.vue';
+import ReactionModal from '../utils/ReactionModal.vue';
 
 export default {
+  emits: ['show-reactions'],
+  props: {
+    posts: Array,
+    reactionTypes: Array,
+  },
   components: {
     PostComment,
+    ReactionModal,
     SharePost
   },
   data() {
     return {
-      allPosts: [],
       showReactionsForPost: {},
-      reactionTypes: [],
-      userReactions: {},
-      fetchedCommentsFlags: {},
-      csrfToken: ''
+      activeReactionData: null,
     };
   },
   computed: {
-    ...mapState(['userData'])
+    ...mapState(['userData']),
+    ...mapState('userFeed', ['fetchedCommentsFlags']),
+    computedPosts() {
+      return this.posts.map(post => {
+        let updatedPost = {
+          ...post,
+        };
+        if (post.post_type === 'poll' && post.poll) {
+          const isActive = this.isPollActive(post.poll);
+          const totalVotes = this.calculateTotalVotes(post.poll.options);
+
+          updatedPost.poll = {
+            ...post.poll,
+            isActive: isActive,
+            timeLeft: this.timeLeft(post.poll),
+            totalVotes: totalVotes
+          };
+        }
+
+        return updatedPost;
+      });
+    },
+  },
+  watch: {
+    activeReactionData(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          if (!this.reactionModalInstance) {
+            this.reactionModalInstance = new Modal(this.$refs.reactionModal, { backdrop: 'static' });
+          }
+          this.reactionModalInstance.show();
+        });
+      }
+    }
   },
   methods: {
-    isSquare(aspectRatio) {
-      return aspectRatio <= 1; // Check if aspect ratio is less than or equal to 1
-    },
-    isLandscape(aspectRatio) {
-      return aspectRatio > 1; // Check if aspect ratio is greater than 1
-    },
-    async fetchUserPosts() {
-      try {
-        const response = await axios.get('/api/user-feed', {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken,
-            'Accept': 'application/json'
-          }
-        });
-        this.allPosts = response.data.data;
-        // Reset userReactions
-        this.userReactions = {};
-        this.allPosts.forEach(post => {
-          // Check if reactions array exists and is not empty
-          if (post.reactions && post.reactions.length > 0) {
-            const userReaction = post.reactions.find(reaction => reaction.user_id === this.userData.id);
-            if (userReaction) {
-              this.userReactions[post.id] = userReaction.reaction_type_id;
-            }
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    },
+    ...mapActions('userFeed', [
+      'addOrUpdateReaction', 
+      'removeReaction', 
+      'fetchMorePosts', 
+      'addVote', 
+      'removeVote', 
+      'updateFetchedCommentsFlag'
+    ]),
+    ...mapActions('userFeedComment', ['fetchCommentsForPost']),
+    formatDateTime,
     getReactionName(reactionTypeId) {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
     },
-    formatDateTime(dateTime) {
-      const now = new Date();
-      const postedDate = new Date(dateTime);
-      const diffInSeconds = Math.floor((now - postedDate) / 1000);
-      const minute = 60, hour = 3600, day = 86400, week = 604800, month = 2629800, year = 31557600;
+    handleModalMounted(modalElement) {
+      this.reactionModalInstance = new Modal(modalElement, { backdrop: 'static' });
+    },
+    showReactionModal() {
+      if (this.reactionModalInstance) {
+        this.reactionModalInstance.show();
+      }
+    },
 
-      if (diffInSeconds < minute) {
-        return 'Just now';
-      } else if (diffInSeconds < hour) {
-        const mins = Math.floor(diffInSeconds / minute);
-        return mins + (mins === 1 ? ' min ago' : ' mins ago');
-      } else if (diffInSeconds < day) {
-        const hrs = Math.floor(diffInSeconds / hour);
-        return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
-      } else if (diffInSeconds < week) {
-        const days = Math.floor(diffInSeconds / day);
-        return days + (days === 1 ? ' day ago' : ' days ago');
-      } else if (diffInSeconds < month) {
-        const weeks = Math.floor(diffInSeconds / week);
-        return weeks + (weeks === 1 ? ' week ago' : ' weeks ago');
-      } else if (diffInSeconds < year) {
-        const months = Math.floor(diffInSeconds / month);
-        return months + (months === 1 ? ' month ago' : ' months ago');
-      } else {
-        const years = Math.floor(diffInSeconds / year);
-        return years + (years === 1 ? ' year ago' : ' years ago');
+    handleShowReactions(reactionData) {
+      this.activeReactionData = reactionData;
+    },
+    handleShowReactionsPost(postId, reactionData) {
+      this.activeReactionData = { postId, reactionData };
+    },
+    handleScroll() {
+        const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+        if (nearBottom) {
+            this.fetchMorePosts();
+        }
+    },
+    toggleComments(postId, userId) {
+      if (!this.fetchedCommentsFlags[postId]) {
+        this.fetchCommentsForPost({postId, userId});
+        this.updateFetchedCommentsFlag(postId);
       }
     },
-    toggleComments(postId) {
-      if (!this.fetchedCommentsFlags[postId]) {
-        this.$emit('fetch-comments', postId);
-      }
-      this.fetchedCommentsFlags[postId] = !this.fetchedCommentsFlags[postId];
+    submitVote(pollId, optionId) {
+      this.addVote({ pollId, optionId });
     },
-    handleFetchComments(postId) {
-      if (!this.fetchedCommentsFlags[postId]) {
-        // Fetch comments logic here
-        this.fetchedCommentsFlags = { ...this.fetchedCommentsFlags, [postId]: true };
+    
+    undoVote(pollId) {
+      this.removeVote(pollId);
+    },
+    calculatePercentage(votes, totalVotes) {
+      return totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(2) : 0;
+    },
+    
+    isPollActive(poll) {
+      const pollEndTime = new Date(poll.created_at).getTime() + poll.time * 24 * 60 * 60 * 1000;
+      return Date.now() < pollEndTime;
+    },
+
+    timeLeft(poll) {
+      const pollEndTime = new Date(poll.created_at).getTime() + poll.time * 24 * 60 * 60 * 1000; 
+      const timeLeft = pollEndTime - Date.now();
+      if (timeLeft <= 0) {
+        return 'Voting closed';
       }
+      const daysLeft = Math.floor(timeLeft / (24 * 60 * 60 * 1000));
+      return daysLeft > 0 ? daysLeft + ' days' : 'Less than a day';
+    },
+    calculateTotalVotes(options) {
+      return options.reduce((sum, option) => sum + option.votes, 0);
     },
     onReactionHover(postId) {
       this.showReactionsForPost[postId] = true;
-      this.fetchReactionTypesIfNeeded();
     },
-
     hideReactionsForPost(postId) {
       this.showReactionsForPost[postId] = false;
     },
-    async fetchReactionTypesIfNeeded() {
-      if (this.reactionTypes.length > 0) return;
-      try {
-        const response = await axios.get('/api/reaction-types');
-        this.reactionTypes = response.data;
-      } catch (error) {
-        console.error('Error fetching reaction types:', error);
-      }
-    },
-
-    handleDefaultReaction(postId) {
-      const defaultReactionId = 1;
-      if (this.userReactions[postId] === defaultReactionId) {
-        this.removeReaction(postId, 'post_id');
-      } else {
-        this.addOrUpdateReaction(postId, 'post_id', defaultReactionId);
-      }
-    },
-
-
-    async addOrUpdateReaction(id, idType, reactionTypeId) {
-      const postIndex = this.allPosts.findIndex(post => post.id === id);
-      if (postIndex === -1) return;
-
-      const existingReactionIndex = this.allPosts[postIndex].reactions.findIndex(r => r.user_id === this.userData.id);
-
-      // Update the existing reaction if it exists
-      if (existingReactionIndex !== -1) {
-        this.allPosts[postIndex].reactions[existingReactionIndex].reaction_type_id = reactionTypeId;
-        this.allPosts[postIndex].reactions[existingReactionIndex].reaction_type = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-      } else {
-        // Add new reaction
-        const newReaction = {
-          id: Date.now(), // Temporary ID, replace with real ID when available
-          user_id: this.userData.id,
-          reaction_type_id: reactionTypeId,
-          reaction_type: this.reactionTypes.find(rt => rt.id === reactionTypeId)
-        };
-        this.allPosts[postIndex].reactions.push(newReaction);
-        this.allPosts[postIndex].reactions_count++;
-      }
-
-      this.userReactions[id] = reactionTypeId; // Update userReactions
-
-      try {
-        const payload = { reaction_type_id: reactionTypeId };
-        payload[idType] = id;
-
-        await axios.post('/api/add-or-update-reaction', payload, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken
-          }
-        });
-      } catch (error) {
-        console.error('Error adding/updating reaction:', error);
-        // Revert UI changes in case of error
-        delete this.userReactions[id];
-        if (existingReactionIndex !== -1) {
-          // Revert to previous state if reaction was updated
-          this.allPosts[postIndex].reactions[existingReactionIndex].reaction_type_id = previousReactionTypeId;
-        } else if (postIndex !== -1) {
-          this.allPosts[postIndex].reactions.pop();
-          this.allPosts[postIndex].reactions
-          _count--;
+    handleReaction(post_id, reactionTypeId) {
+        const post = this.posts.find(p => p.id === post_id);
+        if (post) {
+            if (post.userReaction === reactionTypeId) {
+                // Remove the reaction
+                this.removeReaction(post_id);
+            } else {
+                // Add or update the reaction
+                this.addOrUpdateReaction({ post_id, reactionTypeId });
+            }
         }
-      }
     },
-
-
-    async removeReaction(id, idType) {
-      // Optimistic UI Update
-      delete this.userReactions[id];
-      const postIndex = this.allPosts.findIndex(post => post.id === id);
-      if (postIndex !== -1) {
-        this.allPosts[postIndex].reactions_count--;
-
-        // Remove user's reaction from the post's reactions array
-        const reactionIndex = this.allPosts[postIndex].reactions.findIndex(r => r.user_id === this.userData.id);
-        if (reactionIndex !== -1) {
-          this.allPosts[postIndex].reactions.splice(reactionIndex, 1);
-        }
-      }
-
-      try {
-        const payload = {};
-        payload[idType] = id;
-
-        await axios.post('/api/remove-reaction', payload, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken
-          }
-        });
-      } catch (error) {
-        console.error('Error removing reaction:', error);
-        // Revert UI changes in case of error
-        // This is a simple example, you might need to handle it according to your application's needs
-        if (postIndex !== -1) {
-          this.allPosts[postIndex].reactions_count++;
-          // Optionally, re-add the reaction to the array if you removed it
-        }
-      }
-    },
-
-
-    sharePost() {
-      // Share post logic
-    }
   },
   mounted() {
-    this.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    this.fetchUserPosts();
-  }
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+      window.removeEventListener('scroll', this.handleScroll);
+  },
 };
 </script>
+
 <style>
-/* .btn-feed-hover:focus{
-  background-color: #00000014 !important;
-} */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
 .link-file {
   max-height: 700px;
   overflow: hidden;

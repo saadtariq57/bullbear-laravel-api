@@ -32,7 +32,6 @@ Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
 Route::post('/create-post', [PostController::class, 'createPost']);
 Route::get('/user-feed', [PostController::class, 'getUserFeed']);
 Route::post('/submit-comment', [PostController::class, 'submitComment']);
-Route::post('/submit-reply', [PostController::class, 'submitReply']);
 Route::post('/edit-comment', [PostController::class, 'editComment']);
 Route::post('/delete-comment', [PostController::class, 'deleteComment']);
 Route::get('/reaction-types', [PostController::class, 'getReactionTypes']);
@@ -40,6 +39,8 @@ Route::post('/add-or-update-reaction', [PostController::class, 'addOrUpdateReact
 Route::post('/remove-reaction', [PostController::class, 'removeReaction']);
 Route::get('/posts/{postId}/comments', [PostController::class, 'fetchPostComments']);
 
+Route::post('/add-vote', [PostController::class, 'addVote']);
+Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
 //Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {

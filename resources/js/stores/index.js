@@ -1,4 +1,6 @@
 import { createStore } from 'vuex';
+import userFeedModule from './userFeedStore';
+import userFeedCommentModule from './userFeedCommentStore';
 import axios from 'axios';
 
 export default createStore({
@@ -47,5 +49,10 @@ export default createStore({
                 commit('SET_LOGOUT');
             }
         }
+    },
+    modules:{
+        userFeed: userFeedModule,
+        userFeedComment: userFeedCommentModule
+
     }
 });

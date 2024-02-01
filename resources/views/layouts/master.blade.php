@@ -41,25 +41,23 @@
         <!-- end main content-->
     </div>
     <!-- END layout-wrapper -->
-
-    <!-- vendor-scripts -->
-    @include('layouts.vendor-scripts')
-    <script>
-        let overlayLoader = document.getElementById('overlay_loader');
-      let timeoutId;
-
-      function hideLoder() {
-        timeoutId = setTimeout(alertFunc, 1000);
-      }
-
-      function alertFunc() {
-        overlayLoader.style.display = 'none';
-      }
-
-      // Call myFunction when the window has finished loading
-      window.addEventListener('load', hideLoder);
-    </script>
 </div>
 </body>
+<!-- vendor-scripts -->
+@include('layouts.vendor-scripts')
+<script>
+    let overlayLoader = document.getElementById('overlay_loader');
+  let timeoutId;
 
+  function hideLoder() {
+    timeoutId = setTimeout(alertFunc, 1000);
+  }
+
+  function alertFunc() {
+    overlayLoader.style.display = 'none';
+  }
+
+  // Call myFunction when the window has finished loading
+  window.addEventListener('load', hideLoder);
+</script>
 </html>

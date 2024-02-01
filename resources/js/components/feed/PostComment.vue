@@ -2,13 +2,14 @@
   <!-- Comment box -->
   <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
-      <img class="avatar rounded-circle" :src="userAvatar" width="40" height="40">
+      <img class="avatar rounded-circle" :src="userData.avatar" width="40" height="40">
     </div>
     <div class="comment-form w-100">
-      <form @submit.prevent="submitComment" class="position-relative">
-        <input type="text" v-model="newComment" :disabled="isSubmitting" placeholder="Write a comment and press enter"
-          class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary" />
-
+      <form @submit.prevent="submitComment(postId, null, false)" class="position-relative">
+        <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Comment and hit submit"
+          class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
+        <button type="submit" class="btn btn-sm position-absolute top-0 end-0 py-2 pe-3 border-0"><i
+            class="bi bi-send fs-5"></i></button>
         <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
           <!-- Add emoji and image upload functionality -->
         </div>
@@ -38,7 +39,7 @@
                 </span>
 
                 <!-- Comment Edit/Delete Options -->
-                <div v-if="userId === comment.user.id" class="comment-edit position-absolute">
+                <div v-if="userData.id === comment.user.id" class="comment-edit position-absolute">
                   <div class="btn-group">
                     <button type="button" class="bg-transparent border-0 p-0 dropdown-toggle"
                       @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
@@ -46,9 +47,12 @@
                       <i class="bi bi-three-dots fs-4"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end z-1">
-                      <li><button class="dropdown-item" @click="editComment(comment.id)"><i
-                            class="bi bi-pencil-fill me-2"></i>Edit</button></li>
-                      <li><button class="dropdown-item" @click="deleteComment(comment.id)"><i
+                      <li>
+                        <button class="dropdown-item" @click="handleEdit(comment.id, comment.text, false)">
+                          <i class="bi bi-pencil-fill me-2"></i>Edit 
+                        </button>
+                      </li>
+                      <li><button class="dropdown-item" @click="deleteComment(comment.id, null, false)"><i
                             class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                     </ul>
                   </div>
@@ -60,8 +64,8 @@
                 </div>
 
                 <div v-else>
-                  <textarea v-model="editedCommentText" rows="2" class="form-control mb-2"></textarea>
-                  <button class="btn btn-primary btn-sm me-2 px-3" @click="applyEdit(comment.id)">Save Changes</button>
+                  <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
+                  <button class="btn btn-primary btn-sm me-2 px-3" @click="editComment(postId, comment.id, null, false)">Save Changes</button>
                   <button class="btn rounded-2 btn-sm border-btn py-2 px-3"
                     @click="cancelEdit(comment.id)">Cancel</button>
                 </div>
@@ -70,16 +74,16 @@
                 <div class="like-comment-count row align-items-center px-sm-3 px-1">
                   <button type="button" class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                     @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
-                    @click="handleDefaultReaction(comment.id, false)">
-                    <i v-if="!userReactions[comment.id]" class="bi bi-hand-thumbs-up"></i>
-                    <i v-else :class="getReactionName(userReactions[comment.id])"></i>
-                    <span :class="getReactionName(userReactions[comment.id])">
-                      {{ userReactions[comment.id] ? getReactionName(userReactions[comment.id]) : 'Like' }}
+                    @click="handleReaction(comment.id, 1, null, false)">
+                    <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
+                    <i v-else :class="getReactionName(comment.userReaction)"></i>
+                    <span :class="getReactionName(comment.userReaction)">
+                      {{ comment.userReaction ? getReactionName(comment.userReaction) : 'Like' }}
                     </span>
                     <div v-if="showReactionsForComment[comment.id]"
                       class="reaction-icons-wrapper position-absolute d-flex gap-1">
                       <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                        @click.stop="addOrUpdateCommentReaction(comment.id, 'comment_id', reactionType.id, false)">
+                        @click.stop="handleReaction(comment.id, reactionType.id, null, false)">
                         <img :src="reactionType.icon" class="reply-reaction-icons-img">
                       </span>
                     </div>
@@ -87,10 +91,12 @@
                   <!-- Reaction Icons and Count -->
                   <div class="like-count col-2 col-sm-1 px-sm-2 px-0">
                     <div class="reaction-icons d-flex align-items-center justify-content-center">
-                      <span v-for="(reaction, index) in comment.reactions.slice(0, 3)" :key="reaction.id">
-                        <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ comment.reactions_count }}
+                      <button @click="emitShowReactions(postId, comment.organizedReactions)">
+                      <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)" :key="index">
+                        <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
                       </span>
-                      <span v-if="comment.reactions.length > 3">+{{ comment.reactions_count }}</span>
+                      <span v-if="Object.keys(comment.organizedReactions).length > 3">+{{ Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                    </button>
                     </div>
                   </div>
                   <div class="reply col-3 col-sm-1 px-sm-2 px-1 w-auto">
@@ -107,14 +113,17 @@
               <!-- Replies -->
               <div v-if="showReplyInput[comment.id]" class="reply-input-area d-flex align-items-center gap-2 mt-2">
                 <div class="user-icon">
-                  <img class="avatar rounded-circle" :src="userAvatar" width="40" height="40">
+                  <img class="avatar rounded-circle" :src="userData.avatar" width="40" height="40">
                 </div>
                 <div class="comment-form w-100">
-                  <form @submit.prevent="submitReply(comment.id)" class="position-relative">
-                    <textarea v-model="newReply" rows="1" placeholder="Write a reply and press enter"
+                  <form @submit.prevent="submitComment(postId, comment.id, true)" class="position-relative">
+                    <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Reply and hit submit"
                       class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
                     <button type="submit" class="btn btn-sm position-absolute top-0 end-0 py-2 pe-3 border-0"><i
                         class="bi bi-send fs-5"></i></button>
+                    <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
+                      <!-- Add emoji and image upload functionality -->
+                    </div>
                   </form>
                 </div>
               </div>
@@ -137,25 +146,25 @@
                         <span class="time-comment fs-10">{{ formatDateTime(reply.created_at) }}</span>
                       </span>
                       <!-- Reply options (Edit/Delete) -->
-                      <div v-if="userId === reply.user.id" class="comment-edit position-absolute">
+                      <div v-if="userData.id === reply.user.id" class="comment-edit position-absolute">
                         <div class="btn-group">
                           <button type="button" class="bg-transparent border-0 p-0 dropdown-toggle"
                             @click="toggleDropdown($event)" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots fs-4"></i>
                           </button>
                           <ul class="dropdown-menu dropdown-menu-end z-1">
-                            <li><button class="dropdown-item" @click="editReply(reply.id)"><i
+                            <li><button class="dropdown-item" @click="handleEdit(reply.id, reply.text, true)"><i
                                   class="bi bi-pencil-fill me-2"></i>Edit</button></li>
-                            <li><button class="dropdown-item" @click="deleteReply(reply.id)"><i
+                            <li><button class="dropdown-item" @click="deleteComment(reply.id, comment.id, true)"><i
                                   class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                           </ul>
                         </div>
                       </div>
-                      <div v-if="editingReplyId === reply.id" class="reply-edit-form">
-                        <textarea v-model="editedReplyText" rows="2" class="form-control mb-2"></textarea>
-                        <button class="btn btn-primary btn-sm px-3 me-2" @click="applyEditReply(reply.id)">Save
+                      <div v-if="editingId === reply.id" class="reply-edit-form">
+                        <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
+                        <button class="btn btn-primary btn-sm px-3 me-2" @click="editComment(postId, comment.id, reply.id, true)">Save
                           Changes</button>
-                        <button class="btn rounded-2 btn-sm border-btn py-2 px-3" @click="cancelEditReply">Cancel</button>
+                        <button class="btn rounded-2 btn-sm border-btn py-2 px-3" @click="cancelEdit(reply.id)">Cancel</button>
                       </div>
                       <div v-else class="comment-text">
                         <p>{{ reply.text }}</p>
@@ -164,19 +173,18 @@
                       <div class="reply-options">
                         <!-- Dynamic Like/Liked Button -->
                         <div class="like-comment-count row align-items-center justify-content-start gap-2">
-                          <button type="button"
-                            class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
+                          <button type="button" class="btn fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                             @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
-                            @click="handleDefaultReaction(reply.id, true)">
-                            <i v-if="!userReactions[reply.id]" class="bi bi-hand-thumbs-up pe-1"></i>
-                            <i v-else :class="getReactionName(userReactions[reply.id])"></i>
-                            <span :class="getReactionName(userReactions[reply.id])">
-                              {{ userReactions[reply.id] ? getReactionName(userReactions[reply.id]) : 'Like' }}
+                            @click="handleReaction(reply.id, 1, comment.id, true)">
+                            <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
+                            <i v-else :class="getReactionName(reply.userReaction)"></i>
+                            <span :class="getReactionName(reply.userReaction)">
+                              {{ reply.userReaction ? getReactionName(reply.userReaction) : 'Like' }}
                             </span>
                             <div v-if="showReactionsForComment[reply.id]"
                               class="reaction-icons-wrapper position-absolute d-flex gap-1">
                               <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                                @click.stop="addOrUpdateCommentReaction(reply.id, 'comment_id', reactionType.id, true)">
+                                @click.stop="handleReaction(reply.id, reactionType.id, comment.id, true)">
                                 <img :src="reactionType.icon" class="reply-reaction-icons-img">
                               </span>
                             </div>
@@ -184,14 +192,16 @@
                           <!-- Reaction Icons and Count -->
                           <div class="like-count col-4 px-sm-3 px-1 w-auto">
                             <div class="reaction-icons">
-                              <span v-for="(reaction, index) in reply.reactions.slice(0, 3)" :key="reaction.id">
-                                <img :src="reaction.reaction_type.icon" class="reaction-icon"> {{ reply.reactions_count }}
+                              <button @click="emitShowReactions(postId, reply.organizedReactions)">
+                              <span v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)" :key="index">
+                                <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
                               </span>
-                              <span v-if="reply.reactions.length > 3">+{{ reply.reactions_count }}</span>
+                              <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{ Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                            </button>
                             </div>
                           </div>
                         </div>
-
+                        <!-- Dynamic Like/Liked Button -->
                       </div>
                     </div>
                   </div>
@@ -205,258 +215,43 @@
     </div>
   </div>
 </template>
-
 <script>
+import { mapState, mapActions } from 'vuex';
+import { formatDateTime } from '../../utils';
 import { Dropdown } from 'bootstrap';
-import axios from "axios";
+
 export default {
+  emits: ['show-reactions'],
   props: {
-    userId: Number,
     postId: Number,
-    fetchedCommentsFlags: Object,
-    userAvatar: String
+    reactionTypes: Array,
   },
   data() {
     return {
-      comments: [],
-      newComment: '',
-      newReply: '',
+      newContent: '',
       showReplyInput: {},
-      editingCommentId: null,
-      editedCommentText: '',
+      editingId: null,
+      editedText: '',
       isSubmitting: false,
-      csrfToken: '',
-      editingReplyId: null,
-      editedReplyText: '',
       showReactionsForComment: {},
-      userReactions: {},
-      reactionTypes: []
     };
   },
-  watch: {
-    fetchedCommentsFlags: {
-      immediate: true,
-      handler(flags) {
-        if (flags[this.postId]) {
-          this.fetchComments(this.postId);
-        }
-      }
-    }
+  computed: {
+    ...mapState(['userData']),
+    ...mapState('userFeed', ['fetchedCommentsFlags']),
+    ...mapState('userFeedComment', ['comments']),
   },
   methods: {
-    async fetchComments() {
-      try {
-        const response = await axios.get(`/api/posts/${this.postId}/comments`, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken,
-            'Accept': 'application/json'
-          }
-        });
-        this.comments = response.data;
-        // Reset userReactions
-        this.userReactions = {};
-        this.comments.forEach(comment => {
-          // Check if reactions array exists and is not empty
-          if (comment.reactions && comment.reactions.length > 0) {
-            const userReaction = comment.reactions.find(reaction => reaction.user_id === this.userId);
-            if (userReaction) {
-              this.userReactions[comment.id] = userReaction.reaction_type_id;
-            }
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    },
-    getReactionName(reactionTypeId) {
-      const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-      return reactionType ? reactionType.name : 'Like';
-    },
-
-    handleDefaultReaction(commentId, isReply) {
-      const defaultReactionId = 1;
-      const idType = isReply ? 'reply_id' : 'comment_id';
-
-      if (this.userReactions[commentId] === defaultReactionId) {
-        this.removeReaction(commentId, idType, isReply);
-      } else {
-        this.addOrUpdateCommentReaction(commentId, idType, defaultReactionId, isReply);
-      }
-    },
-
-    async addOrUpdateCommentReaction(id, idType, reactionTypeId, isReply = false) {
-      if (isReply) {
-        const parentCommentIndex = this.comments.findIndex(comment =>
-          comment.replies && comment.replies.some(reply => reply.id === id)
-        );
-        if (parentCommentIndex === -1) return;
-
-        let replyIndex = this.comments[parentCommentIndex].replies.findIndex(reply => reply.id === id);
-        const existingReactionIndex = this.comments[parentCommentIndex].replies[replyIndex].reactions.findIndex(r => r.user_id === this.userId);
-
-        // Update the existing reaction if it exists
-        if (existingReactionIndex !== -1) {
-          this.comments[parentCommentIndex].replies[replyIndex].reactions[existingReactionIndex].reaction_type_id = reactionTypeId;
-        } else {
-          // Add new reaction
-          const newReaction = {
-            id: Date.now(), // Temporary ID, replace with real ID when available
-            user_id: this.userId,
-            reaction_type_id: reactionTypeId
-          };
-          this.comments[parentCommentIndex].replies[replyIndex].reactions.push(newReaction);
-        }
-
-        this.userReactions[id] = reactionTypeId;
-        this.comments = [...this.comments]; // Ensure reactivity
-
-      } else {
-        const commentIndex = this.comments.findIndex(comment => comment.id === id);
-        if (commentIndex === -1) return;
-
-        const existingReactionIndex = this.comments[commentIndex].reactions.findIndex(r => r.user_id === this.userId);
-
-        // Update the existing reaction if it exists
-        if (existingReactionIndex !== -1) {
-          this.comments[commentIndex].reactions[existingReactionIndex].reaction_type_id = reactionTypeId;
-          this.comments[commentIndex].reactions[existingReactionIndex].reaction_type = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-        } else {
-          // Add new reaction
-          const newReaction = {
-            id: Date.now(),
-            user_id: this.userId,
-            reaction_type_id: reactionTypeId,
-            reaction_type: this.reactionTypes.find(rt => rt.id === reactionTypeId)
-          };
-          this.comments[commentIndex].reactions.push(newReaction);
-          this.comments[commentIndex].reactions_count++;
-        }
-
-        this.userReactions[id] = reactionTypeId;
-      }
-      try {
-        const payload = { reaction_type_id: reactionTypeId };
-        payload[idType] = id;
-
-        await axios.post('/api/add-or-update-reaction', payload, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken
-          }
-        });
-      } catch (error) {
-        console.error('Error adding/updating reaction:', error);
-        // Revert UI changes in case of error
-        delete this.userReactions[id];
-        if (existingReactionIndex !== -1) {
-          // Revert to previous state if reaction was updated
-          this.comments[commentIndex].reactions[existingReactionIndex].reaction_type_id = previousReactionTypeId;
-        } else if (commentIndex !== -1) {
-          this.comments[commentIndex].reactions.pop();
-          this.comments[commentIndex].reactions
-          _count--;
-        }
-      }
-    },
-    async removeReaction(id, idType, isReply = false) {
-      if (isReply) {
-        // Find the parent comment of the reply
-        const parentCommentIndex = this.comments.findIndex(comment =>
-          comment.replies && comment.replies.some(reply => reply.id === id)
-        );
-        if (parentCommentIndex === -1) return;
-
-        // Find the specific reply
-        let replyIndex = this.comments[parentCommentIndex].replies.findIndex(reply => reply.id === id);
-        // Find the reaction to remove
-        const reactionIndex = this.comments[parentCommentIndex].replies[replyIndex].reactions.findIndex(r => r.user_id === this.userId);
-
-        if (reactionIndex !== -1) {
-          this.comments[parentCommentIndex].replies[replyIndex].reactions.splice(reactionIndex, 1);
-          this.comments[parentCommentIndex].replies[replyIndex].reactions_count--;
-        }
-
-        // Update the userReactions object
-        delete this.userReactions[id];
-        // Trigger reactivity for the comments array
-        this.comments = [...this.comments];
-
-      } else {
-        // Handling reactions for comments
-        const commentIndex = this.comments.findIndex(comment => comment.id === id);
-        if (commentIndex !== -1) {
-          const reactionIndex = this.comments[commentIndex].reactions.findIndex(r => r.user_id === this.userId);
-          if (reactionIndex !== -1) {
-            this.comments[commentIndex].reactions.splice(reactionIndex, 1);
-            this.comments[commentIndex].reactions_count--;
-          }
-
-          // Update the userReactions object
-          delete this.userReactions[id];
-          this.comments = [...this.comments];
-        }
-      }
-
-      try {
-        const payload = {};
-        payload[idType] = id;
-
-        await axios.post('/api/remove-reaction', payload, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken
-          }
-        });
-      } catch (error) {
-        console.error('Error removing reaction:', error);
-        // Revert UI changes in case of error
-        // This is a simple example, you might need to handle it according to your application's needs
-        if (commentIndex !== -1) {
-          this.comments[commentIndex].reactions_count++;
-          // Optionally, re-add the reaction to the array if you removed it
-        }
-      }
-    },
-    findCommentByReplyId(replyId) {
-      return this.comments.find(comment => comment.replies.some(reply => reply.id === replyId));
-    },
-    onReactionHover(commentId) {
-      this.showReactionsForComment[commentId] = true;
-      this.fetchReactionTypesIfNeeded();
-    },
-
-    hideReactionsForComment(commentId) {
-      this.showReactionsForComment[commentId] = false;
-    },
-    async fetchReactionTypesIfNeeded() {
-      if (this.reactionTypes.length > 0) return;
-      try {
-        const response = await axios.get('/api/reaction-types');
-        this.reactionTypes = response.data;
-      } catch (error) {
-        console.error('Error fetching reaction types:', error);
-      }
-    },
-
-    async submitComment() {
-      if (!this.newComment.trim()) return;
-      this.isSubmitting = true;
-      try {
-        const response = await axios.post('/api/submit-comment', {
-          user_id: this.userId,
-          post_id: this.postId,
-          text: this.newComment
-        }, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken,
-            'Accept': 'application/json'
-          }
-        });
-        this.comments.unshift(response.data);
-        this.newComment = '';
-      } catch (error) {
-        console.error('Error submitting comment:', error);
-      } finally {
-        this.isSubmitting = false;
-      }
+    ...mapActions('userFeedComment', [
+      'addOrUpdateCommentReaction',
+      'removeCommentReaction',
+      'submitCommentOrReply',
+      'editCommentOrReply',
+      'deleteCommentOrReply'
+    ]),
+    formatDateTime,
+    emitShowReactions(postId, reactionData) {
+      this.$emit('show-reactions', { postId, reactionData });
     },
     toggleEditState(commentId) {
       if (this.editingCommentId === commentId) {
@@ -469,201 +264,102 @@ export default {
         this.editedCommentText = comment.text;
       }
     },
-    async applyEdit(commentId) {
-      if (this.editingCommentId !== commentId || !this.editedCommentText.trim()) return;
-      try {
-        const response = await axios.post('/api/edit-comment', {
-          id: commentId,
-          text: this.editedCommentText
-        }, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken
-          }
-        });
-        this.updateCommentText(commentId, this.editedCommentText);
-        this.cancelEdit();
-      } catch (error) {
-        console.error('Error editing comment:', error);
-      }
-    },
-    updateCommentText(commentId, newText) {
-      const index = this.comments.findIndex(c => c.id === commentId);
-      if (index !== -1) {
-        this.comments[index].text = newText;
-      }
-    },
-    cancelEdit() {
-      this.editingCommentId = null;
-      this.editedCommentText = '';
-    },
-    editComment(commentId) {
-      const comment = this.comments.find(c => c.id === commentId);
-      if (comment) {
-        this.editingCommentId = commentId;
-        this.editedCommentText = comment.text;
-      }
-    },
-    deleteComment(commentId) {
-      // Call API to delete comment
-      axios.post('/api/delete-comment', {
-        id: commentId
-      }, {
-        headers: {
-          'X-CSRF-TOKEN': this.csrfToken
-        }
+    //{postId, commentId, parentCommentId, text, isReply }
+    submitComment(postId, commentId, isReply = false) {
+      if (!this.newContent.trim()) return;
+      this.isSubmitting = true;
+      this.submitCommentOrReply({
+        postId: postId,
+        commentId: commentId,
+        parentCommentId: isReply ? commentId : null,
+        text: this.newContent,
+        isReply: isReply
       }).then(() => {
-        this.comments = this.comments.filter(c => c.id !== commentId);
-      }).catch(error => {
-        console.error('Error deleting comment:', error);
+        this.newContent = '';
+        this.isSubmitting = false;
+        if (isReply) this.showReplyInput[commentId] = false;
       });
     },
-
-    isEditing(commentId) {
-      return this.editingCommentId === commentId;
+    handleEdit(commentId, text, isReply = false) {
+      this.editingId = commentId;
+      this.editedText = text;
+      this.isEditingReply = isReply;
     },
-
-    formatDateTime(dateTime) {
-      const now = new Date();
-      const postedDate = new Date(dateTime);
-      const diffInSeconds = Math.floor((now - postedDate) / 1000);
-      const minute = 60, hour = 3600, day = 86400, week = 604800, month = 2629800, year = 31557600;
-
-      if (diffInSeconds < minute) {
-        return 'Just now';
-      } else if (diffInSeconds < hour) {
-        const mins = Math.floor(diffInSeconds / minute);
-        return mins + (mins === 1 ? ' min ago' : ' mins ago');
-      } else if (diffInSeconds < day) {
-        const hrs = Math.floor(diffInSeconds / hour);
-        return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
-      } else if (diffInSeconds < week) {
-        const days = Math.floor(diffInSeconds / day);
-        return days + (days === 1 ? ' day ago' : ' days ago');
-      } else if (diffInSeconds < month) {
-        const weeks = Math.floor(diffInSeconds / week);
-        return weeks + (weeks === 1 ? ' week ago' : ' weeks ago');
-      } else if (diffInSeconds < year) {
-        const months = Math.floor(diffInSeconds / month);
-        return months + (months === 1 ? ' month ago' : ' months ago');
-      } else {
-        const years = Math.floor(diffInSeconds / year);
-        return years + (years === 1 ? ' year ago' : ' years ago');
-      }
-    },
-
-    toggleReplyInput(commentId) {
-      this.showReplyInput[commentId] = !this.showReplyInput[commentId];
-      this.newReply = '';
-    },
-
-    async submitReply(commentId) {
-      if (!this.newReply.trim()) return;
-      this.isSubmitting = true;
-      try {
-        const response = await axios.post('/api/submit-reply', {
-          user_id: this.userId,
-          post_id: this.postId,
-          parent_id: commentId,
-          text: this.newReply
-        }, {
-          headers: {
-            'X-CSRF-TOKEN': this.csrfToken,
-            'Accept': 'application/json'
-          }
+    editComment(postId, commentId, replyId, isReply = false) {
+        const idToCheck = isReply ? replyId : commentId;
+        if (this.editingId !== idToCheck || !this.editedText.trim()) return;
+        this.editCommentOrReply({
+            postId: postId,
+            commentId: idToCheck,
+            parentCommentId: isReply ? commentId : null,
+            text: this.editedText,
+            isReply: isReply
         });
-
-        const reply = response.data.reply;
-        const parentComment = this.comments.find(comment => comment.id === commentId);
-        if (parentComment) {
-          parentComment.replies.push(reply);
-        }
-
-        this.newReply = ''; // Clear the input field
-      } catch (error) {
-        console.error('Error submitting reply:', error);
-      } finally {
-        this.isSubmitting = false;
-      }
+        this.cancelEdit();
     },
-
-    editReply(replyId) {
-      let foundReply = null;
-      for (let comment of this.comments) {
-        if (comment.replies) {
-          foundReply = comment.replies.find(r => r.id === replyId);
-          if (foundReply) break;
-        }
-      }
-
-      if (foundReply) {
-        this.editingReplyId = replyId;
-        this.editedReplyText = foundReply.text;
-      }
+    cancelEdit() {
+      this.editingId = null;
+      this.editedText = '';
+      this.isEditingReply = false;
     },
-
-    applyEditReply(replyId) {
-      if (!this.editedReplyText.trim()) return;
-      axios.post('/api/edit-comment', {
-        id: replyId,
-        text: this.editedReplyText
-      }, {
-        headers: {
-          'X-CSRF-TOKEN': this.csrfToken
-        }
-      }).then(() => {
-        this.updateReplyInComments(replyId, this.editedReplyText);
-        this.cancelEditReply();
-      }).catch(error => console.error('Error editing reply:', error));
+    isEditing(commentId) {
+      return this.editingId === commentId;
     },
-
-    deleteReply(replyId) {
-      axios.post('/api/delete-comment', {
-        id: replyId
-      }, {
-        headers: {
-          'X-CSRF-TOKEN': this.csrfToken
-        }
-      }).then(() => {
-        this.removeReplyFromComments(replyId);
-      }).catch(error => console.error('Error deleting reply:', error));
+    deleteComment(commentId, paraentId, isReply) {
+      this.deleteCommentOrReply({
+        commentId: commentId,
+        parentId: paraentId,
+        isReply: isReply
+      });
     },
-
-    cancelEditReply() {
-      this.editingReplyId = null;
-      this.editedReplyText = '';
-    },
-    updateReplyInComments(replyId, newText) {
-      for (let comment of this.comments) {
-        if (comment.replies) {
-          const replyIndex = comment.replies.findIndex(r => r.id === replyId);
-          if (replyIndex !== -1) {
-            comment.replies[replyIndex].text = newText;
-            break;
-          }
-        }
-      }
-    },
-
-    removeReplyFromComments(replyId) {
-      for (let comment of this.comments) {
-        if (comment.replies) {
-          comment.replies = comment.replies.filter(r => r.id !== replyId);
-        }
-      }
-    },
-
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
       const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
       dropdownInstance.toggle();
-    }
+    },
+    toggleReplyInput(commentId) {
+      this.showReplyInput[commentId] = !this.showReplyInput[commentId];
+      this.newReply = '';
+    },
+    getReactionName(reactionTypeId) {
+      const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
+      return reactionType ? reactionType.name : 'Like';
+    },
+    onReactionHover(commentId) {
+      this.showReactionsForComment[commentId] = true;
+    },
+
+    hideReactionsForComment(commentId) {
+      this.showReactionsForComment[commentId] = false;
+    },
+    handleReaction(commentId, reactionTypeId, parentId, isReply) {
+        if (isReply) {
+            for (let comment of this.comments) {
+                const reply = comment.replies.find(r => r.id === commentId);
+                if (reply) {
+                    if (reply.userReaction === reactionTypeId) {
+                        this.removeCommentReaction({ commentId, parentId, isReply});
+                    } else {
+                        this.addOrUpdateCommentReaction({ commentId, reactionTypeId, parentId, isReply });
+                    }
+                    return;
+                }
+            }
+        } else {
+            const targetComment = this.comments.find(c => c.id === commentId);
+            if (targetComment) {
+                if (targetComment.userReaction === reactionTypeId) {
+                    this.removeCommentReaction({ commentId, parentId, isReply});
+                } else {
+                    this.addOrUpdateCommentReaction({ commentId, reactionTypeId, parentId, isReply });
+                }
+            }
+        }
+    },
   },
-  mounted() {
-    this.csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    console.log("Received Comments: ", this.comments);
-  }
 };
 </script>
+
 <style>
 .reply-reaction-icons-img {
   width: 25px;
