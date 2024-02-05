@@ -9,6 +9,7 @@ const userFeedModule = {
         reactionTypes: [],
         newPostAvailable: false,
         fetchedCommentsFlags: {},
+        visibleCommentsFlags: {},
     }),
     mutations: {
         setPosts(state, posts) {
@@ -102,7 +103,11 @@ const userFeedModule = {
         },
         updateFetchedCommentsFlag(state, postId){
             state.fetchedCommentsFlags[postId] = true;
+            state.visibleCommentsFlags[postId] = true;
         },
+        updateFetchedCommentsVisibility(state, postId){
+            state.visibleCommentsFlags[postId] = !state.visibleCommentsFlags[postId];
+        }
     },
     actions: {
         async fetchPosts({ commit, rootState }) {
@@ -180,6 +185,9 @@ const userFeedModule = {
         },
         updateFetchedCommentsFlag({commit}, postId){
             commit('updateFetchedCommentsFlag', postId);
+        },
+        updateFetchedCommentsVisibility({commit}, postId){
+            commit('updateFetchedCommentsVisibility', postId);
         },
         initializeRealTimeUpdates({ commit, rootState }) {
           const userId = rootState.userData.id;

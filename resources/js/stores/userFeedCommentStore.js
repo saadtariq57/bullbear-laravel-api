@@ -7,15 +7,15 @@ const userFeedCommentModule = {
         error: null,
     }),
     mutations: {
-        setComments(state, comments) {
-            state.comments = comments;
+        setComments(state, { postId, comments }) {
+            state.comments = { ...state.comments, [postId]: comments};
         },
-		updateReactionInComment(state, { commentId, parentId, reaction, isReply }) {
+		updateReactionInComment(state, {postId, commentId, parentId, reaction, isReply }) {
 		    // Find the target comment or reply
 		    if (isReply) {
 		        commentId = parentId;
 		    }
-		    let targetComment = state.comments.find(c => c.id === commentId);
+		    let targetComment = state.comments[postId].find(c => c.id === commentId);
 		    if (!targetComment) return;
 
 		    let target = isReply ? targetComment.replies.find(r => r.id === reaction.comment_id) : targetComment;
@@ -34,18 +34,18 @@ const userFeedCommentModule = {
 		    target.organizedReactions = organizedReactions;
 		    target.userReaction = userReaction;
 		},
-		removeReactionFromComment(state, { commentId, parentId, userId, isReply }) {
+		removeReactionFromComment(state, {postId, commentId, parentId, userId, isReply }) {
 		    let targetComment;
 		    let target;
 
 		    if (isReply) {
 		        // When it's a reply, the parentId is actually the commentId and commentId is the replyId
-		        targetComment = state.comments.find(c => c.id === parentId);
+		        targetComment = state.comments[postId].find(c => c.id === parentId);
 		        if (!targetComment) return;
 		        target = targetComment.replies.find(r => r.id === commentId);
 		    } else {
 		        // Handling a regular comment
-		        targetComment = state.comments.find(c => c.id === commentId);
+		        targetComment = state.comments[postId].find(c => c.id === commentId);
 		        if (!targetComment) return;
 		        target = targetComment;
 		    }
@@ -61,7 +61,7 @@ const userFeedCommentModule = {
 		    target.userReaction = userReaction;
 		},
 
-		submitCommentOrReply(state, { comment, isReply, parentCommentId, userId }) {
+		submitCommentOrReply(state, {postId, comment, isReply, parentCommentId, userId }) {
 
 		    const { organizedReactions, userReaction } = organizeReactions(comment.reactions, userId);
 
@@ -75,40 +75,49 @@ const userFeedCommentModule = {
 		            organizedReactions: organizeReactions(reply.reactions, userId).organizedReactions
 		        })) : []
 		    };
+
+			  if (!state.comments[postId]) {
+			    state.comments[postId] = [];
+			  }
+
 		    if (isReply) {
-		        const parentIndex = state.comments.findIndex(c => c.id === parentCommentId);
+		        const parentIndex = state.comments[postId].findIndex(c => c.id === parentCommentId);
 		        if (parentIndex !== -1) {
 		            // Find the reply within the parent comment's replies
-		            const replyIndex = state.comments[parentIndex].replies.findIndex(r => r.id === comment.id);
+		            const replyIndex = state.comments[postId][parentIndex].replies.findIndex(r => r.id === comment.id);
 		            if (replyIndex !== -1) {
 		                // Update the existing reply
-		                state.comments[parentIndex].replies.splice(replyIndex, 1, formattedComment);
+		                state.comments[postId][parentIndex].replies.splice(replyIndex, 1, formattedComment);
 		            } else {
 		                // Add new reply (this case should not normally occur for edits)
-		                state.comments[parentIndex].replies.push(formattedComment);
+		                state.comments[postId][parentIndex].replies.push(formattedComment);
 		            }
 		        }
 		    } else {
 		        // Update or add new comment
-		        const commentIndex = state.comments.findIndex(c => c.id === comment.id);
+		        const commentIndex = state.comments[postId].findIndex(c => c.id === comment.id);
 		        if (commentIndex !== -1) {
-		            state.comments.splice(commentIndex, 1, formattedComment);
+		            state.comments[postId].splice(commentIndex, 1, formattedComment);
 		        } else {
-		            state.comments.unshift(formattedComment);
+		            state.comments[postId].unshift(formattedComment);
 		        }
 		    }
 		},
 
+		removeCommentOrReply(state, { postId, commentId, isReply }) {
+		  if (!state.comments[postId]) {
+		    state.comments[postId] = [];
+		  }
 
-	    removeCommentOrReply(state, { commentId, isReply }) {
-	        if (isReply) {
-	            state.comments.forEach(comment => {
-	                comment.replies = comment.replies.filter(reply => reply.id !== commentId);
-	            });
-	        } else {
-	            state.comments = state.comments.filter(comment => comment.id !== commentId);
-	        }
-	    },
+		  if (isReply) {
+		    state.comments[postId].forEach(comment => {
+		      comment.replies = comment.replies.filter(reply => reply.id !== commentId);
+		    });
+		  } else {
+		    state.comments[postId] = state.comments[postId].filter(comment => comment.id !== commentId);
+		  }
+		},
+
         setError(state, error) {
             state.error = error;
         }
@@ -117,25 +126,25 @@ const userFeedCommentModule = {
         async fetchCommentsForPost({ commit }, {postId, userId}) {
             try {
                 const comments = await userFeedCommentService.fetchComments(postId, userId);
-                commit('setComments', comments);
+                commit('setComments', {postId, comments});
             } catch (error) {
                 commit('setError', error.message);
                 console.error('Error fetching comments:', error);
             }
         },
-		async addOrUpdateCommentReaction({ commit }, { commentId, reactionTypeId, parentId, isReply }) {
+		async addOrUpdateCommentReaction({ commit }, {postId, commentId, reactionTypeId, parentId, isReply }) {
 		  try {
 		    const response = await userFeedCommentService.addOrUpdateReaction(commentId, reactionTypeId);
-		    commit('updateReactionInComment', { commentId, parentId, reaction: response, isReply});
+		    commit('updateReactionInComment', {postId, commentId, parentId, reaction: response, isReply});
 		  } catch (error) {
 		    console.error('Error adding/updating reaction:', error);
 		  }
 		},
-		async removeCommentReaction({ commit, rootState}, { commentId, parentId, isReply }) {
+		async removeCommentReaction({ commit, rootState}, {postId, commentId, parentId, isReply }) {
 		  try {
 		  	const userId = rootState.userData.id;
 		    await userFeedCommentService.removeReaction(commentId);
-		    commit('removeReactionFromComment', { commentId, parentId, userId, isReply });
+		    commit('removeReactionFromComment', {postId, commentId, parentId, userId, isReply });
 		  } catch (error) {
 		    console.error('Error removing reaction:', error);
 		  }
@@ -145,15 +154,15 @@ const userFeedCommentModule = {
 		  try {
 		  	const userId = rootState.userData.id;
 		    const response = await userFeedCommentService.submitComment(postId, text, parentCommentId);
-		    commit('submitCommentOrReply', { comment: response.data.comment, isReply: isReply, parentCommentId, userId });
+		    commit('submitCommentOrReply', {postId: postId, comment: response.data.comment, isReply: isReply, parentCommentId, userId });
 		  } catch (error) {
 		    console.error('Error submitting comment/reply:', error);
 		  }
 		},
-	    async deleteCommentOrReply({ commit }, { commentId, parentCommentId, isReply }) {
+	    async deleteCommentOrReply({ commit }, { postId, commentId, parentCommentId, isReply }) {
 	        try {
 	            await userFeedCommentService.deleteComment(commentId);
-	            commit('removeCommentOrReply', { commentId, isReply });
+	            commit('removeCommentOrReply', {postId, commentId, isReply });
 	        } catch (error) {
 	            console.error('Error deleting comment/reply:', error);
 	        }
@@ -163,7 +172,7 @@ const userFeedCommentModule = {
 	    	try{
 	    		const userId = rootState.userData.id;
 	    		const response = await userFeedCommentService.editComment(commentId, text, parentCommentId);
-	    		commit('submitCommentOrReply', { comment: response.data.comment, isReply: isReply, parentCommentId, userId });
+	    		commit('submitCommentOrReply', {postId: postId, comment: response.data.comment, isReply: isReply, parentCommentId, userId });
 	    	}catch(error){
 	    		console.error('Error submitting comment/reply:', error);
 	    	}
