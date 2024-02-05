@@ -59,7 +59,7 @@
                     <ul class="dropdown-menu dropdown-menu-end z-1">
                       <li>
                         <button class="dropdown-item" @click="handleEdit(comment.id, comment.text, false)">
-                          <i class="bi bi-pencil-fill me-2"></i>Edit 
+                          <i class="bi bi-pencil-fill me-2"></i>Edit
                         </button>
                       </li>
                       <li><button class="dropdown-item" @click="deleteComment(postId, comment.id, null, false)"><i
@@ -75,7 +75,8 @@
 
                 <div v-else>
                   <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
-                  <button class="btn btn-primary btn-sm me-2 px-3" @click="editComment(postId, comment.id, null, false)">Save Changes</button>
+                  <button class="btn btn-primary btn-sm me-2 px-3"
+                    @click="editComment(postId, comment.id, null, false)">Save Changes</button>
                   <button class="btn rounded-2 btn-sm border-btn py-2 px-3"
                     @click="cancelEdit(comment.id)">Cancel</button>
                 </div>
@@ -102,12 +103,15 @@
                   <!-- Reaction Icons and Count -->
                   <div class="like-count col-2 col-sm-1 px-sm-2 px-0 min-max-content">
                     <div class="reaction-icons d-flex align-items-center justify-content-center">
-                      <button @click="emitShowReactions(postId, comment.organizedReactions)">
-                      <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)" :key="index">
-                        <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
-                      </span>
-                      <span v-if="Object.keys(comment.organizedReactions).length > 3">+{{ Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
-                    </button>
+                      <button @click="emitShowReactions(postId, comment.organizedReactions)" class="btn">
+                        <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)"
+                          :key="index">
+                          <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
+                            reactionDetail.count }}
+                        </span>
+                        <span v-if="Object.keys(comment.organizedReactions).length > 3">+{{
+                          Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                      </button>
                     </div>
                   </div>
                   <div class="reply col-3 col-sm-1 px-sm-2 px-1 w-auto">
@@ -128,7 +132,8 @@
                 </div>
                 <div class="comment-form w-100">
                   <form @submit.prevent="submitComment(postId, comment.id, true)" class="position-relative">
-                    <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Reply and hit submit"
+                    <textarea v-model="newContent" rows="1" :disabled="isSubmitting"
+                      placeholder="Write a Reply and hit submit"
                       class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
                     <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
                       <!-- Add emoji and image upload functionality -->
@@ -174,16 +179,19 @@
                           <ul class="dropdown-menu dropdown-menu-end z-1">
                             <li><button class="dropdown-item" @click="handleEdit(reply.id, reply.text, true)"><i
                                   class="bi bi-pencil-fill me-2"></i>Edit</button></li>
-                            <li><button class="dropdown-item" @click="deleteComment(postId, reply.id, comment.id, true)"><i
+                            <li><button class="dropdown-item"
+                                @click="deleteComment(postId, reply.id, comment.id, true)"><i
                                   class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                           </ul>
                         </div>
                       </div>
                       <div v-if="editingId === reply.id" class="reply-edit-form">
                         <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
-                        <button class="btn btn-primary btn-sm px-3 me-2" @click="editComment(postId, comment.id, reply.id, true)">Save
+                        <button class="btn btn-primary btn-sm px-3 me-2"
+                          @click="editComment(postId, comment.id, reply.id, true)">Save
                           Changes</button>
-                        <button class="btn rounded-2 btn-sm border-btn py-2 px-3" @click="cancelEdit(reply.id)">Cancel</button>
+                        <button class="btn rounded-2 btn-sm border-btn py-2 px-3"
+                          @click="cancelEdit(reply.id)">Cancel</button>
                       </div>
                       <div v-else class="comment-text">
                         <p class="text-start">{{ reply.text }}</p>
@@ -212,12 +220,16 @@
                           <!-- Reaction Icons and Count -->
                           <div class="like-count col-4 px-sm-3 px-1 w-auto">
                             <div class="reaction-icons">
-                              <button @click="emitShowReactions(postId, reply.organizedReactions)">
-                              <span v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)" :key="index">
-                                <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
-                              </span>
-                              <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{ Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
-                            </button>
+                              <button @click="emitShowReactions(postId, reply.organizedReactions)" class="btn">
+                                <span
+                                  v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)"
+                                  :key="index">
+                                  <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
+                                    reactionDetail.count }}
+                                </span>
+                                <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{
+                                  Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -310,16 +322,16 @@ export default {
       this.isEditingReply = isReply;
     },
     editComment(postId, commentId, replyId, isReply = false) {
-        const idToCheck = isReply ? replyId : commentId;
-        if (this.editingId !== idToCheck || !this.editedText.trim()) return;
-        this.editCommentOrReply({
-            postId: postId,
-            commentId: idToCheck,
-            parentCommentId: isReply ? commentId : null,
-            text: this.editedText,
-            isReply: isReply
-        });
-        this.cancelEdit();
+      const idToCheck = isReply ? replyId : commentId;
+      if (this.editingId !== idToCheck || !this.editedText.trim()) return;
+      this.editCommentOrReply({
+        postId: postId,
+        commentId: idToCheck,
+        parentCommentId: isReply ? commentId : null,
+        text: this.editedText,
+        isReply: isReply
+      });
+      this.cancelEdit();
     },
     cancelEdit() {
       this.editingId = null;
@@ -358,28 +370,28 @@ export default {
       this.showReactionsForComment[commentId] = false;
     },
     handleReaction(postId, commentId, reactionTypeId, parentId, isReply) {
-        if (isReply) {
-            for (let comment of this.comments[postId]) {
-                const reply = comment.replies.find(r => r.id === commentId);
-                if (reply) {
-                    if (reply.userReaction === reactionTypeId) {
-                        this.removeCommentReaction({postId, commentId, parentId, isReply});
-                    } else {
-                        this.addOrUpdateCommentReaction({postId, commentId, reactionTypeId, parentId, isReply });
-                    }
-                    return;
-                }
+      if (isReply) {
+        for (let comment of this.comments[postId]) {
+          const reply = comment.replies.find(r => r.id === commentId);
+          if (reply) {
+            if (reply.userReaction === reactionTypeId) {
+              this.removeCommentReaction({ postId, commentId, parentId, isReply });
+            } else {
+              this.addOrUpdateCommentReaction({ postId, commentId, reactionTypeId, parentId, isReply });
             }
-        } else {
-            const targetComment = this.comments[postId].find(c => c.id === commentId);
-            if (targetComment) {
-                if (targetComment.userReaction === reactionTypeId) {
-                    this.removeCommentReaction({postId, commentId, parentId, isReply});
-                } else {
-                    this.addOrUpdateCommentReaction({postId, commentId, reactionTypeId, parentId, isReply });
-                }
-            }
+            return;
+          }
         }
+      } else {
+        const targetComment = this.comments[postId].find(c => c.id === commentId);
+        if (targetComment) {
+          if (targetComment.userReaction === reactionTypeId) {
+            this.removeCommentReaction({ postId, commentId, parentId, isReply });
+          } else {
+            this.addOrUpdateCommentReaction({ postId, commentId, reactionTypeId, parentId, isReply });
+          }
+        }
+      }
     },
     toggleNestedCommentEmojiPicker() {
       this.showNestedCommentEmojiPicker = !this.showNestedCommentEmojiPicker;
