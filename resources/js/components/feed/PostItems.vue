@@ -1,8 +1,9 @@
 <template>
   <div class="mt-3">
-    <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert">
-      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-3">New Post
-        Available - Click to View</button>
+    <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert text-center mb-3">
+      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">New
+        Post
+        Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i></button>
     </div>
     <div v-if="posts.length > 0">
       <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
@@ -202,15 +203,23 @@
                   <div v-else-if="post.poll.isActive">
                     <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
                       <div class="poll-result">
-                        {{ option.option_text }} - {{ option.votes }} votes ({{ calculatePercentage(option.votes,
-                          post.poll.totalVotes) }}%)
+                        <div class="poll-meter-container rounded-2 d-flex justify-content-between align-items-center p-2"
+                          :style="{ 'background': 'linear-gradient(to right, #8c8c8c33 ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%, transparent ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%)' }">
+                          <div class="poll-option-text">
+                            {{ option.option_text }}
+                          </div>
+                          <div class="poll-percentage t-black t-bold t-14">
+                            {{ calculatePercentage(option.votes, post.poll.totalVotes) }}%
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)" class="btn undo-vote-btn">Undo
-                      Vote</button>
                   </div>
                   <div class="text-secondary">
                     Total votes: {{ post.poll.totalVotes }} - Time left: {{ post.poll.timeLeft }}
+                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)"
+                      class="btn undo-vote-btn ps-2 fw-bold">Undo
+                      Vote</button>
                   </div>
                 </div>
               </div>
@@ -446,6 +455,26 @@ export default {
 </script>
 
 <style>
+.undo-vote-btn {
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  color: #4a6ee0;
+}
+
+.new-post-alert button {
+  background-color: #00000014;
+}
+
+.new-post-alert button:hover {
+  background-color: #00000020;
+}
+
+.post.shadow,
+.new-post-alert {
+  transition: .4s ease all;
+}
+
 .preview-modal-item.carousel-item {
   transition: unset !important;
   vertical-align: middle;
