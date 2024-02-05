@@ -30,7 +30,7 @@
   <!-- Comments Section -->
   <div class="post-footer post-comments p-3 bh-white">
     <div class="comment-lists">
-      <div v-for="comment in comments" :key="comment.id" class="comment comment-container mb-2">
+      <div v-for="comment in postComments" :key="comment.id" class="comment comment-container mb-2">
         <div class="d-flex gap-2">
           <div class="user-icon">
             <a :href="`/${comment.user.username}`">
@@ -62,7 +62,7 @@
                           <i class="bi bi-pencil-fill me-2"></i>Edit 
                         </button>
                       </li>
-                      <li><button class="dropdown-item" @click="deleteComment(comment.id, null, false)"><i
+                      <li><button class="dropdown-item" @click="deleteComment(postId, comment.id, null, false)"><i
                             class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                     </ul>
                   </div>
@@ -85,7 +85,7 @@
                   <button type="button"
                     class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                     @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
-                    @click="handleReaction(comment.id, 1, null, false)">
+                    @click="handleReaction(postId, comment.id, 1, null, false)">
                     <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
                     <i v-else :class="getReactionName(comment.userReaction)"></i>
                     <span :class="getReactionName(comment.userReaction)">
@@ -94,7 +94,7 @@
                     <div v-if="showReactionsForComment[comment.id]"
                       class="reaction-icons-wrapper position-absolute d-flex gap-1">
                       <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                        @click.stop="handleReaction(comment.id, reactionType.id, null, false)">
+                        @click.stop="handleReaction(postId, comment.id, reactionType.id, null, false)">
                         <img :src="reactionType.icon" class="reply-reaction-icons-img">
                       </span>
                     </div>
@@ -174,7 +174,7 @@
                           <ul class="dropdown-menu dropdown-menu-end z-1">
                             <li><button class="dropdown-item" @click="handleEdit(reply.id, reply.text, true)"><i
                                   class="bi bi-pencil-fill me-2"></i>Edit</button></li>
-                            <li><button class="dropdown-item" @click="deleteComment(reply.id, comment.id, true)"><i
+                            <li><button class="dropdown-item" @click="deleteComment(postId, reply.id, comment.id, true)"><i
                                   class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                           </ul>
                         </div>
@@ -195,7 +195,7 @@
                           <button type="button"
                             class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
                             @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
-                            @click="handleReaction(reply.id, 1, comment.id, true)">
+                            @click="handleReaction(postId, reply.id, 1, comment.id, true)">
                             <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
                             <i v-else :class="getReactionName(reply.userReaction)"></i>
                             <span :class="getReactionName(reply.userReaction)">
@@ -204,7 +204,7 @@
                             <div v-if="showReactionsForComment[reply.id]"
                               class="reaction-icons-wrapper position-absolute d-flex gap-1">
                               <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                                @click.stop="handleReaction(reply.id, reactionType.id, comment.id, true)">
+                                @click.stop="handleReaction(postId, reply.id, reactionType.id, comment.id, true)">
                                 <img :src="reactionType.icon" class="reply-reaction-icons-img">
                               </span>
                             </div>
@@ -262,6 +262,9 @@ export default {
     ...mapState(['userData']),
     ...mapState('userFeed', ['fetchedCommentsFlags']),
     ...mapState('userFeedComment', ['comments']),
+    postComments() {
+      return this.comments[this.postId] || [];
+    },
   },
   methods: {
     ...mapActions('userFeedComment', [
@@ -326,8 +329,9 @@ export default {
     isEditing(commentId) {
       return this.editingId === commentId;
     },
-    deleteComment(commentId, paraentId, isReply) {
+    deleteComment(postId, commentId, paraentId, isReply) {
       this.deleteCommentOrReply({
+        postId: postId,
         commentId: commentId,
         parentId: paraentId,
         isReply: isReply
@@ -353,26 +357,26 @@ export default {
     hideReactionsForComment(commentId) {
       this.showReactionsForComment[commentId] = false;
     },
-    handleReaction(commentId, reactionTypeId, parentId, isReply) {
+    handleReaction(postId, commentId, reactionTypeId, parentId, isReply) {
         if (isReply) {
-            for (let comment of this.comments) {
+            for (let comment of this.comments[postId]) {
                 const reply = comment.replies.find(r => r.id === commentId);
                 if (reply) {
                     if (reply.userReaction === reactionTypeId) {
-                        this.removeCommentReaction({ commentId, parentId, isReply});
+                        this.removeCommentReaction({postId, commentId, parentId, isReply});
                     } else {
-                        this.addOrUpdateCommentReaction({ commentId, reactionTypeId, parentId, isReply });
+                        this.addOrUpdateCommentReaction({postId, commentId, reactionTypeId, parentId, isReply });
                     }
                     return;
                 }
             }
         } else {
-            const targetComment = this.comments.find(c => c.id === commentId);
+            const targetComment = this.comments[postId].find(c => c.id === commentId);
             if (targetComment) {
                 if (targetComment.userReaction === reactionTypeId) {
-                    this.removeCommentReaction({ commentId, parentId, isReply});
+                    this.removeCommentReaction({postId, commentId, parentId, isReply});
                 } else {
-                    this.addOrUpdateCommentReaction({ commentId, reactionTypeId, parentId, isReply });
+                    this.addOrUpdateCommentReaction({postId, commentId, reactionTypeId, parentId, isReply });
                 }
             }
         }

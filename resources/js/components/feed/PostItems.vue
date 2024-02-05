@@ -238,7 +238,7 @@
           </div>
 
           <!-- Comments Section -->
-          <PostComment v-if="fetchedCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
+          <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
         </div>
       </div>
     </div>
@@ -282,7 +282,7 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
-    ...mapState('userFeed', ['fetchedCommentsFlags']),
+    ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags']),
     computedPosts() {
       return this.posts.map(post => {
         let updatedPost = {
@@ -323,7 +323,8 @@ export default {
       'fetchMorePosts', 
       'addVote', 
       'removeVote', 
-      'updateFetchedCommentsFlag'
+      'updateFetchedCommentsFlag',
+      'updateFetchedCommentsVisibility'
     ]),
     ...mapActions('userFeedComment', ['fetchCommentsForPost']),
     formatDateTime,
@@ -356,6 +357,9 @@ export default {
       if (!this.fetchedCommentsFlags[postId]) {
         this.fetchCommentsForPost({postId, userId});
         this.updateFetchedCommentsFlag(postId);
+      }else{
+
+        this.updateFetchedCommentsVisibility(postId);
       }
     },
     submitVote(pollId, optionId) {
