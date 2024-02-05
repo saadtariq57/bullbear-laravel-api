@@ -93,28 +93,44 @@ class PostController extends Controller
                 }
                 break;
         }
-
+        $user = $request->user();
         $post = Post::with([
                         'user:id,name,avatar',
                         'photos', 
-                        'poll.options', 
+                        'poll.options',
+                        'poll.userVotes' => function($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        },
                         'coloredPost', 
                         'reactions' => function($query) {
-                            $query->with('reactionType:id,name,icon');
+                            $query->with('reactionType:id,name,icon')
+                                    ->with('user:id,name,avatar,about');
                         }
                     ])
                     ->withCount(['comments', 'reactions'])
                     ->findOrFail($post->id);
+            switch ($post->post_type) {
+                case 'photo':
+                    break;
 
-        switch ($post->post_type) {
-            case 'poll':
-                // If it's a poll, attach options to the poll object
-                if ($post->poll) {
-                    $post->poll->options = $post->poll->options;
-                }
-                break;
-        }
+                case 'poll':
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
+                    }
+                    unset($post->pollDetails);
+                    break;
 
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
+            }
         broadcast(new \App\Events\NewPost($post));
         return response()->json(['message' => 'Post created successfully', 'post' => $post]);
     }

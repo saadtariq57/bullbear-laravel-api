@@ -194,7 +194,8 @@ const userFeedModule = {
           if (window.Echo) {
             window.Echo.private(`feed.posts.${userId}`)
               .listen('.App\\Events\\NewPost', (event) => {
-                commit('addNewPost', event.post);
+                let trasnformedPost = UserFeedService.transfromPost([event.post], userId);
+                commit('addNewPost', trasnformedPost[0]);
               });
           } else {
             console.error('Echo is not initialized');

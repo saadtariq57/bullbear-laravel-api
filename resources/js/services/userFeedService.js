@@ -38,7 +38,32 @@ const UserFeedService = {
             throw error;
         }
     },
+    transfromPost(post, userId){
+        const transformedPost = post.map(post => {
+            // Mapping reactions
+            const { organizedReactions: organizedReactions, userReaction: userReaction } = organizeReactions(post.reactions, userId);
+            // Mapping poll votes
+            let userVoted = false;
+            let userVoteOptionId = null;
+            if (post.poll) {
+                userVoted = post.userVoted;
+                if (userVoted) {
+                    const userVote = post.user_votes.find(vote => vote.user_id === userId);
+                    userVoteOptionId = userVote ? userVote.option_id : null;
+                }
+            }
 
+            return {
+                ...post,
+                userReaction: userReaction,
+                organizedReactions: organizedReactions,
+                userVoted: userVoted,
+                userVoteOptionId: userVoteOptionId,
+            };
+        });
+
+        return transformedPost;
+    },
     async fetchReactionTypes() {
         try {
             const response = await axios.get('/api/reaction-types');
