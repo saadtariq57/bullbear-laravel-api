@@ -1,7 +1,8 @@
 <template>
   <div class="mt-3">
     <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert">
-      <button @click="$store.commit('userFeed/shiftNewPost')">New Post Available - Click to View</button>
+      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-3">New Post
+        Available - Click to View</button>
     </div>
     <div v-if="posts.length > 0">
       <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
@@ -47,7 +48,7 @@
                   <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
                     :class="{ 'w-100': index === 2 }">
                 </div>
-                <div v-else>
+                <div v-else class="multi-post-img">
                   <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                 </div>
 
@@ -59,7 +60,126 @@
                 <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
               </div>
             </div>
-          
+            <div class="modal fade" id="postPreview" tabindex="-1" aria-labelledby="postPreviewLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable m-0 vh-100">
+                <div class="modal-content vh-100 rounded-0 border-0">
+                  <div class="row">
+                    <div class="col-xl-8 col-md-6 bg-black ps-3 pe-2 vh-100">
+                      <div class="modal-header h-100 border-0 rounded-0">
+                        <div id="carouselExampleFade" class="carousel slide carousel-fade flex-fill h-100">
+                          <div class="carousel-inner h-100">
+                            <div class="carousel-item preview-modal-item active">
+                              <img
+                                src="http://127.0.0.1:8000/upload/photos/2024/1/QTIpqRq1an4uUJyTcCbmhJ871tlSqfdnvNwISMCg.jpg"
+                                class="img-fluid" alt="Post Preview Image">
+                            </div>
+                            <div class="carousel-item preview-modal-item">
+                              <img
+                                src="http://127.0.0.1:8000/upload/photos/2024/1/H98ZNw6xlO7DJeU5wWm0coAHliF4qWPEZWz9SfBN.jpg"
+                                class="img-fluid" alt="Post Preview Image">
+                            </div>
+                            <div class="carousel-item preview-modal-item">
+                              <img
+                                src="http://127.0.0.1:8000/upload/photos/2024/1/sbTswtnZA50PjqPXdlyxvywPTDVvaXP03DBDjQZK.jpg"
+                                class="img-fluid" alt="Post Preview Image">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                      <div class="modal-body ps-0 pb-0 border-0">
+                        <div class="post-preview-scroll">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between">
+                              <div class="user-avatar d-flex gap-2">
+                                <div class="img">
+                                  <img src="/upload/photos/d-avatar.jpg" class="rounded-circle" alt="profile picture">
+                                </div>
+                                <div class="user-info text-start">
+                                  <a href="" class="text-black d-inline-block text-start fw-bold modal-username">Admin</a>
+                                  <div class="time">
+                                    <span>2 days ago</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- Post settings -->
+                              <!-- Include Post Settings Dropdown Here -->
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div>
+                            <div class="post description pt-3 ">
+                              <p class="text-start">Testing</p>
+                            </div>
+                            <!-- Interaction buttons and Like/Comment counts -->
+                            <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+                              <div class="like-count">
+                                <!-- Reaction Post trigger modal -->
+                                <div class="reaction-icons">
+                                  <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
+                                    <span
+                                      v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
+                                      :key="index">
+                                      <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
+                                        reactionDetail.count }}
+                                      <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
+                                        Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0)
+                                      }}</span>
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                              <div class="comment-count">
+                                <button @click="toggleComments(post.id, userData.id)" class="btn btn-feed-hover border-0">
+                                  <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
+                                </button>
+                              </div>
+                            </div>
+                            <div class="row post-reach pb-2 px-sm-4">
+                              <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
+                                @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
+                                @click="handleReaction(post.id, 1)">
+                                <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
+                                <span :class="getReactionName(post.userReaction)">
+                                  {{ getReactionName(post.userReaction) }}
+                                </span>
+                                <div v-if="showReactionsForPost[post.id]"
+                                  class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                                  <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                                    @click.stop="handleReaction(post.id, reactionType.id)">
+                                    <img :src="reactionType.icon" class="reaction-icons-img">
+                                  </span>
+                                </div>
+                              </button>
+                              <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+                                @click="toggleComments(post.id, userData.id)"><i
+                                  class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
+                              <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+                                @click="sharePost"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
+                            </div>
+
+                            <!-- Comments Section -->
+                            <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id"
+                              :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- Poll Content -->
 
@@ -111,7 +231,7 @@
             <div class="like-count">
               <!-- Reaction Post trigger modal -->
               <div class="reaction-icons">
-                <button @click="handleShowReactionsPost(post.id, post.organizedReactions)">
+                <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
                   <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
                     :key="index">
                     <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
@@ -142,15 +262,16 @@
                 </span>
               </div>
             </button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4"
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
               @click="toggleComments(post.id, userData.id)"><i
                 class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4" @click="sharePost"><i
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2" @click="sharePost"><i
                 class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
           </div>
 
           <!-- Comments Section -->
-          <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
+          <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes"
+            @show-reactions="handleShowReactions" />
         </div>
       </div>
     </div>
@@ -224,11 +345,11 @@ export default {
   },
   methods: {
     ...mapActions('userFeed', [
-      'addOrUpdateReaction', 
-      'removeReaction', 
-      'fetchMorePosts', 
-      'addVote', 
-      'removeVote', 
+      'addOrUpdateReaction',
+      'removeReaction',
+      'fetchMorePosts',
+      'addVote',
+      'removeVote',
       'updateFetchedCommentsFlag',
       'updateFetchedCommentsVisibility'
     ]),
@@ -263,7 +384,7 @@ export default {
       if (!this.fetchedCommentsFlags[postId]) {
         this.fetchCommentsForPost({ postId, userId });
         this.updateFetchedCommentsFlag(postId);
-      }else{
+      } else {
 
         this.updateFetchedCommentsVisibility(postId);
       }
@@ -468,40 +589,6 @@ export default {
   font-size: 2.5rem;
 }
 
-#reactionPostModal .modal-dialog-scrollable .modal-content {
-  height: 600px;
-}
-
-.reactions-post-wrapper {
-  min-height: 39px;
-  overflow: auto;
-  border-bottom: 1px solid #00000014;
-}
-
-.reactions-post-wrapper ul {
-  max-width: fit-content;
-  height: 38px;
-}
-
-.reactions-post-wrapper::-webkit-scrollbar {
-  height: 0PX;
-}
-
-.reactions-post-nav-btn.active {
-  background-color: #00000014 !important;
-  border-bottom: 1px solid #000000 !important;
-}
-
-.user-reaction {
-  right: 0;
-  bottom: 0;
-  padding-left: 1px;
-  padding-right: 1px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-
 #postPreview .modal-dialog {
   max-width: 100%;
 }
@@ -532,6 +619,9 @@ export default {
   height: 100%;
 }
 
+.reaction-icons button:empty {
+  display: none;
+}
 
 @media screen and (max-width: 506px) {
   .post-reach button {

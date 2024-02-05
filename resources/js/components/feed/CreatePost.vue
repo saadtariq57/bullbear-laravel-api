@@ -355,7 +355,7 @@ export default {
       setTimeout(() => this.showPostModal(), 300);
       const textarea = document.getElementById('textarea-modalpost');
       if (textarea) {
-        textarea.style.height = '300px';
+        textarea.style.height = 'auto';
       }
     },
     handleMediaUpload(payload) {
@@ -646,7 +646,7 @@ export default {
 }
 
 .write-post-wrapper {
-  height: 400px;
+  height: 250px;
   overflow-y: auto;
 }
 
@@ -674,7 +674,7 @@ export default {
 
 .post-textarea textarea {
   resize: none;
-  /* height: 100px; */
+  height: auto;
   padding: 10px 15px;
 }
 

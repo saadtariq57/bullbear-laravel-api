@@ -41,23 +41,37 @@
         <!-- end main content-->
     </div>
     <!-- END layout-wrapper -->
+
+    <!-- vendor-scripts -->
+    @include('layouts.vendor-scripts')
+    <script>
+        // Define a function to hide the overlay loader
+        function hideLoader() {
+            const overlayLoader = document.getElementById('overlay_loader');
+            overlayLoader.style.display = 'none';
+        }
+
+        // Define a function to check if all data is displayed
+        function checkDataDisplayed() {
+            const appElement = document.querySelectorAll('[data-v-app]');
+
+            // If the app element exists, it means the content has been loaded
+            if (appElement.length > 0) {
+                // Hide the loader
+                hideLoader();
+            } else {
+                // Retry after a delay
+                setTimeout(checkDataDisplayed, 300);
+            }
+        }
+
+        // Listen for the DOMContentLoaded event
+        window.addEventListener('DOMContentLoaded', () => {
+            // Start checking if all data is displayed
+            checkDataDisplayed();
+        });
+    </script>
 </div>
 </body>
-<!-- vendor-scripts -->
-@include('layouts.vendor-scripts')
-<script>
-    let overlayLoader = document.getElementById('overlay_loader');
-  let timeoutId;
 
-  function hideLoder() {
-    timeoutId = setTimeout(alertFunc, 1000);
-  }
-
-  function alertFunc() {
-    overlayLoader.style.display = 'none';
-  }
-
-  // Call myFunction when the window has finished loading
-  window.addEventListener('load', hideLoder);
-</script>
 </html>
