@@ -1,8 +1,9 @@
 <template>
   <div class="mt-3">
-    <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert">
-      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-3">New Post
-        Available - Click to View</button>
+    <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert text-center mb-3">
+      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">New
+        Post
+        Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i></button>
     </div>
     <div v-if="posts.length > 0">
       <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
@@ -10,7 +11,7 @@
         <div class="post-wrapper">
           <div class="post-heading p-3">
             <div class="d-flex justify-content-between">
-              <div class="user-avatar d-flex gap-2">
+              <div class="user-avatar d-flex gap-2 align-items-center">
                 <div class="img">
                   <img :src="`/${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
@@ -34,10 +35,11 @@
           </div>
 
           <!-- Post Media -->
-          <div v-if="post.post_type === 'photo'" class="post-file">
+          <div v-if="post.post_type === 'photo'" class="post-file" @post-clicked="handlePostClicked">
             <div v-if="post.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
-                class="multi-post-img-wrapper text-center btn p-0" data-bs-toggle="modal" data-bs-target="#postPreview">
+                class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)"
+                data-bs-toggle="modal" data-bs-target="#postPreview">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
                   <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
@@ -55,129 +57,10 @@
               </div>
             </div>
             <div v-else class="text-center">
-              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" data-bs-toggle="modal"
-                data-bs-target="#postPreview">
+              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)"
+                data-bs-toggle="modal" data-bs-target="#postPreview">
+                <!-- Pass the clicked post data -->
                 <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
-              </div>
-            </div>
-            <div class="modal fade" id="postPreview" tabindex="-1" aria-labelledby="postPreviewLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable m-0 vh-100">
-                <div class="modal-content vh-100 rounded-0 border-0">
-                  <div class="row">
-                    <div class="col-xl-8 col-md-6 bg-black ps-3 pe-2 vh-100">
-                      <div class="modal-header h-100 border-0 rounded-0">
-                        <div id="carouselExampleFade" class="carousel slide carousel-fade flex-fill h-100">
-                          <div class="carousel-inner h-100">
-                            <div class="carousel-item preview-modal-item active">
-                              <img
-                                src="http://127.0.0.1:8000/upload/photos/2024/1/QTIpqRq1an4uUJyTcCbmhJ871tlSqfdnvNwISMCg.jpg"
-                                class="img-fluid" alt="Post Preview Image">
-                            </div>
-                            <div class="carousel-item preview-modal-item">
-                              <img
-                                src="http://127.0.0.1:8000/upload/photos/2024/1/H98ZNw6xlO7DJeU5wWm0coAHliF4qWPEZWz9SfBN.jpg"
-                                class="img-fluid" alt="Post Preview Image">
-                            </div>
-                            <div class="carousel-item preview-modal-item">
-                              <img
-                                src="http://127.0.0.1:8000/upload/photos/2024/1/sbTswtnZA50PjqPXdlyxvywPTDVvaXP03DBDjQZK.jpg"
-                                class="img-fluid" alt="Post Preview Image">
-                            </div>
-                          </div>
-                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                          </button>
-                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-xl-4 col-md-6">
-                      <div class="modal-body ps-0 pb-0 border-0">
-                        <div class="post-preview-scroll">
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex justify-content-between">
-                              <div class="user-avatar d-flex gap-2">
-                                <div class="img">
-                                  <img src="/upload/photos/d-avatar.jpg" class="rounded-circle" alt="profile picture">
-                                </div>
-                                <div class="user-info text-start">
-                                  <a href="" class="text-black d-inline-block text-start fw-bold modal-username">Admin</a>
-                                  <div class="time">
-                                    <span>2 days ago</span>
-                                  </div>
-                                </div>
-                              </div>
-                              <!-- Post settings -->
-                              <!-- Include Post Settings Dropdown Here -->
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div>
-                            <div class="post description pt-3 ">
-                              <p class="text-start">Testing</p>
-                            </div>
-                            <!-- Interaction buttons and Like/Comment counts -->
-                            <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
-                              <div class="like-count">
-                                <!-- Reaction Post trigger modal -->
-                                <div class="reaction-icons">
-                                  <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
-                                    <span
-                                      v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
-                                      :key="index">
-                                      <img :src="`${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
-                                        reactionDetail.count }}
-                                      <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
-                                        Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0)
-                                      }}</span>
-                                    </span>
-                                  </button>
-                                </div>
-                              </div>
-                              <div class="comment-count">
-                                <button @click="toggleComments(post.id, userData.id)" class="btn btn-feed-hover border-0">
-                                  <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
-                                </button>
-                              </div>
-                            </div>
-                            <div class="row post-reach pb-2 px-sm-4">
-                              <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
-                                @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
-                                @click="handleReaction(post.id, 1)">
-                                <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
-                                <span :class="getReactionName(post.userReaction)">
-                                  {{ getReactionName(post.userReaction) }}
-                                </span>
-                                <div v-if="showReactionsForPost[post.id]"
-                                  class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                                  <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                                    @click.stop="handleReaction(post.id, reactionType.id)">
-                                    <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
-                                  </span>
-                                </div>
-                              </button>
-                              <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
-                                @click="toggleComments(post.id, userData.id)"><i
-                                  class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
-                              <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
-                                @click="sharePost"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
-                            </div>
-
-                            <!-- Comments Section -->
-                            <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id"
-                              :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -202,15 +85,23 @@
                   <div v-else-if="post.poll.isActive">
                     <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
                       <div class="poll-result">
-                        {{ option.option_text }} - {{ option.votes }} votes ({{ calculatePercentage(option.votes,
-                          post.poll.totalVotes) }}%)
+                        <div class="poll-meter-container rounded-2 d-flex justify-content-between align-items-center p-2"
+                          :style="{ 'background': 'linear-gradient(to right, #8c8c8c33 ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%, transparent ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%)' }">
+                          <div class="poll-option-text">
+                            {{ option.option_text }}
+                          </div>
+                          <div class="poll-percentage t-black t-bold t-14">
+                            {{ calculatePercentage(option.votes, post.poll.totalVotes) }}%
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)" class="btn undo-vote-btn">Undo
-                      Vote</button>
                   </div>
                   <div class="text-secondary">
                     Total votes: {{ post.poll.totalVotes }} - Time left: {{ post.poll.timeLeft }}
+                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)"
+                      class="btn undo-vote-btn ps-2 fw-bold">Undo
+                      Vote</button>
                   </div>
                 </div>
               </div>
@@ -276,10 +167,118 @@
       </div>
     </div>
     <div v-else>
-      <p>Loading posts...</p>
+      <div class="post-wrapper shadow mb-3">
+        <div class="post-heading p-3">
+          <div class="d-flex justify-content-between">
+            <div class="user-avatar d-flex gap-2 align-items-center">
+              <div class="img">
+                <Skeletor height="35px" width="35px" class="rounded-circle" />
+              </div>
+              <div class="user-info text-start">
+                <Skeletor height="10px" width="30px" />
+                <div class="mt-2">
+                  <span>
+                    <Skeletor height="10px" width="50px" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Post settings -->
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-description px-3">
+          <Skeletor height="20px" width="100%" />
+        </div>
+
+        <div class="post-file mt-3">
+          <Skeletor height="300px" width="100%" />
+
+        </div>
+        <!-- Interaction buttons and Like/Comment counts -->
+        <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+          <div class="like-count">
+            <!-- Reaction Post trigger modal -->
+            <div class="reaction-icons">
+              <Skeletor height="15px" width="30px" />
+            </div>
+          </div>
+          <div class="comment-count">
+            <Skeletor height="15px" width="60px" />
+          </div>
+        </div>
+        <div class="row post-reach pb-2 px-sm-4 mt-2">
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+        </div>
+
+      </div>
+      <div class="post-wrapper shadow mb-3">
+        <div class="post-heading p-3">
+          <div class="d-flex justify-content-between">
+            <div class="user-avatar d-flex gap-2 align-items-center">
+              <div class="img">
+                <Skeletor height="35px" width="35px" class="rounded-circle" />
+              </div>
+              <div class="user-info text-start">
+                <Skeletor height="10px" width="30px" />
+                <div class="mt-2">
+                  <span>
+                    <Skeletor height="10px" width="50px" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Post settings -->
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-description px-3">
+          <Skeletor height="20px" width="100%" />
+        </div>
+
+        <div class="post-file mt-3">
+          <Skeletor height="300px" width="100%" />
+
+        </div>
+        <!-- Interaction buttons and Like/Comment counts -->
+        <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+          <div class="like-count">
+            <!-- Reaction Post trigger modal -->
+            <div class="reaction-icons">
+              <Skeletor height="15px" width="30px" />
+            </div>
+          </div>
+          <div class="comment-count">
+            <Skeletor height="15px" width="60px" />
+          </div>
+        </div>
+        <div class="row post-reach pb-2 px-sm-4 mt-2">
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+        </div>
+
+      </div>
     </div>
     <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
       @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
+    <PreviewModal :post="clickedPost" />
   </div>
 </template>
 
@@ -287,9 +286,12 @@
 import { formatDateTime } from '../../utils';
 import { Modal } from 'bootstrap';
 import { mapState, mapActions } from 'vuex';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
 import SharePost from "./SharePost.vue";
 import PostComment from './PostComment.vue';
 import ReactionModal from '../utils/ReactionModal.vue';
+import PreviewModal from './PreviewModal.vue';
 
 export default {
   emits: ['show-reactions'],
@@ -304,12 +306,15 @@ export default {
   components: {
     PostComment,
     ReactionModal,
-    SharePost
+    SharePost,
+    PreviewModal,
+    Skeletor
   },
   data() {
     return {
       showReactionsForPost: {},
       activeReactionData: null,
+      clickedPost: null,
     };
   },
   computed: {
@@ -363,6 +368,11 @@ export default {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
     },
+    openPostPreviewModal(post) {
+      this.clickedPost = post;
+      console.log(this.clickedPost);
+    },
+
     handleModalMounted(modalElement) {
       this.reactionModalInstance = new Modal(modalElement, { backdrop: 'static' });
     },
@@ -450,6 +460,26 @@ export default {
 </script>
 
 <style>
+.undo-vote-btn {
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  color: #4a6ee0;
+}
+
+.new-post-alert button {
+  background-color: #00000014;
+}
+
+.new-post-alert button:hover {
+  background-color: #00000020;
+}
+
+.post.shadow,
+.new-post-alert {
+  transition: .4s ease all;
+}
+
 .preview-modal-item.carousel-item {
   transition: unset !important;
   vertical-align: middle;
@@ -500,8 +530,8 @@ export default {
 
 .user-avatar img,
 .reaction-icons-img {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   transition: ease-in-out .4s;
 }
 

@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="container-fluid py-80">
+  <section class="container-fluid my-4">
         <div class="container">
             <div class="trading-books-wrapper bg-white px-5 py-3 mt-4 border-1 border rounded-2 shadow-sm">
                 <div class="text-center">
@@ -16,7 +16,7 @@
             </div>
         </div>
     </section>
-    <section class="trading-books container-fluid pb-80">
+    <section class="trading-books container-fluid mb-4">
         <div class="container">
             <router-view></router-view>
         </div>

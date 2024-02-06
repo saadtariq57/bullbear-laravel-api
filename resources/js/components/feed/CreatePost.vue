@@ -603,6 +603,7 @@ export default {
   display: flex;
   flex-wrap: wrap-reverse;
   justify-content: center;
+  min-height: 140px;
 }
 
 .media-preview-container .multi-image-preview .image-container img {

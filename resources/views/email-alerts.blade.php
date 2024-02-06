@@ -5,7 +5,7 @@
     @endsection
     @section('content')
         <main>
-            <section class="MarketWatch py-80">
+            <section class="MarketWatch my-4">
                 <div class="container">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="main-heading">

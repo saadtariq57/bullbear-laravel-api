@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="container-fluid py-80">
+  <section class="container-fluid my-4">
         <div class="container-xxl">
             <div class=" row">
                 <div class="col-lg-8 col-md-12">
