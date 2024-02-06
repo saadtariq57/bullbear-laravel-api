@@ -110,25 +110,27 @@ const userFeedModule = {
         }
     },
     actions: {
-        async fetchPosts({ commit, rootState }) {
+        async fetchPosts({ commit, rootState }, { context, groupId = null }) {
           commit('setLoading', true);
           try {
             const userId = rootState.userData.id;
-            const posts = await UserFeedService.fetchUserPosts(userId);
+            console.log('Group Id Feed Store ' + groupId)
+            let posts;
+              posts = await UserFeedService.fetchUserPosts(userId, context, groupId);
             commit('setPosts', posts);
-            commit('setLoading', false);
           } catch (error) {
             commit('setError', error.message);
+          } finally {
             commit('setLoading', false);
           }
         },
-        async fetchMorePosts({ commit, state, rootState}) {
+        async fetchMorePosts({ commit, state, rootState}, { context, groupId = null }) {
             const userId = rootState.userData.id;
             if (state.isLoading) return;
             const lastPostId = state.posts[state.posts.length - 1].id;
             commit('setLoading', true);
             try {
-                const morePosts = await UserFeedService.fetchUserPosts(userId, lastPostId);
+                const morePosts = await UserFeedService.fetchUserPosts(userId, context, groupId, lastPostId);
                 commit('appendPosts', morePosts);
             } catch (error) {
                 console.error('Error fetching more posts:', error);
@@ -189,7 +191,7 @@ const userFeedModule = {
         updateFetchedCommentsVisibility({commit}, postId){
             commit('updateFetchedCommentsVisibility', postId);
         },
-        initializeRealTimeUpdates({ commit, rootState }) {
+        initializeRealTimeUpdates({ commit, rootState }, { context, groupId = null }) {
           const userId = rootState.userData.id;
           if (window.Echo) {
             window.Echo.private(`feed.posts.${userId}`)

@@ -39,10 +39,6 @@ Route::get('/trading-school', function () {
     return view('trading-school');
 })->name('trading-school');
 
-Route::get('/groups', function () {
-    return view('groups.index');
-})->name('groups.index');
-
 Route::get('/exams', function () {
     return view('exams.index');
 })->name('exams.index');
@@ -59,15 +55,13 @@ Route::get('/pricing', function () {
     return view('pricing');
 })->name('pricing');
 
+Route::get('/groups', [HomeController::class, 'groupPage'])->name('group');
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {
-    // Home (Feed) route
     Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
-
+    Route::get('/profile', [HomeController::class, 'profilePage'])->name('profile');
+    Route::get('/groups/{group_id}/{group_name}', [HomeController::class, 'singleGroupPage'])->name('groups.single');
     // Profile route
-    Route::get('/profile', function () {
-        return view('profile.index');
-    })->name('profile.index');
     Route::get('/profile/setting', function () {
         return view('profile.setting');
     })->name('profile.setting');
@@ -91,11 +85,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exam/result/{id}', function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
-
-    //Single Group Route
-    Route::get('/groups/{group_name}', function () {
-        return view('groups.chat-single');
-    })->name('groups.chat-single');
 
 });
 
@@ -172,7 +161,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{group}/edit', [GroupController::class, 'edit'])->name('edit');
             Route::put('{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
-            // Additional routes for group management can be added here
+
+            // Categories Routes
+            Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');
+            Route::get('categories/create', [GroupController::class, 'categoriesCreate'])->name('categories.create');
+            Route::post('categories', [GroupController::class, 'categoriesStore'])->name('categories.store');
+            Route::get('categories/{groupCategory}/edit', [GroupController::class, 'categoriesEdit'])->name('categories.edit');
+            Route::put('categories/{groupCategory}', [GroupController::class, 'categoriesUpdate'])->name('categories.update');
+            Route::delete('categories/{groupCategory}', [GroupController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
 
         // route group for GroupController

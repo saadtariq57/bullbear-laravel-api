@@ -40,10 +40,10 @@
                     class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0"
                     v-for="detail in reaction.details" :key="`${type}-${detail.userId}`">
                     <div class="position-relative">
-                      <img :src="detail.userImage" alt="" width="45" height="45" class="rounded-circle">
+                      <img :src="`/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
                       <span
                         class="user-reaction position-absolute bg-white rounded-circle d-flex justify-content-center align-items-center">
-                        <img :src="detail.reactionImage" alt="" width="15px" height="15px">
+                        <img :src="`/${detail.reactionImage}`" alt="" width="15px" height="15px">
                       </span>
                     </div>
                     <div class="flex-fill border-bottom py-3">
@@ -60,7 +60,7 @@
                   class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0"
                   v-for="detail in reaction.details" :key="`${type}-${detail.userId}`">
                   <div class="position-relative">
-                    <img :src="detail.userImage" alt="" width="45" height="45" class="rounded-circle">
+                    <img :src="`/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
                   </div>
                   <div class="flex-fill border-bottom py-3">
                     <h6 class="fs-6 fw-6 clr-primary user-name">{{ detail.userName }}</h6>

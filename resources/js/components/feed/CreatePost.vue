@@ -229,7 +229,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
 import { Modal } from 'bootstrap';
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';

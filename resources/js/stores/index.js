@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import userFeedModule from './userFeedStore';
 import userFeedCommentModule from './userFeedCommentStore';
+import userGroupModule from './groupStore';
 import axios from 'axios';
 
 export default createStore({
@@ -52,7 +53,8 @@ export default createStore({
     },
     modules:{
         userFeed: userFeedModule,
-        userFeedComment: userFeedCommentModule
+        userFeedComment: userFeedCommentModule,
+        UserGroups: userGroupModule
 
     }
 });

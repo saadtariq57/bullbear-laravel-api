@@ -4,10 +4,10 @@
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
                     <div>
-                        <CreatePost context="feed"/>
+                        <CreatePost context="feed" />
                     </div>
                     <div>
-                        <PostItems :posts="posts" :reactionTypes="reactionTypes" />
+                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="feed" />
                     </div>
                 </section>
             </div>
@@ -37,10 +37,11 @@ export default {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
     },
     created() {
-        this.fetchPosts();
+        const context = 'feed';
+        this.fetchPosts({context});
         this.fetchReactionTypes();
         this.$nextTick(() => {
-            this.initializeRealTimeUpdates();
+            this.initializeRealTimeUpdates({context});
         });
     },
     methods: {
