@@ -11,7 +11,7 @@
         <div class="post-wrapper">
           <div class="post-heading p-3">
             <div class="d-flex justify-content-between">
-              <div class="user-avatar d-flex gap-2">
+              <div class="user-avatar d-flex gap-2 align-items-center">
                 <div class="img">
                   <img :src="`/${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
@@ -167,7 +167,114 @@
       </div>
     </div>
     <div v-else>
-      <p>Loading posts...</p>
+      <div class="post-wrapper shadow mb-3">
+        <div class="post-heading p-3">
+          <div class="d-flex justify-content-between">
+            <div class="user-avatar d-flex gap-2 align-items-center">
+              <div class="img">
+                <Skeletor height="35px" width="35px" class="rounded-circle" />
+              </div>
+              <div class="user-info text-start">
+                <Skeletor height="10px" width="30px" />
+                <div class="mt-2">
+                  <span>
+                    <Skeletor height="10px" width="50px" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Post settings -->
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-description px-3">
+          <Skeletor height="20px" width="100%" />
+        </div>
+
+        <div class="post-file mt-3">
+          <Skeletor height="300px" width="100%" />
+
+        </div>
+        <!-- Interaction buttons and Like/Comment counts -->
+        <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+          <div class="like-count">
+            <!-- Reaction Post trigger modal -->
+            <div class="reaction-icons">
+              <Skeletor height="15px" width="30px" />
+            </div>
+          </div>
+          <div class="comment-count">
+            <Skeletor height="15px" width="60px" />
+          </div>
+        </div>
+        <div class="row post-reach pb-2 px-sm-4 mt-2">
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+        </div>
+
+      </div>
+      <div class="post-wrapper shadow mb-3">
+        <div class="post-heading p-3">
+          <div class="d-flex justify-content-between">
+            <div class="user-avatar d-flex gap-2 align-items-center">
+              <div class="img">
+                <Skeletor height="35px" width="35px" class="rounded-circle" />
+              </div>
+              <div class="user-info text-start">
+                <Skeletor height="10px" width="30px" />
+                <div class="mt-2">
+                  <span>
+                    <Skeletor height="10px" width="50px" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Post settings -->
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-description px-3">
+          <Skeletor height="20px" width="100%" />
+        </div>
+
+        <div class="post-file mt-3">
+          <Skeletor height="300px" width="100%" />
+
+        </div>
+        <!-- Interaction buttons and Like/Comment counts -->
+        <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
+          <div class="like-count">
+            <!-- Reaction Post trigger modal -->
+            <div class="reaction-icons">
+              <Skeletor height="15px" width="30px" />
+            </div>
+          </div>
+          <div class="comment-count">
+            <Skeletor height="15px" width="60px" />
+          </div>
+        </div>
+        <div class="row post-reach pb-2 px-sm-4 mt-2">
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+            <Skeletor height="30px" width="100%" />
+          </button>
+        </div>
+
+      </div>
     </div>
     <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
       @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
@@ -179,6 +286,8 @@
 import { formatDateTime } from '../../utils';
 import { Modal } from 'bootstrap';
 import { mapState, mapActions } from 'vuex';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
 import SharePost from "./SharePost.vue";
 import PostComment from './PostComment.vue';
 import ReactionModal from '../utils/ReactionModal.vue';
@@ -194,7 +303,8 @@ export default {
     PostComment,
     ReactionModal,
     SharePost,
-    PreviewModal
+    PreviewModal,
+    Skeletor
   },
   data() {
     return {
@@ -416,8 +526,8 @@ export default {
 
 .user-avatar img,
 .reaction-icons-img {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   transition: ease-in-out .4s;
 }
 
