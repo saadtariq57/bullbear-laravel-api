@@ -1,5 +1,87 @@
 <template>
-  <div>
+  <div v-if="!hideSkeletor">
+    <h2 class="m-0">
+      <Skeletor height="40px" width="200px" />
+    </h2>
+    <div class="exam-card-wrapper row gy-4 mt-2">
+      <div class="col-lg-4 col-md-6 col-12">
+        <div class="exam-content bg-white">
+          <div class="exam-image">
+            <Skeletor height="200px" width="100%" />
+          </div>
+          <div class="exam-info px-3 py-4">
+            <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">
+              <Skeletor height="20px" width="200px" />
+            </h3>
+            <div class="time-quastion d-flex justify-content-between mb-3">
+              <span class="questions">
+                <Skeletor height="20px" width="100px" />
+              </span>
+              <span class="time">
+                <Skeletor height="20px" width="150px" />
+              </span>
+            </div>
+            <Skeletor height="20px" width="100%" class="mb-2" />
+            <Skeletor height="20px" width="100%" />
+            <div class="mt-3">
+              <Skeletor height="40px" width="120px" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-12">
+        <div class="exam-content bg-white">
+          <div class="exam-image">
+            <Skeletor height="200px" width="100%" />
+          </div>
+          <div class="exam-info px-3 py-4">
+            <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">
+              <Skeletor height="20px" width="200px" />
+            </h3>
+            <div class="time-quastion d-flex justify-content-between mb-3">
+              <span class="questions">
+                <Skeletor height="20px" width="100px" />
+              </span>
+              <span class="time">
+                <Skeletor height="20px" width="150px" />
+              </span>
+            </div>
+            <Skeletor height="20px" width="100%" class="mb-2" />
+            <Skeletor height="20px" width="100%" />
+            <div class="mt-3">
+              <Skeletor height="40px" width="120px" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-12">
+        <div class="exam-content bg-white">
+          <div class="exam-image">
+            <Skeletor height="200px" width="100%" />
+          </div>
+          <div class="exam-info px-3 py-4">
+            <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">
+              <Skeletor height="20px" width="200px" />
+            </h3>
+            <div class="time-quastion d-flex justify-content-between mb-3">
+              <span class="questions">
+                <Skeletor height="20px" width="100px" />
+              </span>
+              <span class="time">
+                <Skeletor height="20px" width="150px" />
+              </span>
+            </div>
+            <Skeletor height="20px" width="100%" class="mb-2" />
+            <Skeletor height="20px" width="100%" />
+            <div class="mt-3">
+              <Skeletor height="40px" width="120px" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-else>
     <div v-for="(category, index) in categories" :key="index" class="my-3 exam-cards mt-5 pb-4">
       <div class="mb-4">
         <h2 class="fw-6 text-uppercase m-0">{{ category.name }}</h2>
@@ -36,6 +118,7 @@
 </template>
 
 <script>
+import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import axios from "axios";
 import ConfirmationPopup from "./ConfirmationPopup.vue"
@@ -52,6 +135,7 @@ export default {
     return {
       categories: [],
       examImage: examImage,
+      hideSkeletor: false
     };
   },
   methods: {
@@ -64,6 +148,7 @@ export default {
             exams: response.data.exams.data.filter(exam => exam.category === category.name),
           };
         });
+        this.hideSkeletor = true;
       } catch (error) {
         console.error("Error fetching exams:", error);
       }

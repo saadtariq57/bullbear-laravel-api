@@ -3,7 +3,7 @@
 <body class="bg-light-grey">
   @endsection
   @section('content')
-  <section class="container-lg mt-3 py-80">
+  <section class="container-lg my-4">
     <router-view></router-view>
   </section>
     @endsection

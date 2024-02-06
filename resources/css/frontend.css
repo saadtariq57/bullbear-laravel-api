@@ -608,11 +608,11 @@ td {
 } */
 .main-heading p {
     max-width: 750px;
-    font-size: 25px;
+    font-size: 18px;
 }
 
 .main-heading h1 {
-    font-size: 85px;
+    font-size: 40px;
 }
 
 .hero-form-input::placeholder {
@@ -2738,11 +2738,13 @@ p.user-message {
     font-weight: 500;
     max-width: 600px;
     width: 100%;
+    margin: 0px;
 }
 
 .MarketWatch-box h2 {
     font-size: 26px;
     line-height: 32px;
+    font-weight: 600;
 }
 
 .btn-preview {
