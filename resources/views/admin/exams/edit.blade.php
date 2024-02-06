@@ -11,7 +11,7 @@
 @section('content')
     <!-- Start your content -->
     <div class="row">
-        <form action="{{ route('admin.exams.update', $exam->id) }}" method="POST">
+        <form action="{{ route('admin.exams.update', $exam->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -30,7 +30,11 @@
                             @endforeach
                         </select>
                     </div>
-
+                    <div class="form-group">
+                        <label for="featured_img">Featured Image</label>
+                        <input type="file" class="form-control" name="featured_img">
+                        <img src="{{ URL::asset($exam->featured_img) }}" class="me-2" height="100px" width="100px">
+                    </div>
                     <div class="form-group">
                         <label for="description">Description (optional)</label>
                         <textarea class="form-control" name="description" rows="3">{{ $exam->description }}</textarea>

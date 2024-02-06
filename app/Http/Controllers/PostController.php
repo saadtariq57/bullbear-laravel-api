@@ -196,6 +196,118 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    public function getUserProfileFeed(Request $request){
+        $user = $request->user();
+
+        // Create a query for user's own posts
+        $postsQuery = Post::with([
+                            'user:id,name,avatar',
+                            'photos', 
+                            'poll.options', 
+                            'poll.userVotes' => function($query) use ($user) {
+                                $query->where('user_id', $user->id);
+                            },
+                            'coloredPost', 
+                            'reactions' => function($query) {
+                                $query->with('reactionType:id,name,icon')
+                                        ->with('user:id,name,avatar,about');
+                            }
+                        ])
+                        ->withCount(['comments', 'reactions'])
+                        ->where('user_id', $user->id) // Only include user's own posts
+                        ->orderByDesc('created_at');
+
+        if ($request->has('lastPostId')) {
+            $lastPostId = $request->get('lastPostId');
+            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
+        }
+
+        $posts = $postsQuery->paginate(10);
+        $posts->transform(function ($post) use ($user) {
+            // Check and handle each post type
+            switch ($post->post_type) {
+                case 'photo':
+                    break;
+
+                case 'poll':
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
+                    }
+                    unset($post->pollDetails);
+                    break;
+
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
+            }
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
+    public function getUserGroupFeed(Request $request, $groupId)
+    {
+        $user = $request->user();
+        $postsQuery = Post::with([
+                                'user:id,name,avatar',
+                                'photos', 
+                                'poll.options', 
+                                'poll.userVotes' => function($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                },
+                                'coloredPost', 
+                                'reactions' => function($query) {
+                                    $query->with('reactionType:id,name,icon')
+                                          ->with('user:id,name,avatar,about');
+                                }
+                            ])
+                            ->withCount(['comments', 'reactions'])
+                            ->where('group_id', $groupId) // Filter posts by group ID
+                            ->orderByDesc('created_at');
+
+        if ($request->has('lastPostId')) {
+            $lastPostId = $request->get('lastPostId');
+            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
+        }
+
+        $posts = $postsQuery->paginate(10);
+        $posts->transform(function ($post) use ($user) {
+            switch ($post->post_type) {
+                case 'photo':
+                    break;
+
+                case 'poll':
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
+                    }
+                    unset($post->pollDetails);
+                    break;
+
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
+            }
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
 
     public function fetchPostComments(Request $request, $postId)
     {

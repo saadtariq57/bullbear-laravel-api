@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    Group Management
+    Group Category Management
 @endsection
 
 @section('page-title')
-    Groups Overview
+    Groups Category Overview
 @endsection
 
 @section('css')
@@ -37,8 +37,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 float-end">
-                                <a href="{{ route('admin.groups.create') }}" class="btn btn-primary">
-                                    <i class="mdi mdi-plus me-1"></i> Add Group
+                                <a href="{{ route('admin.groups.categories.create') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus me-1"></i> Add Category
                                 </a>
                             </div>
                         </div>
@@ -50,39 +50,30 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col">ID</th>
-                                    <th scope="col">Group Name</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Privacy</th>
+                                    <th scope="col">Category Name</th>
                                     <th scope="col" style="width: 200px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($groups as $group)
-
+                                @foreach($categories as $category)
                                     <tr>
 
-                                        <td>{{ $group->id }}</td>
+                                        <td>{{ $category->id }}</td>
                                         <td>
-                                            <img src="{{ URL::asset($group->avatar) }}" alt=""
-                                                 class="avatar-xs rounded-circle me-2">
-                                            {{ $group->group_name }}
+                                            {{ $category->name }}
                                         </td>
-                                        <td>{{ $group->group_title }}</td>
-                                        <td>{{ optional($group->category)->name }}</td>
-                                        <td>{{ $group->privacy }}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
-                                                    <a href="{{ route('admin.groups.edit', $group) }}" class="px-2 text-primary">
+                                                    <a href="{{ route('admin.groups.categories.edit', $category) }}" class="px-2 text-primary">
                                                         <i class="ri-pencil-line font-size-18"></i>
                                                     </a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <form action="{{route('admin.groups.destroy', $group->id)}}" method="POST">
+                                                    <form action="{{route('admin.groups.categories.destroy', $category->id)}}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button class="btn btn-danger delete-group" type="button" data-group-id="{{ $group->id }}">
+                                                        <button class="btn btn-danger delete-category" type="button" data-group-id="{{ $category->id }}">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
                                                     </form>
@@ -98,13 +89,13 @@
                     <div class="row mt-4">
                         <div class="col-sm-6">
                             <div>
-                                <p class="mb-sm-0">{{ $groups->firstItem() }} to {{ $groups->lastItem() }} of {{ $groups->total() }} entries</p>
+                                <p class="mb-sm-0">{{ $categories->firstItem() }} to {{ $categories->lastItem() }} of {{ $categories->total() }} entries</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="float-sm-end">
                                 <ul class="pagination mb-sm-0">
-                                    {{ $groups->appends(['search' => request()->query('search')])->links() }}
+                                    {{ $categories->appends(['search' => request()->query('search')])->links() }}
                                 </ul>
                             </div>
                         </div>
@@ -123,8 +114,8 @@
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('.delete-group').on('click', function() {
-                let groupId = $(this).data('group-id');
+            $('.delete-category').on('click', function() {
+                let categoryId = $(this).data('category-id');
 
                 Swal.fire({
                     title: 'Are you sure?',

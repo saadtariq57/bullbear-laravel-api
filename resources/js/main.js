@@ -111,12 +111,13 @@ const routes = [
     {
         path: '/groups',
         name: 'groups',
-        component: () => import('./components/chat/ChatGroups.vue'),
+        component: () => import('./components/groups/UserGroups.vue'),
     },
     {
-        path: '/groups/chat-single',
-        name: 'chat-single',
-        component: () => import('./components/chat/SingleChat.vue'),
+        path: '/groups/:group_id/:group_name',
+        name: 'group-single',
+        component: () => import('./components/groups/UserGroupChat.vue'),
+        props: true,
 
     },
     {

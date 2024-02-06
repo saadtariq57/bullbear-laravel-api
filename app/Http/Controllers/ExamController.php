@@ -166,7 +166,14 @@ class ExamController extends Controller
             'description' => 'nullable|string',
             'number_of_questions' => 'required|integer|min:1',
             'per_question_time_limit' => 'required|integer|min:1',
+            'featured_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('featured_img')) {
+            $data['featured_img'] = $request->file('featured_img')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
+        }
 
         $exam = Exam::create($data);
 
@@ -267,6 +274,14 @@ class ExamController extends Controller
             'per_question_time_limit' => 'required|integer|min:1',
         ]);
 
+        if ($request->hasFile('featured_img')) {
+            $data['featured_img'] = $request->file('featured_img')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
+        } else {
+            $data['featured_img'] = $exam->featured_img;
+        }
+
         $exam->update($data);
 
         return redirect()->route('admin.exams.index')->with('success', 'Exam updated successfully.');
@@ -329,7 +344,8 @@ class ExamController extends Controller
      */
     public function categoriesEdit(ExamCategory $examCategory)
     {
-        return view('admin.exams.categories.edit', compact('examCategory'));
+        $category = $examCategory;
+        return view('admin.exams.categories.edit', compact('category'));
     }
 
     /**

@@ -31,7 +31,15 @@ class HomeController extends Controller
     public function feedPage(){
         return view('feed');
     }
-
+    public function profilePage(){
+        return view('profile.index');
+    }
+    public function groupPage(){
+        return view('groups.index');
+    }
+    public function singleGroupPage(){
+        return view('groups.single');
+    }
     public function colorOptions()
     {
         $colors = ColoredPost::all();

@@ -110,7 +110,7 @@
           <!-- link Media -->
           <div v-if="post.post_type === 'link'" class="link-file">
             <a :href="post.post_link" target="_blank">
-              <img :src="post.post_link_image" alt="Post image" class="img-fluid w-100">
+              <img :src="`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
               <div class="link-post-details px-3 pt-3">
                 <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
                 <span class="Blue fs-12">{{ post.post_link }}</span>
@@ -125,7 +125,7 @@
                 <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
                   <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
                     :key="index">
-                    <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{ reactionDetail.count }}
+                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{ reactionDetail.count }}
                     <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
                       Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
                   </span>
@@ -149,7 +149,7 @@
               <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                 <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                   @click.stop="handleReaction(post.id, reactionType.id)">
-                  <img :src="reactionType.icon" class="reaction-icons-img">
+                  <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
                 </span>
               </div>
             </button>
@@ -298,6 +298,10 @@ export default {
   props: {
     posts: Array,
     reactionTypes: Array,
+    context: {
+      type: String,
+      default: 'feed'
+    },
   },
   components: {
     PostComment,
@@ -365,7 +369,7 @@ export default {
       return reactionType ? reactionType.name : 'Like';
     },
     openPostPreviewModal(post) {
-      this.clickedPost = post; // Emit an event with the clicked post data
+      this.clickedPost = post;
       console.log(this.clickedPost);
     },
 
@@ -387,7 +391,7 @@ export default {
     handleScroll() {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
       if (nearBottom) {
-        this.fetchMorePosts();
+        this.fetchMorePosts({context: this.context});
       }
     },
     toggleComments(postId, userId) {

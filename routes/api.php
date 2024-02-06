@@ -6,6 +6,7 @@ use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 /*
@@ -31,6 +32,8 @@ Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
 Route::post('/create-post', [PostController::class, 'createPost']);
 Route::get('/user-feed', [PostController::class, 'getUserFeed']);
+Route::get('/user-profile', [PostController::class, 'getUserProfileFeed']);
+Route::get('/user-group/{groupId}', [PostController::class, 'getUserGroupFeed']);
 Route::post('/submit-comment', [PostController::class, 'submitComment']);
 Route::post('/edit-comment', [PostController::class, 'editComment']);
 Route::post('/delete-comment', [PostController::class, 'deleteComment']);
@@ -41,6 +44,9 @@ Route::get('/posts/{postId}/comments', [PostController::class, 'fetchPostComment
 
 Route::post('/add-vote', [PostController::class, 'addVote']);
 Route::post('/remove-vote', [PostController::class, 'removeVote']);
+
+Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
+Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 
 //Watchlist Routes
 Route::prefix('watchlist')->name('watchlist.')->group(function() {

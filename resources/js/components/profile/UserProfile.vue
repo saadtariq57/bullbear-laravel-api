@@ -6,8 +6,8 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="user-Timeline" role="tabpanel"
                         aria-labelledby="user-Timeline-tab">
-                        <CreatePost />
-                        <PostItems />
+                        <CreatePost context="profile" />
+                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="profile" />
                     </div>
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div class="mb-3 ps-3 pt-3 pb-3 bg-white shadow rounded">
@@ -17,7 +17,7 @@
                                 <div class="fs-18 fw-6">Chat</div>
                             </div>
                         </div>
-                        <JoinedChats />
+                        <ActiveChatRooms />
                     </div>
                     <div class="tab-pane fade" id="user-friends" role="tabpanel" aria-labelledby="user-friends-tab">
                         <ProfileFriends />
@@ -285,22 +285,38 @@
     </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
 import ProfileInfo from './ProfileInfo.vue';
 import PostItems from '../feed/PostItems.vue';
 import CreatePost from '../feed/CreatePost.vue';
-import JoinedChats from '../chat/JoinedChats.vue';
+import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
 import ProfileFriends from './ProfileFriends.vue';
 import ProfilePhotos from './ProfilePhotos.vue';
 import ProfileVideos from './ProfileVideos.vue';
 export default {
+    name: 'UserFeed',
     components: {
         ProfileInfo,
         PostItems,
         CreatePost,
-        JoinedChats,
+        ActiveChatRooms,
         ProfileFriends,
         ProfilePhotos,
         ProfileVideos
-    }
+    },
+    computed: {
+        ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
+    },
+    created() {
+        const context = 'profile';
+        this.fetchPosts({context});
+        this.fetchReactionTypes();
+        this.$nextTick(() => {
+            this.initializeRealTimeUpdates({context});
+        });
+    },
+    methods: {
+        ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+    },
 }
 </script>

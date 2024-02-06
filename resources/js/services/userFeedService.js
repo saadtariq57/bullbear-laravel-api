@@ -1,9 +1,19 @@
 import { organizeReactions } from '../utils';
 const UserFeedService = {
-    async fetchUserPosts(userId, lastPostId = null) {
+    async fetchUserPosts(userId, context, groupId = null, lastPostId = null) {
         try {
-            let url = '/api/user-feed';
+
+            let url = '';
+            if(context === 'feed'){
+                url += '/api/user-feed';
+            } else if (context === 'profile'){
+                url += '/api/user-profile';
+            } else if (context === 'group'){
+                url += `/api/user-group/${groupId}`;
+            }
+            
             if (lastPostId) {
+
                 url += `?lastPostId=${lastPostId}`;
             }
             const response = await axios.get(url);

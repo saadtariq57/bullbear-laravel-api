@@ -14,7 +14,8 @@ class Exam extends Model
         'category',
         'description',
         'number_of_questions',
-        'per_question_time_limit'
+        'per_question_time_limit',
+        'featured_img'
     ];
 
     public function questions() {

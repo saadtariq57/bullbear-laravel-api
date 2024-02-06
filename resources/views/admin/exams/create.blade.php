@@ -11,7 +11,7 @@
 @section('content')
     <!-- Start your content -->
     <div class="row">
-        <form action="{{ route('admin.exams.store') }}" method="POST">
+        <form action="{{ route('admin.exams.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -44,6 +44,10 @@
                     <div class="form-group">
                         <label for="per_question_time_limit">Per Question Time Limit (in seconds)</label>
                         <input type="number" class="form-control" name="per_question_time_limit" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="featured_img">Featured Image</label>
+                        <input type="file" class="form-control" name="featured_img">
                     </div>
                 </div>
             </div>

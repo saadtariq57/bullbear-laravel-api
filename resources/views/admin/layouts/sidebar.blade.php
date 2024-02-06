@@ -95,6 +95,8 @@
                      <ul class="sub-menu" aria-expanded="false">
                                 <li><a href="{{ route('admin.groups.index') }}">All Groups</a></li>
                                 <li><a href="{{ route('admin.groups.create') }}">Add New Group</a></li>
+                                <li><a href="{{ route('admin.groups.categories.index') }}">Group Categories</a></li>
+                                <li><a href="{{ route('admin.groups.categories.create') }}">Add New Category</a></li>
                     </ul>
                 </li>
 
