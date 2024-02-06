@@ -59,7 +59,7 @@
             <div v-else class="text-center">
               <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)"
                 data-bs-toggle="modal" data-bs-target="#postPreview">
-                <!-- Pass the clicked post data -->">
+                <!-- Pass the clicked post data -->
                 <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
               </div>
             </div>
