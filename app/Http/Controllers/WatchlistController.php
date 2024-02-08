@@ -3,19 +3,12 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use GuzzleHttp\Client;
 use App\Models\UserWatchlist;
 use App\Models\WatchlistSymbol;
 use Illuminate\Http\Request;
 
 class WatchlistController extends Controller
 {
-    protected $httpClient;
-
-    public function __construct()
-    {
-        $this->httpClient = new Client();
-    }
 
     public function getWatchLists()
     {
@@ -35,18 +28,6 @@ class WatchlistController extends Controller
                         $query->orderBy('position');
                     }, 'watchlistSymbols.symbol'])->get();
             }
-            
-            // $records = UserWatchlist::where('user_id', $user_id)->orderBy('position');
-            // if (!$records->exists()) {
-            //     $records = UserWatchlist::where('featured', 1)->orderBy('position')->get();
-            // } else {
-            //     $records = $records->orderBy('position')->get();
-            // }
-            // $records->each(function ($watchlist) {
-            //     $watchlist->watchlistSymbols->each(function ($watchlistSymbol)  {
-            //         $symbol = $watchlistSymbol->symbol;
-            //     });
-            // });
     
             return response()->json($records);
         }
@@ -57,7 +38,6 @@ class WatchlistController extends Controller
                 $query->orderBy('position');
             }, 'watchlistSymbols.symbol'])->get();
             return response()->json($records);
-            // return response()->json(['error' => 'User not authenticated'], 401);
         }
         
     }
@@ -66,12 +46,12 @@ class WatchlistController extends Controller
         $watchlist = $this->getWatchListAllData($watchlistId);
 
         if ($watchlist) {
-            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.name');
-            $stats = $this->getSymbolsStats($symbolNames->join(','));
+            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.symbol')->toArray();
+            $stats = $this->getSymbolsStats($symbolNames);
 
             $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
                 $symbol = $watchlistSymbol->symbol;
-                $symbol->stats = array_merge($symbol->toArray(), $stats[$symbol->name] ?? []);
+                $symbol->stats = $stats[$symbol->symbol] ?? [];
             });
 
             return response()->json($watchlist);
@@ -79,26 +59,37 @@ class WatchlistController extends Controller
             return response()->json(['error' => 'Watchlist not found'], 404);
         }
     }
-    public function getSymbolsStats($symbols){
-        $url = config('thirdparty.rapidapi.quoetsurl');
-        $url .= $symbols;
 
-        $headers = [
-            'X-RapidAPI-Key' => config('thirdparty.rapidapi.key'),
-            'X-RapidAPI-Host' => config('thirdparty.rapidapi.host')
-        ];
-        // $response = $this->httpClient->request('GET', $url, ['headers' => $headers, 'debug' => true]);
+    public function getSymbolsStats($symbols)
+    {
+        $url = config('thirdparty.mboum.base_url');
+        $url .= config('thirdparty.mboum.quote_endpoint');
+        $url .= implode(',', $symbols);
+        $url .= config('thirdparty.mboum.api_key');
+
         try {
-            $response = $this->httpClient->request('GET', $url, ['headers' => $headers]);
-            $data = $response->getBody()->getContents();
-            $data = json_decode($data, true);
-            return collect($data['body'])->pluck(null, 'symbol')->all();
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-           // \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+            $stats = [];
+            foreach ($data['data'] as $symbolData) {
+                $stats[$symbolData['symbol']] = $symbolData;
+            }
+            
+            return $stats;
+        } catch (Exception $e) {
+            \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
             return [];
         }
     }
 
+    public function getWatchListAllData($watchlistId)
+    {
+        return UserWatchlist::where('id', $watchlistId)
+            ->with(['watchlistSymbols' => function ($query) {
+                $query->orderBy('position');
+            }, 'watchlistSymbols.symbol'])
+            ->first();
+    }
 
     /**
      * Display a listing of the resource.
@@ -252,16 +243,6 @@ class WatchlistController extends Controller
             $response = $this->getWatchListAllData($watchlistId);
         }
         return response()->json($response);   
-    }
-
-
-    public function getWatchListAllData($watchlistId)
-    {
-        return UserWatchlist::where('id', $watchlistId)
-            ->with(['watchlistSymbols' => function ($query) {
-                $query->orderBy('position');
-            }, 'watchlistSymbols.symbol'])
-            ->first();
     }
     
 }

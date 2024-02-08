@@ -36,14 +36,14 @@ class SymbolController extends Controller
         $search = $request->input('query');
 
         if ($search) {
-            $symbols = Symbol::select(['id', 'name', 'company_name', 'country', 'exchange'])
-                             ->where('name', 'LIKE', "%{$search}%")
+            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange'])
+                             ->where('symbol', 'LIKE', "%{$search}%")
                              ->orWhere('exchange', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->limit(10)  // Limiting to 10 results for dropdown purpose
+                             ->orWhere('name', 'LIKE', "%{$search}%")
+                             ->limit(10)
                              ->get();
         } else {
-            $symbols = [];  // Return empty array if there's no search query
+            $symbols = [];
         }
 
         return response()->json($symbols);
