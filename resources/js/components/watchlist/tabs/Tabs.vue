@@ -307,12 +307,7 @@ export default {
     methods: {
         async getUserData() {
             try {
-                const response = await axios.get('/api/watchlist/', {
-                    withCredentials: true,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                });
+                const response = await axios.get('/api/watchlist/');
                 this.watchlists = response.data;
                 console.log(this.watchlists = response.data);
                 for (const watchlist of this.watchlists) {
@@ -329,12 +324,7 @@ export default {
         async getSymbols(watchlistId) {
             try {
 
-                const symbolsResponse = await axios.get(`/api/watchlist/symbols/${watchlistId}`, {
-                    withCredentials: true,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                });
+                const symbolsResponse = await axios.get(`/api/watchlist/symbols/${watchlistId}`);
 
                 const watchlistIndex = this.watchlists.findIndex(w => w.id === watchlistId);
 
