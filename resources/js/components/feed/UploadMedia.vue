@@ -79,7 +79,7 @@
               <button class="btn icons-hover btn icons-hover d-inline-flex justify-content-center align-items-center me-3"
                 @click="additionalImageUpload"><i class="bi bi-plus-circle fs-4"></i></button>
               <button class="btn icons-hover btn icons-hover d-inline-flex justify-content-center align-items-center"
-                @click="removeImage"><i class="bi bi-trash fs-4"></i></button>
+                @click="removeImage()"><i class="bi bi-trash fs-4"></i></button>
             </div>
           </div>
 
@@ -89,57 +89,58 @@
               <span><i class="bi bi-arrow-left fs-4"></i></span>
             </button>
             <div class="px-3">
-            <div class="crop-setting mb-4">
-              <!-- Rotation and Flip Buttons -->
-              <span class="d-block mb-3">Crop</span>
-              <div class="d-flex justify-content-around">
-                <button class="btn icons-hover" @click="rotateImage(45)"><i
-                    class="bi bi-arrow-clockwise fs-4"></i></button>
-                <button class="btn icons-hover rotate-80 " @click="flipImage('horizontal')"><i
-                    class="bi bi-hourglass-top fs-4"></i></button>
-                <button class="btn icons-hover" @click="flipImage('vertical')"><i
-                    class="bi bi-hourglass-top fs-4"></i></button>
+              <div class="crop-setting mb-4">
+                <!-- Rotation and Flip Buttons -->
+                <span class="d-block mb-3">Crop</span>
+                <div class="d-flex justify-content-around">
+                  <button class="btn icons-hover" @click="rotateImage(45)"><i
+                      class="bi bi-arrow-clockwise fs-4"></i></button>
+                  <button class="btn icons-hover rotate-80 " @click="flipImage('horizontal')"><i
+                      class="bi bi-hourglass-top fs-4"></i></button>
+                  <button class="btn icons-hover" @click="flipImage('vertical')"><i
+                      class="bi bi-hourglass-top fs-4"></i></button>
+                </div>
+
               </div>
 
-            </div>
-
-            <!-- Aspect Ratio Buttons -->
-            <div class="ratios  mb-4">
-              <span class="d-block mb-3">Aspect Ratio</span>
-              <div class="d-flex flex-wrap gap-2">
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(null)">Original Size</button>
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio('square')">Square</button>
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(1)">1:1</button>
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(3 / 2)">3:2</button>
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(4 / 5)">4:5</button>
-                <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(16 / 9)">16:9</button>
+              <!-- Aspect Ratio Buttons -->
+              <div class="ratios  mb-4">
+                <span class="d-block mb-3">Aspect Ratio</span>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(null)">Original Size</button>
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio('square')">Square</button>
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(1)">1:1</button>
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(3 / 2)">3:2</button>
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(4 / 5)">4:5</button>
+                  <button class="btn rounded-5 border-btn px-4" @click="setAspectRatio(16 / 9)">16:9</button>
+                </div>
               </div>
+
+
+              <!-- Zoom Controls -->
+              <div class=" my-4">
+                <span class="d-block mb-1">Zoom</span>
+                <input type="range" class="w-100" min="0.1" max="3" step="0.1" v-model="zoomLevel" @input="zoomImage">
+              </div>
+
+              <!-- Apply Button -->
+              <button class="btn btn-primary w-100 my-3" @click="applyCropping">Apply</button>
             </div>
-
-
-            <!-- Zoom Controls -->
-            <div class=" my-4">
-              <span class="d-block mb-1">Zoom</span>
-              <input type="range" class="w-100" min="0.1" max="3" step="0.1" v-model="zoomLevel" @input="zoomImage">
-            </div>
-
-            <!-- Apply Button -->
-            <button class="btn btn-primary w-100 my-3" @click="applyCropping">Apply</button>
-          </div>
           </div>
           <div v-if="showAltText" class="alt-text-input">
             <button class="btn icons-hover d-block mb-4" @click="toggleAltText">
               <span><i class="bi bi-arrow-left fs-4"></i></span>
             </button>
             <div class="px-3">
-            <!-- Input and Apply Button for Alt Text -->
-            <span>Alt text describes images for people who can’t see them. <br><br>There may be an automatically generated
-              description. You can edit it anytime.</span>
-            <input type="text" class="form-control my-4 border-1 border border-dark p-3 rounded-2" v-model="altText"
-              placeholder="How Would You Discribe This Image">
+              <!-- Input and Apply Button for Alt Text -->
+              <span>Alt text describes images for people who can’t see them. <br><br>There may be an automatically
+                generated
+                description. You can edit it anytime.</span>
+              <input type="text" class="form-control my-4 border-1 border border-dark p-3 rounded-2" v-model="altText"
+                placeholder="How Would You Discribe This Image">
 
-            <button class="btn btn-primary w-100" @click="applyAltText">Apply</button>
-          </div>
+              <button class="btn btn-primary w-100" @click="applyAltText">Apply</button>
+            </div>
           </div>
         </div>
       </div>
@@ -259,7 +260,7 @@ export default {
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
-      this.showAltText= false;
+      this.showAltText = false;
       this.mutipleimagesSelected = true;
       if (!this.isEditing) {
         // Update the preview to the final cropped image
@@ -303,20 +304,20 @@ export default {
         this.isEditing = false;
       }
     },
-    removeImage(index) {
-      this.selectedFiles.splice(index, 1);
+    removeImage() {
+      const indexToRemove = this.selectedFiles.indexOf(this.selectedImage);
+      if (indexToRemove !== -1) {
+        this.selectedFiles.splice(indexToRemove, 1);
+      }
       this.selectedImage = this.selectedFiles.length > 0 ? this.selectedFiles[0] : null;
-      
-      // Check if there are selectedFiles
-    if (this.selectedImage != null) {
+      if (this.selectedImage != null) {
         this.isEditing = false;
         this.showAltText = false;
         this.uploadimageSelected = true;
-    } else {
+      } else {
         this.uploadimageSelected = false;
         this.mutipleimagesSelected = true;
-    }
-      
+      }
     },
     additionalImageUpload() {
       this.mutipleimagesSelected = false;
