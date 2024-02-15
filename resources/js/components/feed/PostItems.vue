@@ -28,18 +28,19 @@
 
           <!-- Post Content -->
           <div v-if="post.post_text" class="post-description px-3">
-            <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center">
-              <p>{{ post.post_text }}</p>
+            <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
+              :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.colored_post.color_1 + ' 0%, ' + post.colored_post.color_2 + ' 100%)' }">
+              <p :style="{ color: post.colored_post.text_color }">{{ post.post_text }}</p>
             </div>
             <p v-else>{{ post.post_text }}</p>
           </div>
+
 
           <!-- Post Media -->
           <div v-if="post.post_type === 'photo'" class="post-file" @post-clicked="handlePostClicked">
             <div v-if="post.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
-                class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)"
-                data-bs-toggle="modal" data-bs-target="#postPreview">
+                class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
                   <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
@@ -57,8 +58,7 @@
               </div>
             </div>
             <div v-else class="text-center">
-              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)"
-                data-bs-toggle="modal" data-bs-target="#postPreview">
+              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)">
                 <!-- Pass the clicked post data -->
                 <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
               </div>
@@ -125,7 +125,8 @@
                 <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
                   <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
                     :key="index">
-                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{ reactionDetail.count }}
+                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
+                      reactionDetail.count }}
                     <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
                       Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
                   </span>
@@ -278,7 +279,8 @@
     </div>
     <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
       @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
-    <PreviewModal :post="clickedPost" />
+    <PreviewModal ref="previewModal" :previewPost="clickedPost" :reactionTypes="clickedPostReactionTypes"
+      @close-modal="clickedPost = null" @modal-mounted="handlePreviewModalMounted" />
   </div>
 </template>
 
@@ -315,6 +317,7 @@ export default {
       showReactionsForPost: {},
       activeReactionData: null,
       clickedPost: null,
+      clickedPostReactionTypes: null,
     };
   },
   computed: {
@@ -368,9 +371,23 @@ export default {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
     },
+    handlePreviewModalMounted(modalElement) {
+      // console.log('Modal element:', modalElement);
+      if (modalElement) {
+        this.previewModalInstance = new Modal(modalElement, { backdrop: 'static' });
+      } else {
+        console.error('Modal element is not available.');
+      }
+    },
     openPostPreviewModal(post) {
       this.clickedPost = post;
-      console.log(this.clickedPost);
+      this.clickedPostReactionTypes = this.reactionTypes;
+      console.log(this.reactionTypes);
+      if (this.previewModalInstance) {
+        this.previewModalInstance.show();
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
     },
 
     handleModalMounted(modalElement) {
@@ -391,7 +408,7 @@ export default {
     handleScroll() {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
       if (nearBottom) {
-        this.fetchMorePosts({context: this.context});
+        this.fetchMorePosts({ context: this.context });
       }
     },
     toggleComments(postId, userId) {
@@ -614,8 +631,6 @@ export default {
 }
 
 .colored-post-text {
-  color: rgb(255, 255, 255);
-  background-image: linear-gradient(45deg, rgb(255, 154, 139) 0%, rgb(255, 106, 136) 100%);
   min-height: 400px;
 }
 

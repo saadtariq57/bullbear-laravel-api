@@ -182,6 +182,10 @@ textarea {
     box-shadow: none;
 }
 
+.resize-none {
+    resize: none;
+}
+
 h1,
 h2,
 h3 {
@@ -500,10 +504,7 @@ td {
 }
 
 .hero-wrapper {
-    padding-left: 48px;
-    padding-right: 48px;
-    padding-top: 145px;
-    padding-bottom: 140px;
+    padding: 145px 48px;
 }
 
 .hero-section {
@@ -608,11 +609,12 @@ td {
 } */
 .main-heading p {
     max-width: 750px;
-    font-size: 18px;
+    font-size: 20px;
+    margin-bottom: 35px;
 }
 
 .main-heading h1 {
-    font-size: 40px;
+    font-size: 75px;
 }
 
 .hero-form-input::placeholder {
@@ -810,9 +812,7 @@ section.featured-video {
 
 /* Table section CSS End */
 /* Carousel Multiple Items CSS */
-.carousel-inner {
-    padding: 1em;
-}
+
 
 .card:not(.trading-books-slider .card) {
     margin: 0 0.5em;
@@ -2332,7 +2332,7 @@ p.user-message {
 }
 
 .chat-text-sec {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 215px);
     overflow-y: auto;
 }
 
@@ -2867,7 +2867,7 @@ p.user-message {
 }
 
 /* Price & Plan Css End */
-@media screen and (max-width: 1550px) {
+@media (max-width: 1550px) {
     .main-heading h1 {
         font-size: 65px;
     }
@@ -2877,13 +2877,13 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 1440px) {
+@media (max-width: 1440px) {
     .hero-graph img {
         height: 500px;
     }
 }
 
-@media screen and (max-width: 1203px) {
+@media (max-width: 1203px) {
     .main-heading h1 {
         font-size: 50px;
     }
@@ -2897,7 +2897,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 1199.98px) {
+@media (max-width: 1199.98px) {
     .main-menu-container .nav-link:not(.dropdown-menu .nav-link) {
         justify-content: space-between;
         width: 100%;
@@ -2915,7 +2915,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
     .stock-navbtn {
         padding: 0px 0px !important;
         font-size: 14px !important;
@@ -3078,7 +3078,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 760px) {
+@media (max-width: 760px) {
     .stocks-nav-tabs {
         display: none;
     }
@@ -3190,7 +3190,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 475px) {
+@media (max-width: 475px) {
     .watchlist-navlinks {
         font-size: 14px;
         padding: 0px 8px !important;
@@ -3201,7 +3201,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 425px) {
+@media (max-width: 425px) {
     .reply-comment-elements-wrapper {
         position: static !important;
     }
@@ -3240,7 +3240,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 380px) {
+@media (max-width: 380px) {
     .btn-close-color {
         position: absolute;
         right: 0;
@@ -3251,7 +3251,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 376px) {
+@media (max-width: 376px) {
     .widgets-slider-card {
         justify-content: space-between !important;
     }
@@ -3272,7 +3272,7 @@ p.user-message {
 
 }
 
-@media screen and (max-width:335px) {
+@media (max-width:335px) {
 
     .bg-basic-plan h2,
     .bg-pro-plan h2,
@@ -3285,7 +3285,7 @@ p.user-message {
     }
 }
 
-@media screen and (max-width: 320px) {
+@media (max-width: 320px) {
     .receive-smg-text {
         max-width: 130px !important;
     }
@@ -3305,16 +3305,6 @@ p.user-message {
 }
 
 @media (min-width: 768px) {
-    .carousel-item {
-        margin-right: 0;
-        flex: 0 0 33.333333%;
-        display: block;
-    }
-
-    .carousel-inner {
-        display: flex;
-    }
-
     .w-md-75 {
         width: 75%;
     }

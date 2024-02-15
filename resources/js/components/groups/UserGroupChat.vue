@@ -20,22 +20,22 @@
                         </li>
                     </ul>
                 </div>
-                <div class="tab-content bg-white shadow-lg" id="mychatsContent">
-                    <div class="tab-pane fade show active container shadow-sm chat-sec overflow-auto pt-2"
-                        id="groupdiscussion-tab-pane" role="tabpanel" aria-labelledby="groupdiscussion-tab" tabindex="0">
+                <div class="tab-content bg-white shadow" id="mychatsContent">
+                    <div class="tab-pane fade show active container pt-4" id="groupdiscussion-tab-pane" role="tabpanel"
+                        aria-labelledby="groupdiscussion-tab" tabindex="0">
                         <CreatePost context="group" />
-                        <div class="pt-3">
-                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group" />
+                        <div class="pt-2 pb-1">
+                            <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group" />
                         </div>
                     </div>
-                    <div class="tab-pane fade chat-sec" id="livechat-tab-pane" role="tabpanel"
-                        aria-labelledby="livechat-tab" tabindex="0">
+                    <div class="tab-pane fade" id="livechat-tab-pane" role="tabpanel" aria-labelledby="livechat-tab"
+                        tabindex="0">
                         <LiveChat />
                     </div>
                 </div>
 
             </div>
-            <div class="col-lg-4 vh-100 overflow-auto">
+            <div class="col-lg-4">
                 <div class="main_section mb-40 border-grey border pb-0">
                     <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-2">
                         <h3 class="fs-6 fw-bolder lh-base">LATEST VIDEOS</h3>
@@ -48,8 +48,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -70,8 +69,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -92,8 +90,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -114,8 +111,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -136,8 +132,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -158,8 +153,7 @@
                                     <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                         alt="thumbnail-img">
                                     <a href="" class="position-absolute video-play-btn">
-                                        <img src="/build/images/play-icon.png"
-                                            class="w-50 h-50">
+                                        <img src="/build/images/play-icon.png" class="w-50 h-50">
                                     </a>
                                 </div>
                             </div>
@@ -180,7 +174,7 @@
     </div>
 </template>
 <script>
-    //need group id here somehow and send to fetchPosts
+//need group id here somehow and send to fetchPosts
 import { mapState, mapActions } from 'vuex';
 import CreatePost from '../feed/CreatePost.vue';
 import PostItems from '../feed/PostItems.vue';

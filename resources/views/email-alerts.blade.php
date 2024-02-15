@@ -8,8 +8,8 @@
             <section class="MarketWatch my-4">
                 <div class="container">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="main-heading">
-                            <h1 class="text-black fw-5 mb-0">Marketwatch Newsletter</h1>
+                        <div class="emailalerts-heading">
+                            <h1 class="text-black fw-5 mb-0 fs-1">Marketwatch Newsletter</h1>
                         </div>
                         <div>
                             <span class="text-uppercase fs-18 fw-5">Subscribe</span>
@@ -17,7 +17,7 @@
                     </div>
                     <hr class="mt-2">
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Need To Know</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -37,7 +37,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Distributed Ledger</h2>
                             <p class="MarketWatch-p">A distributed ledger is the consensus of replicated, shared, and
@@ -56,7 +56,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">How to Invest</h2>
                             <p class="MarketWatch-p">You can invest in Bitcoin directly by using one of the major
@@ -75,7 +75,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Bulletin</h2>
                             <p class="MarketWatch-p">Get breaking News notification via email </p>
@@ -93,7 +93,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Personal Finance Daily</h2>
                             <p class="MarketWatch-p">Top stories in personal financial </p>
@@ -111,7 +111,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">The Moneyist</h2>
                             <p class="MarketWatch-p">Welcome to MarketWatch's private Facebook community for advice on money
@@ -130,7 +130,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Need To Know</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -149,7 +149,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Need To Know</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -168,7 +168,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Need To Know</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -187,8 +187,8 @@
                     </div>
                     <hr>
                     <div class="d-flex align-items-center justify-content-between pt-5">
-                        <div class="main-heading">
-                            <h1 class="text-black fw-5 mb-0">Barron's Newsletter</h1>
+                        <div class="emailalerts-heading">
+                            <h1 class="text-black fw-5 mb-0 fs-1">Barron's Newsletter</h1>
                         </div>
                         <div>
                             <span class="text-uppercase fs-18 fw-5">Subscribe</span>
@@ -196,7 +196,7 @@
                     </div>
                     <hr class="mt-2">
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Barron's Update</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -216,7 +216,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">The Barron's Daily</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -236,7 +236,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Benta Weekly</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -256,8 +256,8 @@
                     </div>
                     <hr>
                     <div class="d-flex align-items-center justify-content-between pt-5">
-                        <div class="main-heading">
-                            <h1 class="text-black fw-5 mb-0">WSJ Newsletter</h1>
+                        <div class="emailalerts-heading">
+                            <h1 class="text-black fw-5 mb-0 fs-1">WSJ Newsletter</h1>
                         </div>
                         <div>
                             <span class="text-uppercase fs-18 fw-5">Subscribe</span>
@@ -265,7 +265,7 @@
                     </div>
                     <hr class="mt-2">
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">WSJ Climate & Energy</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -285,7 +285,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Buy Side from WSJ Exclusive</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -305,8 +305,8 @@
                     </div>
                     <hr>
                     <div class="d-flex align-items-center justify-content-between pt-5">
-                        <div class="main-heading">
-                            <h1 class="text-black fw-5 mb-0">Mansion Global Newsletter</h1>
+                        <div class="emailalerts-heading">
+                            <h1 class="text-black fw-5 mb-0 fs-1">Mansion Global Newsletter</h1>
                         </div>
                         <div>
                             <span class="text-uppercase fs-18 fw-5">Subscribe</span>
@@ -314,7 +314,7 @@
                     </div>
                     <hr class="mt-2">
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Daily Briefing</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -334,7 +334,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Week In Review</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -354,7 +354,7 @@
                     </div>
                     <hr>
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Best of the Mansion Global Boutique </h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
@@ -374,8 +374,8 @@
                     </div>
                     <hr>
                     <div class="d-flex align-items-center justify-content-between pt-5">
-                        <div class="main-heading">
-                            <h1 class="text-black fw-5 mb-0">Dow Jones Newsletter</h1>
+                        <div class="emailalerts-heading">
+                            <h1 class="text-black fw-5 mb-0 fs-1">Dow Jones Newsletter</h1>
                         </div>
                         <div>
                             <span class="text-uppercase fs-18 fw-5">Subscribe</span>
@@ -383,7 +383,7 @@
                     </div>
                     <hr class="mt-2">
                     <div
-                        class="d-lg-flex  main-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                        class="d-lg-flex  emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
                         <div>
                             <h2 class="astronaut-blue">Dow Jones Updates and Special Offers</h2>
                             <p class="MarketWatch-p">Need to know guide investor to the most important ,insightful items
