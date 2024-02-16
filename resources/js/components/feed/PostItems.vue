@@ -27,10 +27,10 @@
           </div>
 
           <!-- Post Content -->
-          <div v-if="post.post_text" class="post-description px-3">
+          <div v-if="post.post_text" class="post-description px-3 text-break">
             <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
               :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.colored_post.color_1 + ' 0%, ' + post.colored_post.color_2 + ' 100%)' }">
-              <p :style="{ color: post.colored_post.text_color }">{{ post.post_text }}</p>
+              <p :style="{ color: post.colored_posttext_color }">{{ post.post_text }}</p>
             </div>
             <p v-else>{{ post.post_text }}</p>
           </div>
@@ -382,7 +382,7 @@ export default {
     openPostPreviewModal(post) {
       this.clickedPost = post;
       this.clickedPostReactionTypes = this.reactionTypes;
-      console.log(this.reactionTypes);
+      // console.log(this.reactionTypes);
       if (this.previewModalInstance) {
         this.previewModalInstance.show();
       } else {
