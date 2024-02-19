@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="col-xl-4 col-md-6">
-                        <div class="modal-body ps-0 pb-0 border-0">
+                        <div class="modal-body border-0">
                             <div class="post-preview-scroll">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex justify-content-between">
@@ -243,5 +243,12 @@ export default {
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
     filter: invert(1);
+}
+
+@media (max-width: 768px; ) {
+    #postPreview .modal-dialog .modal-content {
+        height: 100px;
+        overflow: visible;
+    }
 }
 </style>
