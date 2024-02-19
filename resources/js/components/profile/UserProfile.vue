@@ -17,16 +17,20 @@
                                 <div class="fs-18 fw-6">Chat</div>
                             </div>
                         </div>
-                        <ActiveChatRooms />
+                        <div>
+                            <div>
+                                <UserGroups />
+                            </div>
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="user-friends" role="tabpanel" aria-labelledby="user-friends-tab">
-                        <ProfileFriends />
+                    <div class="tab-pane fade" id="user-watchlists" role="tabpanel" aria-labelledby="user-watchlists-tab">
+                        <ProfileWatchlists />
                     </div>
                     <div class="tab-pane fade" id="user-photos" role="tabpanel" aria-labelledby="user-photos-tab">
                         <ProfilePhotos />
                     </div>
-                    <div class="tab-pane fade" id="user-video" role="tabpanel" aria-labelledby="user-video-tab">
-                        <ProfileVideos />
+                    <div class="tab-pane fade" id="user-followers" role="tabpanel" aria-labelledby="user-followers-tab">
+                        <ProfileFollowers />
                     </div>
                 </div>
             </div>
@@ -290,9 +294,10 @@ import ProfileInfo from './ProfileInfo.vue';
 import PostItems from '../feed/PostItems.vue';
 import CreatePost from '../feed/CreatePost.vue';
 import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
-import ProfileFriends from './ProfileFriends.vue';
+import UserGroups from '../groups/UserGroups.vue';
+import ProfileWatchlists from './ProfileWatchlists.vue';
 import ProfilePhotos from './ProfilePhotos.vue';
-import ProfileVideos from './ProfileVideos.vue';
+import ProfileFollowers from './ProfileFollowers.vue';
 export default {
     name: 'UserFeed',
     components: {
@@ -300,19 +305,20 @@ export default {
         PostItems,
         CreatePost,
         ActiveChatRooms,
-        ProfileFriends,
+        ProfileWatchlists,
         ProfilePhotos,
-        ProfileVideos
+        ProfileFollowers,
+        UserGroups
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
     },
     created() {
         const context = 'profile';
-        this.fetchPosts({context});
+        this.fetchPosts({ context });
         this.fetchReactionTypes();
         this.$nextTick(() => {
-            this.initializeRealTimeUpdates({context});
+            this.initializeRealTimeUpdates({ context });
         });
     },
     methods: {

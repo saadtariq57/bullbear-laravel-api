@@ -76,12 +76,12 @@
                             </a>
                         </li>
                         <li class="nav-item" role="presentation"> <a href="#"
-                                class="nav-link text-secondary user-li-navbtn" id="user-friends-tab"
-                                data-bs-toggle="tab" data-bs-target="#user-friends" type="button" role="tab"
-                                aria-controls="user-friends" aria-selected="false">
+                                class="nav-link text-secondary user-li-navbtn" id="user-watchlists-tab"
+                                data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button" role="tab"
+                                aria-controls="user-watchlists" aria-selected="false">
                                 <span class="split-link d-block text-center"><i
                                         class="bi bi-person-plus-fill fs-18"></i></span>
-                                Friends
+                                Watchlists
                             </a>
                         </li>
                         <li class="nav-item" role="presentation"> <a href="#"
@@ -95,12 +95,12 @@
                         </li>
 
                         <li class="nav-item " role="presentation"> <a href="#"
-                                class="nav-link text-secondary user-li-navbtn" id="user-video-tab" data-bs-toggle="tab"
-                                data-bs-target="#user-video" type="button" role="tab" aria-controls="user-video"
+                                class="nav-link text-secondary user-li-navbtn" id="user-followers-tab" data-bs-toggle="tab"
+                                data-bs-target="#user-followers" type="button" role="tab" aria-controls="user-followers"
                                 aria-selected="false">
-                                <span class="split-link d-block text-center"><i
-                                        class="bi bi-camera-video-fill fs-18"></i></span>
-                                Videos
+                                <span class="split-link d-block text-center">
+                                    <i class="bi bi-person-plus-fill fs-18"></i></span>
+                                Followers
                             </a>
                         </li>
                     </ul>
