@@ -8,8 +8,6 @@
       <form @submit.prevent="submitComment(postId, null, false)" class="position-relative">
         <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Comment and hit submit"
           class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
-        <button type="submit" class="btn btn-sm position-absolute top-0 end-0 py-2 pe-3 border-0"><i
-            class="bi bi-send fs-5"></i></button>
         <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
           <!-- Add emoji and image upload functionality -->
           <!-- Emojis Model Button-->

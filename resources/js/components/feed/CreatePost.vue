@@ -593,6 +593,7 @@ export default {
 
 .media-preview-container .preview-wrapper {
   text-align: center;
+  min-height: 140px;
 }
 
 .media-preview-container .preview-wrapper img {
