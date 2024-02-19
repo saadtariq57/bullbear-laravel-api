@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-8">
+  <div class="col-12">
 
     <div class="bg-white shadow follow-wrapper">
       <div class="border-bottom p-3 ">
