@@ -23,41 +23,46 @@
                                     fill="#000000"></path>
                             </svg>
                         </button>
-                        
+
                         <div class="dextop-nav d-none d-xl-block">
                             <div class="main-menu-container d-flex gap-4 align-items-center">
                                 <ul class="main-list mb-0 gap-4 align-items-center">
                                     <li>
                                         <div class="dropdown">
-                                            <button class="nav-link dropdown-toggle d-flex nav-clr"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
                                                 FINANCIAL NEWS
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/press-release/">Press
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/press-release/">Press
                                                         Release</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/market-analysis/">Market
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market
                                                         Analysis</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/investing/">Investing</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/investing/">Investing</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/stocks/">Stocks</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/stocks/">Stocks</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency</a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="dropdown">
-                                            <button class="nav-link dropdown-toggle d-flex nav-clr"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
                                                 TRADING SCHOOL
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu gap-4 rounded-3">
@@ -65,25 +70,31 @@
                                                     <h4>STRATEGIES</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks">Penny Stocks</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks">Penny Stocks</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/reversal-trading-strategy/">REVERSAL</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/reversal-trading-strategy/">Reversal</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/momentum-trading-strategies/">MOMENTUM</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/momentum-trading-strategies/">Momentum</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/swing-trading-strategies/">SWING
-                                                                TRADING</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/swing-trading-strategies/">Swing
+                                                                Trading</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/gap-and-go-strategy/">GAP AND
-                                                                GO</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/gap-and-go-strategy/">Gap
+                                                                And Go</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/bull-flag-patterns/">BULL
-                                                                FLAG</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/bull-flag-patterns/">Bull
+                                                                Flag</a>
                                                         </li>
                                                     </ul>
                                                 </li>
@@ -91,23 +102,27 @@
                                                     <h4>GUIDES</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/exams">EXAMS</a>
+                                                            <a class="dropdown-item nav-link" href="/exams">Exams</a>
                                                         </li>
                                                         <li>
-                                                        <a class="dropdown-item nav-link py-1" href="/trading-school">
-                                                            Trading School</a>
-                                                    </li>
+                                                            <a class="dropdown-item nav-link py-1" href="/trading-school">
+                                                                Trading School</a>
+                                                        </li>
 
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/day-trading-beginner/">Day Trading</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/day-trading-beginner/">Day
+                                                                Trading</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/penny-stocks/technical-analysis-using-multiple-timeframes">
-                                                                TECHNICAL ANALYSIS GUIDE</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/penny-stocks/technical-analysis-using-multiple-timeframes">Technical
+                                                                Analysis Guide</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="https://richtv.io/category/penny-stocks/">PENNY STOCK
-                                                                TRADING</a>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="https://richtv.io/category/penny-stocks/">Penny Stocks
+                                                                Trading</a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link" href="/">
@@ -161,8 +176,8 @@
                                     </li>
                                     <li>
                                         <div class="dropdown">
-                                            <button class="nav-link dropdown-toggle d-flex nav-clr"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
                                                 RESOURCES
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu gap-4 rounded-3">

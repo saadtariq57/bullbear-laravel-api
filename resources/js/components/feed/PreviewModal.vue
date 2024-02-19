@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="col-xl-4 col-md-6">
-                        <div class="modal-body ps-0 pb-0 border-0">
+                        <div class="modal-body border-0">
                             <div class="post-preview-scroll">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex justify-content-between">
@@ -62,17 +62,18 @@
                                         <div class="like-count">
                                             <!-- Reaction Post trigger modal -->
                                             <div class="reaction-icons">
-                                                <button @click="handleShowReactionsPost(post.id, post.organizedReactions)"
-                                                    class="btn">
+                                                <button class="btn">
                                                     <span
-                                                        v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
+                                                        v-for="(reactionDetail, index) in Object.values(previewPost.organizedReactions).slice(0, 3)"
                                                         :key="index">
                                                         <img :src="`/${reactionDetail.details[0].reactionImage}`"
                                                             class="reaction-icon"> {{
                                                                 reactionDetail.count }}
-                                                        <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
-                                                            Object.values(post.organizedReactions).reduce((acc, r) => acc +
-                                                                r.count, 0) }}</span>
+                                                        <span
+                                                            v-if="Object.keys(previewPost.organizedReactions).length > 3">+{{
+                                                                Object.values(previewPost.organizedReactions).reduce((acc, r) =>
+                                                                    acc +
+                                                                    r.count, 0) }}</span>
                                                     </span>
                                                 </button>
                                             </div>
@@ -142,6 +143,7 @@ export default {
     computed: {
         ...mapState(['userData']),
         ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags']),
+
     },
     data() {
         return {
@@ -155,16 +157,13 @@ export default {
         previewPost(newPost, oldPost) {
             // This method will be called whenever the previewPost prop changes
             this.showData();
-
-        }
+            console.log("updated")
+        },
     },
     methods: {
         ...mapActions('userFeed', [
             'addOrUpdateReaction',
             'removeReaction',
-            'fetchMorePosts',
-            'addVote',
-            'removeVote',
             'updateFetchedCommentsFlag',
             'updateFetchedCommentsVisibility'
         ]),
@@ -181,7 +180,7 @@ export default {
         showData() {
             this.showPostData = true;
             this.post = this.previewPost;
-            // console.log('Post prop:', this.previewPost);
+            console.log('Post prop:', this.previewPost);
             // console.log('reactionTypes prop:', this.reactionTypes);
         },
         toggleComments(postId, userId) {
@@ -203,14 +202,29 @@ export default {
             this.showReactionsForPost[postId] = false;
         },
         handleReaction(post_id, reactionTypeId) {
-            const post = this.posts.find(p => p.id === post_id);
-            if (post) {
-                if (post.userReaction === reactionTypeId) {
+            if (this.previewPost && this.previewPost.id === post_id) {
+                if (this.previewPost.userReaction === reactionTypeId) {
                     // Remove the reaction
-                    this.removeReaction(post_id);
+                    this.removeReaction(post_id)
+                        .then(() => {
+                            // Reaction removed successfully
+                            this.previewPost.userReaction = null; // Update the user reaction
+                        })
+                        .catch(error => {
+                            // Handle error
+                            console.error('Error removing reaction:', error);
+                        });
                 } else {
                     // Add or update the reaction
-                    this.addOrUpdateReaction({ post_id, reactionTypeId });
+                    this.addOrUpdateReaction({ post_id, reactionTypeId })
+                        .then(() => {
+                            // Reaction added or updated successfully
+                            this.previewPost.userReaction = reactionTypeId; // Update the user reaction
+                        })
+                        .catch(error => {
+                            // Handle error
+                            console.error('Error adding/updating reaction:', error);
+                        });
                 }
             }
         },
@@ -229,5 +243,12 @@ export default {
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
     filter: invert(1);
+}
+
+@media (max-width: 768px; ) {
+    #postPreview .modal-dialog .modal-content {
+        height: 100px;
+        overflow: visible;
+    }
 }
 </style>
