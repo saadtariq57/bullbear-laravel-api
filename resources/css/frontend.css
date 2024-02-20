@@ -2232,7 +2232,7 @@ p.user-message {
 }
 
 .user-chat-top-tab {
-    margin: 20px 0px;
+    margin-top: -10px;
 }
 
 .profile-dropdown-toggle::after {
