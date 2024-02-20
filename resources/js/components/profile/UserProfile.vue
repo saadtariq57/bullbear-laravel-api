@@ -19,7 +19,7 @@
                         </div>
                         <div>
                             <div>
-                                <UserGroups />
+                                <ActiveChatRooms :chats="myChats" :joined="false" />
                             </div>
                         </div>
                     </div>
@@ -309,6 +309,20 @@ export default {
         ProfilePhotos,
         ProfileFollowers,
         UserGroups
+    },
+    data() {
+        return {
+            myChats: [
+                // Your chat data specific to UserProfile.vue
+                {
+                    id: 1,
+                    group_name: 'My Group 1',
+                    group_title: 'My Group Title 1',
+                    avatar: 'path-to-avatar-1',
+                },
+                // Add more chat objects as needed
+            ],
+        };
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
