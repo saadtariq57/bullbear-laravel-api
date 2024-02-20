@@ -35,26 +35,3 @@ export default {
   },
 };
 </script>
-
-<!-- [
-    {
-        "id": 1,
-        "user_id": 2,
-        "group_id": 3,
-        "group_name": "TRUL",
-        "group_title": "Trulieve Cannabis Corp",
-        "avatar": "upload\/photos\/2022\/03\/EKD6chZMUqoMBLdIqmeJ_14_915ef0d7cb6b6d431851f205d46681e3_avatar.png",
-        "cover": "upload\/photos\/d-cover.jpg  ",
-        "about": "TRUL:CSE",
-        "category_id": 19,
-        "privacy": "public",
-        "join_privacy": "1",
-        "active": "1",
-        "time": 1645544696,
-        "symbol": null,
-        "exchange": null,
-        "created_at": null,
-        "updated_at": null
-    },
-
-] -->
