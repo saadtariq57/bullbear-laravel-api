@@ -19,12 +19,14 @@
                         </div>
                         <div>
                             <div>
-                                <ActiveChatRooms :chats="myChats" :joined="false" />
+                                <ActiveChatRooms :chats="allChats" :joined="false" />
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="user-watchlists" role="tabpanel" aria-labelledby="user-watchlists-tab">
-                        <ProfileWatchlists />
+                        <div>
+                            <watchlistTables />
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="user-photos" role="tabpanel" aria-labelledby="user-photos-tab">
                         <ProfilePhotos />
@@ -289,14 +291,14 @@
     </div>
 </template>
 <script>
+import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
 import { mapState, mapActions } from 'vuex';
 import ProfileInfo from './ProfileInfo.vue';
 import PostItems from '../feed/PostItems.vue';
 import CreatePost from '../feed/CreatePost.vue';
-import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
-import UserGroups from '../groups/UserGroups.vue';
 import ProfileWatchlists from './ProfileWatchlists.vue';
 import ProfilePhotos from './ProfilePhotos.vue';
+import watchlistTables from '../watchlist/tabs/Tabs.vue';
 import ProfileFollowers from './ProfileFollowers.vue';
 export default {
     name: 'UserFeed',
@@ -308,7 +310,7 @@ export default {
         ProfileWatchlists,
         ProfilePhotos,
         ProfileFollowers,
-        UserGroups
+        watchlistTables
     },
     data() {
         return {
@@ -326,9 +328,15 @@ export default {
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
+        ...mapState('UserGroups', ['suggestedChats']),
+        allChats() {
+            // Combine suggestedChats with any other chat data you may have
+            return this.suggestedChats.concat(this.myChats); // Add more chat data as needed
+        },
     },
     created() {
         const context = 'profile';
+        this.fetchSuggestedChats();
         this.fetchPosts({ context });
         this.fetchReactionTypes();
         this.$nextTick(() => {
@@ -337,6 +345,7 @@ export default {
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+        ...mapActions('UserGroups', ['fetchSuggestedChats']),
     },
 }
 </script>
