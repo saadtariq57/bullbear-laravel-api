@@ -1,16 +1,16 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage" :src="userData.cover"
-                alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" />
+            <img ref="coverImage" :src="userData.cover" alt="Cover Image"
+                class="img-fluid w-100 profile-cover-photo object-fit-cover" />
             <div class="cover-photo-overlay" v-show="isRepositioning"></div>
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn">
-            <a href="/profile/setting" type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow"
+            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1"
                 @click="toggleDropdown($event)">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
-            </a>
+            </button>
             <ul class="dropdown-menu dropdown-menu-end z-1">
                 <li>
                     <label class="dropdown-item fs-6 fw-5">
@@ -51,41 +51,66 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="profilePhotoModalLabel">Change Profile Photo</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="closeProfileModal"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="text-center py-3">
+                            <div class="text-center py-3" v-if="!selectedImage">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
                                 <div class="my-5">
                                     <img :src="userData.avatar" alt="Profile Photo" class="rounded-circle" width="150"
                                         height="150">
                                 </div>
-                                <p class="px-3">On Rich Tv, we require members to use their real identities, so take or
-                                    upload a photo of
-                                    yourself</p>
+                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a photo
+                                    of yourself</p>
+                            </div>
+                            <div v-if="selectedImage">
+                                <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1" :drag-mode="'move'"
+                                    :guides="true" :zoomable="true" :scalable="true" :crop-box-movable="true"
+                                    :crop-box-resizable="true" @cropmove="updatePreview"
+                                    class="w-100 img-preview"></vue-cropper>
+                                <!-- Zoom Controls -->
+                                <div class="my-4">
+                                    <span class="d-block mb-1">Zoom</span>
+                                    <input type="range" class="w-100" min="0" max="3" step="0.1" v-model="zoomLevel"
+                                        @input="zoomImage">
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <label class="btn btn-primary">
-                                <input type="file" accept="image/jpeg,image/jpg,image/png"
-                                    class="upload-profile-photo d-none">
+                            <label class="btn btn-primary" v-if="!selectedImage">
+                                <input ref="profileInput" type="file" accept="image/jpeg,image/jpg,image/png"
+                                    @change="handleProfileChange" class="upload-profile-photo d-none">
                                 Upload photo
                             </label>
+                            <!-- Apply Button -->
+                            <button class="btn btn-primary w-100 my-3" @click="applyCropping"
+                                v-if="selectedImage">Apply</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="user-profile-info align-self-end">
-                <h1>{{ userData.name }}</h1>
+                <div class="d-flex align-items-center gap-2">
+                    <h1>{{ userData.name }}</h1>
+                    <span><i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
+                    <!-- <span class="user-pro text-white px-2 py-1 fs-10 rounded-2"
+                        v-if="userData.subscription_plan == 'platinum'">PRO</span> -->
+                    <span class="user-pro text-white px-2 py-1 fs-10 rounded-2">PRO</span>
+                </div>
                 <a href="#" class="text-black fs-5"><span>{{ userData.followers_count }}</span> followers</a>
             </div>
         </div>
         <div class="user-profile-btn align-self-end">
-            <button class="btn btn-primary fs-6 fw-5 px-3"><i class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</button>
+            <!-- <button class="btn btn-primary fs-6 fw-5 px-3 py-2 me-3"><i
+                    class="bi bi-list-ul fs-5 me-2 align-middle"></i>Activities</button> -->
+            <a href="/profile/setting" class="btn btn-primary fs-6 fw-5 px-3"><i
+                    class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</a>
+
         </div>
     </div>
     <div>
-        <div class="row user-chat-top-tab">
+        <div class="row user-chat-top-tab mb-3">
             <div class="col-12 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
                 <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab" role="tablist">
                     <li class="nav-item " role="presentation"> <a href="#"
@@ -119,10 +144,10 @@
                     </li>
 
                     <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button" role="tab"
-                            aria-controls="user-followers" aria-selected="false">
+                            id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button"
+                            role="tab" aria-controls="user-followers" aria-selected="false">
                             <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
-                                    Followers
+                            Followers
                         </a>
                     </li>
                 </ul>
@@ -134,7 +159,12 @@
 import { Dropdown } from 'bootstrap';
 import { Modal } from 'bootstrap';
 import { mapState } from 'vuex';
+import VueCropper from 'vue-cropperjs';
+import 'cropperjs/dist/cropper.css';
 export default {
+    components: {
+        VueCropper
+    },
     computed: {
         ...mapState(['userData']),
     },
@@ -145,6 +175,8 @@ export default {
             offsetY: 0,
             initialTop: 0,
             maxTop: 0,
+            selectedFiles: [],
+            selectedImage: null,
         }
     },
     methods: {
@@ -160,37 +192,63 @@ export default {
                 console.error('Modal instance is not initialized.');
             }
         },
-      repositionCoverPhoto(event) {
-      this.isRepositioning = true;
-      this.initialY = event.clientY;
-      const coverImage = this.$refs.coverImage;
-      this.initialTop = parseInt(window.getComputedStyle(coverImage).top, 10) || 0;
-      this.maxTop = -(coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
-      document.addEventListener('mousemove', this.handleMouseMove);
-      document.addEventListener('mouseup', this.handleMouseUp);
-    },
-    handleMouseMove(event) {
-      if (!this.isRepositioning) return;
-      this.offsetY = event.clientY - this.initialY;
-      const newTop = Math.min(Math.max(this.initialTop + this.offsetY, this.maxTop), 0);
-      const coverImage = this.$refs.coverImage;
-      coverImage.style.top = `${newTop}px`;
-    },
-    handleMouseUp() {
-      this.isRepositioning = false;
-      document.removeEventListener('mousemove', this.handleMouseMove);
-      document.removeEventListener('mouseup', this.handleMouseUp);
-    },
-    handleMouseWheel(event) {
-      if (!this.isRepositioning) return;
-      event.preventDefault();
-      const delta = Math.max(-1, Math.min(1, event.deltaY));
-      const coverImage = this.$refs.coverImage;
-      const currentTop = parseInt(window.getComputedStyle(coverImage).top, 10) || 0;
-      const newTop = Math.min(Math.max(currentTop - delta * 10, this.maxTop), 0);
-      coverImage.style.top = `${newTop}px`;
-    },
+        closeProfileModal() {
+            this.selectedImage = null;
+        },
+        repositionCoverPhoto(event) {
+            this.isRepositioning = true;
+            this.initialY = event.clientY;
+            const coverImage = this.$refs.coverImage;
+            this.initialTop = parseInt(window.getComputedStyle(coverImage).top, 10) || 0;
+            this.maxTop = -(coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
+            document.addEventListener('mousemove', this.handleMouseMove);
+            document.addEventListener('mouseup', this.handleMouseUp);
+        },
+        handleMouseMove(event) {
+            if (!this.isRepositioning) return;
+            this.offsetY = event.clientY - this.initialY;
+            const newTop = Math.min(Math.max(this.initialTop + this.offsetY, this.maxTop), 0);
+            const coverImage = this.$refs.coverImage;
+            coverImage.style.top = `${newTop}px`;
+        },
+        handleMouseUp() {
+            this.isRepositioning = false;
+            document.removeEventListener('mousemove', this.handleMouseMove);
+            document.removeEventListener('mouseup', this.handleMouseUp);
+        },
+        handleProfileChange(event) {
+            const files = event.target.files;
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (files && files.length > 0) {
+                const filteredFiles = Array.from(files).filter(file => validTypes.includes(file.type));
 
+                if (filteredFiles.length > 0) {
+                    this.readFilesAndPreview(filteredFiles);
+                } else {
+                    alert('Invalid file type. Please select an image file (gif, jpeg, jpg, png).');
+                }
+            }
+        },
+        readFilesAndPreview(files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const fileWithPreview = {
+                        file,
+                        preview: e.target.result,
+                        alt: ""
+                    };
+                    this.selectedFiles.push(fileWithPreview);
+                    if (!this.selectedImage) {
+                        this.selectedImage = fileWithPreview;
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        },
+        zoomImage() {
+            this.$refs.cropper.zoomTo(this.zoomLevel);
+        },
     },
     mounted() {
         this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
@@ -228,7 +286,7 @@ export default {
 }
 
 .user-profile-wrapper {
-    top: -60px;
+    top: -55px;
 }
 
 .user-avater-wappar {
@@ -236,8 +294,16 @@ export default {
     height: 170px;
 }
 
+.user-verified-icon {
+    color: var(--cta-hover);
+}
+
+.user-pro {
+    background-color: var(--cta-hover);
+}
+
 .user-profile-btn {
-    transform: translateY(-30px);
+    transform: translateY(-10px);
 }
 
 .profile-photo-btn {
