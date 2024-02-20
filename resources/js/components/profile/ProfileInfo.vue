@@ -1,17 +1,16 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage"
-                src="https://scontent.flhe25-1.fna.fbcdn.net/v/t39.30808-6/301075830_2934266940200020_4251971855002964343_n.jpg?stp=dst-jpg_p640x640&_nc_cat=101&ccb=1-7&_nc_sid=783fdb&_nc_eui2=AeHP3C-fpnD4d8DyEeiZzz9NyxBur5kLIfnLEG6vmQsh-RujimarzC0PLpU9Dbptm0KaB6XYoGyB9sCBRFBZDTRV&_nc_ohc=Gw73d_k6oYYAX9oopBV&_nc_ht=scontent.flhe25-1.fna&oh=00_AfCO4jARnnGrZ-vAp8CQzcPXOvTXSxvJ3nk9Dh3YBDzoJw&oe=65D7B7B7"
+            <img ref="coverImage" :src="userData.cover"
                 alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" />
             <div class="cover-photo-overlay" v-show="isRepositioning"></div>
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn">
-            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow"
+            <a href="/profile/setting" type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow"
                 @click="toggleDropdown($event)">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
-            </button>
+            </a>
             <ul class="dropdown-menu dropdown-menu-end z-1">
                 <li>
                     <label class="dropdown-item fs-6 fw-5">
@@ -86,8 +85,8 @@
         </div>
     </div>
     <div>
-        <div class="row user-chat-top-tab justify-content-center">
-            <div class="col-md-10 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
+        <div class="row user-chat-top-tab">
+            <div class="col-12 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
                 <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab" role="tablist">
                     <li class="nav-item " role="presentation"> <a href="#"
                             class="nav-link active user-li-navbtn text-secondary" id="user-Timeline-tab"
@@ -105,10 +104,10 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-friends-tab" data-bs-toggle="tab" data-bs-target="#user-friends" type="button"
-                            role="tab" aria-controls="user-friends" aria-selected="false">
+                            id="user-watchlists-tab" data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button"
+                            role="tab" aria-controls="user-watchlists" aria-selected="false">
                             <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
-                            Friends
+                            Watchlists
                         </a>
                     </li>
                     <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
@@ -120,11 +119,10 @@
                     </li>
 
                     <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-video-tab" data-bs-toggle="tab" data-bs-target="#user-video" type="button" role="tab"
-                            aria-controls="user-video" aria-selected="false">
-                            <span class="split-link d-block text-center"><i
-                                    class="bi bi-camera-video-fill fs-18"></i></span>
-                            Videos
+                            id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button" role="tab"
+                            aria-controls="user-followers" aria-selected="false">
+                            <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
+                                    Followers
                         </a>
                     </li>
                 </ul>
