@@ -185,20 +185,20 @@
                                                     <h4>SOURCE</h4>
                                                     <ul>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/">RICH TV
-                                                                PICKS</a>
+                                                            <a class="dropdown-item nav-link" href="/">Rich Tv
+                                                                Picks</a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link"
-                                                                href="/watchlist">WATCHLIST</a>
+                                                                href="/watchlist">Watchlist</a>
                                                         </li>
                                                         <li>
                                                             <a class="dropdown-item nav-link" href="/email-alerts">Email and
                                                                 Alerts</a>
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item nav-link" href="/groups">CHAT
-                                                                ROOM</a>
+                                                            <a class="dropdown-item nav-link" href="/groups">Chat
+                                                                Room</a>
                                                         </li>
                                                     </ul>
                                                 </li>

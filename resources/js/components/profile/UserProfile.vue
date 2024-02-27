@@ -14,7 +14,7 @@
                             <div class="d-flex align-items-center gap-3">
                                 <div><span class="bg-primary rounded-circle user-top-bar d-inline-block text-center"><i
                                             class="bi bi-chat-right-dots fs-12"></i></span></div>
-                                <div class="fs-18 fw-6">Chat</div>
+                                <div class="fs-18 fw-6">Chat Room</div>
                             </div>
                         </div>
                         <div>
@@ -264,7 +264,7 @@
                 </div>
                 <div>
                     <div class="border-bottom">
-                        <p class="fs-13 text-secondary my-1">© 2023 Rich Tv</p>
+                        <p class="fs-13 text-secondary my-1">© 2024 Rich Tv</p>
                     </div>
                     <ul class="d-flex justify-content-between align-items-center list-unstyled mt-2">
                         <li><a href="#" class="fs-13 text-secondary">About</a></li>

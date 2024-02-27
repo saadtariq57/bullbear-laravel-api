@@ -581,7 +581,7 @@ export default {
 </script>
 <style>
 .color-textarea {
-  height: 300px !important;
+  height: 240px;
 }
 
 .media-preview-container {
@@ -699,7 +699,7 @@ export default {
 } */
 .v3-emoji-picker {
   position: absolute;
-  top: 90px;
+  top: -60px;
 }
 
 @media screen and (max-width: 768px) {
