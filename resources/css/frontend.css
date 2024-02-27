@@ -2567,7 +2567,8 @@ p.user-message {
 /* Exam page end css */
 /* Genral Setting page css start */
 #general-setting-Tab .nav-link.active {
-    background: var(--primary-color) !important;
+    background: var(--cta-btn) !important;
+    color: var(--white);
 }
 
 .width_rounded_50 {
@@ -2638,7 +2639,8 @@ p.user-message {
 }
 
 .generel_setting_section input,
-.generel_setting_section select {
+.generel_setting_section select,
+.generel_setting_section textarea {
     box-shadow: 1px 1px 5px rgb(0 0 0 / 10%) !important;
     border: none !important;
 }
@@ -2704,7 +2706,8 @@ p.user-message {
 }
 
 .notifation-main li button.active {
-    background-color: var(--primary-color) !important;
+    background-color: var(--cta-btn) !important;
+    color: var(--white);
 }
 
 .height-230 {
