@@ -7,7 +7,7 @@
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn">
-            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1"
+            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
                 @click="toggleDropdown($event)">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
             </button>
@@ -41,8 +41,8 @@
                 <img :src="userData.avatar" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
                 <!-- Button trigger modal -->
                 <button @click="showUploadPhotoeModal"
-                    class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center"><i
-                        class="bi bi-camera-fill fs-4"></i></button>
+                    class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center shadow"><i
+                        class="bi bi-camera-fill fs-4 text-cta"></i></button>
             </div>
             <!-- Modal -->
             <div class="modal fade" ref="profilePhotoModal" id="profilePhoto" tabindex="-1"
@@ -109,49 +109,46 @@
 
         </div>
     </div>
-    <div>
-        <div class="row user-chat-top-tab mb-3">
-            <div class="col-12 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
-                <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab" role="tablist">
-                    <li class="nav-item " role="presentation"> <a href="#"
-                            class="nav-link active user-li-navbtn text-secondary" id="user-Timeline-tab"
-                            data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
-                            aria-controls="user-Timeline" aria-selected="true">
-                            <span class="split-link d-block text-center"><i class="bi bi-ui-checks fs-18"></i></span>
-                            Timeline
-                        </a>
-                    </li>
-                    <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-chat-tab" data-bs-toggle="tab" data-bs-target="#user-chat" type="button" role="tab"
-                            aria-controls="user-chat" aria-selected="false">
-                            <span class="split-link d-block text-center"><i class="bi bi-chat-right-dots fs-18"></i></span>
-                            Chats
-                        </a>
-                    </li>
-                    <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-watchlists-tab" data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button"
-                            role="tab" aria-controls="user-watchlists" aria-selected="false">
-                            <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
-                            Watchlists
-                        </a>
-                    </li>
-                    <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-photos-tab" data-bs-toggle="tab" data-bs-target="#user-photos" type="button" role="tab"
-                            aria-controls="user-photos" aria-selected="false">
-                            <span class="split-link d-block text-center"><i class="bi bi-image-fill fs-18"></i></span>
-                            Photos
-                        </a>
-                    </li>
+    <div class="row user-chat-top-tab mb-3">
+        <div class="col-12 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
+            <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab" role="tablist">
+                <li class="nav-item " role="presentation"> <a href="#" class="nav-link active user-li-navbtn text-secondary"
+                        id="user-Timeline-tab" data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
+                        aria-controls="user-Timeline" aria-selected="true">
+                        <span class="split-link d-block text-center"><i class="bi bi-ui-checks fs-18"></i></span>
+                        Timeline
+                    </a>
+                </li>
+                <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
+                        id="user-chat-tab" data-bs-toggle="tab" data-bs-target="#user-chat" type="button" role="tab"
+                        aria-controls="user-chat" aria-selected="false">
+                        <span class="split-link d-block text-center"><i class="bi bi-chat-right-dots fs-18"></i></span>
+                        Chat Room
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
+                        id="user-watchlists-tab" data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button"
+                        role="tab" aria-controls="user-watchlists" aria-selected="false">
+                        <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
+                        Watchlists
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
+                        id="user-photos-tab" data-bs-toggle="tab" data-bs-target="#user-photos" type="button" role="tab"
+                        aria-controls="user-photos" aria-selected="false">
+                        <span class="split-link d-block text-center"><i class="bi bi-image-fill fs-18"></i></span>
+                        Photos
+                    </a>
+                </li>
 
-                    <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                            id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button"
-                            role="tab" aria-controls="user-followers" aria-selected="false">
-                            <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
-                            Followers
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
+                        id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button"
+                        role="tab" aria-controls="user-followers" aria-selected="false">
+                        <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
+                        Followers
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -194,6 +191,7 @@ export default {
         },
         closeProfileModal() {
             this.selectedImage = null;
+            this.selectedFiles = [];
         },
         repositionCoverPhoto(event) {
             this.isRepositioning = true;
@@ -257,7 +255,7 @@ export default {
 </script>
 <style>
 .profile_bg_img {
-    height: 400px;
+    height: 300px;
     position: relative;
 }
 

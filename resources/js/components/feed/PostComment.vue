@@ -2,7 +2,7 @@
   <!-- Comment box -->
   <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
-      <img class="avatar rounded-circle" :src="userData.avatar" width="40" height="40">
+      <img class="avatar rounded-circle" :src="`/${userData.avatar}`" width="40" height="40">
     </div>
     <div class="comment-form w-100">
       <form @submit.prevent="submitComment(postId, null, false)" class="position-relative">
@@ -126,7 +126,7 @@
               <!-- Replies -->
               <div v-if="showReplyInput[comment.id]" class="reply-input-area d-flex align-items-center gap-2 mt-2">
                 <div class="user-icon">
-                  <img class="avatar rounded-circle" :src="userData.avatar" width="40" height="40">
+                  <img class="avatar rounded-circle" :src="`/${userData.avatar}`" width="40" height="40">
                 </div>
                 <div class="comment-form w-100">
                   <form @submit.prevent="submitComment(postId, comment.id, true)" class="position-relative">

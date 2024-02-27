@@ -581,7 +581,7 @@ export default {
 </script>
 <style>
 .color-textarea {
-  height: 300px !important;
+  height: 240px;
 }
 
 .media-preview-container {

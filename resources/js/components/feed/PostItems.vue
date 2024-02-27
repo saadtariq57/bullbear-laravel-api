@@ -5,7 +5,7 @@
         Post
         Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i></button>
     </div>
-    <div v-if="posts.length > 0">
+    <div v-if="computedPosts.length > 0">
       <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
         <!-- Post heading section -->
         <div class="post-wrapper">
@@ -167,7 +167,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-else-if="loadingComputedPosts">
       <div class="post-wrapper shadow mb-3">
         <div class="post-heading p-3">
           <div class="d-flex justify-content-between">
@@ -277,6 +277,15 @@
 
       </div>
     </div>
+    <div v-else class="d-flex justify-content-center align-items-center no-posts-wrapper">
+      <div>
+        <div
+          class="mx-auto border border-2 rounded-circle no-posts-icon d-flex justify-content-center align-items-center my-3">
+          <i class="bi bi-camera fs-1"></i>
+        </div>
+        <p class="fs-4 fw-5 no-post-text">No Posts Yet</p>
+      </div>
+    </div>
     <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
       @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
     <PreviewModal ref="previewModal" :previewPost="clickedPost" :reactionTypes="clickedPostReactionTypes"
@@ -318,6 +327,7 @@ export default {
       activeReactionData: null,
       clickedPost: null,
       clickedPostReactionTypes: null,
+      loadingComputedPosts: true
     };
   },
   computed: {
@@ -338,7 +348,6 @@ export default {
             totalVotes: totalVotes
           };
         }
-
         return updatedPost;
       });
     },
@@ -353,6 +362,12 @@ export default {
           this.reactionModalInstance.show();
         });
       }
+    },
+    computedPosts: {
+      handler() {
+        this.postsLoaded();
+      },
+      immediate: false
     }
   },
   methods: {
@@ -370,6 +385,10 @@ export default {
     getReactionName(reactionTypeId) {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
+    },
+
+    postsLoaded() {
+      this.loadingComputedPosts = false;
     },
     handlePreviewModalMounted(modalElement) {
       // console.log('Modal element:', modalElement);
@@ -670,6 +689,20 @@ export default {
 
 .reaction-icons button:empty {
   display: none;
+}
+
+.no-posts-wrapper {
+  height: 60vh;
+}
+
+.no-posts-icon {
+  width: 80px;
+  height: 80px;
+  border-color: #47484A !important;
+}
+
+.no-post-text {
+  color: #47484A;
 }
 
 @media screen and (max-width: 506px) {
