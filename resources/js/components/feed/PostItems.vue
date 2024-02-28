@@ -42,7 +42,7 @@
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
                 class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
-                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img w-100">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
                     <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
                   </div>

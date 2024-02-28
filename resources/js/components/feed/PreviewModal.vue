@@ -15,12 +15,12 @@
                                         <img :src="`/${photo.image}`" class="img-fluid" alt="Post Preview Image">
                                     </div>
                                 </div>
-                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
+                                <button class="carousel-control-prev" v-if="post.photos.length > 1" type="button" data-bs-target="#carouselExampleFade"
                                     data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
                                 </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
+                                <button class="carousel-control-next" v-if="post.photos.length > 1" type="button" data-bs-target="#carouselExampleFade"
                                     data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6">
+                    <div class="col-xl-4 col-md-6 bg-white">
                         <div class="modal-body border-0">
                             <div class="post-preview-scroll">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -85,7 +85,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="row post-reach pb-2 px-sm-4">
+                                    <div class="row post-reach pb-2 px-3">
                                         <button type="button"
                                             class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
                                             @mouseover="onReactionHover(post.id)"
@@ -157,7 +157,6 @@ export default {
         previewPost(newPost, oldPost) {
             // This method will be called whenever the previewPost prop changes
             this.showData();
-            console.log("updated")
         },
     },
     methods: {
@@ -180,8 +179,6 @@ export default {
         showData() {
             this.showPostData = true;
             this.post = this.previewPost;
-            console.log('Post prop:', this.previewPost);
-            // console.log('reactionTypes prop:', this.reactionTypes);
         },
         toggleComments(postId, userId) {
             if (!this.fetchedCommentsFlags[postId]) {
@@ -245,9 +242,8 @@ export default {
     filter: invert(1);
 }
 
-@media (max-width: 768px; ) {
+@media (max-width: 768px ) {
     #postPreview .modal-dialog .modal-content {
-        height: 100px;
         overflow: visible;
     }
 }

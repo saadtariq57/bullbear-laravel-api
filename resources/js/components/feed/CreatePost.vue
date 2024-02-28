@@ -566,6 +566,7 @@ export default {
           this.clearPostType();
           this.hidePostModal();
           this.isPublishing = false;
+          this.$refs.uploadMediaComponent.resetStateParent();
         })
         .catch(error => {
           console.error('Error publishing post:', error);
