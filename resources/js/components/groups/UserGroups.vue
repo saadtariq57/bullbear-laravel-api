@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="bg-white py-2 px-3 rounded-1 fs-5 shadow-radius">
-                    <i class="bi bi-chat-right-dots-fill me-2 bg-primary text-black rounded-5 px-2 py-1 fs-14"></i>Chats
+                    <i class="bi bi-chat-right-dots-fill me-2 bg-primary text-black rounded-5 px-2 py-1 fs-14"></i>Chat Room
                 </div>
                 <div class="bg-white py-0 px-2 rounded-1 shadow-radius mt-3 groups-chats">
                     <ul class="nav border-0 m-0 p-0" id="chats-content-tab" role="tablist">

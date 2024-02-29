@@ -1987,7 +1987,6 @@ p.user-message {
 .post-file {
     max-height: 600px;
     overflow: hidden;
-    margin-bottom: 5px;
     cursor: pointer;
 }
 

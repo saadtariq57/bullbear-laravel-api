@@ -81,8 +81,9 @@
                         class="bi bi-volume-up pe-2 fs-3"></i><span class="fs-6">Turn off notification
                         sound</span></button>
             </li>
-            <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+            <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom unread-notification-wrapper position-relative"
                         type="button">
+                        <div class="unread-nav-notification rounded-circle position-absolute"></div>
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
@@ -93,8 +94,9 @@
                         </div>
                         <div class="fs-6 fw-5">25 W</div>
                     </button></li>
-                    <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+                    <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom unread-notification-wrapper position-relative"
                         type="button">
+                        <div class="unread-nav-notification rounded-circle position-absolute"></div>
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
@@ -105,7 +107,7 @@
                         </div>
                         <div class="fs-6 fw-5">25 W</div>
                     </button></li>
-                    <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
+                    <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom position-relative"
                         type="button">
                         <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
                         <div>
@@ -178,5 +180,17 @@ export default {
     right: 0;
     left: auto;
     top: 100%!important;
+}
+.unread-notification-wrapper{
+  background-color: #C3DDF8;
+}
+.unread-notification-wrapper:hover{
+  background-color: #aed3fa;
+}
+.unread-nav-notification{
+  width: 10px;
+  height: 10px;
+  background-color: #0A66C2;
+  left: 7px;
 }
 </style>

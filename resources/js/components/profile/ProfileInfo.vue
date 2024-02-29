@@ -129,7 +129,7 @@
                 <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
                         id="user-watchlists-tab" data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button"
                         role="tab" aria-controls="user-watchlists" aria-selected="false">
-                        <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
+                        <span class="split-link d-block text-center"><i class="bi bi-star-fill fs-18"></i></span>
                         Watchlists
                     </a>
                 </li>

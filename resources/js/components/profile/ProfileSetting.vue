@@ -1,9 +1,9 @@
 <template>
-  <section class="container-fluid py-80 generel_setting_section bg-light-grey">
+  <section class="container-fluid my-4 generel_setting_section">
     <div class="container">
       <div class="row">
         <div class="col-lg-9">
-          <div class="tab-content shadow-sm rounded pb-4 bg-white" id="v-pills-tabContent">
+          <div class="tab-content shadow rounded pb-4 bg-white" id="v-pills-tabContent">
             <!-- General+setting-tabs start -->
             <div class="tab-pane fade show active" id="v-pills-setting" role="tabpanel"
               aria-labelledby="v-pills-setting-tab" tabindex="0">
@@ -442,25 +442,25 @@
                 </div>
                 <form action="" class="mt-5 pt-3">
                   <div class="row g-3 px-3 pt-3">
+                    <input type="text" name="username" hidden aria-hidden="true" autocomplete="username">
                     <div class="col">
                       <label for="current-password" class="form-label col-form-label-lg pb-0">Current Password</label>
                       <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter current password" aria-label="currentPassword" name="currentPassword">
+                        placeholder="Enter current password" aria-label="currentPassword" name="currentPassword" autocomplete="current-password">
                     </div>
-
                   </div>
                   <div class="row g-3 px-3 pt-3">
                     <div class="col-md-6">
                       <label for="New-password" class="form-label col-form-label-lg">New
                         password</label>
                       <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter new password" aria-label="New password" name="NewPassword">
+                        placeholder="Enter new password" aria-label="New password" name="NewPassword" autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
                       <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat
                         password</label>
                       <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter new password" aria-label="New password" name="NewPassword">
+                        placeholder="Enter new password" aria-label="New password" name="NewPassword" autocomplete="new-password">
                     </div>
                   </div>
                   <div class="px-3 pt-4">
@@ -797,42 +797,6 @@
                 </div>
               </div>
             </div>
-            <!-- Authentication-tabs start -->
-            <div class="tab-pane fade" id="v-pills-two-factor-auth" role="tabpanel"
-              aria-labelledby="v-pills-two-factor-auth-tab" tabindex="0">
-              <div class="wo_general_settings_page ">
-                <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
-                      class="avatar rounded-circle"></div>
-                  <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
-                    <p class="fs-28 pt-2">Two-factor authentication</p>
-                  </div>
-                </div>
-                <form action="" class="mt-5 pt-3">
-
-                  <div class="row g-3 px-3 pt-3">
-                    <div class="col">
-                      <label for="authentication" class="form-label col-form-label-lg">Two-factor
-                        authentication</label>
-                      <select class="form-select form-select-lg mb-3 authentication text-secondary"
-                        aria-label="factor authentication" name="factor-authentication">
-                        <option value="1" selected>Enable</option>
-                        <option value="2">Disable</option>
-                      </select>
-                      <span class="pt-1 fs-14 text-secondary d-inline-block">Turn on 2-step login
-                        to level-up your account's security, Once turned on, you'll use both
-                        your password and a 6-digit security code sent to your phone or email to
-                        log in.</span>
-                    </div>
-
-                  </div>
-                  <div class="mt-4 text-center">
-                    <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Save</a>
-                  </div>
-                </form>
-              </div>
-            </div>
             <!-- Social-tabs start -->
             <div class="tab-pane fade" id="v-pills-social-links" role="tabpanel"
               aria-labelledby="v-pills-social-links-tab" tabindex="0">
@@ -1037,12 +1001,9 @@
               aria-labelledby="v-pills-transactions-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img
-                      src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/06/oOAjH6QnKWn3guFugJSI_07_c83f8e518f67ef583d3b53936abb7cd8_avatar.jpg?cache=0"
-                      alt="Rich TV Profile Picture" class="avatar rounded-circle"></div>
+                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">Rich
-                        TV</a></h5>
+                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
                     <p class="fs-28 pt-2">Transactions</p>
                   </div>
                 </div>
@@ -1064,12 +1025,9 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img
-                      src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/06/oOAjH6QnKWn3guFugJSI_07_c83f8e518f67ef583d3b53936abb7cd8_avatar.jpg?cache=0"
-                      alt="Rich TV Profile Picture" class="avatar rounded-circle"></div>
+                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">Rich
-                        TV</a></h5>
+                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
                     <p class="fs-28 pt-2">Membership</p>
                   </div>
                 </div>
@@ -1188,25 +1146,25 @@
           </div>
         </div>
         <div class="col-lg-3 mt-5 mt-lg-0">
-          <div class="nav flex-column border-0 shadow-sm rounded bg-white" id="general-setting-Tab">
+          <div class="nav flex-column border-0 shadow rounded bg-white" id="general-setting-Tab">
             <div class="nav flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               <button class="nav-link active text-start" id="v-pills-setting-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-setting" type="button" role="tab" aria-controls="v-pills-setting"
                 aria-selected="true">
-                <i class="bi bi-gear-fill pe-3 fs-18"></i>General Setting
+                <i class="bi bi-gear-fill pe-3 fs-18 align-middle"></i>General Setting
               </button>
               <button class="nav-link text-start" id="v-pills-profile-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"
                 aria-selected="false">
-                <i class="bi bi-person-circle pe-3 fs-18"></i>Profile
+                <i class="bi bi-person-circle pe-3 fs-18 align-middle"></i>Profile
               </button>
               <div class="collapse-tabs">
                 <p class="mb-0">
-                  <a class="btn d-flex align-items-center border-0" data-bs-toggle="collapse" href="#collapseSecurity"
+                  <a class="btn d-flex align-items-center border-0 px-3" data-bs-toggle="collapse" href="#collapseSecurity"
                     role="button" aria-expanded="false" aria-controls="collapseSecurity"><i
                       class="bi bi-shield-fill-check pe-3 fs-18"></i>
                     <span class="d-flex justify-content-between w-100"> <span>Security</span> <i
-                        class="bi bi-chevron-down fs-18"></i></span>
+                        class="bi bi-chevron-down fs-18 align-middle"></i></span>
                   </a>
                 </p>
                 <div class="collapse" id="collapseSecurity">
@@ -1220,26 +1178,23 @@
                     <button class="nav-link text-start" id="v-pills-manage-tab" data-bs-toggle="pill"
                       data-bs-target="#v-pills-manage" type="button" role="tab" aria-controls="v-pills-manage"
                       aria-selected="false">Manage Sessions</button>
-                    <button class="nav-link text-start" id="v-pills-two-factor-auth-tab" data-bs-toggle="pill"
-                      data-bs-target="#v-pills-two-factor-auth" type="button" role="tab"
-                      aria-controls="v-pills-two-factor-auth" aria-selected="false">Two-factor authentication</button>
                   </div>
                 </div>
               </div>
 
               <button class="nav-link text-start" id="v-pills-social-links-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-social-links" type="button" role="tab" aria-controls="v-pills-social-links"
-                aria-selected="false"><i class="bi bi-twitter-x pe-3 fs-18"></i>Social Links</button>
+                aria-selected="false"><i class="bi bi-twitter-x pe-3 fs-18 align-middle"></i>Social Links</button>
               <button class="nav-link text-start" id="v-pills-notification-setting-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-notification-setting" type="button" role="tab"
                 aria-controls="v-pills-notification-setting" aria-selected="false"><i
-                  class="bi bi-bell-fill pe-3 fs-18"></i>Notification Setting</button>
+                  class="bi bi-bell-fill pe-3 fs-18 align-middle"></i>Notification Setting</button>
               <button class="nav-link text-start" id="v-pills-transactions-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions"
-                aria-selected="false"><i class="bi bi-arrow-left-right pe-3 fs-18"></i>Transactions</button>
+                aria-selected="false"><i class="bi bi-arrow-left-right pe-3 fs-18 align-middle"></i>Transactions</button>
               <button class="nav-link text-start" id="v-pills-membership-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-membership" type="button" role="tab" aria-controls="v-pills-membership"
-                aria-selected="false"><i class="bi bi-person-lines-fill pe-3 fs-18"></i>Membership</button>
+                aria-selected="false"><i class="bi bi-person-lines-fill pe-3 fs-18 align-middle"></i>Membership</button>
               <!-- Repeat this structure for the rest of your tabs -->
             </div>
           </div>

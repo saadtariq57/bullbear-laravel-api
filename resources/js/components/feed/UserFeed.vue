@@ -4,10 +4,10 @@
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
                     <div>
-                        <CreatePost context="feed" />
+                        <CreatePost context="feed" ref="createPost"/>
                     </div>
                     <div>
-                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="feed" />
+                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="feed" @show-post-modal="handleShowPostModal"/>
                     </div>
                 </section>
             </div>
@@ -46,6 +46,10 @@ export default {
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+        handleShowPostModal(post) {
+      this.$refs.createPost.sharePostModal(post); // Call the method in the child component
+    //   console.log('Received post data:', post);
+    }
     },
 };
 </script>
