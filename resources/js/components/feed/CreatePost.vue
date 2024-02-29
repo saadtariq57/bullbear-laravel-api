@@ -38,8 +38,8 @@
               <div class="modal-header">
                 <!-- Post Settings trigger button -->
                 <button class="btn d-flex gap-3 align-items-center" @click="showPostSettingModal">
-                  <img class="post-avatar img-fluid rounded-circle post-avatar-img border-2 border-primary"
-                    :src="`/${userData.avatar}`">
+                  <img class="post-avatar img-fluid rounded-circle border-2 border-primary" :src="`/${userData.avatar}`"
+                    width="50px" height="50px">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
                       <span class="fs-4 fw-6">{{ userData.name }}</span>
@@ -132,6 +132,94 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Share Preview -->
+                  <div v-if="sharePostPreview" class="px-2">
+                    <div class="border border-1 border-secondary-subtle rounded-2 share-photo-preview ">
+                      <div class="post-file" v-if="sharePostPreview.post_type == 'photo'">
+                        <div v-if="sharePostPreview.multi_image > 0"
+                          class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
+                          <div v-for="(photo, index) in  sharePostPreview.photos " :key="photo.id"
+                            class="multi-post-img-wrapper text-center btn p-0">
+                            <div v-if="sharePostPreview.photos.length > 4" class="position-relative multi-post-img">
+                              <img :src="`/${photo.image}`" alt="Post image"
+                                class="img-fluid object-fit-cover multi-post-img share-preview-photo">
+                              <div v-if="index === 3"
+                                class="overlay-post-gallery d-flex justify-content-center align-items-center">
+                                <span class="text-white fs-2 fw-6">+{{ sharePostPreview.photos.length - 4 }}</span>
+                              </div>
+                            </div>
+                            <div v-else-if="sharePostPreview.photos.length === 3" class="multi-post-img">
+                              <img :src="`/${photo.image}`" alt="Post image"
+                                class="img-fluid object-fit-cover multi-post-img share-preview-photo"
+                                :class="{ 'w-100': index === 2 }">
+                            </div>
+                            <div v-else class="multi-post-img">
+                              <img :src="`/${photo.image}`" alt="Post image"
+                                class="img-fluid object-fit-cover multi-post-img share-preview-photo">
+                            </div>
+
+                          </div>
+                        </div>
+                        <div v-else class="text-center">
+                          <div v-for="photo in sharePostPreview.photos" :key="photo.id" class="btn p-0">
+                            <!-- Pass the clicked post data -->
+                            <img :src="`/${photo.image}`" alt="Post image" class="img-fluid share-preview-photo">
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="sharePostPreview.colored_post_id"
+                        class="colored-post-text d-flex justify-content-center align-items-center"
+                        :style="{ backgroundImage: 'linear-gradient(45deg, ' + sharePostPreview.colored_post.color_1 + ' 0%, ' + sharePostPreview.colored_post.color_2 + ' 100%)' }">
+                        <p :style="{ color: sharePostPreview.colored_post.text_color }">{{ sharePostPreview.post_text }}
+                        </p>
+                      </div>
+                      <div v-if="sharePostPreview.post_type === 'link'" class="link-file">
+                        <img :src="`${sharePostPreview.post_link_image}`" alt="Post image" class="img-fluid w-100">
+                      </div>
+                      <div v-if="sharePostPreview.post_type === 'poll' && sharePostPreview.poll && sharePostPreview.poll.isActive" class="post-poll">
+                        <div class="container-fluid px-sm-5 py-2">
+                          <div class="container shadow border border-light-grey py-4">
+                            <h5>{{ sharePostPreview.poll.text }}</h5>
+                            <div class="py-4">
+                              <!-- Display options if voting time is active and the user hasn't voted yet -->
+                              <div v-if="!sharePostPreview.poll.userVoted">
+                                <div v-for="option in sharePostPreview.poll.options" :key="option.id" class="mb-2">
+                                  <button @click="submitVote(sharePostPreview.poll.id, option.id)"
+                                    class="w-100 btn rounded-5 border-btn border-2 fw-6">
+                                    {{ option.option_text }}
+                                  </button>
+                                </div>
+                              </div>
+                              <div class="text-secondary">
+                                Total votes: {{ sharePostPreview.poll.totalVotes }} - Time left: {{ sharePostPreview.poll.timeLeft }}
+                                <button v-if="sharePostPreview.poll.userVoted" @click="undoVote(sharePostPreview.poll.id)"
+                                  class="btn undo-vote-btn ps-2 fw-bold">Undo
+                                  Vote</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="border-top border-1 border-secondary-subtle px-3 py-2">
+                        <div class="d-flex gap-2 align-items-center mb-2">
+                          <div>
+                            <img :src="`/${sharePostPreview.user.avatar}`" alt="" width="40px" height="40px"
+                              class="rounded-circle">
+                          </div>
+                          <div>
+                            <h4 class="mb-0 fs-16 lh-base">{{ sharePostPreview.user.name }}</h4>
+                            <span class="fs-13">{{ formatDateTime(sharePostPreview.created_at) }}</span>
+                          </div>
+                        </div>
+                        <p class="mb-0" v-if="!sharePostPreview.colored_post_id && sharePostPreview.post_type !== 'link'">
+                          {{ sharePostPreview.post_text }}</p>
+                        <div class="link-post-details pt-3" v-if="sharePostPreview.post_type === 'link'">
+                          <h3 class="link-title fs-5">{{ sharePostPreview.post_link_title }}</h3>
+                          <span class="Blue fs-12">{{ sharePostPreview.post_link }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- Previews End -->
                 <div class="d-flex justify-content-between align-content-center">
@@ -164,7 +252,8 @@
                   <!-- Add Media Button -->
                   <abbr title="Add Media">
                     <button class="icons-hover d-flex justify-content-center align-items-center"
-                      @click="showMediaPostModal" :disabled="currentPostType && currentPostType !== 'photo'">
+                      @click="showMediaPostModal"
+                      :disabled="currentPostType && currentPostType !== 'photo' || sharePostPreview != null">
                       <i class="bi bi-image fs-4"></i>
                     </button>
                   </abbr>
@@ -172,7 +261,8 @@
                   <!-- Create a Poll Button -->
                   <abbr title="Create a Poll">
                     <button class="icons-hover d-flex justify-content-center align-items-center"
-                      @click="showPollPostModal" :disabled="currentPostType && currentPostType !== 'poll'">
+                      @click="showPollPostModal"
+                      :disabled="currentPostType && currentPostType !== 'poll' || sharePostPreview != null">
                       <i class="bi bi-bar-chart-line-fill fs-4"></i>
                     </button>
                   </abbr>
@@ -180,7 +270,7 @@
                   <!-- Color Posts Button -->
                   <abbr title="Color Posts">
                     <button class="icons-hover d-flex justify-content-center align-items-center" @click="showColor"
-                      :disabled="currentPostType && currentPostType !== 'color'">
+                      :disabled="currentPostType && currentPostType !== 'color' || sharePostPreview != null">
                       <i class="bi bi-palette-fill fs-4"></i>
                     </button>
                   </abbr>
@@ -188,8 +278,8 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @click="publishPost"
-                  :disabled="!isPublishable || isPublishing">Publish
-                  Post</button>
+                  :disabled="!isPublishable || isPublishing" v-if="!sharePostPreview">Publish Post</button>
+                  <button type="button" class="btn btn-primary" v-if="sharePostPreview">Share Post</button>
               </div>
             </div>
           </div>
@@ -236,7 +326,7 @@ import { mapState } from 'vuex';
 import UploadMedia from './UploadMedia.vue';
 import CreatePoll from './CreatePoll.vue';
 import PostSettings from './PostSettings.vue';
-
+import { formatDateTime } from '../../utils';
 export default {
   components: {
     PostSettings,
@@ -272,6 +362,7 @@ export default {
       postText: '',
       showPollPreview: false,
       showLinkPreview: false,
+      sharePostPreview: null,
       pollData: {
         question: '',
         options: [],
@@ -332,12 +423,19 @@ export default {
     },
   },
   methods: {
+    formatDateTime,
+    sharePostModal(post) {
+      this.postModalInstance.show();
+      console.log('Received post data:', post);
+      this.sharePostPreview = post;
+    },
     showPostModal() {
       this.postModalInstance.show();
     },
     hidePostModal() {
       this.postModalInstance.hide();
       setTimeout(() => this.removeBackdrop('postModal'), 150);
+      this.sharePostPreview = null;
     },
     showMediaPostModal() {
       this.hidePostModal();
@@ -492,6 +590,7 @@ export default {
       this.selectedColorId = null;
       this.showPollPreview = false;
       this.pollData = { question: '', options: [], duration: '' };
+      this.sharePostPreview = null;
       this.clearColor();
       this.clearLinkPreview();
     },
@@ -701,6 +800,18 @@ export default {
 .v3-emoji-picker {
   position: absolute;
   top: -60px;
+}
+
+.single-photo {
+  height: 300px;
+}
+
+.single-photo img {
+  max-height: 100%;
+}
+
+.share-preview-photo {
+  cursor: auto;
 }
 
 @media screen and (max-width: 768px) {

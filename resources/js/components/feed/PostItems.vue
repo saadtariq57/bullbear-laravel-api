@@ -42,7 +42,7 @@
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
                 class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
-                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img w-100">
+                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
                     <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
                   </div>
@@ -157,8 +157,23 @@
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
               @click="toggleComments(post.id, userData.id)"><i
                 class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2" @click="sharePost"><i
+                <div class="btn-group col-4">
+            <button type="button" class="btn fs-5 btn-feed-hover border-0 px-2 dropdown-toggle" @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
+                      aria-expanded="false"><i
                 class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
+                <ul class="dropdown-menu dropdown-menu-end z-1">
+                      <li><button class="dropdown-item fw-5" @click="triggerPostModal(post)"><i
+                        class="bi bi-pencil-square me-2"></i>Share to Feed </button></li>
+                      <li><button class="dropdown-item fw-5"><i
+                        class="bi bi-twitter-x me-2"></i>Share to Twitter</button></li>
+                      <li><button class="dropdown-item fw-5"><i
+                        class="bi bi-whatsapp me-2"></i>Send in WhatsApp</button></li>
+                      <li><button class="dropdown-item fw-5"><i
+                        class="bi bi-telegram me-2"></i>Send in Telegram</button></li>
+                        <li><button class="dropdown-item fw-5"><i
+                        class="bi bi-people-fill me-2"></i>Share to a group</button></li>
+                    </ul>                    
+                  </div>
           </div>
 
           <!-- Comments Section -->
@@ -296,16 +311,18 @@
 <script>
 import { formatDateTime } from '../../utils';
 import { Modal } from 'bootstrap';
+import { Dropdown } from 'bootstrap';
 import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
-import SharePost from "./SharePost.vue";
+import CreatePost from './CreatePost.vue';
 import PostComment from './PostComment.vue';
 import ReactionModal from '../utils/ReactionModal.vue';
 import PreviewModal from './PreviewModal.vue';
 
 export default {
   emits: ['show-reactions'],
+  emits: ['show-post-modal'],
   props: {
     posts: Array,
     reactionTypes: Array,
@@ -317,8 +334,8 @@ export default {
   components: {
     PostComment,
     ReactionModal,
-    SharePost,
     PreviewModal,
+    CreatePost,
     Skeletor
   },
   data() {
@@ -386,7 +403,14 @@ export default {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
     },
-
+    triggerPostModal(post) {
+      this.$emit('show-post-modal', post); // Emit event with post data
+    },
+    toggleDropdown(event) {
+            const dropdownElement = event.target.closest('.dropdown-toggle');
+            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+            dropdownInstance.toggle();
+        },
     postsLoaded() {
       this.loadingComputedPosts = false;
     },
