@@ -31,6 +31,9 @@ class HomeController extends Controller
     public function feedPage(){
         return view('feed');
     }
+    public function post(){
+        return view('single-post');
+    }
     public function profilePage(){
         return view('profile.index');
     }

@@ -551,11 +551,6 @@ export default {
   height: 100%;
   opacity: 1;
 }
-
-.preview-modal-item.carousel-item.active img {
-  align-self: center;
-}
-
 .post-preview-comments-modal {
   max-height: 550px !important;
   overflow-y: auto !important;
@@ -687,6 +682,7 @@ export default {
 
 .post-preview-scroll {
   max-height: 100vh;
+  height: 92vh;
 }
 
 .multi-post-img-wrapper {
@@ -728,16 +724,32 @@ export default {
 .no-post-text {
   color: #47484A;
 }
-
-@media screen and (max-width: 506px) {
+@media (max-width: 767px) {
+  .post-preview-scroll{
+    max-height: 100%;
+    height: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .multi-post-img{
+    height: 200px;
+  }
+}
+@media (max-width: 506px) {
   .post-reach button {
     padding-left: 2px;
     padding-right: 2px;
     font-size: 13px !important;
   }
+  .multi-post-img{
+    height: 180px;
+  }
 }
 
-@media screen and (max-width: 350px) {
+@media (max-width: 350px) {
+  .multi-post-img{
+    height: 120px;
+  }
   .post-reach button i {
     margin-right: 3px !important;
   }
