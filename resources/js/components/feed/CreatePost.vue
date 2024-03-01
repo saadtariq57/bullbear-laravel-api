@@ -134,12 +134,12 @@
                   </div>
                   <!-- Share Preview -->
                   <div v-if="sharePostPreview" class="px-2">
-                    <div class="border border-1 border-secondary-subtle rounded-2 share-photo-preview ">
+                    <div class="border border-1 border-secondary-subtle rounded-2 share-photo-preview shadow mb-3">
                       <div class="post-file" v-if="sharePostPreview.post_type == 'photo'">
                         <div v-if="sharePostPreview.multi_image > 0"
                           class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
                           <div v-for="(photo, index) in  sharePostPreview.photos " :key="photo.id"
-                            class="multi-post-img-wrapper text-center btn p-0">
+                            class="multi-post-img-wrapper text-center btn p-0 border-0">
                             <div v-if="sharePostPreview.photos.length > 4" class="position-relative multi-post-img">
                               <img :src="`/${photo.image}`" alt="Post image"
                                 class="img-fluid object-fit-cover multi-post-img share-preview-photo">
@@ -279,7 +279,7 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @click="publishPost"
                   :disabled="!isPublishable || isPublishing" v-if="!sharePostPreview">Publish Post</button>
-                  <button type="button" class="btn btn-primary" v-if="sharePostPreview">Share Post</button>
+                  <button type="button" class="btn btn-primary" v-else>Share Post</button>
               </div>
             </div>
           </div>

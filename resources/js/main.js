@@ -44,6 +44,11 @@ const routes = [
         component: () => import('./components/feed/UserFeed.vue'),
     },
     {
+        path: '/single-post',
+        name: 'single-post',
+        component: () => import('./components/feed/SinglePost.vue'),
+    },
+    {
         path: '/profile',
         name: 'profile',
         component: () => import('./components/profile/UserProfile.vue'),

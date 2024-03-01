@@ -59,6 +59,7 @@ Route::get('/groups', [HomeController::class, 'groupPage'])->name('group');
 // Routes requiring authentication
 Route::middleware(['auth'])->group(function () {
     Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
+    Route::get('/single-post', [HomeController::class, 'post'])->name('single-post');
     Route::get('/profile', [HomeController::class, 'profilePage'])->name('profile');
     Route::get('/groups/{group_id}/{group_name}', [HomeController::class, 'singleGroupPage'])->name('groups.single');
     // Profile route
