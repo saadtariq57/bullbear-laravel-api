@@ -112,7 +112,7 @@
                                     <div class="previewmodal-comments">
                                         <!-- Comments Section -->
                                         <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id"
-                                            :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" />
+                                            :reactionTypes="reactionTypes" @show-reactions="handleShowReactions" @comment-submitted="updateCommentsCount($event)" @comment-deleted="reupdateCommentsCount($event)" />
                                     </div>
                                 </div>
                             </div>
@@ -225,6 +225,14 @@ export default {
                 }
             }
         },
+        updateCommentsCount(data) {
+        this.post.comments_count +=1;
+        this.$emit('comments-count-updated', { postId: this.post.id , increment: 1});
+    },
+        reupdateCommentsCount(data) {
+        this.post.comments_count -=1;
+        this.$emit('comments-count-reupdated', { postId: this.post.id , increment: -1});
+    },
     },
     mounted() {
         // console.log('reactionTypes prop:', this.reactionTypes);

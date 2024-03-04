@@ -157,28 +157,25 @@
             <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
               @click="toggleComments(post.id, userData.id)"><i
                 class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
-                <div class="btn-group col-4">
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 px-2 dropdown-toggle" @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
-                      aria-expanded="false"><i
-                class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
-                <ul class="dropdown-menu dropdown-menu-end z-1">
-                      <li><button class="dropdown-item fw-5" @click="triggerPostModal(post)"><i
-                        class="bi bi-pencil-square me-2"></i>Share to Feed </button></li>
-                      <li><button class="dropdown-item fw-5"><i
-                        class="bi bi-twitter-x me-2"></i>Share to Twitter</button></li>
-                      <li><button class="dropdown-item fw-5"><i
-                        class="bi bi-whatsapp me-2"></i>Send in WhatsApp</button></li>
-                      <li><button class="dropdown-item fw-5"><i
-                        class="bi bi-telegram me-2"></i>Send in Telegram</button></li>
-                        <li><button class="dropdown-item fw-5"><i
-                        class="bi bi-people-fill me-2"></i>Share to a group</button></li>
-                    </ul>                    
-                  </div>
+            <div class="btn-group col-4">
+              <button type="button" class="btn fs-5 btn-feed-hover border-0 px-2 dropdown-toggle"
+                @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
+                aria-expanded="false"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
+              <ul class="dropdown-menu dropdown-menu-end z-1">
+                <li><button class="dropdown-item fw-5" @click="triggerPostModal(post)"><i
+                      class="bi bi-pencil-square me-2"></i>Share to Feed </button></li>
+                <li><button class="dropdown-item fw-5"><i class="bi bi-twitter-x me-2"></i>Share to Twitter</button></li>
+                <li><button class="dropdown-item fw-5"><i class="bi bi-whatsapp me-2"></i>Send in WhatsApp</button></li>
+                <li><button class="dropdown-item fw-5"><i class="bi bi-telegram me-2"></i>Send in Telegram</button></li>
+                <li><button class="dropdown-item fw-5"><i class="bi bi-people-fill me-2"></i>Share to a group</button>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <!-- Comments Section -->
           <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes"
-            @show-reactions="handleShowReactions" />
+            @show-reactions="handleShowReactions" @comment-submitted="updateCommentsCount($event)" @comment-deleted="updateCommentsCount($event)" />
         </div>
       </div>
     </div>
@@ -304,7 +301,7 @@
     <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
       @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
     <PreviewModal ref="previewModal" :previewPost="clickedPost" :reactionTypes="clickedPostReactionTypes"
-      @close-modal="clickedPost = null" @modal-mounted="handlePreviewModalMounted" />
+      @close-modal="clickedPost = null" @modal-mounted="handlePreviewModalMounted" @comments-count-updated="updateCommentsCount($event)" @comments-count-reupdated="updateCommentsCount($event)"/>
   </div>
 </template>
 
@@ -321,8 +318,7 @@ import ReactionModal from '../utils/ReactionModal.vue';
 import PreviewModal from './PreviewModal.vue';
 
 export default {
-  emits: ['show-reactions'],
-  emits: ['show-post-modal'],
+  emits: ['show-reactions', 'show-post-modal'],
   props: {
     posts: Array,
     reactionTypes: Array,
@@ -407,10 +403,10 @@ export default {
       this.$emit('show-post-modal', post); // Emit event with post data
     },
     toggleDropdown(event) {
-            const dropdownElement = event.target.closest('.dropdown-toggle');
-            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
-            dropdownInstance.toggle();
-        },
+      const dropdownElement = event.target.closest('.dropdown-toggle');
+      const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+      dropdownInstance.toggle();
+    },
     postsLoaded() {
       this.loadingComputedPosts = false;
     },
@@ -462,6 +458,14 @@ export default {
 
         this.updateFetchedCommentsVisibility(postId);
       }
+    },
+    updateCommentsCount(data) {
+        const postId = data.postId;
+        const increment = data.increment;
+        const postIndex = this.posts.findIndex(post => post.id === postId);
+        if (postIndex !== -1) {
+            this.posts[postIndex].comments_count += increment;
+        }
     },
     submitVote(pollId, optionId) {
       this.addVote({ pollId, optionId });
@@ -724,32 +728,37 @@ export default {
 .no-post-text {
   color: #47484A;
 }
+
 @media (max-width: 767px) {
-  .post-preview-scroll{
+  .post-preview-scroll {
     max-height: 100%;
     height: 100%;
   }
 }
+
 @media (max-width: 600px) {
-  .multi-post-img{
+  .multi-post-img {
     height: 200px;
   }
 }
+
 @media (max-width: 506px) {
   .post-reach button {
     padding-left: 2px;
     padding-right: 2px;
     font-size: 13px !important;
   }
-  .multi-post-img{
+
+  .multi-post-img {
     height: 180px;
   }
 }
 
 @media (max-width: 350px) {
-  .multi-post-img{
+  .multi-post-img {
     height: 120px;
   }
+
   .post-reach button i {
     margin-right: 3px !important;
   }

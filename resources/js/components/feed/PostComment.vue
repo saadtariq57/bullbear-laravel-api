@@ -250,7 +250,7 @@ import { Dropdown } from 'bootstrap';
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
 export default {
-  emits: ['show-reactions'],
+  emits: ['show-reactions','comment-submitted', 'comment-deleted'],
   props: {
     postId: Number,
     reactionTypes: Array,
@@ -312,6 +312,7 @@ export default {
         this.newContent = '';
         this.isSubmitting = false;
         if (isReply) this.showReplyInput[commentId] = false;
+        this.$emit('comment-submitted', { postId: postId , increment: 1 });
       });
     },
     handleEdit(commentId, text, isReply = false) {
@@ -346,6 +347,7 @@ export default {
         parentId: paraentId,
         isReply: isReply
       });
+      this.$emit('comment-deleted', { postId: postId , increment: -1});
     },
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
