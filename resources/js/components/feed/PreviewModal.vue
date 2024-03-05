@@ -230,12 +230,13 @@ export default {
         this.$emit('comments-count-updated', { postId: this.post.id , increment: 1});
     },
         reupdateCommentsCount(data) {
-        this.post.comments_count -=1;
-        this.$emit('comments-count-reupdated', { postId: this.post.id , increment: -1});
+            console.log(data.increment);
+          const  increment = -data.increment;
+        this.post.comments_count -= increment;
+        this.$emit('comments-count-reupdated', { postId: this.post.id , increment: -increment});
     },
     },
     mounted() {
-        // console.log('reactionTypes prop:', this.reactionTypes);
         this.$emit('modal-mounted', this.$refs.previewModal);
     },
 }
