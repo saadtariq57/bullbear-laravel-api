@@ -105,10 +105,10 @@
                         <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)"
                           :key="index">
                           <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
-                            reactionDetail.count }}
+        reactionDetail.count }}
                         </span>
                         <span v-if="Object.keys(comment.organizedReactions).length > 3">+{{
-                          Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+        Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
                       </button>
                     </div>
                   </div>
@@ -223,10 +223,10 @@
                                   v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)"
                                   :key="index">
                                   <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
-                                    reactionDetail.count }}
+        reactionDetail.count }}
                                 </span>
                                 <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{
-                                  Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+        Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
                               </button>
                             </div>
                           </div>
@@ -243,6 +243,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { mapState, mapActions } from 'vuex';
 import { formatDateTime } from '../../utils';
@@ -250,7 +251,7 @@ import { Dropdown } from 'bootstrap';
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
 export default {
-  emits: ['show-reactions'],
+  emits: ['show-reactions', 'comment-submitted', 'comment-deleted'],
   props: {
     postId: Number,
     reactionTypes: Array,
@@ -311,7 +312,15 @@ export default {
       }).then(() => {
         this.newContent = '';
         this.isSubmitting = false;
-        if (isReply) this.showReplyInput[commentId] = false;
+        if (isReply) {
+          this.showReplyInput[commentId] = false;
+          const commentIndex = this.postComments.findIndex(comment => comment.id === commentId);
+          if (commentIndex !== -1) {
+            this.postComments[commentIndex].replies_count += 1;
+            // console.log(this.postComments[commentIndex].replies.length);
+          }
+        }
+        this.$emit('comment-submitted', { postId: postId, increment: 1 });
       });
     },
     handleEdit(commentId, text, isReply = false) {
@@ -346,6 +355,16 @@ export default {
         parentId: paraentId,
         isReply: isReply
       });
+      const commentIndex = this.postComments.findIndex(comment => comment.id === commentId);
+      const replayIndex = commentIndex + 1;
+      const repliesLength = this.postComments[commentIndex]?.replies?.length || 0;
+      // console.log(this.postComments[commentIndex].replies_count + "before")
+      if (replayIndex !== -1 && this.postComments[replayIndex] && this.postComments[replayIndex].replies_count !== undefined) {
+    this.postComments[replayIndex].replies_count -= 1;
+}
+
+      const increment = repliesLength > 0 ? repliesLength + 1 : 1;
+      this.$emit('comment-deleted', { postId: postId, increment: -increment });
     },
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');

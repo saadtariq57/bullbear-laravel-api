@@ -2855,6 +2855,12 @@ p.user-message {
 }
 
 /* Price & Plan Css End */
+/* webinar Css Start */
+.no-webinar-wrapper{
+    min-height: 60vh;
+}
+/* Price & Plan Css End */
+
 @media (max-width: 1550px) {
     .main-heading h1 {
         font-size: 65px;

@@ -28,12 +28,30 @@ Route::get('/ceo-single', function () {
     return view('ceo-single');
 })->name('ceo-single');
 
-Route::get('/earning-calender', function () {
-    return view('earning-calender');
-})->name('earning-calender');
-Route::get('/economic-calender', function () {
-    return view('economic-calender');
-})->name('economic-calender');
+Route::get('/earning-calendar', function () {
+    return view('earning-calendar');
+})->name('earning-calendar');
+Route::get('/economic-calendar', function () {
+    return view('economic-calendar');
+})->name('economic-calendar');
+Route::get('/holiday-calendar', function () {
+    return view('holiday-calendar');
+})->name('holiday-calendar');
+Route::get('/dividend-calendar', function () {
+    return view('dividend-calendar');
+})->name('dividend-calendar');
+Route::get('/splits-calendar', function () {
+    return view('splits-calendar');
+})->name('splits-calendar');
+Route::get('/ipo-calendar', function () {
+    return view('ipo-calendar');
+})->name('ipo-calendar');
+Route::get('/futures-expiry-calendar', function () {
+    return view('futures-expiry-calendar');
+})->name('futures-expiry-calendar');
+Route::get('/webinar', function () {
+    return view('webinar');
+})->name('webinar');
 
 Route::get('/trading-school', function () {
     return view('trading-school');
@@ -49,6 +67,9 @@ Route::get('/quote/{symbol}', function () {
 Route::get('/email-alerts', function () {
     return view('email-alerts');
 })->name('email-alerts');
+Route::get('/markets', function () {
+    return view('markets');
+})->name('markets');
 
 // Profile route
 Route::get('/pricing', function () {

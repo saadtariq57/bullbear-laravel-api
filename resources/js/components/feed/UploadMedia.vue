@@ -11,7 +11,7 @@
           <img src="https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
             class="mb-3" width="200">
           <h2>Select files to begin</h2>
-          <p>Share images or a single video in your post.</p>
+          <p>Share images in your post.</p>
 
           <label class="btn btn-primary">
             <input ref="fileInput" type="file" @change="handleFileChange" multiple
@@ -54,7 +54,7 @@
                 <img src="https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
                   class="mb-3" width="200">
                 <h2>Select files to begin</h2>
-                <p>Share images or a single video in your post.</p>
+                <p>Share images in your post.</p>
 
                 <label class="btn btn-primary">
                   <input ref="fileInput" type="file" @change="handleFileChange" multiple

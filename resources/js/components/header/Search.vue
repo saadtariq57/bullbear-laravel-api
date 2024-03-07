@@ -14,7 +14,7 @@
                     <span class="header-serch-icon position-absolute">
                         <i class="bi bi-search nav-clr fs-4"></i></span>
                     <div class="navbar-search w-100">
-                        <input class="navbar-search w-100 border-0" v-model="search" type="search"
+                        <input class="navbar-search w-100 border-0" v-model="search" type="search" name="search-symbol"
                             placeholder="Search Markets and Groups" @input="searchTags" />
 
 

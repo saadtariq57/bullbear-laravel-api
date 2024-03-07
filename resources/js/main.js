@@ -34,6 +34,11 @@ window.axios = axios;
 // Define routes with lazy loading
 const routes = [
     {
+        path: '/markets',
+        name: 'markets',
+        component: () => import('./components/markets/Markets.vue'),
+    },
+    {
         path: '/pricing',
         name: 'pricing',
         component: () => import('./components/pricing/Pricing.vue'),

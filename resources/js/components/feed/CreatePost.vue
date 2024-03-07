@@ -170,7 +170,7 @@
                       <div v-if="sharePostPreview.colored_post_id"
                         class="colored-post-text d-flex justify-content-center align-items-center"
                         :style="{ backgroundImage: 'linear-gradient(45deg, ' + sharePostPreview.colored_post.color_1 + ' 0%, ' + sharePostPreview.colored_post.color_2 + ' 100%)' }">
-                        <p :style="{ color: sharePostPreview.colored_post.text_color }">{{ sharePostPreview.post_text }}
+                        <p :style="{ color: sharePostPreview.colored_post.text_color }" class="px-3 py-2 lh-base">{{ sharePostPreview.post_text }}
                         </p>
                       </div>
                       <div v-if="sharePostPreview.post_type === 'link'" class="link-file">
@@ -435,6 +435,8 @@ export default {
     hidePostModal() {
       this.postModalInstance.hide();
       setTimeout(() => this.removeBackdrop('postModal'), 150);
+      this.clearPostType();
+      this.$refs.uploadMediaComponent.resetStateParent();
       this.sharePostPreview = null;
     },
     showMediaPostModal() {
