@@ -30,7 +30,7 @@
           <div v-if="post.post_text" class="post-description px-3 text-break">
             <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
               :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.colored_post.color_1 + ' 0%, ' + post.colored_post.color_2 + ' 100%)' }">
-              <p :style="{ color: post.colored_post.text_color }">{{ post.post_text }}</p>
+              <p :style="{ color: post.colored_post.text_color }" class="px-3 py-2 lh-base">{{ post.post_text }}</p>
             </div>
             <p v-else>{{ post.post_text }}</p>
           </div>
@@ -144,6 +144,7 @@
               @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
               @click="handleReaction(post.id, 1)">
               <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
+              <i v-if="getReactionName(post.userReaction) == 'Like'" class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"></i>
               <span :class="getReactionName(post.userReaction)">
                 {{ getReactionName(post.userReaction) }}
               </span>

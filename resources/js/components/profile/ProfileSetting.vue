@@ -354,7 +354,7 @@
                 <div class="row g-3 px-3 pt-3">
                   <div class="col-md-12">
                     <label for="aboutme" class="form-label col-form-label-lg">About me</label>
-                    <textarea class="form-control form-control-lg" placeholder="Describe yourself here..." rows="1"
+                    <textarea class="form-control form-control-lg" placeholder="Describe yourself here..."
                       name="about">{{ userData.about }}</textarea>
                   </div>
                 </div>

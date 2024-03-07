@@ -6,8 +6,9 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="user-Timeline" role="tabpanel"
                         aria-labelledby="user-Timeline-tab">
-                        <CreatePost context="profile" />
-                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="profile" />
+                        <CreatePost context="profile" ref="createPost" />
+                        <PostItems :posts="posts" :reactionTypes="reactionTypes" context="profile"
+                            @show-post-modal="handleShowPostModal" />
                     </div>
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div class="mb-3 ps-3 pt-3 pb-3 bg-white shadow rounded">
@@ -23,7 +24,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="user-watchlists" role="tabpanel" aria-labelledby="user-watchlists-tab">
+                    <div class="tab-pane fade" id="user-watchlists" role="tabpanel"
+                        aria-labelledby="user-watchlists-tab">
                         <div>
                             <watchlistTables />
                         </div>
@@ -117,8 +119,8 @@
                         <div class="row gx-2 gy-2">
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -131,15 +133,15 @@
                 </ul>
                 <ul class="bg-white list-unstyled rounded-1 pb-1 shadow">
                     <div class="border-bottom fw-6 fs-6 py-1 ps-3 mb-1"><i
-                            class="bi bi-person-plus-fill me-2 bg-primary text-black rounded-5 px-2 py-1"></i><a href="#"
-                            class="text-secondary">Friends <span>(3)</span></a>
+                            class="bi bi-person-plus-fill me-2 bg-primary text-black rounded-5 px-2 py-1"></i><a
+                            href="#" class="text-secondary">Friends <span>(3)</span></a>
                     </div>
                     <li class="p-1 ">
                         <div class="row gx-2 gy-2">
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -148,8 +150,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -158,8 +160,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -178,8 +180,8 @@
                         <div class="row gx-2 gy-2">
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -188,8 +190,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -198,8 +200,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -208,8 +210,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -218,8 +220,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -228,8 +230,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -238,8 +240,8 @@
                             </a>
                             <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                 <div class="position-relative"><img
-                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0" alt=""
-                                        class="w-100">
+                                        src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                        alt="" class="w-100">
                                     <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                         dev123
                                         test
@@ -251,8 +253,8 @@
                 </ul>
                 <div class="border-primary pt-4 pb-2 px-3 border mb-2 rounded-1" style="background-color: #ffb8001a">
                     <h1 class="fw-6 fs-5 text-secondary"><img
-                            src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20"
-                            height="20">
+                            src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt=""
+                            width="20" height="20">
                         RISK DISCLAIMER!</h1>
                     <p class="fs-14 text-black">Stock market investing is inherently risky. Rich TV is not
                         responsible for any gains or losses that result from the opinions expressed on this website,
@@ -290,6 +292,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
 import { mapState, mapActions } from 'vuex';
@@ -346,6 +349,10 @@ export default {
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         ...mapActions('UserGroups', ['fetchSuggestedChats']),
+        handleShowPostModal(post) {
+            this.$refs.createPost.sharePostModal(post); // Call the method in the child component
+            //   console.log('Received post data:', post);
+        }
     },
 }
 </script>

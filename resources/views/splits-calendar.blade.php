@@ -4,22 +4,16 @@
   @endsection
   @section('content')
 
-    <section class="container-fluid mt-3 py-80">
+    <section class="container-fluid my-4">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="mb-5">
-                        <h1 class="fs-1 fw-bold">Earnings Calendar</h1>
-                    </div>
-                    <div class="d-flex border-bottom">
-                        <a href="" class="text-black fw-6 pe-3 pb-3">Economic Calender</a>
-                        <a href=""
-                            class="clr-primary border-bottom border-primary border-2 fw-6 px-3 pb-3">Earnings
-                            Calendar</a>
+                    <div class="mb-5 border-bottom">
+                        <h1 class="fs-1 fw-bold">Splits Calendar</h1>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                <div class="trendingvideos-widget mb-3 shadow-sm rounded border-top border-2 border-warning">
+                <div class="trendingvideos-widget mb-3 shadow rounded border-top border-2 border-warning">
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 GAINER OF THE MONTH</h2>
                     </div>
@@ -111,7 +105,7 @@
                     </div>
 
                 </div>
-                <div class="trendingvideos-widget mb-3 shadow-sm rounded border-top border-2 border-warning">
+                <div class="trendingvideos-widget mb-3 shadow rounded border-top border-2 border-warning">
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 LOSSER OF THE MONTH</h2>
                     </div>

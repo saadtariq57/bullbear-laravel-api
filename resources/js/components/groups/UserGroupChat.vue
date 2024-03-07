@@ -23,9 +23,10 @@
                 <div class="tab-content bg-white shadow" id="mychatsContent">
                     <div class="tab-pane fade show active container pt-4" id="groupdiscussion-tab-pane" role="tabpanel"
                         aria-labelledby="groupdiscussion-tab" tabindex="0">
-                        <CreatePost context="group" />
+                        <CreatePost context="group" ref="createPost" />
                         <div class="pt-2 pb-1">
-                            <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group" />
+                            <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group"
+                                @show-post-modal="handleShowPostModal" />
                         </div>
                     </div>
                     <div class="tab-pane fade" id="livechat-tab-pane" role="tabpanel" aria-labelledby="livechat-tab"
@@ -173,6 +174,7 @@
         </div>
     </div>
 </template>
+
 <script>
 //need group id here somehow and send to fetchPosts
 import { mapState, mapActions } from 'vuex';
@@ -201,6 +203,10 @@ export default {
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+        handleShowPostModal(post) {
+            this.$refs.createPost.sharePostModal(post); // Call the method in the child component
+            //   console.log('Received post data:', post);
+        }
     },
 }
 </script>
