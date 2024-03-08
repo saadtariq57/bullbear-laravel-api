@@ -70,6 +70,9 @@ Route::get('/email-alerts', function () {
 Route::get('/markets', function () {
     return view('markets');
 })->name('markets');
+Route::get('/markets/cryptocurrency', function () {
+    return view('markets.cryptocurrency-market');
+})->name('cryptocurrency-market');
 
 // Profile route
 Route::get('/pricing', function () {

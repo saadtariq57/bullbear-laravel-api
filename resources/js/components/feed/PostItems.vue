@@ -742,6 +742,11 @@ export default {
     height: 200px;
   }
 }
+@media (max-width: 575px) {
+  .post-file{
+    max-height: 420px;
+  }
+}
 
 @media (max-width: 506px) {
   .post-reach button {
@@ -753,11 +758,17 @@ export default {
   .multi-post-img {
     height: 180px;
   }
+  .post-file{
+    max-height: 380px;
+  }
 }
 
 @media (max-width: 350px) {
   .multi-post-img {
     height: 120px;
+  }
+  .post-file{
+    max-height: 260px;
   }
 
   .post-reach button i {

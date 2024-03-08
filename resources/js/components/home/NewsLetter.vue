@@ -26,3 +26,15 @@
     </div>
   </section>
 </template>
+<style>
+@media (max-width: 440px) {
+  .newsletter-wrapper{
+    padding: 50px 35px;
+  }
+}
+@media (max-width: 350px) {
+  .newsletter-wrapper{
+    padding: 30px 20px;
+  }
+}
+</style>

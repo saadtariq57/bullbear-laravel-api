@@ -2,8 +2,7 @@
     <div class="text-center">
             <p class="mb-0 fw-bold text-black">Markets</p>
             <h1 class="fw-bold">Indices</h1>
-            <hr class="market-divider border-2">
-            <div class="d-flex align-items-center justify-content-center gap-3">
+            <div class="d-flex align-items-center justify-content-center gap-3 border-top pt-3">
                     <a href="" class="fw-5 Blue">Market Mover</a>
                     <div class="dividers"></div>
                     <a href="" class="fw-5 Blue">Dow 30</a>
@@ -16,39 +15,39 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="mt-5 overflow-auto market-table-wapper">
-                                <table class="table fw-bold table-width">
+                                <table class="table table-width">
                                     <thead>
                                         <tr>
-                                            <th>Sybmol</th>
-                                            <th class="text-end">Price</th>
-                                            <th class="text-end">Change</th>
-                                            <th class="text-end">Change %</th>
+                                            <th class="fw-6">Sybmol</th>
+                                            <th class="text-end fw-6">Price</th>
+                                            <th class="text-end fw-6">Change</th>
+                                            <th class="text-end fw-6">Change %</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>USD</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">USD</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>TSLA</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">TSLA</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>GT</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">GT</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>NASDAQ</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">NASDAQ</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -56,39 +55,39 @@
                             </div>
                             <div class="mt-5 overflow-auto market-table-wapper">
                                 <h2 class="fs-4">Stock Indexes</h2>
-                                <table class="table fw-bold table-width">
+                                <table class="table table-width">
                                     <thead>
                                         <tr>
-                                            <th>Sybmol</th>
-                                            <th class="text-end">Price</th>
-                                            <th class="text-end">Change</th>
-                                            <th class="text-end">Change %</th>
+                                            <th class="fw-6">Sybmol</th>
+                                            <th class="text-end fw-6">Price</th>
+                                            <th class="text-end fw-6">Change</th>
+                                            <th class="text-end fw-6">Change %</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>USD</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">USD</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>TSLA</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">TSLA</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>GT</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">GT</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>NASDAQ</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">NASDAQ</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -96,39 +95,39 @@
                             </div>
                             <div class="mt-5 overflow-auto market-table-wapper">
                                 <h2 class="fs-4">Commodities</h2>
-                                <table class="table fw-bold table-width">
+                                <table class="table table-width">
                                     <thead>
                                         <tr>
-                                            <th>Sybmol</th>
-                                            <th class="text-end">Price</th>
-                                            <th class="text-end">Change</th>
-                                            <th class="text-end">Change %</th>
+                                            <th class="fw-6">Sybmol</th>
+                                            <th class="text-end fw-6">Price</th>
+                                            <th class="text-end fw-6">Change</th>
+                                            <th class="text-end fw-6">Change %</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>USD</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">USD</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>TSLA</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">TSLA</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>GT</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Green">+299.29</td>
-                                            <td class="text-end Green postive-arrow-icon-after">+0.51</td>
+                                            <td class="fw-5">GT</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Green">+299.29</td>
+                                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
                                         </tr>
                                         <tr>
-                                            <td>NASDAQ</td>
-                                            <td class="text-end">242.68 USD</td>
-                                            <td class="text-end Red">-299.29</td>
-                                            <td class="text-end Red negative-arrow-icon-after">-0.51</td>
+                                            <td class="fw-5">NASDAQ</td>
+                                            <td class="text-end fw-5">242.68 USD</td>
+                                            <td class="text-end fw-5 Red">-299.29</td>
+                                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -142,9 +141,6 @@
     export default {}
 </script>
 <style>
-.market-divider{
-    border-color: black;
-}
 .dividers{
     width: 1px;
     background-color: var(--Blue-Koi);
