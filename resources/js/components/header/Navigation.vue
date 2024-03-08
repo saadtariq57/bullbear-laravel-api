@@ -66,7 +66,7 @@
                                                     <a class="dropdown-item nav-link" href="/markets">Commodities</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Cryptocurrency</a>
+                                                    <a class="dropdown-item nav-link" href="/markets/cryptocurrency">Cryptocurrency</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/markets">Currencies</a>
