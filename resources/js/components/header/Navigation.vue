@@ -1,9 +1,9 @@
 <template>
-    <header class="container-fluid main-header px-5 bg-white">
+    <header class="container-fluid main-header bg-white">
         <div>
             <div class="nav-main">
                 <nav class="navbar bg-transparent py-3">
-                    <div class="container-fluid p-0 gap-3 justify-content-center">
+                    <div class="container p-0 gap-3 justify-content-center nav-container">
                         <div class="d-flex align-items-center gap-5 flex-fill nav-top-header">
                             <div class="site-logo">
                                 <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
@@ -15,36 +15,70 @@
 
                             <div class="flex-fill"><!-- Search offcanvas component -->
                                 <Search />
-                                <div class="position-relative d-none d-xl-block" 
-                                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
-                                    aria-controls="offcanvasTop">
-                                    <input type="text" class="form-control form-control-lg shadow-sm pe-5 header-search" id="exampleFormControlInput1"
-                                        placeholder="Search Markets and Groups">
-                                        <button class="bg-transparent border-0 search-btn fs-3 nav-clr position-absolute" type="button">
-                                    <i class="bi bi-search"></i>
-                                </button>
+                                <div class="position-relative d-none d-xl-block" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+                                    <input type="text" class="form-control form-control-lg shadow-sm pe-5 header-search"
+                                        id="exampleFormControlInput1" placeholder="Search Markets and Groups">
+                                    <button class="bg-transparent border-0 search-btn fs-3 nav-clr position-absolute"
+                                        type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
                                 </div>
                             </div>
                             <template v-if="userData">
-                                <div class="d-flex gap-5 align-items-center">
+                                <div class="d-flex gap-5 align-items-center profile-wrapper">
                                     <Profile />
+                                    <button class="bg-transparent border-0 fs-3 nav-clr d-block d-xl-none" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                                        type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
                                 </div>
                             </template>
 
                             <template v-else>
                                 <Login />
+                                <button class="bg-transparent border-0 fs-3 nav-clr d-block d-xl-none" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                                        type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
                             </template>
                         </div>
-                        <button class="navbar-toggler d-block d-xl-none border-0" type="button"
+                    <div class="d-block d-xl-none moblie-bottom-navbar fixed-bottom bg-white">
+                        <ul class="d-flex px-3 px-sm-4 py-3 m-0 justify-content-between align-items-center list-unstyled">
+                            <li class="text-center cursor-pointer nav-bottom-link">
+                                <a href="" class="text-black">
+                                <i class="bi bi-graph-up-arrow fs-3"></i>
+                                <span class="d-block fw-5 fs-16">Markets</span>
+                            </a>
+                            </li>
+                            <li class="text-center cursor-pointer nav-bottom-link">
+                                <a href="" class="text-black">
+                                <i class="bi bi-star fs-3"></i>
+                                <span class="d-block fw-5 fs-16">Watchlists</span></a>
+                            </li>
+                            <li class="text-center cursor-pointer nav-bottom-link">
+                                <a href="" class="text-black">
+                                <i class="bi bi-youtube fs-2"></i>
+                                <span class="d-block fw-5 fs-16">Ceo Interviews</span></a>
+                            </li>
+                            <li class="text-center nav-bottom-link" 
                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
                             aria-controls="offcanvasDarkNavbar">
+                                <button class="navbar-toggler border-0" type="button">
                             <!-- <i class="bi bi-list fs-2 fw-bolder nav-clr"></i> -->
-                            <svg width="30" height="23" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="23" height="23" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z"
                                     fill="#000000"></path>
                             </svg>
                         </button>
+                    
+                        <span class="d-block fw-5 fs-16 pt-1">Menu</span>
+                            </li>
+                        </ul>
+                    </div>
 
                         <div class="dextop-nav d-none d-xl-block flex-fill">
                             <div class="main-menu-container d-flex gap-4 align-items-center justify-content-center">
@@ -52,37 +86,278 @@
                                     <li>
                                         <div class="dropdown">
                                             <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                Markets
-                                            </button>
-                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                data-bs-toggle="dropdown" aria-expanded="false">Markets</button>
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu rounded-3 flex-column">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Indices</a>
+                                                    <div class="dropdown nested-dropdown-wrapper">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Indices</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="">Indices
+                                                                Futures</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="">Major Indices</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="">Indices Real-Time
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">World Indices</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">Global Indices</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">Dow Jones Futures</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">S&P 500 Futures</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">Nasdaq Futures</a>
+                                                        </li>
+                                                </ul>
+                                                    </div>
+                                                    </li>
+                                                    <li>
+                                                    <div class="dropdown nested-dropdown-wrapper">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Stocks</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                    <li>
+                                                            <a class="dropdown-item nav-link" href="">Stock Screener</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link py-1"
+                                                                href="">
+                                                                Trending Stocks</a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">United States</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">Pre-Market</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link"
+                                                                href="">Earnings Calendar</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Americas</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Europe</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">52 Week High</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">52 Week Low</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Most Active</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Top Gainers</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Top Losers</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">World ADRs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Marijuana Stocks</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Top Bank Stocks</a>
+                                                        </li>
+                                                </ul>
+                                                    </div>
+                                                    </li>
+                                                    <li>
+                                                    <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Commodities</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Real Time Commodities</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Metals</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Energy</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Grains</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Softs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Meats</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Commodity Indices</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Cryptocurrency</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">All Cryptocurrencies</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Cryptocurrency Pairs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Bitcoin ETFs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Bitcoin</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Ethereum</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Cardano</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Solana</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Dogecoin</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">SHIBA INU</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Currency Converter</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Currencies</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Currency Rates</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Single Currency Crosses</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Live Currency Cross Rates</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Exchange Rates Table</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Forward Rates</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Currency Futures</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Currency Options</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+                                                </li>
+                                                    <li>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">ETFs</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">World ETFs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Major ETFs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">USA ETFs</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Marijuana ETFs</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Stocks</a>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Funds</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                    <li>
+                                                            <a class="dropdown-item nav-link" href="/">World Funds</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Major Funds</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Commodities</a>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Bonds</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">US Treasury Yield Curve</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">World Government Bonds</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Financial Futures</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Government Bond Spreads</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Bond Indices</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Forward Rates</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">World Credit Default Swap Rates (CDS)</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/markets/cryptocurrency">Cryptocurrency</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Currencies</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">ETFs</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Funds
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Bonds</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/markets">Certificates</a>
+                                                        <div class="dropdown nested-dropdown-wrapper position-relative">
+                                                        <button class="nav-link nested-nav-dropdown fw-4" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Certificates</button>
+                                                <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">Major Certificates</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item nav-link" href="/">World Certificates</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
                                                 </li>
                                             </ul>
                                         </div>
@@ -193,19 +468,24 @@
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/stocks/">Stocks
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/stocks/">Stocks
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/investing/">Investing
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/investing/">Investing
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/press-release/">Press Release
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/press-release/">Press
+                                                        Release
                                                     </a>
                                                 </li>
                                             </ul>
@@ -219,25 +499,32 @@
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/economic-calendar">Economic Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/economic-calendar">Economic
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/holiday-calendar">Holiday Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/holiday-calendar">Holiday
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/earning-calendar">Earnings Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/earning-calendar">Earnings
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/dividend-calendar">Dividend Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/dividend-calendar">Dividend
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/splits-calendar">Splits Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/splits-calendar">Splits
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/ipo-calendar">IPO Calendar</a>
+                                                    <a class="dropdown-item nav-link" href="/ipo-calendar">IPO
+                                                        Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/futures-expiry-calendar">Futures Expiry
+                                                    <a class="dropdown-item nav-link"
+                                                        href="/futures-expiry-calendar">Futures Expiry
                                                         Calendar</a>
                                                 </li>
                                                 <li>
@@ -257,7 +544,8 @@
                                             </button>
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/trading-school">Trading School</a>
+                                                    <a class="dropdown-item nav-link" href="/trading-school">Trading
+                                                        School</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="">specialize Reports</a>
@@ -266,7 +554,9 @@
                                                     <a class="dropdown-item nav-link" href="">Special Alerts</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/market-analysis/">Market Analysis</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market
+                                                        Analysis</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="">Personal Access</a>
@@ -619,13 +909,13 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <button class="btn- btn-primary w-100 rounded-2" type="button"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
                                                 aria-controls="offcanvasTop">
                                                 search
                                             </button>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </div>
                             </div>
@@ -667,18 +957,97 @@
 hr {
     border: 1px solid #e8eaf0;
 }
-.nav-top-header{
-    max-width: 1000px;
+
+.nav-top-header {
+    /* max-width: 1000px; */
 }
-.search-btn{
+
+.search-btn {
     top: 5px;
     right: 10px;
 }
-.header-search{
+
+.header-search {
     border: 1px solid #8590a559;
 }
+
 .search-btn i {
     color: #8590a5;
+}
+
+.nested-dropdown-wrapper:hover ul.nested-mega-menu {
+    display: block;
+}
+.nested-nav-dropdown{
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+}
+.nested-dropdown-wrapper:hover .nested-nav-dropdown:after{
+    transform: rotateY(180deg);
+}
+.nested-nav-dropdown:after{
+    content: url(/build/images/bxs_right-arrow.png);
+    display: inline-block;
+    transition: all .5s ease-in-out;
+    margin-left: 10px;
+    border: none;
+
+}
+ul.nested-mega-menu {
+        min-height: max-content;
+        position: absolute;
+        top: 30px;
+        border-radius: 0;
+        transform: translateY(-30px) !important;
+        left: 170px;
+    }
+
+@media (max-width: 767px) {
+    .main-header{
+        padding: 0 30px !important;
+    }
+    .nav-container{
+        max-width: 100%;
+    }
+}
+@media (max-width: 575px) {
+    .main-header{
+        padding: 0 20px !important;
+    }
+    .nav-top-header{
+        gap: 20px !important;
+    }
+    .header-image{
+        width: 100px;
+    }
+}
+@media (max-width: 450px) {
+.profile-wrapper{
+gap: 20px !important;
+}
+}
+@media (max-width: 410px) {
+    .main-header{
+        padding: 0 15px !important;
+    }
+}
+@media (max-width: 400px) {
+    .nav-bottom-link a span , .nav-bottom-link span{
+        font-size: 12px !important;
+    }
+    .nav-top-header button i{
+        font-size: large;
+    }
+}
+@media (max-width: 353px) {
+    .header-image{
+        width: 80px;
+    }
+    .nav-top-header{
+        gap: 10px !important;
+    }
 }
 </style>
 

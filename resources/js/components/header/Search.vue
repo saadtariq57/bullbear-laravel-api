@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close btn-search-close btn-close-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
-            <div class="offcanvas-body container-lg offcanvas-body_nav_search_data">
+            <div class="offcanvas-body container-lg offcanvas-body_nav_search_data px-3 mb-2">
                 <form class="d-flex nav-search-main nav-link popup-form position-relative" action="https://richtv.io/"
                     method="get" id="search_form_large">
                     <span class="header-serch-icon position-absolute">
