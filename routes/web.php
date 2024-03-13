@@ -67,12 +67,221 @@ Route::get('/quote/{symbol}', function () {
 Route::get('/email-alerts', function () {
     return view('email-alerts');
 })->name('email-alerts');
-Route::get('/markets', function () {
-    return view('markets');
-})->name('markets');
+
+Route::get('/markets/indices', function () {
+    return view('markets.market');
+})->name('indices');
+Route::get('/markets/indices/indices-futures', function () {
+    return view('markets.market');
+})->name('indices-futures');
+Route::get('/markets/indices/major-indices', function () {
+    return view('markets.market');
+})->name('major-indices');
+Route::get('/markets/indices/indices-realtime', function () {
+    return view('markets.market');
+})->name('major-indices');
+Route::get('/markets/indices/world-indices', function () {
+    return view('markets.market');
+})->name('world-indices');
+Route::get('/markets/indices/global-indices', function () {
+    return view('markets.market');
+})->name('global-indices');
+Route::get('/markets/indices/dow-jones-futures', function () {
+    return view('single-stock');
+})->name('dow-jones-futures');
+Route::get('/markets/indices/s&p-500-futures', function () {
+    return view('single-stock');
+})->name('s&p-500-futures');
+Route::get('/markets/indices/nasdaq-futures', function () {
+    return view('single-stock');
+})->name('nasdaq-futures');
+
+Route::get('/markets/stocks', function () {
+    return view('markets.market');
+})->name('stocks');
+Route::get('/markets/stocks/stocks-screener', function () {
+    return view('markets.market');
+})->name('stock-screener');
+Route::get('/markets/stocks/trading-stocks', function () {
+    return view('markets.market');
+})->name('trading-stocks');
+Route::get('/markets/stocks/united-states', function () {
+    return view('markets.market');
+})->name('united-states');
+Route::get('/markets/stocks/pre-market', function () {
+    return view('markets.market');
+})->name('pre-market');
+Route::get('/markets/stocks/americas', function () {
+    return view('markets.market');
+})->name('americas');
+Route::get('/markets/stocks/europe', function () {
+    return view('markets.market');
+})->name('europe');
+Route::get('/markets/stocks/52-week-high', function () {
+    return view('markets.market');
+})->name('52-week-high');
+Route::get('/markets/stocks/52-week-low', function () {
+    return view('markets.market');
+})->name('52-week-low');
+Route::get('/markets/stocks/most-active', function () {
+    return view('markets.market');
+})->name('most-active');
+Route::get('/markets/stocks/top-gainers', function () {
+    return view('markets.market');
+})->name('top-gainers');
+Route::get('/markets/stocks/top-losers', function () {
+    return view('markets.market');
+})->name('top-losers');
+Route::get('/markets/stocks/world-adrs', function () {
+    return view('markets.market');
+})->name('world-adrs');
+Route::get('/markets/stocks/marijuana-stocks', function () {
+    return view('markets.market');
+})->name('marijuana-stocks');
+Route::get('/markets/stocks/top-bank-stocks', function () {
+    return view('markets.market');
+})->name('top-bank-stocks');
+
+Route::get('/markets/commodities', function () {
+    return view('markets.market');
+})->name('commodities');
+Route::get('/markets/commodities/real-time-commodities', function () {
+    return view('markets.market');
+})->name('real-time-commodities');
+Route::get('/markets/commodities/metals', function () {
+    return view('markets.market');
+})->name('metals');
+Route::get('/markets/commodities/energy', function () {
+    return view('markets.market');
+})->name('energy');
+Route::get('/markets/commodities/grains', function () {
+    return view('markets.market');
+})->name('grains');
+Route::get('/markets/commodities/softs', function () {
+    return view('markets.market');
+})->name('softs');
+Route::get('/markets/commodities/meats', function () {
+    return view('markets.market');
+})->name('meats');
+Route::get('/markets/commodities/commodity-indices', function () {
+    return view('markets.market');
+})->name('commodity-indices');
+
 Route::get('/markets/cryptocurrency', function () {
-    return view('markets.cryptocurrency-market');
-})->name('cryptocurrency-market');
+    return view('markets.market');
+})->name('cryptocurrency');
+Route::get('/markets/cryptocurrency/all-cryptocurrencies', function () {
+    return view('markets.market');
+})->name('all-cryptocurrencies');
+Route::get('/markets/cryptocurrency/cryptocurrency-pairs', function () {
+    return view('markets.market');
+})->name('cryptocurrency-pairs');
+Route::get('/markets/cryptocurrency/bitcoin-etfs', function () {
+    return view('markets.market');
+})->name('bitcoin-etfs');
+Route::get('/markets/cryptocurrency/bitcoin', function () {
+    return view('markets.market');
+})->name('bitcoin');
+Route::get('/markets/cryptocurrency/ethereum', function () {
+    return view('markets.market');
+})->name('ethereum');
+Route::get('/markets/cryptocurrency/cardano', function () {
+    return view('markets.market');
+})->name('cardano');
+Route::get('/markets/cryptocurrency/solana', function () {
+    return view('markets.market');
+})->name('solana');
+Route::get('/markets/cryptocurrency/dogecoin', function () {
+    return view('markets.market');
+})->name('dogecoin');
+Route::get('/markets/cryptocurrency/shiba-inu', function () {
+    return view('markets.market');
+})->name('shiba-inu');
+Route::get('/markets/currencies', function () {
+    return view('markets.market');
+})->name('currencies');
+Route::get('/markets/currencies/currency-rates', function () {
+    return view('markets.market');
+})->name('currency-rates');
+Route::get('/markets/currencies/single-currency-crosses', function () {
+    return view('markets.market');
+})->name('single-currency-crosses');
+Route::get('/markets/currencies/live-currency-cross-rates', function () {
+    return view('markets.market');
+})->name('live-currency-cross-rates');
+Route::get('/markets/currencies/exchange-rates-table', function () {
+    return view('markets.market');
+})->name('exchange-rates-table');
+Route::get('/markets/currencies/forward-rates', function () {
+    return view('markets.market');
+})->name('forward-rates');
+Route::get('/markets/currencies/currency-futures', function () {
+    return view('markets.market');
+})->name('currency-futures');
+Route::get('/markets/currencies/currency-options', function () {
+    return view('markets.market');
+})->name('currency-options');
+Route::get('/markets/etfs', function () {
+    return view('markets.market');
+})->name('etfs');
+Route::get('/markets/etfs/world-etfs', function () {
+    return view('markets.market');
+})->name('world-etfs');
+Route::get('/markets/etfs/major-etfs', function () {
+    return view('markets.market');
+})->name('major-etfs');
+Route::get('/markets/etfs/usa-etfs', function () {
+    return view('markets.market');
+})->name('usa-etfs');
+Route::get('/markets/etfs/marijuana-etfs', function () {
+    return view('markets.market');
+})->name('marijuana-etfs');
+
+Route::get('/markets/funds', function () {
+    return view('markets.market');
+})->name('funds');
+Route::get('/markets/funds/world-funds', function () {
+    return view('markets.market');
+})->name('world-funds');
+Route::get('/markets/funds/major-funds', function () {
+    return view('markets.market');
+})->name('major-funds');
+
+Route::get('/markets/bonds', function () {
+    return view('markets.market');
+})->name('bonds');
+Route::get('/markets/bonds/us-treasury-yield-curve', function () {
+    return view('markets.market');
+})->name('us-treasury-yield-curve');
+Route::get('/markets/bonds/world-cds', function () {
+    return view('markets.market');
+})->name('world-cds');
+Route::get('/markets/bonds/world-government-bonds', function () {
+    return view('markets.market');
+})->name('world-government-bonds');
+Route::get('/markets/bonds/forward-rates', function () {
+    return view('markets.market');
+})->name('forward-rates');
+Route::get('/markets/bonds/financial-futures', function () {
+    return view('markets.market');
+})->name('financial-futures');
+Route::get('/markets/bonds/government-bond-spreads', function () {
+    return view('markets.market');
+})->name('government-bond-spreads');
+Route::get('/markets/bonds/bond-indices', function () {
+    return view('markets.market');
+})->name('bond-indices');
+
+Route::get('/markets/certificates', function () {
+    return view('markets.market');
+})->name('certificates');
+Route::get('/markets/certificates/major-certificates', function () {
+    return view('markets.market');
+})->name('major-certificates');
+Route::get('/markets/certificates/world-certificates', function () {
+    return view('markets.market');
+})->name('world-certificates');
+
 
 // Profile route
 Route::get('/pricing', function () {

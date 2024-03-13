@@ -2861,6 +2861,13 @@ p.user-message {
 }
 
 /* Price & Plan Css End */
+.table-width {
+    min-width: 500px;
+}
+
+.market-table-wapper::-webkit-scrollbar {
+    height: 6px;
+}
 
 @media (max-width: 1550px) {
     .main-heading h1 {
@@ -3305,10 +3312,10 @@ p.user-message {
 }
 
 @media (min-width: 1200px) {
-    /* div.dropdown:hover ul.dropdown-menu {
+    div.dropdown:hover ul.mega-menu-dropdown {
         display: block;
         
-    } */
+    }
 
     div.dropdown:hover ul.mega-menu {
         display: block;
