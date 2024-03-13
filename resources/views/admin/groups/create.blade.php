@@ -9,70 +9,90 @@
     <body data-sidebar="colored">
 @endsection
 @section('content')
-    <!--  Start your content -->
     <div class="row">
-        <form action="{{ route('admin.symbols.store') }}" method="POST">
-            @csrf
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" id="name">
+        <div class="col-12">
+            <form action="{{ route('admin.groups.store') }}" method="POST" enctype="multipart/form-data">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
+                @csrf
 
-                    <div class="form-group">
-                        <label for="exchange">Exchange</label>
-                        <input type="text" class="form-control" name="exchange">
-                    </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="group_name">Group Name</label>
+                            <input type="text" class="form-control" name="group_name" id="group_name" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" name="company_name">
-                    </div>
+                        <div class="form-group">
+                            <label for="group_title">Group Title</label>
+                            <input type="text" class="form-control" name="group_title" id="group_title" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="currency">Currency</label>
-                        <input type="text" class="form-control" name="currency">
-                    </div>
+                        <div class="form-group">
+                            <label for="symbol">Group Symbol</label>
+                            <input type="text" class="form-control" name="symbol" id="symbol" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="mic_code">MIC Code</label>
-                        <input type="text" class="form-control" name="mic_code">
+                        <div class="form-group">
+                            <label for="exchange">Group Exchange</label>
+                            <input type="text" class="form-control" name="exchange" id="exchange" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="about">About</label>
+                            <textarea class="form-control" name="about" id="about" rows="3"></textarea>
+                        </div>
+
+                        <!-- Category Dropdown -->
+                        <div class="form-group">
+                            <label for="category_id">Category</label>
+                            <select class="form-control" name="category_id" id="category_id">
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" name="privacy" id="privacy" switch="none" />
+                            <label for="privacy" data-on-label="Private" data-off-label="Public" class="ml-2"></label>
+                            <span>Privacy</span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" name="active" id="active" switch="none" />
+                            <label for="active" data-on-label="Active" data-off-label="Inactive" class="ml-2"></label>
+                            <span>Status</span>
+                        </div>
+
+                        <!-- Avatar Upload -->
+                        <div class="form-group">
+                            <label for="avatar">Avatar</label>
+                            <input type="file" class="form-control-file" name="avatar" id="avatar">
+                        </div>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">Create Group</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" name="country">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="type">Type</label>
-                        <input type="text" class="form-control" name="type">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="available_exchanges">Available Exchanges (comma-separated)</label>
-                        <textarea class="form-control" name="available_exchanges" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
-                            Create Symbol
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 @endsection
 @section('scripts')
+    <script>
+       /* $("input[data-bootstrap-switch]").each(function(){
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        });*/
+    </script>
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
     <!-- Sweet Alerts js -->

@@ -67,10 +67,8 @@
                         <span>Exams</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('admin.exams.index') }}">All Exams</a></li>
-                                <li><a href="{{ route('admin.exams.create') }}">Add New Exam</a></li>
                                 <li><a href="{{ route('admin.exams.categories.index') }}">Exam Categories</a></li>
-                                <li><a href="{{ route('admin.exams.categories.create') }}">Add New Category</a></li>
+                                <li><a href="{{ route('admin.exams.index') }}">Exams</a></li>                              
                                 <li><a href="#">Exam Results</a></li>
                     </ul>
                     
@@ -93,9 +91,16 @@
                         <span>Groups</span>
                     </a>
                      <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('admin.groups.index') }}">All Groups</a></li>
-                                <li><a href="{{ route('admin.groups.create') }}">Add New Group</a></li>
+                                 <li><a href="{{ route('admin.groups.categories.index') }}">Group Categories</a></li>
+                                <li><a href="{{ route('admin.groups.index') }}">Groups</a></li>
                     </ul>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.posts.index') }}" class="waves-effect">
+                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Posts</span>
+                    </a>
                 </li>
 
                 <li>

@@ -1,9 +1,9 @@
 @extends('admin.layouts.master')
 @section('title')
-    Symbols Database
+    All Groups
 @endsection
 @section('page-title')
-    Symbols Database US & CA
+    All Groups
 @endsection
 @section('css')
     <!-- Sweet Alert-->
@@ -21,7 +21,7 @@
                         <div class="row mb-2">
                             <div class="col-md-6">
                                 <div class="form-inline float-md-start mb-3">
-                                    <form action="{{ route('admin.symbols.index') }}" method="GET">
+                                    <form action="{{ route('admin.groups.index') }}" method="GET">
                                         <div class="search-box me-2">
                                             <div class="position-relative">
                                                 <input type="text" name="search" class="form-control border" placeholder="Search..." value="{{ request()->query('search') }}">
@@ -33,8 +33,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3 float-end">
-                                    <a href="{{route('admin.symbols.create')}}" class="btn btn-primary">
-                                        <i class="mdi mdi-plus me-1"></i> Add Symbol
+                                    <a href="{{route('admin.groups.create')}}" class="btn btn-primary">
+                                        <i class="mdi mdi-plus me-1"></i> Add Group
                                     </a>
                                 </div>
                             </div>
@@ -44,54 +44,58 @@
                             <table class="table table-hover table-nowrap align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th scope="col" style="width: 50px;">
-                                            <div class="form-check font-size-16">
-                                                <input type="checkbox" class="form-check-input" id="contacusercheck">
-                                                <label class="form-check-label" for="contacusercheck"></label>
-                                            </div>
-                                        </th>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Avatar</th>
+                                        <th scope="col">Owner Name</th>
+                                        <th scope="col">Group Name</th>
+                                        <th scope="col">Privacy</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Symbol</th>
                                         <th scope="col">Exchange</th>
-                                        <th scope="col">Company</th>
-                                        <th scope="col">Currency</th>
-                                        <th scope="col">Country</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col" style="width: 200px;">Action</th>
+                                        <th scope="col">Members</th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($symbols as $symbol)
+                                    @foreach($groups as $group)
                                         <tr>
-                                            <th scope="row">
-                                                <div class="form-check font-size-16">
-                                                    <input type="checkbox" class="form-check-input" id="symbolcheck-{{ $symbol->id }}">
-                                                    <label class="form-check-label" for="symbolcheck-{{ $symbol->id }}"></label>
-                                                </div>
-                                            </th>
+                                            <td>{{ $group->id }}</td>
                                             <td>
-                                                <!-- You might want to replace the image source with the relevant image for each symbol if available -->
-                                                <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt=""
-                                                     class="avatar-xs rounded-circle me-2">
-                                                <a href="#" class="text-body">{{ $symbol->name }}</a>
+                                                <img src="{{ URL::asset($group->avatar) }}" alt="" class="avatar-xs rounded-circle">
                                             </td>
-                                            <td>{{ $symbol->exchange }}</td>
-                                            <td>{{ $symbol->company_name }}</td>
-                                            <td>{{ $symbol->currency }}</td>
-                                            <td>{{ $symbol->country }}</td>
-                                            <td>{{ $symbol->type }}</td>
+                                            <!-- Assuming you have a method in your Group model to get the user name -->
+                                            <td>{{ $group->user->name }}</td>
+                                            <td>{{ $group->group_name }}</td>
+                                            <td>{{ ucfirst($group->privacy) }}</td>
+                                            <td>{{ $group->active == 0 ? 'Inactive' : 'Active' }}</td>
+                                            <td>{{ $group->symbol }}</td>
+                                            <td>{{ $group->exchange }}</td>
+                                            <!-- Assuming you have a method in your Group model to get members count -->
+                                            <td>{{ $group->members_count }}</td>
                                             <td>
                                                 <ul class="list-inline mb-0">
+                                                    <!-- Existing Edit Action -->
                                                     <li class="list-inline-item">
-                                                        <a href="{{ route('admin.symbols.edit', $symbol) }}" class="px-2 text-primary">
+                                                        <a href="{{ route('admin.groups.edit', $group) }}" class="px-2 text-primary">
                                                             <i class="ri-pencil-line font-size-18"></i>
                                                         </a>
                                                     </li>
+
+                                                    <!-- New Members Action -->
                                                     <li class="list-inline-item">
-                                                        <form action="{{route('admin.symbols.destroy', $symbol->id)}}" method="POST">
+                                                        <a href="{{ route('admin.groups.members', $group->id) }}" class="px-2 text-success">
+                                                            <i class="ri-group-line font-size-18"></i> <!-- You can use an appropriate icon -->
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- Existing Delete Action -->
+                                                    <li class="list-inline-item">
+                                                        <form action="{{route('admin.groups.destroy', $group->id)}}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button class="btn btn-danger delete-symbol" type="button" data-symbol-id="{{ $symbol->id }}">
+                                                            <button class="btn btn-danger delete-group" type="button" data-group-id="{{ $group->id }}">
                                                                 <i class="fas fa-trash-alt"></i>
+                                                            </button>
                                                         </form>
                                                     </li>
                                                 </ul>
@@ -100,17 +104,17 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
+                        </div>                        
                         <div class="row mt-4">
                             <div class="col-sm-6">
                                 <div>
-                                    <p class="mb-sm-0">{{ $symbols->firstItem() }} to {{ $symbols->lastItem() }} of {{ $symbols->total() }} entries</p>
+                                    <p class="mb-sm-0">{{ $groups->firstItem() }} to {{ $groups->lastItem() }} of {{ $groups->total() }} entries</p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="float-sm-end">
                                     <ul class="pagination mb-sm-0">
-                                        {{ $symbols->appends(['search' => request()->query('search')])->links() }}
+                                        {{ $groups->appends(['search' => request()->query('search')])->links() }}
                                     </ul>
                                 </div>
                             </div>
@@ -129,8 +133,8 @@
         <script>
             $(document).ready(function() {
                 // Intercept delete button click
-                $('.delete-symbol').on('click', function() {
-                    let widgetId = $(this).data('symbol-id');
+                $('.delete-group').on('click', function() {
+                    let widgetId = $(this).data('group-id');
                     
                     Swal.fire({
                         title: 'Are you sure?',
