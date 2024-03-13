@@ -6,3 +6,13 @@
                 class="bi bi-person-fill"></i>SIGN UP</a>
     </div>
 </template>
+<style>
+@media (max-width: 400px) {
+    .nav-clr{
+        font-size: 12px !important;
+    }
+    .header_login{
+        gap: 15px !important;
+    }
+}
+</style>
