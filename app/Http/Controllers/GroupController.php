@@ -16,17 +16,42 @@ class GroupController extends Controller
         return view('groups.group');
     }
 
+    public function joinedChats(Request $request)
+    {
+        $user = $request->user();
+        $joinedGroups = Group::whereHas('members', function($query) use ($user) {
+            $query->where('group_members.user_id', $user->id);
+        })->get();
+
+        return response()->json($joinedGroups);
+    }
+
+    public function suggestedChats(Request $request)
+    {
+        $recentlyActiveGroups = Group::whereHas('messages', function($query) {
+            $query->orderBy('created_at', 'desc');
+        })->take(10)->get();
+
+        return response()->json($recentlyActiveGroups);
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');
 
-        if ($search) {
-            $groups = Group::withCount('members')
-                            ->where('group_name', 'LIKE', "%{$search}%")
-                            ->orWhere('symbol', 'LIKE', "%{$search}%")
+
+        if($search) {
+            $groups = Group::with('category')
+                            ->where(function ($query) use ($search) {
+                                $query->where('group_name', 'LIKE', "%{$search}%")
+                                      ->orWhere('symbol', 'LIKE', "%{$search}%")
+                                      ->orWhereHas('category', function ($query) use ($search) {
+                                          $query->where('name', 'LIKE', "%{$search}%");
+                                      });
+                            })
                             ->paginate(15);
         } else {
-            $groups = Group::withCount('members')->paginate(15);
+            $groups = Group::with('category')->paginate(15);
         }
 
         return view('admin.groups.index', compact('groups'));
@@ -60,8 +85,6 @@ class GroupController extends Controller
         return response()->json(['message' => 'Members updated successfully.']);
     }
 
-
-
     public function create()
     {
         $categories = GroupCategory::all();
@@ -70,46 +93,41 @@ class GroupController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+
         $validatedData = $request->validate([
             'group_name' => 'required|string|max:255',
             'group_title' => 'required|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'about' => 'nullable|string',
-            'symbol' => 'nullable|string',
-            'exchange' => 'nullable|string',
             'category_id' => 'required|exists:group_categories,id',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'privacy' => 'required|string|in:public,private',
+            'join_privacy' => 'required|boolean',
+            'active' => 'required|boolean',
+            'symbol' => 'nullable|string|max:255',
+            'exchange' => 'nullable|string|max:255'
         ]);
 
-        $userId = auth()->id(); 
-        $validatedData['user_id'] = $userId;
-        $validatedData['privacy'] = $request->has('privacy') ? 'private' : 'public';
-        $validatedData['active'] = $request->input('active') === 'on' ? '1' : '0';
-
         if ($request->hasFile('avatar')) {
-            $year = date('Y');
-            $month = date('m');
-            $directory = "uploads/photos/{$year}/{$month}";
-
-            // Ensure the directory exists
-            if (!Storage::disk('public')->exists($directory)) {
-                Storage::disk('public')->makeDirectory($directory);
-            }
-
-            // Store the file in the directory
-            $path = $request->file('avatar')->store($directory, 'public');
-
-            // Check if the file was uploaded successfully
-            if (!$path) {
-                return back()->withErrors(['avatar' => 'The avatar could not be uploaded.'])->withInput();
-            }
-
-            // Update the path to remove 'uploads/' if needed
-            $validatedData['avatar'] = $path;
+            $validatedData['avatar'] = $request->file('avatar')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
         }
 
+        if ($request->hasFile('cover')) {
+            $validatedData['cover'] = $request->file('cover')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
+        }
+
+        $validatedData['user_id'] = $user->id;
+        $validatedData['time'] = time();
         Group::create($validatedData);
+
         return redirect()->route('admin.groups.index')->with('success', 'Group created successfully');
     }
+
 
     public function edit(Group $group)
     {
@@ -119,11 +137,38 @@ class GroupController extends Controller
     public function update(Request $request, Group $group)
     {
         $validatedData = $request->validate([
-            // Validation rules based on your schema
+            'group_name' => 'required|string|max:255',
+            'group_title' => 'required|string|max:255',
+            'about' => 'nullable|string',
+            'category_id' => 'required|exists:group_categories,id',
+            'privacy' => 'required|string|in:public,private',
+            'join_privacy' => 'required|boolean',
+            'active' => 'required|boolean',
+            'symbol' => 'nullable|string|max:255',
+            'exchange' => 'nullable|string|max:255'
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $validatedData['avatar'] = $request->file('avatar')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
+        } else {
+            $validatedData['avatar'] = $group->avatar;
+        }
+
+        if ($request->hasFile('cover')) {
+            $validatedData['cover'] = $request->file('cover')->store(
+                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+            );
+        } else {
+            $validatedData['cover'] = $group->cover;
+        }
+        $validatedData['time'] = time();
         $group->update($validatedData);
+
         return redirect()->route('admin.groups.index')->with('success', 'Group updated successfully');
     }
+
 
     public function destroy(Group $group)
     {
@@ -131,21 +176,24 @@ class GroupController extends Controller
         return redirect()->route('admin.groups.index')->with('success', 'Group deleted successfully');
     }
 
-    // Group category Methods
 
     public function categoriesIndex(Request $request)
     {
         $search = $request->query('search');
         if ($search) {
             $categories = GroupCategory::where('name', 'LIKE', "%{$search}%")
-                ->paginate(15);
+                ->paginate(10);
         } else {
-            $categories = GroupCategory::paginate(15);
+            $categories = GroupCategory::paginate(10);
         }
-        
+
         return view('admin.groups.categories.index', compact('categories'));
     }
 
+
+    /**
+     * Show the form for creating a new group category.
+     */
     public function categoriesCreate()
     {
         return view('admin.groups.categories.create');
@@ -173,7 +221,6 @@ class GroupController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'about' => 'string|max:255',
-            // other validation rules
         ]);
         
         $category->update($validatedData);

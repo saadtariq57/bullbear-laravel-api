@@ -1,5 +1,4 @@
 @extends('admin.layouts.master')
-
 @section('title')
     Edit Group Category
 @endsection
@@ -16,6 +15,7 @@
 @section('body')
     <body data-sidebar="colored">
 @endsection
+
 
 @section('content')
     <!-- Start your content -->
@@ -77,11 +77,24 @@
         });
 
         @if(session('success'))
-            Swal.fire({
-                title: 'Success!',
-                text: '{{ session("success") }}',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
+            <script>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session("success") }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
+        @if(session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session("error") }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
 @endsection

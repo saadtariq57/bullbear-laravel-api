@@ -1,3 +1,4 @@
+@vite(['resources/js/main.js'])
 <!-- JAVASCRIPT -->
 <script src="{{ URL::asset('build/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="container-fluid mt-5">
+  <section class="container-fluid my-4">
         <div class="container">
             <div class="text-center">
                 <h1 class="fw-bold fs-1 text-uppercase">Ceo interviews</h1>
@@ -20,7 +20,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -51,7 +51,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -82,7 +82,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -113,7 +113,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -144,7 +144,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -175,7 +175,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -206,7 +206,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -237,7 +237,7 @@
                                         <button type="submit" aria-label="Circle button" tabindex="-1"
                                             fdprocessedid="cefdud"
                                             class="border-0  d-flex justify-content-center align-items-center"><img
-                                                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/circle-button-small.png"
+                                                src="{{'build/images/play-icon.png'}}"
                                                 alt="circle_button"></button>
                                     </div>
                                 </form>
@@ -294,11 +294,21 @@
                                         materials and presentations are subject to change. Rich TV and its affiliates
                                         may
                                         buy and sell shares of securities or options of the issuers mentioned on this
-                                        website at any time. <a class="arrow-down show-more cursor-pointer"
-                                            rel="nofollow" aria-label="See All"> See
-                                            more</a></p>
+                                        website at any time.</p>
+                                        <p class="margin-24 fs-18 lh-base">Stock market investing is inherently risky. Rich TV is not
+                                            responsible for any gains or losses that result from the opinions expressed on
+                                            this
+                                            website, in its research reports, company profiles or in other investor
+                                            relations
+                                            materials or presentations that it publishes electronically or in print.
+                                            We strongly encourage all investors to conduct their own research before making
+                                            any
+                                            investment decision. For more information on stock market investing, visit the
+                                            Securities and Exchange Commission ("SEC") at www.sec.gov.
+                                        </p>
                                 </div>
-                                <div class="slide-up-down">
+                                
+                                {{-- <div class="slide-up-down">
                                     <p style="display: none;">Stock market investing is inherently risky. Rich TV is not
                                         responsible for any gains or losses that result from the opinions expressed on
                                         this
@@ -312,7 +322,7 @@
                                             class="arrow-down show-less cursor-pointer" rel="nofollow"
                                             aria-label="See less"> See less</a>
                                     </p>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>

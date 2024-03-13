@@ -25,7 +25,8 @@ class Post extends Model
         'post_file_name',
         'colored_post_id',
         'comments_status',
-        'active'
+        'active',
+        'post_privacy'
     ];
 
     public function user()
@@ -45,11 +46,21 @@ class Post extends Model
 
     public function photos()
     {
-        return $this->hasMany(PostPhoto::class);
+        return $this->hasMany(AlbumMedia::class);
     }
 
     public function poll()
     {
         return $this->hasOne(Poll::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
     }
 }

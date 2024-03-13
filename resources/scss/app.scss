@@ -45,8 +45,8 @@ File: Main Css File
 @import "plugins/calendar";
 @import "plugins/color-picker";
 @import "plugins/session-timeout";
-@import "plugins/round-slider";
-@import "plugins/range-slider";
+// @import "plugins/round-slider";
+// @import "plugins/range-slider";
 @import "plugins/sweatalert2";
 @import "plugins/rating";
 @import "plugins/toastr";
@@ -63,17 +63,19 @@ File: Main Css File
 @import "plugins/table-editable";
 @import "plugins/apexcharts";
 @import "plugins/flot";
-@import "plugins/sparkline-chart";
+// @import "plugins/sparkline-chart";
 @import "plugins/google-map";
-@import "plugins/vector-maps";
-@import "plugins/x-editable";
+// @import "plugins/vector-maps";
+// @import "plugins/x-editable";
 
 // Pages
 @import "pages/authentication";
-@import "pages/ecommerce";
+// @import "pages/ecommerce";
 @import "pages/email";
 @import "pages/chat";
 @import "pages/file-manager";
-@import "pages/coming-soon";
+// @import "pages/coming-soon";
 @import "pages/timeline";
 @import "pages/extras-pages";
+// Admin  
+@import "./custom-admin.scss";

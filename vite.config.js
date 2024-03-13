@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue'; 
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import commonjs from 'vite-plugin-commonjs'; 
 
 export default defineConfig({
     build: {
@@ -27,7 +29,7 @@ export default defineConfig({
             include: 'resources/**/*',
             // Exclude the node_modules directory
             exclude: 'node_modules/**/*'
-        }
+        },
     },
     plugins: [
         laravel({
@@ -41,6 +43,15 @@ export default defineConfig({
             ],
             refresh: true,
         }),
+        vue({ 
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
+        commonjs(),
         viteStaticCopy({
             targets: [
                 {
@@ -62,4 +73,12 @@ export default defineConfig({
             ]
         }),
     ],
+    resolve: { 
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
+    optimizeDeps: {
+        entries: 'resources/js/main.js',
+    },
 });

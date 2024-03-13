@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 
@@ -75,4 +75,23 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
+
+    public function getUserData()
+    {
+        // Get the authenticated user
+        $authenticatedUser = auth()->user();
+
+        // Check if the user is authenticated
+        if ($authenticatedUser) {
+            // Retrieve data for the authenticated user with additional counts
+            $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
+                                          ->first();
+
+            return response()->json($userData);
+        } else {
+            // Return an error response if the user is not authenticated
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+    }
+    
 }

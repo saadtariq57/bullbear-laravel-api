@@ -10,6 +10,7 @@
 
 @section('css')
     <!-- Sweet Alert -->
+
     <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
@@ -84,6 +85,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     <div class="row mt-4">
                         <div class="col-sm-6">
                             <div>
@@ -137,4 +139,14 @@
                 confirmButtonText: 'OK'
             });
         @endif
+
+    @if(session('error'))
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session("error") }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+           @endif
+        </script>
 @endsection

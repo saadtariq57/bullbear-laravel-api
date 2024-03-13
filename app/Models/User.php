@@ -79,6 +79,30 @@ class User extends Authenticatable
         // Other casts as necessary
     ];
 
-    // Other model methods...
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function watchlists()
+    {
+        return $this->hasMany(UserWatchlist::class);
+    }
+
+    public function followers()
+    {
+        // This assumes your Follower model is named 'Follower'
+        return $this->hasMany(Follower::class, 'following_id');
+    }
+    
+    public function groupMemberships()
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id');
+    }
 
 }

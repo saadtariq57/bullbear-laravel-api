@@ -36,14 +36,14 @@ class SymbolController extends Controller
         $search = $request->input('query');
 
         if ($search) {
-            $symbols = Symbol::select(['id', 'name', 'company_name', 'country', 'exchange'])
-                             ->where('name', 'LIKE', "%{$search}%")
+            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange'])
+                             ->where('symbol', 'LIKE', "%{$search}%")
                              ->orWhere('exchange', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->limit(10)  // Limiting to 10 results for dropdown purpose
+                             ->orWhere('name', 'LIKE', "%{$search}%")
+                             ->limit(10)
                              ->get();
         } else {
-            $symbols = [];  // Return empty array if there's no search query
+            $symbols = [];
         }
 
         return response()->json($symbols);
@@ -81,7 +81,7 @@ class SymbolController extends Controller
 
             // Create a new symbol using the processed data
             Symbol::create($data);
-            
+
             // Redirect to the symbols index with a success message
             return redirect()->route('admin.symbols.index')->with('success', 'Symbol created successfully.');
         }
@@ -141,5 +141,44 @@ class SymbolController extends Controller
 
         // Redirect to the symbols index with a success message
         return redirect()->route('admin.symbols.index')->with('success', 'Symbol deleted successfully.');
+    }
+
+    // Grops data
+
+    public function group_data(Request $request)
+    {
+        $search = $request->query('search');
+
+        if($search) {
+            $Groups = Groups::where('group_name', 'LIKE', "%{$search}%")
+                             ->orWhere('group_title', 'LIKE', "%{$search}%")
+                             // ... add other fields if needed
+                             ->paginate(15);
+        } else {
+            $Groups = Groups::paginate(15);
+        }
+
+        return view('admin.groups.group_data', compact('groups'));
+        //return view('admin.symbols.index', ['symbols' => $symbols]);
+    }
+
+    //   Search for symbols based on the query.
+
+    public function groups(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $Groups = Groups::select(['id', 'group_name', 'group_title', 'avatar', 'cover'])
+                             ->where('group_name', 'LIKE', "%{$search}%")
+                             ->orWhere('group_title', 'LIKE', "%{$search}%")
+                             // ... add other fields if needed
+                             ->limit(10)  // Limiting to 10 results for dropdown purpose
+                             ->get();
+        } else {
+            $Groups = [];  // Return empty array if there's no search query
+        }
+
+        return response()->json($Groups);
     }
 }

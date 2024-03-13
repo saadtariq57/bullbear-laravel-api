@@ -17,7 +17,7 @@
                 <img src="{{ URL::asset('build/images/logo-sm-light.png') }}" alt="logo-sm-light" height="24">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="logo-light" height="22">
+                <img src="{{ URL::asset('build/images/logo.svg') }}" alt="logo-light" height="22">
             </span>
         </a>
     </div>
@@ -91,8 +91,10 @@
                         <span>Groups</span>
                     </a>
                      <ul class="sub-menu" aria-expanded="false">
-                                 <li><a href="{{ route('admin.groups.categories.index') }}">Group Categories</a></li>
-                                <li><a href="{{ route('admin.groups.index') }}">Groups</a></li>
+                                <li><a href="{{ route('admin.groups.index') }}">All Groups</a></li>
+                                <li><a href="{{ route('admin.groups.create') }}">Add New Group</a></li>
+                                <li><a href="{{ route('admin.groups.categories.index') }}">Group Categories</a></li>
+                                <li><a href="{{ route('admin.groups.categories.create') }}">Add New Category</a></li>
                     </ul>
                 </li>
 
@@ -172,13 +174,7 @@
             <a class="dropdown-item" href="apps-chat"><i
                     class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-1"></i> <span
                     class="align-middle">Messages</span></a>
-            <a class="dropdown-item" href="pages-faq"><i
-                    class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-1"></i> <span
-                    class="align-middle">Help</span></a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="pages-profile"><i
-                    class="mdi mdi-wallet text-muted font-size-16 align-middle me-1"></i> <span
-                    class="align-middle">Balance : <b>$5971.67</b></span></a>
             <a class="dropdown-item" href="#"><span class="badge bg-primary mt-1 float-end">New</span><i
                     class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span
                     class="align-middle">Settings</span></a>

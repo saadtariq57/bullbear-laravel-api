@@ -45,6 +45,7 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col">ID</th>
+                                    <th scope="col">Featured Image</th>
                                     <th scope="col">Title</th>
                                     <th scope="col">Category</th>
                                     <th scope="col">Description</th>
@@ -57,6 +58,10 @@
                                 @foreach($exams as $exam)
                                     <tr>
                                         <td>{{ $exam->id }}</td>
+                                        <td>
+                                            <img src="{{ URL::asset($exam->featured_img) }}" alt=""
+                                                 class="avatar-xs rounded-circle me-2">
+                                        </td>
                                         <td><a href="#" class="text-body">{{ $exam->title }}</a></td>
                                         <td>{{ $exam->category }}</td>
                                         <td>{{ $exam->description }}</td>

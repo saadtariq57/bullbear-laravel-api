@@ -1,13 +1,17 @@
 @extends('admin.layouts.master')
+
 @section('title')
-    Add Symbol Detail
+    Add Group
 @endsection
+
 @section('page-title')
-    Add Symbol Detail
+    Add Group
 @endsection
+
 @section('body')
     <body data-sidebar="colored">
 @endsection
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -22,7 +26,6 @@
                     </div>
                 @endif
                 @csrf
-
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
@@ -87,35 +90,30 @@
         </div>
     </div>
 @endsection
-@section('scripts')
-    <script>
-       /* $("input[data-bootstrap-switch]").each(function(){
-            $(this).bootstrapSwitch('state', $(this).prop('checked'));
-        });*/
-    </script>
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    <!-- Sweet Alerts js -->
-    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-        @if(session('success'))
-            <script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: '{{ session("success") }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
 
-        @if(session('error'))
-            <script>
-                Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session("error") }}',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
+@section('scripts')
+    <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session("success") }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session("error") }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection

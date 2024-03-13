@@ -1,66 +1,95 @@
 @extends('admin.layouts.master')
+
 @section('title')
-    Edit Symbol Detail
+    Edit Group
 @endsection
+
 @section('page-title')
-    Edit Symbol Detail
+    Edit Group
 @endsection
-@section('css')
-    <!-- Sweet Alert-->
-    <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-@endsection
+
 @section('body')
     <body data-sidebar="colored">
 @endsection
+
 @section('content')
-    <!--  Start your content -->
     <div class="row">
-        <form action="{{ route('admin.symbols.update', $symbol->id) }}" method="POST">
+        <form action="{{ route('admin.groups.update', $group->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" value="{{$symbol->name}}">
+                        <label for="group_name">Group Name</label>
+                        <input type="text" class="form-control" name="group_name" id="group_name" value="{{ $group->group_name }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="exchange">Exchange</label>
-                        <input type="text" class="form-control" name="exchange" value="{{$symbol->exchange}}">
+                        <label for="group_title">Group Title</label>
+                        <input type="text" class="form-control" name="group_title" value="{{ $group->group_title }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" name="company_name" value="{{$symbol->company_name}}">
+                        <label for="avatar">Avatar</label>
+                        <input type="file" class="form-control" name="avatar">
+                        <img src="{{ URL::asset($group->avatar) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
-                        <label for="currency">Currency</label>
-                        <input type="text" class="form-control" name="currency" value="{{$symbol->currency}}">
+                        <label for="cover">Cover Image</label>
+                        <input type="file" class="form-control" name="cover">
+                        <img src="{{ URL::asset($group->cover) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
-                        <label for="mic_code">MIC Code</label>
-                        <input type="text" class="form-control" name="mic_code" value="{{$symbol->mic_code}}">
+                        <label for="about">About</label>
+                        <textarea class="form-control" name="about" rows="3">{{ $group->about }}</textarea>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" name="country" value="{{$symbol->country}}">
+                        <label for="symbol">Symbol</label>
+                        <input type="text" class="form-control" name="symbol" id="symbol" value="{{ $group->symbol }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="type">Type</label>
-                        <input type="text" class="form-control" name="type" value="{{$symbol->type}}">
+                        <label for="exchange">Exchange</label>
+                        <input type="text" class="form-control" name="exchange" id="exchange" value="{{ $group->exchange }}">
                     </div>
 
                     <div class="form-group">
-                        <label for="available_exchanges">Available Exchanges (as , seprated)</label>
-                        <textarea class="form-control" name="available_exchanges" rows="3">{{ implode(', ', $symbol->available_exchanges) }}</textarea>
+                        <label for="category_id">Category</label>
+                        <select class="form-control" name="category_id">
+                            @foreach(App\Models\GroupCategory::all() as $category)
+                                <option value="{{ $category->id }}" {{ $group->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="privacy">Privacy</label>
+                        <select class="form-control" name="privacy">
+                            <option value="public" {{ $group->privacy == 'public' ? 'selected' : '' }}>Public</option>
+                            <option value="private" {{ $group->privacy == 'private' ? 'selected' : '' }}>Private</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="join_privacy">Join Privacy</label>
+                        <select class="form-control" name="join_privacy">
+                            <option value="1" {{ $group->join_privacy ? 'selected' : '' }}>Open</option>
+                            <option value="0" {{ !$group->join_privacy ? 'selected' : '' }}>Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="active">Active</label>
+                        <select class="form-control" name="active">
+                            <option value="1" {{ $group->active ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ !$group->active ? 'selected' : '' }}>Inactive</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -69,7 +98,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <button type="submit" class="btn btn-success float-right">
-                            Save Changes
+                            Update Group
                         </button>
                     </div>
                 </div>
@@ -77,30 +106,30 @@
         </form>
     </div>
 @endsection
-@section('scripts')
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    <!-- Sweet Alerts js -->
-    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-        @if(session('success'))
-            <script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: '{{ session("success") }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
 
-        @if(session('error'))
-            <script>
-                Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session("error") }}',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
+@section('scripts')
+    <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session("success") }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session("error") }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection

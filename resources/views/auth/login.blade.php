@@ -7,14 +7,14 @@
         <div class="bg-overlay bg-light"></div>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <div class="auth-full-page-content d-flex min-vh-100 py-sm-5 py-4">
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-5">
                                     <a href="index" class="">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png" alt=""
-                                            width="200" class="auth-logo logo-dark mx-auto">
+                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png"
+                                            alt="" width="200" class="auth-logo logo-dark mx-auto">
                                         <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
                                             width="200" class="auth-logo logo-light mx-auto">
                                     </a>
@@ -34,7 +34,8 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="font-size-18">LOG IN TO YOUR ACCOUNT</h4>
-                                                        <p class="text-muted">Please log in to start utilizing the different features available in your membership plan.</p>
+                                                        <p class="text-muted">Please log in to start utilizing the different
+                                                            features available in your membership plan.</p>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
@@ -43,7 +44,8 @@
                                                             <label for="email" class="form-label">Email</label>
                                                             <input id="email" type="email"
                                                                 class="form-control @error('email') is-invalid @enderror"
-                                                                name="email" value="{{ old('email', 'admin@themesbrand.com') }}" required
+                                                                name="email"
+                                                                value="{{ old('email', 'admin@themesbrand.com') }}" required
                                                                 autocomplete="email" autofocus>
                                                             @error('email')
                                                                 <span class="invalid-feedback" role="alert">
@@ -74,28 +76,13 @@
                                                                 <label class="form-check-label" for="remember">Remember
                                                                     me</label>
                                                             </div>
-                                                            <a href="{{ route('password.update') }}" class="text-end">Forget Password?</a>
+                                                            <a href="{{ route('password.update') }}" class="text-end">Forget
+                                                                Password?</a>
                                                         </div>
 
                                                         <div class="mt-4">
                                                             <button class="btn btn-primary w-100" type="submit">Sign
                                                                 In</button>
-                                                        </div>
-
-                                                        <div class="mt-4 pt-2 text-center">
-                                                            <div class="signin-other-title">
-                                                                <h5 class="font-size-14 mb-4 title">Sign In with</h5>
-                                                            </div>
-                                                            <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-primary btn-sm"><i
-                                                                        class="ri-facebook-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-danger btn-sm"><i
-                                                                        class="ri-google-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-dark btn-sm"><i
-                                                                        class="ri-github-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i
-                                                                        class="ri-twitter-fill font-size-16"></i></button>
-                                                            </div>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -112,7 +99,7 @@
                                 <!-- end card -->
 
                                 <div class="mt-5 text-center">
-                                    <p class="mb-0">©  
+                                    <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
                                         </script> Rich Tv
