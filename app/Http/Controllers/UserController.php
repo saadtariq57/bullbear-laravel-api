@@ -24,6 +24,24 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $users = User::select(['id', 'name', 'first_name', 'last_name', 'email'])
+                             ->where('name', 'LIKE', "%{$search}%")
+                             ->orWhere('email', 'LIKE', "%{$search}%")
+                             // ... add other fields if needed
+                             ->limit(10)  // Limiting to 10 results for dropdown purpose
+                             ->get();
+        } else {
+            $users = [];  // Return empty array if there's no search query
+        }
+
+        return response()->json($users);
+    }
+
     public function create()
     {
         return view('admin.users.create');

@@ -10,7 +10,8 @@ class GroupCategory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
+        'about'
     ];
 
     public function groups()
