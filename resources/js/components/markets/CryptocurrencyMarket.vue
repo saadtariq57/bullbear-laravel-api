@@ -179,16 +179,7 @@
                             </div>
         </div>
     </div>
-    <NewsLetter />
 </template>
-<script>
-import NewsLetter from "../home/NewsLetter.vue";
-export default {
-    components: {
-    NewsLetter,
-    }
-}
-</script>
 <style>
 .cryptocurrency-card-wrapper{
     row-gap: 10px;

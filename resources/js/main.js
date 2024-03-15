@@ -84,8 +84,8 @@ const routes = [
         component: () => import('./components/markets/StocksMarket.vue'),
     },
     {
-        path: '/markets/stocks/stocks-screener',
-        name: 'markets.stocks.stocks-screener',
+        path: '/stocks-screener',
+        name: 'stocks-screener',
         component: () => import('./components/markets/stocks/StocksScreener.vue'),
     },
     {
@@ -113,16 +113,16 @@ const routes = [
         name: 'markets.stocks.europe',
         component: () => import('./components/markets/stocks/Europe.vue'),
     },
-    {
-        path: '/markets/stocks/52-week-high',
-        name: 'markets.stocks.52-week-high',
-        component: () => import('./components/markets/stocks/52WeekHigh.vue'),
-    },
-    {
-        path: '/markets/stocks/52-week-low',
-        name: 'markets.stocks.52-week-low',
-        component: () => import('./components/markets/stocks/52WeekLow.vue'),
-    },
+    // {
+    //     path: '/markets/stocks/52-week-high',
+    //     name: 'markets.stocks.52-week-high',
+    //     component: () => import('./components/markets/stocks/52WeekHigh.vue'),
+    // },
+    // {
+    //     path: '/markets/stocks/52-week-low',
+    //     name: 'markets.stocks.52-week-low',
+    //     component: () => import('./components/markets/stocks/52WeekLow.vue'),
+    // },
     {
         path: '/markets/stocks/most-active',
         name: 'markets.stocks.most-active',
@@ -379,6 +379,12 @@ const routes = [
         component: () => import('./components/markets/certificates/WorldCertificates.vue'),
     },
     
+    {
+        path: '/richtvpro/watchlist',
+        name: 'watchlistpro',
+        component: () => import('./components/richtvpro/watchlistideas/ProWatchlist.vue'),
+    },
+
     {
         path: '/pricing',
         name: 'pricing',

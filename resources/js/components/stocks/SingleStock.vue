@@ -1,6 +1,10 @@
 <template>
     <div class="container-xxl">
-            <div class=" row">
+            <div class="row">
+                <div v-for="(stock, index) in stocksData" :key="index">
+      <!-- Display the data as you need -->
+      <p>{{ stock }}</p>
+    </div>
                 <div class="col-lg-8 col-md-12">
                     <!-- header section start -->
                     <div class="d-flex justify-content-between flex-wrap">

@@ -100,7 +100,7 @@ Route::get('/markets/indices/nasdaq-futures', function () {
 Route::get('/markets/stocks', function () {
     return view('markets.market');
 })->name('stocks');
-Route::get('/markets/stocks/stocks-screener', function () {
+Route::get('/stocks-screener', function () {
     return view('markets.market');
 })->name('stock-screener');
 Route::get('/markets/stocks/trading-stocks', function () {
@@ -118,12 +118,12 @@ Route::get('/markets/stocks/americas', function () {
 Route::get('/markets/stocks/europe', function () {
     return view('markets.market');
 })->name('europe');
-Route::get('/markets/stocks/52-week-high', function () {
-    return view('markets.market');
-})->name('52-week-high');
-Route::get('/markets/stocks/52-week-low', function () {
-    return view('markets.market');
-})->name('52-week-low');
+// Route::get('/markets/stocks/52-week-high', function () {
+//     return view('markets.market');
+// })->name('52-week-high');
+// Route::get('/markets/stocks/52-week-low', function () {
+//     return view('markets.market');
+// })->name('52-week-low');
 Route::get('/markets/stocks/most-active', function () {
     return view('markets.market');
 })->name('most-active');
@@ -283,6 +283,11 @@ Route::get('/markets/certificates/world-certificates', function () {
     return view('markets.market');
 })->name('world-certificates');
 
+
+// RichTv Pro
+Route::get('/richtvpro/watchlist', function () {
+    return view('markets.market');
+})->name('watchlistpro');
 
 // Profile route
 Route::get('/pricing', function () {
