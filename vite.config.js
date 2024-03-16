@@ -40,6 +40,7 @@ export default defineConfig({
                 'resources/css/frontend.css',
                 'resources/css/slick.css',
                 'resources/css/slick-theme.css',
+                'resources/js/main.js',
             ],
             refresh: true,
         }),
@@ -62,10 +63,10 @@ export default defineConfig({
                     src: 'resources/images',
                     dest: ''
                 },
-                {
-                    src: 'resources/js',
-                    dest: ''
-                },
+                { src: 'resources/js/libs/jquery.min.js', dest: 'libs/jquery' },
+                { src: 'resources/js/libs/bootstrap.bundle.min.js', dest: 'libs/bootstrap/js' },
+                { src: 'resources/js/slick.min.js', dest: 'js' },
+                { src: 'resources/js/custom.js', dest: 'js' },
                 {
                     src: 'resources/libs',
                     dest: ''
