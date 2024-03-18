@@ -63,7 +63,7 @@
         <div class="cryptocurrency-table-wrapper my-5">
             <h1 class="fw-6 fs-2 border-bottom pb-2">Today's Cryptocurrency Prices</h1>
             <div class="mt-4 overflow-auto cryptocurrency-table">
-                                <table class="table table-hover">
+                                <table class="table table-hover border">
                                     <thead>
                                         <tr>
                                             <th class="fw-6">#</th>

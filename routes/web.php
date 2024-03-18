@@ -283,11 +283,6 @@ Route::get('/markets/certificates/world-certificates', function () {
 })->name('world-certificates');
 
 
-// RichTv Pro
-Route::get('/richtvpro/watchlist', function () {
-    return view('markets.market');
-})->name('watchlistpro');
-
 // Profile route
 Route::get('/pricing', function () {
     return view('pricing');
@@ -325,6 +320,13 @@ Route::middleware(['auth'])->group(function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
 
+    // RichTv Pro
+    Route::get('/watchlist-ideas', function () {
+        return view('markets.market');
+    })->name('watchlistpro');
+    Route::get('/pro-picks', function () {
+        return view('markets.market');
+    })->name('propicks');
 });
 
 // Routes for Watchlist with prefix

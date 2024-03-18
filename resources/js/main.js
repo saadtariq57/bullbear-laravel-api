@@ -380,9 +380,14 @@ const routes = [
     },
     
     {
-        path: '/richtvpro/watchlist',
+        path: '/watchlist-ideas',
         name: 'watchlistpro',
-        component: () => import('./components/richtvpro/watchlistideas/ProWatchlist.vue'),
+        component: () => import('./components/richtvpro/WatchlistIdeas.vue'),
+    },
+    {
+        path: '/pro-picks',
+        name: 'propicks',
+        component: () => import('./components/richtvpro/ProPicks.vue'),
     },
 
     {

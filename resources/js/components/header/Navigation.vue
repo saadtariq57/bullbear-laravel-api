@@ -664,21 +664,20 @@
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link"
-                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market
-                                                        Analysis</a>
+                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market analysis Pro Tipss</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/">Personal Access</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/richtvpro/watchlist">Watchlist Ideas</a>
+                                                    <a class="dropdown-item nav-link" href="/watchlist-ideas">Watchlist Ideas</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">ProPicks</a>
+                                                    <a class="dropdown-item nav-link" href="/pro-picks">ProPicks</a>
                                                 </li>
-                                                <li>
+                                                <!-- <li>
                                                     <a class="dropdown-item nav-link" href="/">Stock Ideas</a>
-                                                </li>
+                                                </li> -->
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/stocks-screener">Stock Screener</a>
                                                 </li>
