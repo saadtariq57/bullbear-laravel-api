@@ -465,34 +465,39 @@
                                                 class="dropdown-img">
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Personal Finance</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/personal-finance/">Personal
+                                                        Finance</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Investing</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/investing101/">Investing101</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Understanding Insurance
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/understanding-insurance/">Understanding Insurance
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Financial Planning
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-planning/">Financial
+                                                        Planning
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Specific Investment Types
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/specific-investment-types/">Specific Investment Types
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Capital Budgeting
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/capital-budgeting/">Capital Budgeting
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Mergers and Acquisitions
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/mergers-and-acquisitions/">Mergers and Acquisitions
 
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Risk Management
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/risk-management/">Risk Management
                                                     </a>
                                                 </li>
                                             </ul>
@@ -508,31 +513,31 @@
                                                 class="dropdown-img">
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Market Overview
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/market-overview/">Market Overview
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Currencies</a>
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/currencies/">Currencies</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/">Stock Markets
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Commodities
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/financial-news/commodities/">Commodities
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Bonds
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/bonds/">Bonds
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Cryptocurrency
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/cryptocurrency-analysis/">Cryptocurrency
 
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">ETFs
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/etfs/">ETFs
 
                                                     </a>
                                                 </li>
@@ -641,36 +646,54 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">Ceo Interviews</a>
-                                    </li>
-                                    <li>
                                         <div class="dropdown d-flex gap-2 align-items-center">
                                             <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                RichTv Pro
+                                                <span class="text-cta">RichTv</span>&nbsp;<span class="clr-primary">Pro</span>
                                             </button>
                                             <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
                                                 class="dropdown-img">
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/trading-school">Trading
-                                                        School</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/">specialize Reports</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link" href="/email-alerts">Special Alerts</a>
+                                                    <div
+                                                        class="dropdown nested-dropdown-wrapper pe-2 position-relative">
+                                                        <a href="/trading-school"
+                                                            class="nav-link nested-nav-dropdown fw-4">Trading School</a>
+                                                        <ul
+                                                            class="dropdown-menu px-4 py-2 nested-mega-menu rounded-3 trading-school-menu">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/exams">Exams</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/technical-analysis">Technical
+                                                                    Analysis</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link"
-                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market analysis Pro Tipss</a>
+                                                        href="/specialize-reports">Specialize Reports</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Personal Access</a>
+                                                    <a class="dropdown-item nav-link" href="/email-alerts">Special
+                                                        Alerts</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/watchlist-ideas">Watchlist Ideas</a>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market
+                                                        analysis Pro
+                                                        Tipss</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/personal-access">Personal
+                                                        Access</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/watchlist-ideas">Watchlist
+                                                        Ideas</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/pro-picks">ProPicks</a>
@@ -679,11 +702,16 @@
                                                     <a class="dropdown-item nav-link" href="/">Stock Ideas</a>
                                                 </li> -->
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/stocks-screener">Stock Screener</a>
+                                                    <a class="dropdown-item nav-link" href="/stocks-screener">Stock
+                                                        Screener</a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
+                                    <li>
+                                        <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">Ceo Interviews</a>
+                                    </li>
+
                                 </ul>
                             </div>
                         </div>
@@ -1111,6 +1139,10 @@ ul.nested-mega-menu {
     border-radius: 0;
     transform: translateY(-30px) !important;
     left: 170px;
+}
+
+.trading-school-menu {
+    left: 190px !important;
 }
 
 @media (max-width: 767px) {

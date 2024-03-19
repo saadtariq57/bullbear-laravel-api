@@ -327,6 +327,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pro-picks', function () {
         return view('markets.market');
     })->name('propicks');
+    Route::get('/personal-access', function () {
+        return view('markets.market');
+    })->name('personal-access');
+    Route::get('/specialize-reports', function () {
+        return view('markets.market');
+    })->name('specialize-reports');
+    Route::get('/technical-analysis', function () {
+        return view('markets.market');
+    })->name('technical-analysis');
 });
 
 // Routes for Watchlist with prefix
