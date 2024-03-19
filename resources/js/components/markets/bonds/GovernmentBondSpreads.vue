@@ -5,7 +5,7 @@
                 <h1 class="fs-3 border-bottom pb-2">Government Bonds </h1>
             </div>
             <div class="mt-4 overflow-auto market-table-wapper">
-                <table class="table table-width">
+                <table class="table table-width border">
                     <thead>
                         <tr>
                             <th class="fw-6">Sybmol</th>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-                <div class="trendingvideos-widget my-3 shadow rounded border-top border-2 border-warning">
+                <div class="trendingvideos-widget my-3  rounded border-top border-2 border-warning">
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 GAINER OF THE MONTH</h2>
                     </div>
@@ -151,7 +151,7 @@
                     </div>
 
                 </div>
-                <div class="trendingvideos-widget mb-3 shadow rounded border-top border-2 border-warning">
+                <div class="trendingvideos-widget mb-3  rounded border-top border-2 border-warning">
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 LOSSER OF THE MONTH</h2>
                     </div>

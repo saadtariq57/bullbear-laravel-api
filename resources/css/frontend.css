@@ -384,13 +384,14 @@ td {
 
 ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
     background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 3px var(--Cinder);
-    background-color: var(--primary-color);
+    background-color: var(--primary-color) !important;
 }
 
 ::-webkit-scrollbar-track {
@@ -1467,7 +1468,7 @@ section.manage-watchlist ul li:active {
 
 .table-responsive::-webkit-scrollbar-track {
     box-shadow: none !important;
-    background-color: transparent !important;
+    background-color: transparent;
 }
 
 /* .symbol-search-form input {
@@ -2860,6 +2861,11 @@ p.user-message {
 }
 
 /* Price & Plan Css End */
+.trendingvideos-widget{
+    border-bottom: 1px solid #00000021 !important;
+    border-right: 1px solid #00000021 !important;
+    border-left: 1px solid #00000021 !important
+}
 .table-width {
     min-width: 500px;
 }
