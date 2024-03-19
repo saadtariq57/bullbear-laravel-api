@@ -6,6 +6,7 @@ use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
 
@@ -411,7 +412,29 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{group}/edit', [GroupController::class, 'edit'])->name('edit');
             Route::put('{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
+            // Member Routes
+            Route::get('{group}/members', [GroupController::class, 'showMembers'])->name('members');
+            Route::post('{group}/members', [GroupController::class, 'updateMembers']);
 
+            // Group Categories Routes
+            Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');
+            Route::get('categories/create', [GroupController::class, 'categoriesCreate'])->name('categories.create');
+            Route::post('categories', [GroupController::class, 'categoriesStore'])->name('categories.store');
+            Route::get('categories/{category}/edit', [GroupController::class, 'categoriesEdit'])->name('categories.edit');
+            Route::put('categories/{category}', [GroupController::class, 'categoriesUpdate'])->name('categories.update');
+            Route::delete('categories/{category}', [GroupController::class, 'categoriesDestroy'])->name('categories.destroy');
+        });
+
+        // route group for UserController
+        Route::prefix('admin/users')->name('admin.users.')->group(function() {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('create', [UserController::class, 'create'])->name('create');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::get('search', [UserController::class, 'search'])->name('search');
+        // Additional routes for user management can be added here
             // Categories Routes
             Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');
             Route::get('categories/create', [GroupController::class, 'categoriesCreate'])->name('categories.create');
@@ -430,6 +453,19 @@ Route::middleware(['auth'])->group(function () {
             Route::put('{user}', [UserController::class, 'update'])->name('update');
             Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
             // Additional routes for user management can be added here
+        });
+
+        // Route group for PostController
+        Route::prefix('admin/posts')->name('admin.posts.')->group(function() {
+            Route::get('/', [PostController::class, 'index'])->name('index');
+            Route::get('create', [PostController::class, 'create'])->name('create');
+            Route::post('/', [PostController::class, 'store'])->name('store');
+            Route::get('{post}/edit', [PostController::class, 'edit'])->name('edit');
+            Route::put('{post}', [PostController::class, 'update'])->name('update');
+            Route::delete('{post}', [PostController::class, 'destroy'])->name('destroy');
+            Route::get('search', [PostController::class, 'search'])->name('search');
+            // Additional routes for post management can be added here
+            Route::get('view/{post}', [PostController::class, 'view'])->name('view');
         });
 
         // Route group for SubscriptionPlanController

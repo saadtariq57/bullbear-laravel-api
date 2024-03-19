@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Models\GroupCategory;
+use App\Models\GroupMembers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GroupController extends Controller
 {
@@ -37,6 +39,7 @@ class GroupController extends Controller
     {
         $search = $request->query('search');
 
+
         if($search) {
             $groups = Group::with('category')
                             ->where(function ($query) use ($search) {
@@ -54,10 +57,38 @@ class GroupController extends Controller
         return view('admin.groups.index', compact('groups'));
     }
 
+    public function showMembers(Group $group)
+    {
+        $members = $group->members()
+                         ->with('user')
+                         ->get(['user_id', 'role', 'active', 'last_seen']);
+
+        return view('admin.groups.members', ['members' => $members, 'group' => $group]);
+    }
+
+    public function updateMembers(Request $request, Group $group)
+    {
+        $incomingMembers = $request->input('members');
+
+        // Handle adding/updating members
+        foreach ($incomingMembers as $memberData) {
+            $group->members()->updateOrCreate(
+                ['user_id' => $memberData['user_id']],
+                ['role' => $memberData['role'], 'active' => $memberData['active']]
+            );
+        }
+
+        // Handle removing members
+        $incomingMemberIds = array_column($incomingMembers, 'user_id');
+        $group->members()->whereNotIn('user_id', $incomingMemberIds)->delete();
+
+        return response()->json(['message' => 'Members updated successfully.']);
+    }
 
     public function create()
     {
-        return view('admin.groups.create');
+        $categories = GroupCategory::all();
+        return view('admin.groups.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -92,7 +123,6 @@ class GroupController extends Controller
 
         $validatedData['user_id'] = $user->id;
         $validatedData['time'] = time();
-
         Group::create($validatedData);
 
         return redirect()->route('admin.groups.index')->with('success', 'Group created successfully');
@@ -146,9 +176,7 @@ class GroupController extends Controller
         return redirect()->route('admin.groups.index')->with('success', 'Group deleted successfully');
     }
 
-    /**
-     * Display a listing of the group categories.
-     */
+
     public function categoriesIndex(Request $request)
     {
         $search = $request->query('search');
@@ -171,50 +199,37 @@ class GroupController extends Controller
         return view('admin.groups.categories.create');
     }
 
-    /**
-     * Store a newly created group category in storage.
-     */
     public function categoriesStore(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:group_categories,name'
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'about' => 'string|max:255',
+            // other validation rules
         ]);
-
-        GroupCategory::create($data);
-
-        return redirect()->route('admin.groups.categories.index')->with('success', 'Group category created successfully.');
+        
+        GroupCategory::create($validatedData);
+        return redirect()->route('admin.groups.categories.index')->with('success', 'Category created successfully');
     }
 
-    /**
-     * Show the form for editing the specified group category.
-     */
-    public function categoriesEdit(GroupCategory $groupCategory)
+    public function categoriesEdit(GroupCategory $category)
     {
-        $category = $groupCategory;
         return view('admin.groups.categories.edit', compact('category'));
     }
 
-    /**
-     * Update the specified exam category in storage.
-     */
-    public function categoriesUpdate(Request $request, GroupCategory $groupCategory)
+    public function categoriesUpdate(Request $request, GroupCategory $category)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:group_categories,name,' . $groupCategory->id
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'about' => 'string|max:255',
         ]);
-
-        $groupCategory->update($data);
-
-        return redirect()->route('admin.groups.categories.index')->with('success', 'Group category updated successfully.');
+        
+        $category->update($validatedData);
+        return redirect()->route('admin.groups.categories.index')->with('success', 'Category updated successfully');
     }
 
-    /**
-     * Remove the specified group category from storage.
-     */
-    public function categoriesDestroy(GroupCategory $groupCategory)
+    public function categoriesDestroy(GroupCategory $category)
     {
-        $groupCategory->delete();
-
-        return redirect()->route('admin.groups.categories.index')->with('success', 'Group category deleted successfully.');
+        $category->delete();
+        return redirect()->route('admin.groups.categories.index')->with('success', 'Category deleted successfully');
     }
 }

@@ -1254,13 +1254,20 @@ header {
 
 .navbar-search input {
     padding: 10px 10px 10px 40px;
-    height: 55px;
-    border-radius: 10px;
+    height: 70px;
+    border-radius: 0px;
+    font-size: 19px;
 }
-
+.nav-search-main .btn-search-close{
+    position: absolute;
+    right: 20px;
+    top: 25px;
+    color: #000;
+    filter: invert(0);
+}
 .header-serch-icon {
     left: 10px;
-    top: 10px;
+    top: 19px;
 }
 
 .main-list {

@@ -4,13 +4,11 @@
 
         <div class="offcanvas offcanvas-top bg-transparent canvas-header border-0" tabindex="-1" id="offcanvasTop"
             aria-labelledby="offcanvasTopLabel">
-            <div class="offcanvas-header justify-content-end">
-                <button type="button" class="btn-close btn-search-close btn-close-white" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body container-lg offcanvas-body_nav_search_data px-3 mb-2">
+            <div class="offcanvas-body offcanvas-body_nav_search_data px-0 pt-0 mb-2">
                 <form class="d-flex nav-search-main nav-link popup-form position-relative" action="https://richtv.io/"
                     method="get" id="search_form_large">
+                    <button type="button" class="btn-close btn-search-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
                     <span class="header-serch-icon position-absolute">
                         <i class="bi bi-search nav-clr fs-4"></i></span>
                     <div class="navbar-search w-100">

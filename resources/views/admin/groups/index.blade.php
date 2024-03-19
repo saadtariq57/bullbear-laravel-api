@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    Group Management
+    All Groups
 @endsection
 
 @section('page-title')
@@ -61,87 +61,113 @@
                                 @foreach($groups as $group)
 
                                     <tr>
-
-                                        <td>{{ $group->id }}</td>
-                                        <td>
-                                            <img src="{{ URL::asset($group->avatar) }}" alt=""
-                                                 class="avatar-xs rounded-circle me-2">
-                                            {{ $group->group_name }}
-                                        </td>
-                                        <td>{{ $group->group_title }}</td>
-                                        <td>{{ optional($group->category)->name }}</td>
-                                        <td>{{ $group->privacy }}</td>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="{{ route('admin.groups.edit', $group) }}" class="px-2 text-primary">
-                                                        <i class="ri-pencil-line font-size-18"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <form action="{{route('admin.groups.destroy', $group->id)}}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-danger delete-group" type="button" data-group-id="{{ $group->id }}">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </td>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Avatar</th>
+                                        <th scope="col">Owner Name</th>
+                                        <th scope="col">Group Name</th>
+                                        <th scope="col">Privacy</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Symbol</th>
+                                        <th scope="col">Exchange</th>
+                                        <th scope="col">Members</th>
+                                        <th scope="col">Action</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach($groups as $group)
+                                        <tr>
+                                            <td>{{ $group->id }}</td>
+                                            <td>
+                                                <img src="{{ URL::asset($group->avatar) }}" alt="" class="avatar-xs rounded-circle">
+                                            </td>
+                                            <!-- Assuming you have a method in your Group model to get the user name -->
+                                            <td>{{ $group->user->name }}</td>
+                                            <td>{{ $group->group_name }}</td>
+                                            <td>{{ ucfirst($group->privacy) }}</td>
+                                            <td>{{ $group->active == 0 ? 'Inactive' : 'Active' }}</td>
+                                            <td>{{ $group->symbol }}</td>
+                                            <td>{{ $group->exchange }}</td>
+                                            <!-- Assuming you have a method in your Group model to get members count -->
+                                            <td>{{ $group->members_count }}</td>
+                                            <td>
+                                                <ul class="list-inline mb-0">
+                                                    <!-- Existing Edit Action -->
+                                                    <li class="list-inline-item">
+                                                        <a href="{{ route('admin.groups.edit', $group) }}" class="px-2 text-primary">
+                                                            <i class="ri-pencil-line font-size-18"></i>
+                                                        </a>
+                                                    </li>
 
-                    <div class="row mt-4">
-                        <div class="col-sm-6">
-                            <div>
-                                <p class="mb-sm-0">{{ $groups->firstItem() }} to {{ $groups->lastItem() }} of {{ $groups->total() }} entries</p>
+                                                    <!-- New Members Action -->
+                                                    <li class="list-inline-item">
+                                                        <a href="{{ route('admin.groups.members', $group->id) }}" class="px-2 text-success">
+                                                            <i class="ri-group-line font-size-18"></i> <!-- You can use an appropriate icon -->
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- Existing Delete Action -->
+                                                    <li class="list-inline-item">
+                                                        <form action="{{route('admin.groups.destroy', $group->id)}}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-danger delete-group" type="button" data-group-id="{{ $group->id }}">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>                        
+                        <div class="row mt-4">
+                            <div class="col-sm-6">
+                                <div>
+                                    <p class="mb-sm-0">{{ $groups->firstItem() }} to {{ $groups->lastItem() }} of {{ $groups->total() }} entries</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="float-sm-end">
-                                <ul class="pagination mb-sm-0">
-                                    {{ $groups->appends(['search' => request()->query('search')])->links() }}
-                                </ul>
+                            <div class="col-sm-6">
+                                <div class="float-sm-end">
+                                    <ul class="pagination mb-sm-0">
+                                        {{ $groups->appends(['search' => request()->query('search')])->links() }}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- end row -->
-@endsection
-
-@section('scripts')
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    <!-- Sweet Alerts js -->
-    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('.delete-group').on('click', function() {
-                let groupId = $(this).data('group-id');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).closest('form').submit();
-                    }
+        <!-- end row -->
+    @endsection
+    @section('scripts')
+        <!-- App js -->
+        <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        <!-- Sweet Alerts js -->
+        <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                // Intercept delete button click
+                $('.delete-group').on('click', function() {
+                    let widgetId = $(this).data('group-id');
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If user confirmed, submit the associated form
+                            $(this).closest('form').submit();
+                        }
+                    });
                 });
-            });
-        });
-    </script>
 
     @if(session('success'))
         <script>
@@ -153,15 +179,14 @@
             });
         </script>
     @endif
-
-    @if(session('error'))
-        <script>
-            Swal.fire({
-                title: 'Error!',
-                text: '{{ session("error") }}',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
-@endsection
+        @if(session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session("error") }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+    @endsection
