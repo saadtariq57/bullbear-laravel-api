@@ -520,7 +520,7 @@
                                                     <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/currencies/">Currencies</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Stock Markets
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/analysis/stock-markets/">Stock Markets
                                                     </a>
                                                 </li>
                                                 <li>
@@ -649,7 +649,7 @@
                                         <div class="dropdown d-flex gap-2 align-items-center">
                                             <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                <span class="text-cta">RichTv</span>&nbsp;<span class="clr-primary">Pro</span>
+                                                <span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span>
                                             </button>
                                             <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
                                                 class="dropdown-img">
