@@ -334,6 +334,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/specialize-reports', function () {
         return view('markets.market');
     })->name('specialize-reports');
+    Route::get('/single-report', function () {
+        return view('feed');
+    })->name('single-report');
     Route::get('/technical-analysis', function () {
         return view('markets.market');
     })->name('technical-analysis');

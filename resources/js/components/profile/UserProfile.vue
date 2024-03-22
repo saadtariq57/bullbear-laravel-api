@@ -39,7 +39,10 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <ul class="bg-white list-unstyled rounded-1 pb-2 shadow">
+                <ul class="bg-white list-unstyled rounded-1 pb-2 shadow position-relative">
+                    <div class="profile-completion-overlay d-flex justify-content-center align-items-center">
+                        <div class="completion-icon rounded-circle d-flex justify-content-center align-items-center text-cta"><i class="bi bi-check-lg fs-1 fw-bolder"></i></div>
+                    </div>
                     <li class="mb-1">
                         <div class="progress profile-progress position-relative rounded-top rounded-0">
                             <div class="progress-bar profile-progress-bar" role="progressbar" aria-label="Basic example"
@@ -64,16 +67,16 @@
                     <li class="px-3 py-1"><i class="bi bi-plus-circle-fill me-3"></i><span>Add your address</span>
                     </li>
                 </ul>
-                <div class="bg-white px-3 py-4 rounded-1 mb-3 shadow">
+                <div class="bg-white px-3 py-4 rounded-1 mb-3 shadow rounded border-top border-2 border-warning widgets-border">
                     <form action="">
                         <div class="form-group">
                             <label for="search-field-post" class="mb-1">Search for posts</label>
-                            <input type="email" class="form-control shadow " id="search-field-post"
+                            <input type="email" class="form-control shadow border" id="search-field-post"
                                 aria-describedby="emailHelp" placeholder="">
                         </div>
                     </form>
                 </div>
-                <ul class="bg-white list-unstyled rounded-1 pb-2 shadow">
+                <!-- <ul class="bg-white list-unstyled rounded-1 pb-2 shadow">
                     <div class="border-bottom fw-6 fs-6 py-1 ps-3">My Watchlist</div>
                     <li class="text-center py-2 border-bottom">No watchlist to show</li>
                     <li class="text-center py-2">
@@ -92,10 +95,10 @@
                         <a href="#" class="btn btn-primary fw-6 fs-5">My
                             Watchlist</a>
                     </li>
-                </ul>
-                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow">
-                    <div class="border-bottom fw-6 fs-6 py-1 ps-3 mb-1"><i
-                            class="bi bi-info-circle-fill me-2 bg-primary rounded-5 px-2 py-1"></i>Info
+                </ul> -->
+                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
+                            class="bi bi-info-circle-fill me-2 bg-cta text-white rounded-5 px-2 py-1"></i>Info
                     </div>
                     <li class="px-3 py-1"><i class="bi bi-eye-fill me-2 text-secondary"></i> <span
                             class="text-success">Online</span></li>
@@ -110,9 +113,9 @@
                             Pakistan</span>
                     </li>
                 </ul>
-                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow">
-                    <div class="border-bottom fw-6 fs-6 py-1 ps-3 mb-1 text-secondary"><i
-                            class="bi bi-images me-2 bg-primary rounded-5 text-black px-2 py-1"></i><a href="#"
+                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1 text-secondary"><i
+                            class="bi bi-images me-2 bg-cta text-white rounded-5 text-black px-2 py-1"></i><a href="#"
                             class="text-secondary">Gallery <span>(1)</span></a>
                     </div>
                     <li class="p-1 ">
@@ -131,9 +134,9 @@
                         </div>
                     </li>
                 </ul>
-                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow">
-                    <div class="border-bottom fw-6 fs-6 py-1 ps-3 mb-1"><i
-                            class="bi bi-person-plus-fill me-2 bg-primary text-black rounded-5 px-2 py-1"></i><a
+                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
+                            class="bi bi-person-plus-fill me-2 bg-cta text-white text-black rounded-5 px-2 py-1"></i><a
                             href="#" class="text-secondary">Friends <span>(3)</span></a>
                     </div>
                     <li class="p-1 ">
@@ -171,9 +174,9 @@
                         </div>
                     </li>
                 </ul>
-                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow">
-                    <div class="border-bottom fw-6 fs-6 py-1 ps-3 mb-1"><i
-                            class="bi bi-chat-right-dots me-2 bg-primary text-black rounded-5 px-2 py-1 fs-13"></i>
+                <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
+                            class="bi bi-chat-right-dots me-2 bg-cta text-white text-black rounded-5 px-2 py-1 fs-13"></i>
                         <a href="#" class="text-secondary">Chats <span>(7)</span></a>
                     </div>
                     <li class="p-1 ">

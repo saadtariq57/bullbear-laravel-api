@@ -400,6 +400,11 @@ const routes = [
         component: () => import('./components/richtvpro/SpecializeReports.vue'),
     },
     {
+        path: '/single-report',
+        name: 'single-report',
+        component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
+    },
+    {
         path: '/technical-analysis',
         name: 'technical-analysis',
         component: () => import('./components/richtvpro/TechnicalAnalysis.vue'),
