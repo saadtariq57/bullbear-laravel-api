@@ -102,6 +102,9 @@ body {
 .bg-primary {
     background-color: var(--primary-color) !important;
 }
+.bg-cta {
+    background-color: var(--cta-btn) !important;
+}
 
 .bg-green {
     background-color: var(--Green) !important;
@@ -2254,13 +2257,25 @@ p.user-message {
 /* profile page css End */
 /* Profile-sidgets css start */
 .profile-progress {
-    background-color: rgba(168, 72, 73, .5);
+    background-color: #1d456485;
     height: 50px;
 }
 
 .profile-progress-bar {
-    background-color: rgba(168, 72, 73, .8);
+    background-color: var(--cta-btn);
     width: 40%;
+}
+.profile-completion-overlay{
+    background-color: rgb(255 255 255 / 80%);
+    position: absolute;
+    top: 55px;
+    height: 150px;
+    width: 100%;
+}
+.completion-icon{
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--cta-btn);
 }
 
 #post-textarea,
@@ -2861,7 +2876,7 @@ p.user-message {
 }
 
 /* Price & Plan Css End */
-.trendingvideos-widget{
+.trendingvideos-widget , .widgets-border{
     border-bottom: 1px solid #00000021 !important;
     border-right: 1px solid #00000021 !important;
     border-left: 1px solid #00000021 !important

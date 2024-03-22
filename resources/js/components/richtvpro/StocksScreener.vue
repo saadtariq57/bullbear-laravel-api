@@ -1,7 +1,7 @@
 <template>
   <div class="screener-filter-wrapper border shadow-sm rounded-2">
     <div
-      class="filter-header d-flex align-items-center justify-content-between border-bottom border-dark border-2 py-2 px-2 bg-light">
+      class="filter-header d-flex align-items-center justify-content-between flex-wrap gap-1 border-bottom border-dark border-2 py-2 px-2 bg-light">
       <h1 class="fs-3 fw-5 mb-0">Filter options</h1>
       <div class="fiter-search d-flex align-items-center gap-2">
         <div class="position-relative d-flex align-items-center">
@@ -1545,7 +1545,6 @@
 .fiter-search-field {
   width: 200px;
 }
-
 .form-select-filter {
   width: 150px;
 }
@@ -1571,5 +1570,18 @@
 .indicators-checkbox-btn:hover{
 background-color: var(--cta-btn) !important;
 color: var(--white) !important;
+}
+@media (max-width: 991px){
+  .filter{
+    justify-content: space-around !important
+  }
+  /* .select-filter-wrapper{
+  justify-content: around !important;
+} */
+}
+@media (max-width: 767px){
+  .market-container{
+    width: 720px !important;
+  }
 }
 </style>
