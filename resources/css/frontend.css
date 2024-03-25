@@ -786,6 +786,9 @@ section.featured-video {
     border-radius: 8px;
     box-shadow: 3px 3px 5px #cccccc9e;
 }
+.stock-table-data{
+    height: 400px;
+}
 
 .manage-watchlist .Manage-list input {
     background: transparent;

@@ -286,10 +286,9 @@
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 GAINER OF THE MONTH</h2>
                     </div>
-                    <div class="stock-table-data position-relative px-2 overflow-auto"
-                        style="height: 400px !important;">
-                        <div class="table-responsive" style="height: 400px !important;">
-                            <table class="table stock-market-table1 height-1024">
+                    <div class="stock-table-data position-relative px-2 overflow-auto">
+                        <div class="table-responsive">
+                            <table class="table stock-market-table1">
                                 <thead>
                                   <tr>
                                     <th scope="col" class="sticky-side position-sticky bg-white text-black ps-0">Name</th>
@@ -377,9 +376,8 @@
                     <div class=" border-bottom">
                         <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 LOSSER OF THE MONTH</h2>
                     </div>
-                    <div class="stock-table-data position-relative px-2 overflow-auto"
-                        style="height: 400px !important;">
-                        <div class="table-responsive" style="height: 400px !important;">
+                    <div class="stock-table-data position-relative px-2 overflow-auto">
+                        <div class="table-responsive">
                             <table class="table stock-market-table1 height-1024">
                                 <thead>
                                   <tr>
@@ -464,9 +462,18 @@
                     </div>
 
                 </div>
-                </div>
+                <Markets />
+         </div>
     </div>
 </template>
+<script>
+import Markets from '../widgets/Markets.vue';
+export default {
+  components: {
+    Markets
+  }
+}
+</script>
 <style>
 .table-width {
     min-width: 500px;
