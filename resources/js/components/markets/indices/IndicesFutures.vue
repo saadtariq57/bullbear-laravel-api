@@ -1,369 +1,321 @@
 <template>
-    <div class="row">
-        <div class="col-lg-8 px-3">
-            <div class="border-bottom">
-                <h1 class="fs-3">Real-Time Stock Indices Futures</h1>
-            </div>
-            <div class="mt-4 overflow-auto market-table-wapper">
-                <table class="table table-width border">
-                    <thead>
-                        <tr>
-                            <th class="fw-6">Sybmol</th>
-                            <th class="text-end fw-6">Price</th>
-                            <th class="text-end fw-6">High</th>
-                            <th class="text-end fw-6">Low</th>
-                            <th class="text-end fw-6">Change</th>
-                            <th class="text-end fw-6">Change %</th>
-                            <th class="text-end fw-6">Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="fw-5">USD</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">TSLA</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">GT</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">NASDAQ</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-            <div class="border-bottom mt-5">
-                <h1 class="fs-3">US Futures Market Quotes (10-minute Delayed)</h1>
-            </div>
-            <div class="mt-4 overflow-auto market-table-wapper">
-                <table class="table table-width border">
-                    <thead>
-                        <tr>
-                            <th class="fw-6">Sybmol</th>
-                            <th class="text-end fw-6">Price</th>
-                            <th class="text-end fw-6">High</th>
-                            <th class="text-end fw-6">Low</th>
-                            <th class="text-end fw-6">Change</th>
-                            <th class="text-end fw-6">Change %</th>
-                            <th class="text-end fw-6">Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="fw-5">USD</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">TSLA</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">GT</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">NASDAQ</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-            <div class="border-bottom mt-5">
-                <h1 class="fs-3">EUREX Futures Market Quotes</h1>
-            </div>
-            <div class="mt-4 overflow-auto market-table-wapper">
-                <table class="table table-width border">
-                    <thead>
-                        <tr>
-                            <th class="fw-6">Sybmol</th>
-                            <th class="text-end fw-6">Price</th>
-                            <th class="text-end fw-6">High</th>
-                            <th class="text-end fw-6">Low</th>
-                            <th class="text-end fw-6">Change</th>
-                            <th class="text-end fw-6">Change %</th>
-                            <th class="text-end fw-6">Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="fw-5">USD</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">TSLA</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">GT</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Green">+299.29</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">NASDAQ</td>
-                            <td class="text-end fw-5">242.68 USD</td>
-                            <td class="text-end fw-5">242.95</td>
-                            <td class="text-end fw-5">242.20</td>
-                            <td class="text-end fw-5 Red">-299.29</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">1.25M</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
+  <div class="text-center">
+    <p class="mb-0 fw-bold text-black">Indices</p>
+    <h1 class="fw-bold border-bottom pb-3">Indices Futures</h1>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="mt-3 overflow-auto market-table-wapper">
+        <div class="text-end mb-3">
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
         </div>
-        <div class="col-lg-4">
-                <div class="trendingvideos-widget my-3  rounded border-top border-2 border-warning">
-                    <div class=" border-bottom">
-                        <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 GAINER OF THE MONTH</h2>
-                    </div>
-                    <div class="stock-table-data position-relative px-2 overflow-auto"
-                        style="height: 400px !important;">
-                        <div class="table-responsive" style="height: 400px !important;">
-                            <table class="table stock-market-table1 height-1024">
-                                <thead>
-                                  <tr>
-                                    <th scope="col" class="sticky-side position-sticky bg-white text-black ps-0">Name</th>
-                                    <th scope="col" class="text-black text-end">Last</th>
-                                  </tr>
-                                </thead>
-                                <tbody id="crypto-table-body">
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                        </div>
-                    </div>
+        <table class="table table-width border">
+          <thead>
+            <tr>
+              <th class="fw-6">Sybmol</th>
+              <th class="fw-6">Name</th>
+              <th class="text-end fw-6">Last Price</th>
+              <th class="text-end fw-6">Change</th>
+              <th class="text-end fw-6">Change %</th>
+              <th class="text-end fw-6">Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="fw-5">ESF</td>
+              <td class="fw-5 symbol-name-width">E-Mini S&P 500 Jun 24</td>
+              <td class="text-end fw-5">5,289.75</td>
+              <td class="text-end fw-5 Red">-12.75</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.24%</td>
+              <td class="text-end fw-5">1.045M</td>
+            </tr>
+            <tr>
+              <td class="fw-5">YMF</td>
+              <td class="fw-5 symbol-name-width">Mini Dow Jones Indus.-$5 Jun 24</td>
+              <td class="text-end fw-5">39,827.00</td>
+              <td class="text-end fw-5 Red">-379.00</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.94%</td>
+              <td class="text-end fw-5">124,677</td>
+            </tr>
+            <tr>
+              <td class="fw-5">NQF</td>
+              <td class="fw-5 symbol-name-width">Nasdaq 100 Jun 24</td>
+              <td class="text-end fw-5">18,563.75</td>
+              <td class="text-end fw-5 Green">+2.00</td>
+              <td class="text-end fw-5 Green postive-arrow-icon-after">+0.01%</td>
+              <td class="text-end fw-5">505,440</td>
+            </tr>
+            <tr>
+              <td class="fw-5">RTYF</td>
+              <td class="fw-5 symbol-name-width">E-mini Russell 2000 Index Futures</td>
+              <td class="text-end fw-5">2,093.10</td>
+              <td class="text-end fw-5 Red">-29.70</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-1.40%</td>
+              <td class="text-end fw-5">160,558</td>
+            </tr>
+            <tr>
+              <td class="fw-5">ZBF</td>
+              <td class="fw-5 symbol-name-width">U.S. Treasury Bond Futures,Jun-24</td>
+              <td class="text-end fw-5">119.96875</td>
+              <td class="text-end fw-5 Green">+0.96875</td>
+              <td class="text-end fw-5 Green postive-arrow-icon-after">+0.81%</td>
+              <td class="text-end fw-5">297,568</td>
+            </tr>
+            <tr>
+              <td class="fw-5">GCF</td>
+              <td class="fw-5 symbol-name-width">Gold</td>
+              <td class="text-end fw-5">2,166.50</td>
+              <td class="text-end fw-5 Red">-18.20</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.83%</td>
+              <td class="text-end fw-5">200,525</td>
+            </tr>
+            <tr>
+              <td class="fw-5">SIF</td>
+              <td class="fw-5 symbol-name-width">Silver</td>
+              <td class="text-end fw-5">24.84</td>
+              <td class="text-end fw-5 Red">-0.17</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.67%</td>
+              <td class="text-end fw-5">55,996</td>
+            </tr>
+            <tr>
+              <td class="fw-5">HGF</td>
+              <td class="fw-5 symbol-name-width">Copper May 24</td>
+              <td class="text-end fw-5">3.9970</td>
+              <td class="text-end fw-5 Red">-0.0615</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-1.52%</td>
+              <td class="text-end fw-5">87,273</td>
+            </tr>
+            <tr>
+              <td class="fw-5">CLF</td>
+              <td class="fw-5 symbol-name-width">Crude Oil</td>
+              <td class="text-end fw-5">80.82</td>
+              <td class="text-end fw-5 Red">-0.25</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.31%</td>
+              <td class="text-end fw-5">209,605</td>
+            </tr>
+            <tr>
+              <td class="fw-5">ZCF</td>
+              <td class="fw-5 symbol-name-width">Corn Futures,May-2024</td>
+              <td class="text-end fw-5">439.50</td>
+              <td class="text-end fw-5 Red">-1.25</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-0.28%</td>
+              <td class="text-end fw-5">119,497</td>
+            </tr>
+            <tr>
+              <td class="fw-5">ZSF</td>
+              <td class="fw-5 symbol-name-width">Soybean Futures,May-2024</td>
+              <td class="text-end fw-5">1,192.00</td>
+              <td class="text-end fw-5 Red">-20.00</td>
+              <td class="text-end fw-5 Red negative-arrow-icon-after">-1.65%</td>
+              <td class="text-end fw-5">107,622</td>
+            </tr>
+          </tbody>
+        </table>
 
-                </div>
-                <div class="trendingvideos-widget mb-3  rounded border-top border-2 border-warning">
-                    <div class=" border-bottom">
-                        <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 LOSSER OF THE MONTH</h2>
-                    </div>
-                    <div class="stock-table-data position-relative px-2 overflow-auto"
-                        style="height: 400px !important;">
-                        <div class="table-responsive" style="height: 400px !important;">
-                            <table class="table stock-market-table1 height-1024">
-                                <thead>
-                                  <tr>
-                                    <th scope="col" class="sticky-side position-sticky bg-white text-black ps-0">Name</th>
-                                    <th scope="col" class="text-black text-end">Last</th>
-                                  </tr>
-                                </thead>
-                                <tbody id="crypto-table-body">
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
-                                    </td>
-                                  </tr>
-                                  <tr id="ROKU">
-                                    <td class="gray2 sticky-side position-sticky bg-white pl-0">
-                                      <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
-                                        <div class="lh-sm">
-                                          <span class="text-color fw-bolder">ROKU</span><br>
-                                          <span class="fw-5 text-color text-color">Roku, Inc.</span>
-                                        </div>
-                                      </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">$62.10
-                                      <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                        </div>
-                    </div>
+      </div>
 
-                </div>
-                </div>
     </div>
+    <div class="col-lg-4">
+      <div class="trendingvideos-widget my-3  rounded border-top border-2 border-warning">
+        <div class=" border-bottom">
+          <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 GAINER OF THE MONTH</h2>
+        </div>
+        <div class="stock-table-data position-relative px-2 overflow-auto">
+          <div class="table-responsive">
+            <table class="table stock-market-table1 ">
+              <thead>
+                <tr>
+                  <th scope="col" class="sticky-side position-sticky bg-white text-black ps-0">Name</th>
+                  <th scope="col" class="text-black text-end">Last</th>
+                </tr>
+              </thead>
+              <tbody id="crypto-table-body">
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Green gap-3  justify-content-end"><span>+1.23</span><span>+1.98</span></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="trendingvideos-widget mb-3  rounded border-top border-2 border-warning">
+        <div class=" border-bottom">
+          <h2 class="fs-18 fw-6 px-2 text-uppercase">TOP 10 LOSSER OF THE MONTH</h2>
+        </div>
+        <div class="stock-table-data position-relative px-2 overflow-auto">
+          <div class="table-responsive">
+            <table class="table stock-market-table1">
+              <thead>
+                <tr>
+                  <th scope="col" class="sticky-side position-sticky bg-white text-black ps-0">Name</th>
+                  <th scope="col" class="text-black text-end">Last</th>
+                </tr>
+              </thead>
+              <tbody id="crypto-table-body">
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
+                  </td>
+                </tr>
+                <tr id="ROKU">
+                  <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                    <a href="/stock-quote/ROKU:NMS" class="gray d-flex align-items-center gap-2"
+                      aria-label="Stock Quote">
+                      <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="20" height="20">
+                      <div class="lh-sm">
+                        <span class="text-color fw-bolder">ROKU</span><br>
+                        <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="gray lh-sm text-end" id="symbol-price">$62.10
+                    <div class="d-flex Red gap-3  justify-content-end"><span>-1.23</span><span>-1.98</span></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </template>
 <style>
-.table-width{
-    min-width: 500px;
+.table-width {
+  min-width: 500px;
 }
-.market-table-wapper::-webkit-scrollbar{
-    height: 6px;
+
+.market-table-wapper::-webkit-scrollbar {
+  height: 6px;
 }
+
 </style>

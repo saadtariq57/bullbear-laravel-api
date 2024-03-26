@@ -98,16 +98,16 @@ const routes = [
         name: 'markets.stocks.united-states',
         component: () => import('./components/markets/stocks/UnitedState.vue'),
     },
-    {
-        path: '/markets/stocks/pre-market',
-        name: 'markets.stocks.pre-market',
-        component: () => import('./components/markets/stocks/PreMarket.vue'),
-    },
-    {
-        path: '/markets/stocks/americas',
-        name: 'markets.stocks.americas',
-        component: () => import('./components/markets/stocks/Americas.vue'),
-    },
+    // {
+    //     path: '/markets/stocks/pre-market',
+    //     name: 'markets.stocks.pre-market',
+    //     component: () => import('./components/markets/stocks/PreMarket.vue'),
+    // },
+    // {
+    //     path: '/markets/stocks/americas',
+    //     name: 'markets.stocks.americas',
+    //     component: () => import('./components/markets/stocks/Americas.vue'),
+    // },
     {
         path: '/markets/stocks/europe',
         name: 'markets.stocks.europe',
@@ -409,7 +409,11 @@ const routes = [
         name: 'technical-analysis',
         component: () => import('./components/richtvpro/TechnicalAnalysis.vue'),
     },
-
+    {
+        path: '/richtv-live',
+        name: 'richtv-live',
+        component: () => import('./components/academy/RichtvLive.vue'),
+    },
     {
         path: '/pricing',
         name: 'pricing',
