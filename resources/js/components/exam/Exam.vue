@@ -115,6 +115,62 @@
       </div>
     </div>
   </div>
+  <div class="exams">
+    <div class="mb-4">
+      <h2 class="fw-6 text-uppercase m-0">Exams</h2>
+      <div class="border border-bottom border-primary d-inline-block mb-2" style="width: 74px;"></div>
+    </div>
+    <div class="exam-card-wrapper row gy-4">
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="exam-content bg-white">
+          <div class="exam-image">
+            <img :src="examImage" class="">
+          </div>
+          <div class="exam-info px-3 py-4">
+            <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">Basic Exams</h3>
+            <div class="time-quastion d-flex justify-content-between mb-3">
+              <span class="questions">
+                <i class="bi bi-list-ol"></i>
+                30 Emaxms
+              </span>
+              <span class="time">
+                <i class="bi bi-stopwatch-fill"></i>
+                10 plus Question Per Exam
+              </span>
+            </div>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing.</p>
+            <div class="exam-btn d-inline-block">
+              <button  class="btn-primary d-inline-block">SEE ALL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="exam-content bg-white">
+          <div class="exam-image">
+            <img :src="examImage" class="">
+          </div>
+          <div class="exam-info px-3 py-4">
+            <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">Advance Exams</h3>
+            <div class="time-quastion d-flex justify-content-between mb-3">
+              <span class="questions">
+                <i class="bi bi-list-ol"></i>
+                30 Emaxms
+              </span>
+              <span class="time">
+                <i class="bi bi-stopwatch-fill"></i>
+                10 plus Question Per Exam
+              </span>
+            </div>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing.</p>
+            <div class="exam-btn d-inline-block">
+              <button  class="btn-primary d-inline-block">SEE ALL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
