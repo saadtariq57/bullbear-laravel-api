@@ -153,20 +153,19 @@
                                                                     href="/markets/stocks/trading-stocks">
                                                                     Trending Stocks</a>
                                                             </li>
-
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/stocks/united-states">United
                                                                     States</a>
                                                             </li>
-                                                            <li>
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/stocks/pre-market">Pre-Market</a>
                                                             </li>
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/stocks/americas">Americas</a>
-                                                            </li>
+                                                            </li> -->
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/stocks/europe">Europe</a>
@@ -554,7 +553,7 @@
                                                 class="dropdown-img">
                                             <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/webinar">Webinar
+                                                    <a class="dropdown-item nav-link" href="/richtv-live">RichTv Live
                                                     </a>
                                                 </li>
                                                 <li>
@@ -690,6 +689,10 @@
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/personal-access">Personal
                                                         Access</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/webinar">Webinar
+                                                    </a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/watchlist-ideas">Watchlist
