@@ -452,7 +452,7 @@
                             </div>
                             <div class="stock-table-data position-relative px-2 overflow-auto"
                                 style="height: 400px !important;">
-                                <div class="table-responsive" style="height: 400px !important;">
+                                <div class="table-responsive">
                                     <div class="overlay-home-ajax" style="display: none;"></div>
                                     <table class="table stock-market-table1 height-1024">
                                         <thead>
@@ -478,7 +478,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Green gap-3  justify-content-end">
-                                                        <span>+1.23</span><span>+1.98</span></div>
+                                                        <span>+1.23</span><span>+1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -496,7 +497,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Green gap-3  justify-content-end">
-                                                        <span>+1.23</span><span>+1.98</span></div>
+                                                        <span>+1.23</span><span>+1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -514,7 +516,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Green gap-3  justify-content-end">
-                                                        <span>+1.23</span><span>+1.98</span></div>
+                                                        <span>+1.23</span><span>+1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -532,7 +535,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Green gap-3  justify-content-end">
-                                                        <span>+1.23</span><span>+1.98</span></div>
+                                                        <span>+1.23</span><span>+1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -550,7 +554,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Green gap-3  justify-content-end">
-                                                        <span>+1.23</span><span>+1.98</span></div>
+                                                        <span>+1.23</span><span>+1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -565,7 +570,7 @@
                             </div>
                             <div class="stock-table-data position-relative px-2 overflow-auto"
                                 style="height: 400px !important;">
-                                <div class="table-responsive" style="height: 400px !important;">
+                                <div class="table-responsive">
                                     <div class="overlay-home-ajax" style="display: none;"></div>
                                     <table class="table stock-market-table1 height-1024">
                                         <thead>
@@ -591,7 +596,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Red gap-3  justify-content-end">
-                                                        <span>-1.23</span><span>-1.98</span></div>
+                                                        <span>-1.23</span><span>-1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -609,7 +615,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Red gap-3  justify-content-end">
-                                                        <span>-1.23</span><span>-1.98</span></div>
+                                                        <span>-1.23</span><span>-1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -627,7 +634,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Red gap-3  justify-content-end">
-                                                        <span>-1.23</span><span>-1.98</span></div>
+                                                        <span>-1.23</span><span>-1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -645,7 +653,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Red gap-3  justify-content-end">
-                                                        <span>-1.23</span><span>-1.98</span></div>
+                                                        <span>-1.23</span><span>-1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr id="ROKU">
@@ -663,7 +672,8 @@
                                                 </td>
                                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                                     <div class="d-flex Red gap-3  justify-content-end">
-                                                        <span>-1.23</span><span>-1.98</span></div>
+                                                        <span>-1.23</span><span>-1.98</span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -748,7 +758,8 @@
                             <div class="profile-completion-overlay d-flex justify-content-center align-items-center">
                                 <div
                                     class="completion-icon rounded-circle d-flex justify-content-center align-items-center text-cta">
-                                    <i class="bi bi-check-lg fs-1 fw-bolder"></i></div>
+                                    <i class="bi bi-check-lg fs-1 fw-bolder"></i>
+                                </div>
                             </div>
                             <li class="mb-1">
                                 <div class="progress profile-progress position-relative rounded-top rounded-0">
@@ -775,7 +786,8 @@
                             <li class="px-3 py-1"><i class="bi bi-plus-circle-fill me-3"></i><span>Add your address</span>
                             </li>
                         </ul>
-                        <div class="bg-white px-3 py-4 rounded-1 mb-3 shadow rounded border-top border-2 border-warning widgets-border">
+                        <div
+                            class="bg-white px-3 py-4 rounded-1 mb-3 shadow rounded border-top border-2 border-warning widgets-border">
                             <form action="">
                                 <div class="form-group">
                                     <label for="search-field-post" class="mb-1">Search for posts</label>
@@ -784,7 +796,8 @@
                                 </div>
                             </form>
                         </div>
-                        <ul class="bg-white list-unstyled rounded-1 pb-2 shadow  rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-2 shadow  rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-1 ps-3">My Watchlist</div>
                             <li class="text-center py-2 border-bottom">No watchlist to show</li>
                             <li class="text-center py-2">
@@ -792,7 +805,8 @@
                                     Watchlist</a>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow  rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow  rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
                                     class="bi bi-info-circle-fill me-2 bg-cta text-white rounded-5 px-2 py-1"></i>Info
                             </div>
@@ -811,7 +825,8 @@
                                     Pakistan</span>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1 text-secondary"><i
                                     class="bi bi-images me-2 bg-cta text-white rounded-5 text-black px-2 py-1"></i><a
                                     href="#" class="text-secondary">Gallery <span>(1)</span></a>
@@ -832,7 +847,8 @@
                                 </div>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
                                     class="bi bi-person-plus-fill me-2 bg-cta text-white text-black rounded-5 px-2 py-1"></i><a
                                     href="#" class="text-secondary">Friends <span>(3)</span></a>
@@ -872,7 +888,8 @@
                                 </div>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
                                     class="bi bi-chat-right-dots me-2 bg-cta text-white text-black rounded-5 px-2 py-1 fs-13"></i>
                                 <a href="#" class="text-secondary">Chats <span>(7)</span></a>
@@ -952,7 +969,8 @@
                                 </div>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 icon-short-heading">
                                 <h3 class="fs-6 fw-5 mb-0 lh-base">Latest Specialize Reports</h3>
                             </div>
@@ -975,7 +993,8 @@
                                 <a href="/specialize-reports" class="btn btn-primary">View All</a>
                             </li>
                         </ul>
-                        <ul class="bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border">
+                        <ul
+                            class="bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border">
                             <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 icon-short-heading">
                                 <h3 class="fs-6 fw-5 mb-0 lh-base">Latest Technical Analysis</h3>
                             </div>
@@ -998,9 +1017,11 @@
                                 <a href="/technical-analysis" class="btn btn-primary">View All</a>
                             </li>
                         </ul>
-                        <div class="chat-main mb-40 border-grey border pb-0">
-                            <div class="heading-summary m-0 chat-main-common-padding border-bottom border-grey">
-                                <h3 class="text-start">Dynamic Group Chats</h3>
+                        <div
+                            class="chat-main mb-40 bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border pb-0">
+                            <div
+                                class="heading-summary m-0 chat-main-common-padding border-bottom border-grey icon-short-heading pt-2">
+                                <h3 class="text-start lh-1">Dynamic Group Chats</h3>
                             </div>
                             <div class="chat-search chat-main-common-padding">
                                 <form action="#">
@@ -1132,7 +1153,8 @@
                             </div>
                         </div>
                         <div class="help-section mt-5">
-                            <div class="main_section mb-40 border-grey border pb-0">
+                            <div
+                                class="main_section mb-40 bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border pb-0">
                                 <div class="heading-summary m-0 chat-main-common-padding border-bottom border-grey ">
                                     <h3 class="text-start icon-short-heading">TECHNICAL GUIDES</h3>
                                 </div>
@@ -1226,7 +1248,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="aside-newsletter mt-5 text-white px-2 pt-3 pb-2">
+                        <div class="aside-newsletter my-5 text-white px-2 pt-3 pb-2">
                             <h3 class="text-white fs-4 fw-6"><span>Stocks & Shares</span> Newsletter</h3>
                             <form>
                                 <div class=" form-group">
@@ -1244,9 +1266,10 @@
                             </form>
 
                         </div>
-                        <div class="main_section mb-40 border-grey border pb-0">
-                            <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-2">
-                                <h3 class="fs-6 fw-bolder lh-base">LATEST VIDEOS</h3>
+                        <div
+                            class="main_section mb-40 bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border pb-0">
+                            <div class="heading-summary m-0 chat-main-common-padding border-bottom border-grey">
+                                <h3 class="text-start icon-short-heading">LATEST VIDEOS</h3>
                             </div>
 
                             <div class="market-news">
@@ -1418,11 +1441,8 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="main_section mb-40 border-grey border pb-0">
-                            <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-2">
-                                <h3 class="fs-6 fw-bolder lh-base">LATEST FINANCIAL NEWS</h3>
-                            </div>
-
+                        <div class="main_section mb-40 bg-white list-unstyled rounded-1 pb-1 shadow-sm rounded border-top border-2 border-warning widgets-border pb-0">
+                            <div class="heading-summary m-0 chat-main-common-padding border-bottom border-grey"><h3 class="text-start icon-short-heading">LATEST FINANCIAL NEWS</h3></div>
                             <div class="market-news">
                                 <div class="d-flex">
                                     <div class="feature-img">
@@ -1711,7 +1731,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="people-you-know mt-3 shadow-sm rounded border-top border-2 border-warning mb-2 widgets-border">
+                        <div
+                            class="people-you-know mt-3 shadow-sm rounded border-top border-2 border-warning mb-2 widgets-border">
                             <div class=" border-bottom">
                                 <div class="d-flex align-items-center py-1 justify-content-between">
                                     <div>
@@ -1737,7 +1758,7 @@
                                 </div>
                                 <div class="user_follow-button pt-2 flex-fill text-end">
                                     <button class="btn fs-14 btn-primary rounded-2" type="button"><i
-                                        class="bi bi-plus-circle text-white pe-2"></i>Join</button>
+                                            class="bi bi-plus-circle text-white pe-2"></i>Join</button>
                                 </div>
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
@@ -1756,7 +1777,7 @@
                                 </div>
                                 <div class="user_follow-button pt-2 flex-fill text-end">
                                     <button class="btn fs-14 btn-primary rounded-2" type="button"><i
-                                        class="bi bi-plus-circle text-white pe-2"></i>Join</button>
+                                            class="bi bi-plus-circle text-white pe-2"></i>Join</button>
                                 </div>
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
@@ -1775,7 +1796,7 @@
                                 </div>
                                 <div class="user_follow-button pt-2 flex-fill text-end">
                                     <button class="btn fs-14 btn-primary rounded-2" type="button"><i
-                                        class="bi bi-plus-circle text-white pe-2"></i>Join</button>
+                                            class="bi bi-plus-circle text-white pe-2"></i>Join</button>
                                 </div>
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
@@ -1794,7 +1815,7 @@
                                 </div>
                                 <div class="user_follow-button pt-2 flex-fill text-end">
                                     <button class="btn fs-14 btn-primary rounded-2" type="button"><i
-                                        class="bi bi-plus-circle text-white pe-2"></i>Join</button>
+                                            class="bi bi-plus-circle text-white pe-2"></i>Join</button>
                                 </div>
                             </div>
 
