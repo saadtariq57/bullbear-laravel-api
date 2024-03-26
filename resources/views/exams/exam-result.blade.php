@@ -11,5 +11,4 @@
     </section>
     @endsection
     @section('scripts')
-    @vite('resources/js/app.js')
   @endsection
