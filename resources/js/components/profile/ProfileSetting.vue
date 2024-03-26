@@ -996,30 +996,7 @@
 
               </div>
             </div>
-            <!-- Transaction-tabs start -->
-            <div class="tab-pane fade" id="v-pills-transactions" role="tabpanel"
-              aria-labelledby="v-pills-transactions-tab" tabindex="0">
-              <div class="wo_general_settings_page ">
-                <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
-                  <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
-                    <p class="fs-28 pt-2">Transactions</p>
-                  </div>
-                </div>
-
-              </div>
-              <div class="pt-3"></div>
-              <div class="setting-well my-5 text-center">
-                <div class="empty_state">
-                  <img src="https://richtv.io/themes/wowonder/img/no_transaction.svg" alt="" class="img-fluid">
-                </div>
-                <div class="pt-4 text-secondary fs-16 px-2 px-md-0">Looks like you don't have any
-                  transaction yet!
-                </div>
-                <div class="clear"></div>
-              </div>
-            </div>
+          
             <!-- Membership-tabs start -->
             <div class="tab-pane fade" id="v-pills-membership" role="tabpanel" aria-labelledby="v-pills-membership-tab"
               tabindex="0">
@@ -1189,9 +1166,6 @@
                 data-bs-target="#v-pills-notification-setting" type="button" role="tab"
                 aria-controls="v-pills-notification-setting" aria-selected="false"><i
                   class="bi bi-bell-fill pe-3 fs-18 align-middle"></i>Notification Setting</button>
-              <button class="nav-link text-start" id="v-pills-transactions-tab" data-bs-toggle="pill"
-                data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions"
-                aria-selected="false"><i class="bi bi-arrow-left-right pe-3 fs-18 align-middle"></i>Transactions</button>
               <button class="nav-link text-start" id="v-pills-membership-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-membership" type="button" role="tab" aria-controls="v-pills-membership"
                 aria-selected="false"><i class="bi bi-person-lines-fill pe-3 fs-18 align-middle"></i>Membership</button>
