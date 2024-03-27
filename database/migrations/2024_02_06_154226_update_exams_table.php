@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('featured_img')->nullable();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

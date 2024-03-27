@@ -10,7 +10,7 @@
         <div v-for="(exam, examIndex) in category.exams" :key="examIndex" class="col-lg-4 col-md-6 col-12">
           <div class="exam-content bg-white">
             <div class="exam-image">
-              <img :src="exam.image || examImage" class="" :alt="'exam-image-' + exam.id">
+              <img :src="'uploads/' + exam.featured_img" class="" :alt="'exam-image-' + exam.id">
             </div>
             <div class="exam-info px-3 py-4">
               <h3 class="text-uppercase fw-6 fs-5 align-self-center mb-3">{{ exam.title }}</h3>
@@ -96,7 +96,6 @@
 import axios from "axios";
 import ConfirmationPopup from "./ConfirmationPopup.vue"
 import LoginPopup from "../login/LoginPopup.vue"
-import examImage from '../../../images/exam1.jpg';
 import basicImage from '../../../images/basic_exam.png';
 import advanceImage from '../../../images/advance_exam.jpg';
 
@@ -108,7 +107,6 @@ export default {
   data() {
     return {
       categories: [],
-      examImage: examImage,
       basicImage: basicImage,
       advanceImage: advanceImage,
       hideSkeletor: false,
