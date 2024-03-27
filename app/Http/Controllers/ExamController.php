@@ -171,7 +171,7 @@ class ExamController extends Controller
 
         if ($request->hasFile('featured_img')) {
             $data['featured_img'] = $request->file('featured_img')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         }
 
@@ -276,7 +276,7 @@ class ExamController extends Controller
 
         if ($request->hasFile('featured_img')) {
             $data['featured_img'] = $request->file('featured_img')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         } else {
             $data['featured_img'] = $exam->featured_img;
