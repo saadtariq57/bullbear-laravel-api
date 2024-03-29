@@ -236,11 +236,11 @@
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/commodities/meats">Meats</a>
                                                             </li>
-                                                            <li>
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/commodities/commodity-indices">Commodity
                                                                     Indices</a>
-                                                            </li>
+                                                            </li> -->
                                                         </ul>
                                                     </div>
                                                 </li>
@@ -250,11 +250,11 @@
                                                         <a href="/markets/cryptocurrency"
                                                             class="nav-link nested-nav-dropdown fw-4">Cryptocurrency</a>
                                                         <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
-                                                            <li>
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/cryptocurrency/all-cryptocurrencies">All
                                                                     Cryptocurrencies</a>
-                                                            </li>
+                                                            </li> -->
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/cryptocurrency/cryptocurrency-pairs">Cryptocurrency
@@ -310,7 +310,7 @@
                                                                     Currency
                                                                     Crosses</a>
                                                             </li>
-                                                            <li>
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/currencies/live-currency-cross-rates">Live
                                                                     Currency Cross
@@ -320,12 +320,12 @@
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/currencies/exchange-rates-table">Exchange
                                                                     Rates Table</a>
-                                                            </li>
-                                                            <li>
+                                                            </li> -->
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/currencies/forward-rates">Forward
                                                                     Rates</a>
-                                                            </li>
+                                                            </li> -->
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/currencies/currency-futures">Currency
@@ -350,11 +350,11 @@
                                                                     href="/markets/etfs/world-etfs">World
                                                                     ETFs</a>
                                                             </li>
-                                                            <li>
+                                                            <!-- <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/etfs/major-etfs">Major
                                                                     ETFs</a>
-                                                            </li>
+                                                            </li> -->
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/etfs/usa-etfs">USA ETFs</a>
@@ -390,8 +390,8 @@
                                                     <div
                                                         class="dropdown nested-dropdown-wrapper px-2 position-relative">
                                                         <a href="/markets/bonds"
-                                                            class="nav-link nested-nav-dropdown fw-4">Bonds</a>
-                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            class="nav-link fw-4">Bonds</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/bonds/us-treasury-yield-curve">US
@@ -429,7 +429,7 @@
                                                                     Default Swap Rates
                                                                     (CDS)</a>
                                                             </li>
-                                                        </ul>
+                                                        </ul> -->
                                                     </div>
                                                 </li>
                                                 <li>
