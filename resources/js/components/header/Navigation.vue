@@ -557,11 +557,11 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Glossary
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/glossary/">Glossary
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/">Trading Strategies
+                                                    <a class="dropdown-item nav-link" href="https://richtv.io/category/trading-strategies/">Trading Strategies
                                                     </a>
                                                 </li>
                                             </ul>
