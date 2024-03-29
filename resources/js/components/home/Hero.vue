@@ -39,7 +39,7 @@
           <div class="market-summary">
             <a href="#" class="d-flex justify-content-center align-items-center gap-3">
               <div class="brand-icon">
-                <img src="build/images/brands/s&p.png" alt="S&P">
+                <img src="build/images/brands/S&P.png" alt="S&P">
               </div>
               <div class="market-data">
                 <h3 class="lh-1">

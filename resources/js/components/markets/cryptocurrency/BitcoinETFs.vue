@@ -13,6 +13,7 @@
           <thead>
             <tr>
               <th class="fw-6">Sybmol</th>
+              <th class="fw-6">Name</th>
               <th class="text-end fw-6">Price</th>
               <th class="text-end fw-6">Change</th>
               <th class="text-end fw-6">Change %</th>
