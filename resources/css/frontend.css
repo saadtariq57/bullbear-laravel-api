@@ -1358,7 +1358,7 @@ ul.dropdown-menu li {
 }
 
 .moblie-nav-btn:after {
-    background-image: url(/build/icons/bxs_up-arrow.png) !important;
+    background-image: url(/build/images/bxs_up-arrow.png) !important;
 }
 
 /* Header-css  end */
@@ -2887,6 +2887,9 @@ p.user-message {
 .table-width {
     min-width: 500px;
 }
+.table-width tbody tr td:nth-child(2){
+    max-width: 300px;
+}
 
 .market-table-wapper::-webkit-scrollbar {
     height: 6px;
@@ -3112,6 +3115,36 @@ p.user-message {
     .company-name {
         width: 90px;
     }
+    .profile_bg_img{
+        height: 200px !important;
+    }
+    .cover-photo-btn{
+        bottom: auto !important;
+        top: 20px;
+    }
+    .user-profile-wrapper{
+        flex-direction: column;
+        flex-wrap: wrap;
+        row-gap: 20px;
+        top: -80px !important;
+    }
+    .user-avater-wappar{
+        align-self: center !important;
+    }
+    .user-profile-info {
+        align-self: center !important;
+    }
+    .user-profile-info a{
+        margin-left: 10px;
+    }
+    .user-profile-btn {
+        align-self: center !important;
+    }
+    .user-profile-info-wapper{
+        flex-direction: column;
+        column-gap: 0px !important;
+        row-gap: 7px;
+    }
 }
 
 @media (max-width: 760px) {
@@ -3274,6 +3307,17 @@ p.user-message {
     .symbol-search-form {
         right: 0;
     }
+    .profile_bg_img{
+        height: 170px !important;
+    }
+    .user-avater-wappar{
+        width: 105px !important;
+        height: 105px !important;
+    }
+    .user-avater-wappar img{
+        width: 100px !important;
+        height: 100px !important;
+    }
 }
 
 @media (max-width: 380px) {
@@ -3318,6 +3362,9 @@ p.user-message {
 
     .curvespan {
         height: 67px;
+    }
+    .user-profile-info-wapper{
+
     }
 }
 

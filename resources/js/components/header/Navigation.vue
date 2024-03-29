@@ -371,8 +371,8 @@
                                                     <div
                                                         class="dropdown nested-dropdown-wrapper px-2 position-relative">
                                                         <a href="/markets/funds"
-                                                            class="nav-link nested-nav-dropdown fw-4">Funds</a>
-                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            class="nav-link fw-4">Funds</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/funds/world-funds">World
@@ -383,7 +383,7 @@
                                                                     href="/markets/funds/major-funds">Major
                                                                     Funds</a>
                                                             </li>
-                                                        </ul>
+                                                        </ul> -->
                                                     </div>
                                                 </li>
                                                 <li>
@@ -436,8 +436,8 @@
                                                     <div
                                                         class="dropdown nested-dropdown-wrapper px-2 position-relative">
                                                         <a href="/markets/certificates"
-                                                            class="nav-link nested-nav-dropdown fw-4">Certificates</a>
-                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            class="nav-link fw-4">Certificates</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
                                                             <li>
                                                                 <a class="dropdown-item nav-link"
                                                                     href="/markets/certificates/major-certificates">Major
@@ -448,7 +448,7 @@
                                                                     href="/markets/certificates/world-certificates">World
                                                                     Certificates</a>
                                                             </li>
-                                                        </ul>
+                                                        </ul> -->
                                                     </div>
                                                 </li>
                                             </ul>
@@ -725,7 +725,7 @@
                                 <div class="site-logo">
                                     <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
                                         <img class="header-image is-logo-image" alt="Rich TV"
-                                            src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo.svg"
+                                            src="/build/images/logo.svg"
                                             title="Rich TV" />
                                     </a>
                                 </div>
@@ -739,7 +739,7 @@
                                         <li>
                                             <div class="accordion moblie-navbar-accordion" id="accordionMobilenavbar">
                                                 <div class="accordion-item">
-                                                    <h2 class="accordion-header">
+                                                <h2 class="accordion-header">
                                                         <button
                                                             class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent"
                                                             type="button" data-bs-toggle="collapse"

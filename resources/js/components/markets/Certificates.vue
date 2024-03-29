@@ -5,7 +5,7 @@
                 <h1 class="fs-3 border-bottom pb-2">World Government Bonds </h1>
             </div>
             <div class="mt-4 overflow-auto market-table-wapper">
-                <h2 class="fs-4 mt-2 fw-5">Most Traded Certificates</h2>
+                <!-- <h2 class="fs-4 mt-2 fw-5">Most Traded Certificates</h2> -->
                 <h3 class="fs-5 mt-2 fw-6">Top Certificates by Alphabeta Access Products Ltd</h3>
                 <table class="table table-width border">
                     <thead>
