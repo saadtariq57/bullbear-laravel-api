@@ -406,11 +406,11 @@ td {
     height: 5px !important;
 }
 
-.icon-heading::before {
+/* .icon-heading::before {
     content: url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon.png);
     display: inline-block;
     vertical-align: middle;
-}
+} */
 
 .postive-arrow-icon::before {
     content: "▲";
@@ -787,7 +787,7 @@ section.featured-video {
     box-shadow: 3px 3px 5px #cccccc9e;
 }
 .stock-table-data{
-    height: 400px;
+    max-height: 409px;
 }
 
 .manage-watchlist .Manage-list input {
@@ -1932,9 +1932,9 @@ p.user-message {
     vertical-align: middle;
 }
 
-.icon-short-heading::before {
+/* .icon-short-heading::before {
     content: url("https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon-2.png");
-}
+} */
 
 /* stock css end */
 /* feed page CSS Start */
@@ -2890,6 +2890,18 @@ p.user-message {
 
 .market-table-wapper::-webkit-scrollbar {
     height: 6px;
+}
+.nav-tabs .nav-link.market-nav-btn {
+    width: auto !important;
+    font-weight: 500 !important;
+    padding: 5px 9px 5px 9px !important;
+}
+
+.nav-tabs .nav-link.market-nav-btn.active {
+    color: #495057 !important;
+    background-color: var(--white) !important;
+    border-bottom: none !important;
+    border-color: #dee2e6 #dee2e6 #fff !important;
 }
 
 @media (max-width: 1550px) {
