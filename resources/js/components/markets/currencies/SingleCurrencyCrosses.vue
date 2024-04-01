@@ -12,7 +12,7 @@
                     <option value="1">AUD - Australian Dollar</option>
                     <option value="2">EUR - Euro</option>
                 </select>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>

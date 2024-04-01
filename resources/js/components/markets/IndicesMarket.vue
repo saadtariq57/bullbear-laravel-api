@@ -8,7 +8,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="fs-4 fw-6">Americas Indices</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -53,7 +53,7 @@
       <div class="mt-5 overflow-auto market-table-wapper">
         <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fs-4 fw-6">European Indices</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -98,7 +98,7 @@
       <div class="mt-5 overflow-auto market-table-wapper">
         <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fs-4 fw-6">Asia & Pacific Indices</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -143,7 +143,7 @@
       <div class="mt-5 overflow-auto market-table-wapper">
         <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fs-4 fw-6">Indices Futures</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
