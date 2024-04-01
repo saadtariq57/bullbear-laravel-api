@@ -7,7 +7,7 @@
       <div class="col-lg-8">
           <div class="mt-3 overflow-auto market-table-wapper">
             <div class="text-end mb-3">
-        <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+        <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
       </div>
             <table class="table table-width border">
                   <thead>

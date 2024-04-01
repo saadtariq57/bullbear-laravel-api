@@ -7,7 +7,7 @@
     <div class="col-lg-8">
         <div class="d-flex align-items-center justify-content-between mb-3 mt-3">
           <p class="mb-0">Last Update 13:58:16 ago</p>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
             <div class="rates-card-wrapper d-flex flex-wrap">
                 <div class="card shadow border px-3 py-2">

@@ -8,7 +8,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="fs-4 fw-6 mb-0">USA</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -60,7 +60,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="fs-4 fw-6 mb-0">Europe</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -112,7 +112,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="fs-4 fw-6 mb-0">Asia/Pacific</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -164,7 +164,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="fs-4 fw-6 mb-0">Middle East</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>
@@ -216,7 +216,7 @@
       <div class="mt-3 overflow-auto market-table-wapper">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="fs-4 fw-6 mb-0">South Africa</h2>
-          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Watchlist</button>
+          <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
         </div>
         <table class="table table-width border">
           <thead>

@@ -2885,7 +2885,7 @@ p.user-message {
     border-left: 1px solid #00000021 !important
 }
 .table-width {
-    min-width: 500px;
+    min-width: 690px;
 }
 .table-width tbody tr td:nth-child(2){
     max-width: 300px;
