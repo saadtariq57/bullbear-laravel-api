@@ -1,11 +1,12 @@
 <template>
-    <div class="watchlistideas-table-wrapper row">
+    <div class="watchlistideas-table-wrapper row gy-5">
         <div class="col-lg-4">
+            <div class="watchlist-idea-table-wrapper border">
+            <div class="d-flex align-items-center justify-content-between mt-2 pb-2 px-2">
+                <h3 class="fs-18 mb-0">My watchlist 1</h3>
+                <a href="/watchlist" class="Blue">Add Watchlist</a>
+            </div>
             <div class="stock-table-data position-relative px-2 overflow-auto border">
-                <div class="d-flex align-items-center justify-content-between mt-2 pb-2">
-                    <h3 class="fs-18 mb-0">My watchlist 1</h3>
-                    <a href="/watchlist" class="Blue">Add Watchlist</a>
-                </div>
                 <div class="table-responsive">
                     <table class="table stock-market-table1 height-1024">
                         <thead>
@@ -29,7 +30,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -46,7 +48,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -63,7 +66,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -80,7 +84,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -97,7 +102,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -105,12 +111,14 @@
                 </div>
             </div>
         </div>
+        </div>
         <div class="col-lg-4">
+            <div class="watchlist-idea-table-wrapper border">
+            <div class="d-flex align-items-center justify-content-between mt-2 pb-2 px-2">
+                <h3 class="fs-18 mb-0">My watchlist 2</h3>
+                <a href="/watchlist" class="Blue">Add Watchlist</a>
+            </div>
             <div class="stock-table-data position-relative px-2 overflow-auto border">
-                <div class="d-flex align-items-center justify-content-between mt-2 pb-2">
-                    <h3 class="fs-18 mb-0">My watchlist 2</h3>
-                    <a href="/watchlist" class="Blue">Add Watchlist</a>
-                </div>
                 <div class="table-responsive">
                     <table class="table stock-market-table1 height-1024">
                         <thead>
@@ -134,7 +142,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -151,7 +160,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -168,7 +178,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -185,7 +196,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -202,7 +214,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -210,12 +223,14 @@
                 </div>
             </div>
         </div>
+        </div>
         <div class="col-lg-4">
+            <div class="watchlist-idea-table-wrapper border">
+            <div class="d-flex align-items-center justify-content-between mt-2 pb-2 px-2">
+                <h3 class="fs-18 mb-0">My watchlist 3</h3>
+                <a href="/watchlist" class="Blue">Add Watchlist</a>
+            </div>
             <div class="stock-table-data position-relative px-2 overflow-auto border">
-                <div class="d-flex align-items-center justify-content-between mt-2 pb-2">
-                    <h3 class="fs-18 mb-0">My watchlist 3</h3>
-                    <a href="/watchlist" class="Blue">Add Watchlist</a>
-                </div>
                 <div class="table-responsive">
                     <table class="table stock-market-table1 height-1024">
                         <thead>
@@ -239,7 +254,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -256,7 +272,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -273,7 +290,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -290,7 +308,8 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Green gap-3  justify-content-end">
-                                        <span>+1.23</span><span>+1.98</span></div>
+                                        <span>+1.23</span><span>+1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr id="ROKU">
@@ -307,16 +326,15 @@
                                 </td>
                                 <td class="gray lh-sm text-end" id="symbol-price">$62.10
                                     <div class="d-flex Red gap-3  justify-content-end">
-                                        <span>-1.23</span><span>-1.98</span></div>
+                                        <span>-1.23</span><span>-1.98</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </template>
-<style>
-
-</style>

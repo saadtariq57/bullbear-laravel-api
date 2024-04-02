@@ -109,9 +109,9 @@
 
         </div>
     </div>
-    <div class="row user-chat-top-tab mb-3">
-        <div class="col-12 user-bottom-nav bg-white shadow ps-0 pe-0 overflow-auto profile-main-navtab">
-            <ul class="inner-tabs-btn nav justify-content-between flex-nowrap" id="admin-content-tab" role="tablist">
+    <div class="row user-chat-top-tab mb-3 px-2">
+        <div class="col-12 user-bottom-nav bg-white shadow overflow-auto profile-main-navtab">
+            <ul class="inner-tabs-btn nav justify-content-around flex-nowrap" id="admin-content-tab" role="tablist">
                 <li class="nav-item " role="presentation"> <a href="#" class="nav-link active user-li-navbtn text-secondary"
                         id="user-Timeline-tab" data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
                         aria-controls="user-Timeline" aria-selected="true">
@@ -309,5 +309,10 @@ export default {
     height: 40px;
     right: 0;
     bottom: 10px;
+}
+@media (max-width: 767px) {
+    .inner-tabs-btn{
+        min-width: 660px;
+    }
 }
 </style>
