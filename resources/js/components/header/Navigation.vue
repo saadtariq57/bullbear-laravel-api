@@ -46,27 +46,26 @@
                         </div>
                         <div class="d-block d-xl-none moblie-bottom-navbar fixed-bottom bg-white">
                             <ul
-                                class="d-flex px-3 px-sm-4 py-3 m-0 justify-content-between align-items-center list-unstyled">
+                                class="d-flex px-3 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
                                 <li class="text-center cursor-pointer nav-bottom-link">
-                                    <a href="/" class="text-black">
-                                        <i class="bi bi-graph-up-arrow fs-3"></i>
-                                        <span class="d-block fw-5 fs-16">Markets</span>
+                                    <a href="/trading-school" class="text-black">
+                                        <img class="img-fluid" src="/build/images/academy.png" alt="academy-img" width="31px" />
+                                        <span class="d-block fw-5 fs-16">Trading School</span>
                                     </a>
                                 </li>
                                 <li class="text-center cursor-pointer nav-bottom-link">
-                                    <a href="/" class="text-black">
-                                        <i class="bi bi-star fs-3"></i>
+                                    <a href="/watchlist" class="text-black">
+                                        <i class="bi bi-star-fill fs-3"></i>
                                         <span class="d-block fw-5 fs-16">Watchlists</span></a>
                                 </li>
                                 <li class="text-center cursor-pointer nav-bottom-link">
-                                    <a href="/" class="text-black">
-                                        <i class="bi bi-youtube fs-2"></i>
+                                    <a href="/ceo-interviews" class="text-black">
+                                        <i class="bi bi-youtube fs-3"></i>
                                         <span class="d-block fw-5 fs-16">Ceo Interviews</span></a>
                                 </li>
                                 <li class="text-center nav-bottom-link" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                                     <button class="navbar-toggler border-0" type="button">
-                                        <!-- <i class="bi bi-list fs-2 fw-bolder nav-clr"></i> -->
                                         <svg width="23" height="23" viewBox="0 0 30 23"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -75,7 +74,7 @@
                                         </svg>
                                     </button>
 
-                                    <span class="d-block fw-5 fs-16 pt-1">Menu</span>
+                                    <span class="d-block fw-5 fs-16 pt-1 text-black">Menu</span>
                                 </li>
                             </ul>
                         </div>
@@ -767,8 +766,7 @@
                                                             aria-expanded="false"
                                                             aria-controls="collapseMarket_analysis">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/market.png"
+                                                                <img class="img-fluid" src="/build/images/market.png"
                                                                     alt="market-img" />
                                                             </div>
                                                             <div class="lh-sm">
@@ -1128,9 +1126,8 @@
                                                             data-bs-target="#collapseGroup_chat" aria-expanded="false"
                                                             aria-controls="collapseGroup_chat">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/finance.png" alt="finance-img"
-                                                                    />
+                                                                <img class="img-fluid" src="/build/images/finance.png"
+                                                                    alt="finance-img" />
                                                             </div>
                                                             <div class="lh-sm">
                                                                 <p class="moblie-nav-heading m-0 fw-6">Finance</p>
@@ -1267,8 +1264,7 @@
                                                             data-bs-target="#collapseVector_smart" aria-expanded="false"
                                                             aria-controls="collapseVector_smart">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/academy.png"
+                                                                <img class="img-fluid" src="/build/images/academy.png"
                                                                     alt="academy-img" />
                                                             </div>
                                                             <div class="lh-sm">
@@ -1310,8 +1306,7 @@
                                                             data-bs-target="#collapsenews" aria-expanded="false"
                                                             aria-controls="collapsenews">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/news.png"
+                                                                <img class="img-fluid" src="/build/images/news.png"
                                                                     alt="news-img" />
                                                             </div>
                                                             <div class="lh-sm">
@@ -1358,8 +1353,7 @@
                                                             data-bs-target="#collapseresources" aria-expanded="false"
                                                             aria-controls="collapseresources">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/resources.png"
+                                                                <img class="img-fluid" src="/build/images/resources.png"
                                                                     alt="resources-img" />
                                                             </div>
                                                             <div class="lh-sm">
@@ -1425,8 +1419,7 @@
                                                             data-bs-target="#collapserichtvpro" aria-expanded="false"
                                                             aria-controls="collapserichtvpro">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                                                <img class="img-fluid"
-                                                                    src="/build/images/richtv.png"
+                                                                <img class="img-fluid" src="/build/images/richtv.png"
                                                                     alt="richtv-img" />
                                                             </div>
                                                             <div class="lh-sm">
@@ -1645,6 +1638,11 @@ ul.nested-mega-menu {
 @media (max-width: 450px) {
     .profile-wrapper {
         gap: 20px !important;
+    }
+
+    .nav-bottom-link a span,
+    .nav-bottom-link span {
+        font-size: 14px !important;
     }
 }
 
