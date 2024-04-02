@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50); // e.g. free, paid, premium, platinum
-            $table->string('stripe_product_id')->nullable(); // Stripe Product ID
-            $table->string('stripe_monthly_price_id')->nullable(); // Stripe Monthly Price ID
-            $table->string('stripe_yearly_price_id')->nullable(); // Stripe Yearly Price ID
-            $table->string('description', 255)->nullable(); // Description for each plan
-            $table->json('features')->nullable(); // Store features as a JSON array
+            $table->string('name', 50);
+            $table->string('stripe_product_id')->nullable(); 
+            $table->string('stripe_monthly_price_id')->nullable();
+            $table->string('stripe_yearly_price_id')->nullable();
+            $table->string('description', 255)->nullable();
+            $table->json('features')->nullable(); 
             $table->timestamps();
         });
     }

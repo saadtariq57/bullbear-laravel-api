@@ -3,33 +3,52 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use App\Models\User;
 use App\Models\UserWatchlist;
 use App\Models\WatchlistSymbol;
+use App\Services\featureService;
 use Illuminate\Http\Request;
 
 class WatchlistController extends Controller
 {
-
+    private $featureService;
+    public function __construct(FeatureService $featureService)
+    {
+        $this->featureService = $featureService;
+    }
     public function getWatchLists()
     {
         if (Auth::check()) {
-            $user_id = Auth::id();
+            $user = Auth::user();
+            $user_id = $user->id;
             $records = UserWatchlist::where('user_id', $user_id);
+            $RequestedFeature = 'Watchlist Limit';
+            $watchlists = [];
+
+            if ($user->can('isFeaturePermission', [User::class, $RequestedFeature])) {
+                $featureDetails = $this->featureService->getFeatures($user, $RequestedFeature);
+                $watchlists['featureDetails'] = $featureDetails;
+            }else{
+                $watchlists['featureLimit'] = 'this feature is disabled for this plan';
+            }
+
             if ($records->exists()){
                 $records = UserWatchlist::where('user_id', $user_id)
                     ->orderBy('position')
                     ->with(['watchlistSymbols' => function ($query) {
                     $query->orderBy('position');
                 }, 'watchlistSymbols.symbol'])->get();
+                $watchlists['watchlistDetails'] = $records;
             }else{
                 $records = UserWatchlist::where('featured', 1)
                     ->orderBy('position')
                     ->with(['watchlistSymbols' => function ($query) {
                         $query->orderBy('position');
                     }, 'watchlistSymbols.symbol'])->get();
+                $watchlists['watchlistDetails'] = $records;
             }
-    
-            return response()->json($records);
+            
+            return response()->json($watchlists);
         }
         else{
             $records = UserWatchlist::where('featured', 1)
@@ -37,7 +56,8 @@ class WatchlistController extends Controller
             ->with(['watchlistSymbols' => function ($query) {
                 $query->orderBy('position');
             }, 'watchlistSymbols.symbol'])->get();
-            return response()->json($records);
+            $watchlists['watchlistDetails'] = $records;
+            return response()->json($watchlists);
         }
         
     }
@@ -124,17 +144,32 @@ class WatchlistController extends Controller
      */
     public function store(Request $request)
     {
-        // TO DO
-        $userWatchlistCount = UserWatchlist::where('user_id', Auth::id())->count();
-        // $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
-        $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
-        $data = [
-            'user_id' => Auth::id(),
-            'title' => $newWatchlistName,
-            'who_can_view' => 'Everyone'
-        ];
-        $watchlist = UserWatchlist::create($data);
-        return redirect()->route('watchlist.edit', $watchlist);
+        $user = Auth::user();
+        if($user){
+            $user_id = $user->id;
+            $userWatchlistCount = UserWatchlist::where('user_id', $user_id)->count();
+            // $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
+            if ($user->can('isFeaturePermission', [User::class, 'Watchlist Limit'])) {
+                $featureDetails = $this->featureService->getFeatures($user, 'Watchlist Limit');
+                $watchlistLimit = $featureDetails['limit'];
+                if($userWatchlistCount < $watchlistLimit){
+                    $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
+                    $data = [
+                        'user_id' => $user_id,
+                        'title' => $newWatchlistName,
+                        'who_can_view' => 'Everyone'
+                    ];
+                    $watchlist = UserWatchlist::create($data);
+                    return redirect()->route('watchlist.edit', $watchlist);
+                }else{
+                    $message = 'you have exceeded the limit to create watchlist';
+                    return redirect()->route('watchlist.index')->withErrors($message);
+                }
+            }else{
+                $message = 'this feature is disabled for this plan';
+                return redirect()->route('watchlist.index')->withErrors($message);
+            } 
+        }
     }
 
     /**
@@ -150,8 +185,21 @@ class WatchlistController extends Controller
      */
     public function edit(UserWatchlist $watchlist)
     {
-        $watchlist = $this->getWatchListAllData($watchlist->id);
-        return view('watchlist.edit', compact('watchlist'));
+        $user = Auth::user();
+        if($user){
+            $user_id = $user->id;
+            $userWatchlist = UserWatchlist::where('user_id', $user_id)->where('id', $watchlist->id)->first();
+            if($userWatchlist){
+                $watchlist = $this->getWatchListAllData($watchlist->id);
+                return view('watchlist.edit', compact('watchlist'));
+            }else {
+                return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+            }
+        }else{
+            return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+        }
+        
+        
     }
     
     /**

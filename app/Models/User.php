@@ -10,7 +10,7 @@ use Laravel\Cashier\Billable; // Import Cashier's Billable trait
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, Billable; // Use the Billable trait
+    use HasApiTokens, HasFactory, Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.

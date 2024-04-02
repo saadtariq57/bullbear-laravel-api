@@ -43,12 +43,12 @@ return new class extends Migration
             $table->boolean('emailNotification')->default(true);
             $table->text('about')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
-            $table->enum('type', ['user', 'admin'])->default('user'); // Updated from the third migration
-            $table->string('subscription_plan', 100)->default('free'); // Added from the third migration
+            $table->enum('type', ['user', 'admin'])->default('user');
+            $table->string('subscription_plan', 100)->default('free');
             $table->json('details')->nullable();
             $table->unsignedInteger('referrer_id')->nullable();
             $table->timestamp('last_data_update')->nullable();
-            $table->unsignedInteger('user_id')->nullable(); // For referencing old DB
+            $table->unsignedInteger('user_id')->nullable();
         });
 
         // Creating a default admin user
