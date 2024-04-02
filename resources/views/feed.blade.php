@@ -3,7 +3,7 @@
 <body>
   @endsection
   @section('content')
-  <section class="feed-main container-fluid my-3">
+  <section class="feed-main container-fluid my-4">
     <router-view></router-view>
   </section>
   @endsection

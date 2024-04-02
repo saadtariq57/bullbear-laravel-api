@@ -30,29 +30,32 @@ Route::get('/ceo-single', function () {
 })->name('ceo-single');
 
 Route::get('/earning-calendar', function () {
-    return view('earning-calendar');
+    return view('calendars.earning-calendar');
 })->name('earning-calendar');
 Route::get('/economic-calendar', function () {
-    return view('economic-calendar');
+    return view('calendars.economic-calendar');
 })->name('economic-calendar');
 Route::get('/holiday-calendar', function () {
-    return view('holiday-calendar');
+    return view('calendars.holiday-calendar');
 })->name('holiday-calendar');
 Route::get('/dividend-calendar', function () {
-    return view('dividend-calendar');
+    return view('calendars.dividend-calendar');
 })->name('dividend-calendar');
 Route::get('/splits-calendar', function () {
-    return view('splits-calendar');
+    return view('calendars.splits-calendar');
 })->name('splits-calendar');
 Route::get('/ipo-calendar', function () {
-    return view('ipo-calendar');
+    return view('calendars.ipo-calendar');
 })->name('ipo-calendar');
 Route::get('/futures-expiry-calendar', function () {
-    return view('futures-expiry-calendar');
+    return view('calendars.futures-expiry-calendar');
 })->name('futures-expiry-calendar');
 Route::get('/webinar', function () {
     return view('webinar');
 })->name('webinar');
+Route::get('/richtv-live', function () {
+    return view('markets.market');
+})->name('richtv-live');
 
 Route::get('/trading-school', function () {
     return view('trading-school');
@@ -331,6 +334,25 @@ Route::middleware(['auth'])->group(function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
 
+    // RichTv Pro
+    Route::get('/watchlist-ideas', function () {
+        return view('markets.market');
+    })->name('watchlistpro');
+    Route::get('/pro-picks', function () {
+        return view('markets.market');
+    })->name('propicks');
+    Route::get('/personal-access', function () {
+        return view('markets.market');
+    })->name('personal-access');
+    Route::get('/specialize-reports', function () {
+        return view('markets.market');
+    })->name('specialize-reports');
+    Route::get('/single-report', function () {
+        return view('feed');
+    })->name('single-report');
+    Route::get('/technical-analysis', function () {
+        return view('markets.market');
+    })->name('technical-analysis');
 });
 
 // Routes for Watchlist with prefix

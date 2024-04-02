@@ -86,7 +86,7 @@ const routes = [
     {
         path: '/stocks-screener',
         name: 'stocks-screener',
-        component: () => import('./components/markets/stocks/StocksScreener.vue'),
+        component: () => import('./components/richtvpro/StocksScreener.vue'),
     },
     {
         path: '/markets/stocks/trading-stocks',
@@ -98,16 +98,16 @@ const routes = [
         name: 'markets.stocks.united-states',
         component: () => import('./components/markets/stocks/UnitedState.vue'),
     },
-    {
-        path: '/markets/stocks/pre-market',
-        name: 'markets.stocks.pre-market',
-        component: () => import('./components/markets/stocks/PreMarket.vue'),
-    },
-    {
-        path: '/markets/stocks/americas',
-        name: 'markets.stocks.americas',
-        component: () => import('./components/markets/stocks/Americas.vue'),
-    },
+    // {
+    //     path: '/markets/stocks/pre-market',
+    //     name: 'markets.stocks.pre-market',
+    //     component: () => import('./components/markets/stocks/PreMarket.vue'),
+    // },
+    // {
+    //     path: '/markets/stocks/americas',
+    //     name: 'markets.stocks.americas',
+    //     component: () => import('./components/markets/stocks/Americas.vue'),
+    // },
     {
         path: '/markets/stocks/europe',
         name: 'markets.stocks.europe',
@@ -380,11 +380,40 @@ const routes = [
     },
     
     {
-        path: '/richtvpro/watchlist',
+        path: '/watchlist-ideas',
         name: 'watchlistpro',
-        component: () => import('./components/richtvpro/watchlistideas/ProWatchlist.vue'),
+        component: () => import('./components/richtvpro/WatchlistIdeas.vue'),
     },
-
+    {
+        path: '/pro-picks',
+        name: 'propicks',
+        component: () => import('./components/richtvpro/ProPicks.vue'),
+    },
+    {
+        path: '/personal-access',
+        name: 'personal-access',
+        component: () => import('./components/richtvpro/PersonalAccess.vue'),
+    },
+    {
+        path: '/specialize-reports',
+        name: 'specialize-reports',
+        component: () => import('./components/richtvpro/SpecializeReports.vue'),
+    },
+    {
+        path: '/single-report',
+        name: 'single-report',
+        component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
+    },
+    {
+        path: '/technical-analysis',
+        name: 'technical-analysis',
+        component: () => import('./components/richtvpro/TechnicalAnalysis.vue'),
+    },
+    {
+        path: '/richtv-live',
+        name: 'richtv-live',
+        component: () => import('./components/academy/RichtvLive.vue'),
+    },
     {
         path: '/pricing',
         name: 'pricing',
