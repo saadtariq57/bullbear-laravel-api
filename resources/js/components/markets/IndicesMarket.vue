@@ -206,22 +206,19 @@
     <div class="col-lg-4">
       <TopMovers />
       <Markets />
-      <TopStocks />
-      <TopCrypto />
+      <TopTen />
     </div>
   </div>
 </template>
 <script>
 import TopMovers from '../widgets/TopMovers.vue';
-import TopStocks from '../widgets/TopStocks.vue';
-import TopCrypto from '../widgets/TopCrypto.vue';
+import TopTen from '../widgets/TopTen.vue';
 import Markets from '../widgets/Markets.vue';
 export default {
   components: {
     TopMovers,
     Markets,
-    TopStocks,
-    TopCrypto
+    TopTen
   },
 }
 </script>
