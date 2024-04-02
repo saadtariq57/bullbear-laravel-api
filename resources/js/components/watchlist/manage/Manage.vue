@@ -66,7 +66,9 @@ export default {
       sortableInstance: null,
       modalData: {},
       isModalOpen: false,
-      watchlistData: undefined
+      watchlistData: undefined,
+      watchlistFeature: null,
+      watchlistLimit: null,
     };
   },
   methods: {
@@ -78,10 +80,13 @@ export default {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
           },
         });
-        this.watchlists = response.data;
+        this.watchlists = response.data.watchlistDetails;
+        this.watchlistFeature = response.data.featureDetails;
+        this.watchlistLimit = this.watchlistFeature.limit;
+        console.log(response.data);
+        console.log('watchlist creation limit: ', this.watchlistLimit);
         this.initSortable();
         // this.selectedWatchlist = this.watchlists[0];
-        console.log(this.watchlists = response.data);
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -156,6 +161,22 @@ export default {
           console.error('Error updating positions:', error);
         });
     },
+    // async fetchSubscriptionStatus() {
+    //   try {
+    //     // Make API call to fetch user's subscription status
+    //     const response = await axios.get('/api/subscriptionStatus', {
+    //       withCredentials: true,
+    //       headers: {
+    //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    //       },
+    //     });
+    //     // Set userSubscribed based on the response
+    //     this.userSubscribed = response.data;
+    //     console.log(this.userSubscribed);
+    //   } catch (error) {
+    //     console.error('Error fetching subscription status:', error);
+    //   }
+    // },
   },
   mounted() {
     this.getWatchlistData();

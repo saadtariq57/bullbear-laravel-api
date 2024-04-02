@@ -9,6 +9,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\SubscriptionStatusController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,6 +51,16 @@ Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
 Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 
 //Watchlist Routes
+// Route::prefix('watchlist')->name('watchlist.')->middleware([Subscribed::class])->group(function() {
+//     Route::get('/', [WatchlistController::class, 'getWatchLists']);
+//     Route::get('/managewatchlists', [WatchlistController::class, 'getWatchLists']);
+//     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
+//     Route::post('symbol', [WatchlistController::class, 'storeWatchListSymbol']);
+//     Route::delete('symbol', [WatchlistController::class, 'deleteWatchListSymbol']);
+//     Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
+//     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
+//     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
+// });
 Route::prefix('watchlist')->name('watchlist.')->group(function() {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
@@ -89,6 +101,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route to retrieve and show exam result
     Route::get('/exam/result/{examResultId}', [ExamController::class, 'getExamResult'])->name('exam.result');
 
+    
+    Route::get('/pricingPlans', [SubscriptionPlanController::class, 'userIndex'])->name('userIndex');
+    Route::post('/createUserSubscription', [SubscriptionPlanController::class, 'createUserSubscription'])->name('createUserSubscription');
+    // Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->middleware(Subscribed::class);
+    Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->name('getStatus');
+    Route::get('/subscriptionInvoices', [SubscriptionStatusController::class, 'getInvoices'])->name('getInvoices');
+    Route::post('/cancelSubscription/{subscriptionName}', [SubscriptionStatusController::class, 'cancelSubscription'])->name('cancelSubscription');
+    Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
+    // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
 
     //User Feed Routes
     Route::prefix('userposts')->name('post.')->group(function() {

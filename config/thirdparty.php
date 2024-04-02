@@ -12,5 +12,9 @@ return [
         'base_url' => env('X_MBOUM_BASE_URL'),
         'api_key' => env('X_MBOUM_Key'),
         'quote_endpoint' => env('X_MBOUM_QUOTE')
-    ]
+    ],
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
 ];

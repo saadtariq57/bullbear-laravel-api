@@ -10,13 +10,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.ico') }}">
-
+    
     <!-- include head css -->
     @include('admin.layouts.head-css')
 </head>
 
 @yield('body')
-
     <!-- Begin page -->
     <div id="layout-wrapper">
             <!-- topbar -->
@@ -29,7 +28,6 @@
             <!-- Start right Content here -->
             <!-- ============================================================== -->
             <div class="main-content">
-
                 <div class="page-content">
                     <div class="container-fluid">
                         @yield('content')

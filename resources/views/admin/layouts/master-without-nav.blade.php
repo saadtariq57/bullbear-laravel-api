@@ -15,7 +15,6 @@
 </head>
 
 <body>
-    
     @yield('content')
 
     <!-- vendor-scripts -->

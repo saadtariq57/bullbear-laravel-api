@@ -517,6 +517,12 @@ const routes = [
         name: 'TradingBooks',
         component: () => import('./components/widgets/TradingBooks.vue'),
     },
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: () => import('./components/checkout/checkout.vue'),
+        props: true,
+    },
 ];
 
 // Create router instance

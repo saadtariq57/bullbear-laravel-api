@@ -287,10 +287,20 @@ Route::get('/markets/certificates/world-certificates', function () {
 })->name('world-certificates');
 
 
-// Profile route
+// RichTv Pro
+Route::get('/richtvpro/watchlist', function () {
+    return view('markets.market');
+})->name('watchlistpro');
+
+// pricing page route
 Route::get('/pricing', function () {
     return view('pricing');
 })->name('pricing');
+
+// Checkout page
+Route::get('/checkout', function () {
+    return view('checkout');
+})->name('checkout');
 
 Route::get('/groups', [HomeController::class, 'groupPage'])->name('group');
 // Routes requiring authentication
