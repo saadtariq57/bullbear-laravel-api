@@ -301,6 +301,9 @@ Route::get('/pricing', function () {
 Route::get('/checkout', function () {
     return view('checkout');
 })->name('checkout');
+Route::get('/checkout/thank-you', function () {
+    return view('checkout');
+})->name('thank-you');
 
 Route::get('/groups', [HomeController::class, 'groupPage'])->name('group');
 // Routes requiring authentication
