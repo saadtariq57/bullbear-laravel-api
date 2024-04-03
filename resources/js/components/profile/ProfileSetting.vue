@@ -1010,7 +1010,7 @@
                 </div>
 
               </div>
-              <div class="mt-5">
+              <div class="mt-5 member_ship_card_main">
                 <div class="member_ship_card shadow-sm rounded p-3 bg-white m-3 border border-1">
                   <h2 class="text-secondary text-center fs-22">PAYMENT METHODS</h2>
                   <div class="border-heading m-auto my-4"></div>
@@ -1026,16 +1026,19 @@
                         </thead>
                         <tbody v-if="userPaymentMethod">
                           <tr :key="userPaymentMethod.id">
-                            <td></td>
                             <td>{{ userPaymentMethod.card.brand }}</td>
                             <td>{{ userPaymentMethod.billing_details.name }}</td> 
                             <td>************{{ userPaymentMethod.card.last4 }}</td>
                             <td>{{userPaymentMethod.card.exp_month}} / {{userPaymentMethod.card.exp_year}}</td>
                           </tr>
                         </tbody> 
-                        <p v-else>No payment methods to show</p>
+                        <tfoot v-else>
+                          <tr>
+                            <td colspan="5" class="text-center py-6"><p class="no_payment">No payment methods to show</p></td>
+                          </tr>
+                        </tfoot>
                       </table>
-                      <button v-if="userPaymentMethod"  class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateCard"> Update Card</button>
+                      <button v-if="userPaymentMethod"  class="btn btn-primary update_card" type="button" data-bs-toggle="modal" data-bs-target="#updateCard"> Update Card</button>
                   </div>
                 </div>
                 <div class="member_ship_card shadow-sm rounded p-4 bg-white m-3 border border-1">
@@ -1057,9 +1060,9 @@
                       <tbody v-if="userSubscriptions">
                         <tr v-for="Subscription in userSubscriptions" :key="userSubscriptions.id">
                           <td>{{ Subscription.name }}</td>
-                          <td>{{ Subscription.created_at }}</td>
-                          <td v-if="Subscription.stripe_status == 'active'">
-                            {{ Subscription.ends_at == null ? 'Never' :  Subscription.ends_at}}
+                          <td>{{ new Date(Subscription.created_at).toLocaleString() }}</td>
+                          <td v-if="Subscription.stripe_status === 'active'">
+                            {{ Subscription.ends_at ? new Date(Subscription.ends_at).toLocaleString() : 'Never' }}
                           </td>
                           <td v-else-if="Subscription.stripe_status == 'incomplete'">
                             Pending
@@ -1069,13 +1072,28 @@
                           <td>{{ Subscription.name }}</td> -->
                           <td>{{ Subscription.ends_at != null && Subscription.stripe_status == 'active' ? 'Expiring Soon' : Subscription.stripe_status }}</td>
                           <td v-if="Subscription.stripe_status == 'active' && Subscription.ends_at == null">
-                            <a @click="cancelSubscription(Subscription.name)">Cancel Subscription</a>
+                            <a @click="showConfirmModel"  class="subscription_cancel btn btn-primary">Cancel Subscription</a>
+                      
                           </td>
 
                         </tr>
                       </tbody>
                       <p v-else>No Subscriptions</p>
                     </table>
+                    <div class="modal fade" id="exampleModal" ref="confirm_popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to cancel your subscription?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" @click="cancelSubscription(userSubscriptions[0].name)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
                   </div>
                 </div>
                 <!-- Upcoming invoices -->
@@ -1110,7 +1128,12 @@
                             <td>{{ upcomingInvoices.paid ? 'Paid' : 'Pending' }}</td>
                           </tr>
                         </tbody>
-                        <p v-else>No upcoming invoices to show</p>
+                        <tfoot v-else>
+                          <tr>
+                            <td colspan="5" class="text-center py-6"><p  class="no_invoices">No upcoming invoices to show</p></td>
+                          </tr>
+                        </tfoot>
+                        
                       </table>
                   </div>
                 </div>
@@ -1118,7 +1141,7 @@
                 <div class="member_ship_card shadow-sm rounded p-3 bg-white m-3 border border-1">
                   <h2 class="text-secondary text-center fs-22 ">PAST INVOICES</h2>
                   <div class="border-heading m-auto my-4 text-secondary"></div>
-                  <div class="member-card-main pt-4 pb-2">
+                  <div class="member-card-main pt-4 pb-2  past_invoice">
                       <table border="1">
                         <thead>
                           <tr>
@@ -1147,7 +1170,7 @@
                             </td>
                             <td>{{ invoice.billing_reason }}</td>
                             <td>{{ invoice.paid ? 'Paid' : 'Pending' }}</td>
-                            <td><a :href="invoice.invoice_pdf" target="_blank">Download</a></td>
+                            <td><a :href="invoice.invoice_pdf" target="_blank" class="download btn btn-primary">Download</a></td>
                           </tr>
                         </tbody>
                         <p v-else>No past invoices to show</p>
@@ -1225,9 +1248,9 @@
         </div>
         <div class="modal-body">
           <form @submit.prevent="handleSubmit" id="UpdatePaymentMethod">
-                <div>
+                <div class="mb-3">
                     <label>Enter Card Holder Name</label>
-                    <input type="text" v-model="formData.cardHolderName" id="cardHolderName" name="cardHolderName" class="form-control" placeholder="Card holder name">
+                    <input type="text" v-model="formData.cardHolderName" id="cardHolderName" name="cardHolderName" class="form-control border  shadow-sm" placeholder="Card holder name">
                 </div>
                 
                 <!-- Payment Method Element -->
@@ -1247,6 +1270,7 @@
 <script>
 import { loadStripe } from '@stripe/stripe-js';
 import { mapState } from 'vuex';
+import { Modal } from 'bootstrap';
 
 export default {
   computed: mapState(['userData']),
@@ -1267,8 +1291,16 @@ export default {
     this.getInvoices();
     this.stripePaymentMethod();
     console.log(this.userData);
+    this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
   },
   methods: {
+    showConfirmModel(){
+      if (this.confirmModalInstance) {
+        this.confirmModalInstance.show();
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
+    },
     async getInvoices(){
       try {
         const response = await axios.get('/api/subscriptionInvoices');
@@ -1292,6 +1324,8 @@ export default {
               'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
           });
+          this.getInvoices();
+          this.confirmModalInstance.hide();
           console.log(response.data);
         } catch (error) {
             console.error('Error removing card:', error);
@@ -1308,7 +1342,7 @@ export default {
           var elements = stripe.elements();
           var card = elements.create('card');
           card.mount('#card-element');
-
+          var cardElementContainer = document.getElementById('card-element'); cardElementContainer.style.border = '1px solid #ddd7d7'; cardElementContainer.style.padding = '10px'; cardElementContainer.style.borderRadius = '4px'; cardElementContainer.style.boxShadow = '0 1px 1px rgba(0, 0, 0, .05)';
           var form = document.getElementById('UpdatePaymentMethod');
           form.addEventListener('submit', async (event) => {
               event.preventDefault();
@@ -1354,3 +1388,52 @@ export default {
   },
 };
 </script>
+<style>
+  .member_ship_card_main table,.member_ship_card_main th,.member_ship_card_main td ,.member_ship_card_main tr{
+    border: 1px solid #000 !important;
+    padding: 8px 12px;
+  }
+  .member_ship_card_main table{
+    width: 100%;
+  }
+  .text-secondary{
+    color: var(--cta-btn)!important;
+  }
+  .member_ship_card_main th{
+    font:600 16px/28px Poppins;
+    color: #000;
+  }
+  p.no_payment, .no_invoices{
+    font:600 16px/28px Poppins;
+    color: #000;
+    margin: 0px;
+    padding: 10px
+  }
+  .update_card{
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+  }
+  .past_invoice{
+    overflow: auto;
+  }
+  .past_invoice table{
+    min-width: 1250px
+  }
+  a.subscription_cancel, a.download {
+    font: 600 12px /20px poppins;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    max-width: max-content;
+    padding: 5px 11px;
+    margin: auto;
+}
+  .member_ship_card_main table ul{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .border { border-color: #dfdfdf !important; }
+</style>
