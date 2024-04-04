@@ -46,7 +46,7 @@
                         </div>
                         <div class="d-block d-xl-none moblie-bottom-navbar fixed-bottom bg-white">
                             <ul
-                                class="d-flex px-3 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
+                                class="d-flex px-2 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
                                 <li class="text-center cursor-pointer nav-bottom-link">
                                     <a href="/trading-school" class="text-black">
                                         <img class="img-fluid" src="/build/images/academy.png" alt="academy-img" width="31px" />
@@ -66,7 +66,7 @@
                                 <li class="text-center nav-bottom-link" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                                     <button class="navbar-toggler border-0" type="button">
-                                        <svg width="23" height="23" viewBox="0 0 30 23"
+                                        <svg width="23" height="25" viewBox="0 0 30 23"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
                                                 d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z"
@@ -74,7 +74,7 @@
                                         </svg>
                                     </button>
 
-                                    <span class="d-block fw-5 fs-16 pt-1 text-black">Menu</span>
+                                    <span class="d-block fw-5 fs-16 text-black">Menu</span>
                                 </li>
                             </ul>
                         </div>
@@ -782,7 +782,7 @@
                                                         <div class="accordion-body pt-0">
                                                             <ul class="list-unstyled mega-menu-dropdown">
                                                                 <li>
-                                                                    <div class="accordion" id="accordionFlushmarket">
+                                                                    <div class="accordion moblie-navbar-accordion" id="accordionFlushmarket">
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
@@ -1672,7 +1672,11 @@ ul.nested-mega-menu {
     .nav-top-header {
         gap: 10px !important;
     }
+    .nav-bottom-link a span, .nav-bottom-link span{
+        font-size: 11px !important;
+    }
 }
+
 </style>
 
 <script>

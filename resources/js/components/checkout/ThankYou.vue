@@ -7,6 +7,10 @@
             interviews, and informative discussions aimed at helping you make informed decisions in the world of
             finance.</p> -->
         <img src="
-        /build/images/thank-you.png" alt="">
+        /build/images/thank-you.png" alt="" class="mw-100">
+        
+<div class="text-center">
+    <a href="/" class="btn btn-primary d-inline-block mx-auto fs-5">Back to Home</a>
+</div>
     </div>
 </template>

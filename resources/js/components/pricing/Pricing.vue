@@ -1,7 +1,7 @@
 <template>
   <div class="pricing-wrapper bg-white px-2 px-md-4 py-3 mt-4 border-1 border rounded-2 shadow-sm">
     <div class="text-center">
-      <h1 class="text-uppercase fw-bold">Pricing & Plan</h1>
+      <h1 class="fw-bold">Pricing & Plan</h1>
       <div class="border-heading d-inline-block mt-4 mb-3"></div>
       <p class="fs-4">“Make informed investing decisions with plans built for all kinds of traders - from newbies to
         professionals.”</p>
