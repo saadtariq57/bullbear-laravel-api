@@ -1,4 +1,4 @@
-import Echo from 'laravel-echo';
+/*import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 export function initializeEcho() {
@@ -12,5 +12,15 @@ export function initializeEcho() {
       wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
       forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
       enabledTransports: ['ws', 'wss'],
+  });
+}*/
+
+import Echo from '@ably/laravel-echo';
+import * as Ably from 'ably';
+
+export function initializeEcho() {
+  window.Ably = Ably;
+  window.Echo = new Echo({
+      broadcaster: 'ably'
   });
 }

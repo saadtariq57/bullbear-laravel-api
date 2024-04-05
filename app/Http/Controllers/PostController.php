@@ -159,6 +159,9 @@ class PostController extends Controller
                     break;
             }
         broadcast(new \App\Events\NewPost($post));
+        /*$event = new \App\Events\NewPost($post);
+        event($event);
+        $event->broadcastToAbly();*/
         return response()->json(['message' => 'Post created successfully', 'post' => $post]);
     }
 

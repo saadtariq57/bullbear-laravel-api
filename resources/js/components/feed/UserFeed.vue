@@ -41,14 +41,13 @@ export default {
         this.fetchPosts({context});
         this.fetchReactionTypes();
         this.$nextTick(() => {
-            this.initializeRealTimeUpdates({context});
+            this.initializeRealTimeUpdates({ context: 'feed' });
         });
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         handleShowPostModal(post) {
-      this.$refs.createPost.sharePostModal(post); // Call the method in the child component
-    //   console.log('Received post data:', post);
+      this.$refs.createPost.sharePostModal(post);
     }
     },
 };

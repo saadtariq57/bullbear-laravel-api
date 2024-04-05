@@ -1045,13 +1045,6 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <!-- <li>
-                                            <button class="btn- btn-primary w-100 rounded-2" type="button"
-                                                data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
-                                                aria-controls="offcanvasTop">
-                                                search
-                                            </button>
-                                        </li> -->
                                     </ul>
                                 </div>
                             </div>

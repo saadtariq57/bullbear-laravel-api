@@ -1,4 +1,5 @@
 import UserFeedService from '../services/userFeedService';
+import ablyService from '../services/ablyService.js';
 import { organizeReactions } from '../utils';
 const userFeedModule = {
     namespaced: true,
@@ -191,18 +192,25 @@ const userFeedModule = {
         updateFetchedCommentsVisibility({commit}, postId){
             commit('updateFetchedCommentsVisibility', postId);
         },
-        initializeRealTimeUpdates({ commit, rootState }, { context, groupId = null }) {
-          const userId = rootState.userData.id;
-          if (window.Echo) {
-            window.Echo.private(`feed.posts.${userId}`)
-              .listen('.App\\Events\\NewPost', (event) => {
-                let trasnformedPost = UserFeedService.transfromPost([event.post], userId);
-                commit('addNewPost', trasnformedPost[0]);
-              });
-          } else {
-            console.error('Echo is not initialized');
-          }
-        },
+      initializeRealTimeUpdates({ commit, rootState }, { context, groupId = null }) {
+        if (!rootState.loggedIn || !rootState.userData) return;
+        const userId = rootState.userData.id;
+        if (context === 'group' && groupId) {
+          ablyService.subscribeToGroupPosts(groupId, (message) => {
+            // Handle group posts message For example: commit('someMutation', message.data);
+          });
+          ablyService.subscribeToGroupChat(groupId, (message) => {
+            // Handle group chat message
+          });
+        } else {
+          ablyService.subscribeToFeedPostsUpdates(rootState.userData.id, (message) => {
+                if (message.name === "NewPost") {
+                    let trasnformedPost = UserFeedService.transfromPost([message.data.post], userId);
+                    commit('addNewPost', trasnformedPost[0]);
+                }
+          });
+        }
+      },
     },
     getters: {
         allPosts(state) {

@@ -159,19 +159,29 @@
             </li>
             <li class="px-4 pb-4">
                 <div class="bg-white rounded-3 px-3 py-3 w180 header_login">
-                    <a href="/logout" class="d-flex gap-2 fs-16 fw-6 text-black" aria-label="login"><i
-                            class="bi bi-box-arrow-in-right"></i>Logout</a>
-
+                    <a @click.prevent="logout" class="d-flex gap-2 fs-16 fw-6 text-black cursor-pointer" aria-label="logout"><i class="bi bi-box-arrow-in-right"></i>Logout</a>
                 </div>
             </li>
         </ul>
     </div>
-</div></template>
+</div>
+</template>
 <script>
 import { mapState } from 'vuex';
 
 export default {
     computed: mapState(['userData']),
+     methods: {
+        logout() {
+          axios.post('/logout')
+            .then(response => {
+              window.location.href = '/';
+            })
+            .catch(error => {
+              console.error('Logout failed:', error);
+            });
+        }
+      },
 };
 </script>
 <style>
