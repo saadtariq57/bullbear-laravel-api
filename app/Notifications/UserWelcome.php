@@ -28,7 +28,6 @@ class UserWelcome extends Notification
     {
         return ['mail'];
     }
-
     /**
      * Get the mail representation of the notification.
      */

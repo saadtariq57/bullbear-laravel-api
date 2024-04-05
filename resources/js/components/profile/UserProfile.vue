@@ -11,13 +11,6 @@
                             @show-post-modal="handleShowPostModal" />
                     </div>
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
-                        <div class="mb-3 ps-3 pt-3 pb-3 bg-white shadow rounded">
-                            <div class="d-flex align-items-center gap-3">
-                                <div><span class="bg-primary rounded-circle user-top-bar d-inline-block text-center"><i
-                                            class="bi bi-chat-right-dots fs-12"></i></span></div>
-                                <div class="fs-18 fw-6">Chat Room</div>
-                            </div>
-                        </div>
                         <div>
                             <div>
                                 <ActiveChatRooms :chats="allChats" :joined="false" />
