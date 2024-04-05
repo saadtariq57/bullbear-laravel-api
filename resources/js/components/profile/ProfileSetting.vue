@@ -996,30 +996,7 @@
 
               </div>
             </div>
-            <!-- Transaction-tabs start -->
-            <div class="tab-pane fade" id="v-pills-transactions" role="tabpanel"
-              aria-labelledby="v-pills-transactions-tab" tabindex="0">
-              <div class="wo_general_settings_page ">
-                <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
-                  <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
-                    <p class="fs-28 pt-2">Transactions</p>
-                  </div>
-                </div>
-
-              </div>
-              <div class="pt-3"></div>
-              <div class="setting-well my-5 text-center">
-                <div class="empty_state">
-                  <img src="https://richtv.io/themes/wowonder/img/no_transaction.svg" alt="" class="img-fluid">
-                </div>
-                <div class="pt-4 text-secondary fs-16 px-2 px-md-0">Looks like you don't have any
-                  transaction yet!
-                </div>
-                <div class="clear"></div>
-              </div>
-            </div>
+          
             <!-- Membership-tabs start -->
             <div class="tab-pane fade" id="v-pills-membership" role="tabpanel" aria-labelledby="v-pills-membership-tab"
               tabindex="0">
@@ -1033,110 +1010,171 @@
                 </div>
 
               </div>
-              <div class="mt-5">
+              <div class="mt-5 member_ship_card_main">
                 <div class="member_ship_card shadow-sm rounded p-3 bg-white m-3 border border-1">
-                  <h2 class="text-secondary text-center fs-22">PAYMENT METHOD</h2>
+                  <h2 class="text-secondary text-center fs-22">PAYMENT METHODS</h2>
                   <div class="border-heading m-auto my-4"></div>
                   <div class="member-card-main pt-4 pb-2">
-                    <div class="row">
-                      <div class="col-sm-4">
-                        <div class="d-flex flex-sm-column align-items-sm-center justify-content-between">
-                          <span class="labelfr-username spn card_type fw-6 text-secondary">Card
-                            Type</span>
-                          <span class="card-brand fw-6 pt-1 text-secondary">22</span>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="d-flex flex-sm-column align-items-sm-center justify-content-between pt-3 pt-sm-0">
-                          <span class="labelfr-username spn card_type fw-6 text-secondary">Card
-                            Number</span>
-                          <span class="labelfr-username card-number fs-22  fw-6 pt-1 text-secondary">*************</span>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="d-flex flex-sm-column align-items-sm-center justify-content-between pt-3 pt-sm-0">
-                          <span class="labelfr-username spn card_type fw-6 text-secondary">Expiration
-                            Date</span>
-                          <span class="labelfr-username card-number fw-6 pt-1 text-secondary">/</span>
-                        </div>
-                      </div>
-                    </div>
+                    <table border="1">
+                        <thead>
+                          <tr>
+                            <th>Card Type</th>
+                            <th>Name on Card</th>
+                            <th>Card Number</th>
+                            <th>Expiration</th>
+                          </tr>
+                        </thead>
+                        <tbody v-if="userPaymentMethod">
+                          <tr :key="userPaymentMethod.id">
+                            <td>{{ userPaymentMethod.card.brand }}</td>
+                            <td>{{ userPaymentMethod.billing_details.name }}</td> 
+                            <td>************{{ userPaymentMethod.card.last4 }}</td>
+                            <td>{{userPaymentMethod.card.exp_month}} / {{userPaymentMethod.card.exp_year}}</td>
+                          </tr>
+                        </tbody> 
+                        <tfoot v-else>
+                          <tr>
+                            <td colspan="5" class="text-center py-6"><p class="no_payment">No payment methods to show</p></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                      <button v-if="userPaymentMethod"  class="btn btn-primary update_card" type="button" data-bs-toggle="modal" data-bs-target="#updateCard"> Update Card</button>
                   </div>
                 </div>
                 <div class="member_ship_card shadow-sm rounded p-4 bg-white m-3 border border-1">
                   <h2 class="text-secondary text-center fs-22 ">MY MEMBERSHIP</h2>
                   <div class="border-heading m-auto my-4 text-secondary"></div>
                   <div class="member-card-main pt-3">
-                    <div class="row">
-                      <div class="col-md-3">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between ">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Level</span>
-                          <span class="card-brand  fw-6 pt-1 text-secondary">Basic Free</span>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Billing</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Expiration
-                            Date</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary">Never</span>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Status</span>
-                          <span class="labelfr-username card-number fw-6 pt-1 text-secondary">Active</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mt-5 mb-2 text-center">
-                      <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Cancel
-                        Subscription</a>
-                    </div>
+                    <table border="1">
+                      <thead>
+                        <tr>
+                          <th>Plan</th>
+                          <th>Subscription Started</th>
+                          <th>Expiration Date</th>
+                          <!-- <th>Amount</th>
+                          <th>Transaction Type</th> -->
+                          <th>Status</th>
+                          <th>Cancel</th>
+                        </tr>
+                      </thead>
+                      <tbody v-if="userSubscriptions">
+                        <tr v-for="Subscription in userSubscriptions" :key="userSubscriptions.id">
+                          <td>{{ Subscription.name }}</td>
+                          <td>{{ new Date(Subscription.created_at).toLocaleString() }}</td>
+                          <td v-if="Subscription.stripe_status === 'active'">
+                            {{ Subscription.ends_at ? new Date(Subscription.ends_at).toLocaleString() : 'Never' }}
+                          </td>
+                          <td v-else-if="Subscription.stripe_status == 'incomplete'">
+                            Pending
+                          </td>
+                          <td v-else>Expired</td>
+                          <!-- <td>{{ Subscription.name }}</td>
+                          <td>{{ Subscription.name }}</td> -->
+                          <td>{{ Subscription.ends_at != null && Subscription.stripe_status == 'active' ? 'Expiring Soon' : Subscription.stripe_status }}</td>
+                          <td v-if="Subscription.stripe_status == 'active' && Subscription.ends_at == null">
+                            <a @click="showConfirmModel"  class="subscription_cancel btn btn-primary">Cancel Subscription</a>
+                      
+                          </td>
+
+                        </tr>
+                      </tbody>
+                      <p v-else>No Subscriptions</p>
+                    </table>
+                    <div class="modal fade" id="exampleModal" ref="confirm_popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to cancel your subscription?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" @click="cancelSubscription(userSubscriptions[0].name)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
                   </div>
                 </div>
+                <!-- Upcoming invoices -->
+                <div class="member_ship_card shadow-sm rounded p-3 bg-white m-3 border border-1">
+                  <h2 class="text-secondary text-center fs-22 ">Upcoming INVOICES</h2>
+                  <div class="border-heading m-auto my-4 text-secondary"></div>
+                  <div class="member-card-main pt-4 pb-2">
+                      <table border="1">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Plan Type</th>
+                            <th>Amount</th>
+                            <th>Transaction Type</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody v-if="upcomingInvoices">
+                          <tr :key="upcomingInvoices.id">
+                            <td>{{ formatDate(upcomingInvoices.created) }}</td>
+                            <td>
+                              <ul>
+                                <li v-for="lineItem in upcomingLineData" :key="lineItem.id">
+                                  {{ lineItem.description }}
+                                </li>
+                              </ul>
+                            </td>
+                            <td>
+                              ${{ (upcomingInvoices.amount_due / 100).toFixed(2) }}
+                            </td>
+                            <td>{{ upcomingInvoices.billing_reason }}</td>
+                            <td>{{ upcomingInvoices.paid ? 'Paid' : 'Pending' }}</td>
+                          </tr>
+                        </tbody>
+                        <tfoot v-else>
+                          <tr>
+                            <td colspan="5" class="text-center py-6"><p  class="no_invoices">No upcoming invoices to show</p></td>
+                          </tr>
+                        </tfoot>
+                        
+                      </table>
+                  </div>
+                </div>
+                <!-- Past invoices -->
                 <div class="member_ship_card shadow-sm rounded p-3 bg-white m-3 border border-1">
                   <h2 class="text-secondary text-center fs-22 ">PAST INVOICES</h2>
                   <div class="border-heading m-auto my-4 text-secondary"></div>
-                  <div class="member-card-main pt-4 pb-2">
-                    <div class="row flex-md-row flex-column justify-content-start">
-                      <div class="col">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between">
-                          <span class="labelfr-username spn card_type fw-6 text-secondary">Date</span>
-                          <span class="card-brand fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                      <div class="col">
-                        <div class="d-flex flex-md-column  align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Level</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                      <div class="col">
-                        <div class="d-flex flex-md-column  align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Amount</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                      <div class="col">
-                        <div class="d-flex flex-md-column  align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Transaction
-                            Type</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                      <div class="col">
-                        <div class="d-flex flex-md-column align-items-md-center justify-content-between pt-3 pt-md-0">
-                          <span class="labelfr-username spn card_type  fw-6 text-secondary">Status</span>
-                          <span class="labelfr-username card-number  fw-6 pt-1 text-secondary"></span>
-                        </div>
-                      </div>
-                    </div>
+                  <div class="member-card-main pt-4 pb-2  past_invoice">
+                      <table border="1">
+                        <thead>
+                          <tr>
+                            <th># Invoice Id</th>
+                            <th>Date</th>
+                            <th>Plan Type</th>
+                            <th>Amount</th>
+                            <th>Transaction Type</th>
+                            <th>Status</th>
+                            <th>Download Invoice</th>
+                          </tr>
+                        </thead>
+                        <tbody v-if="pastInvoices">
+                          <tr v-for="invoice in pastInvoices" :key="invoice.id">
+                            <td>{{ invoice.id }}</td>
+                            <td>{{ formatDate(invoice.created) }}</td>
+                            <td>
+                              <ul>
+                                <li v-for="lineItem in invoice.lines.data" :key="lineItem.id">
+                                  {{ lineItem.description }}
+                                </li>
+                              </ul>
+                            </td>
+                            <td>
+                              {{ invoice.paid ? '$' + (invoice.amount_paid / 100).toFixed(2) : '$' + (invoice.amount_remaining / 100).toFixed(2) }}
+                            </td>
+                            <td>{{ invoice.billing_reason }}</td>
+                            <td>{{ invoice.paid ? 'Paid' : 'Pending' }}</td>
+                            <td><a :href="invoice.invoice_pdf" target="_blank" class="download btn btn-primary">Download</a></td>
+                          </tr>
+                        </tbody>
+                        <p v-else>No past invoices to show</p>
+                      </table>
                   </div>
                 </div>
               </div>
@@ -1189,9 +1227,6 @@
                 data-bs-target="#v-pills-notification-setting" type="button" role="tab"
                 aria-controls="v-pills-notification-setting" aria-selected="false"><i
                   class="bi bi-bell-fill pe-3 fs-18 align-middle"></i>Notification Setting</button>
-              <button class="nav-link text-start" id="v-pills-transactions-tab" data-bs-toggle="pill"
-                data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions"
-                aria-selected="false"><i class="bi bi-arrow-left-right pe-3 fs-18 align-middle"></i>Transactions</button>
               <button class="nav-link text-start" id="v-pills-membership-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-membership" type="button" role="tab" aria-controls="v-pills-membership"
                 aria-selected="false"><i class="bi bi-person-lines-fill pe-3 fs-18 align-middle"></i>Membership</button>
@@ -1202,11 +1237,203 @@
       </div>
     </div>
   </section>
+  <!-- update car popup -->
+  
+  <div class="modal fade" id="updateCard" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Update Your Payment Method</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="handleSubmit" id="UpdatePaymentMethod">
+                <div class="mb-3">
+                    <label>Enter Card Holder Name</label>
+                    <input type="text" v-model="formData.cardHolderName" id="cardHolderName" name="cardHolderName" class="form-control border  shadow-sm" placeholder="Card holder name">
+                </div>
+                
+                <!-- Payment Method Element -->
+                <label for="card-element">Credit or Debit Card</label>
+                <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+
+                <!-- Form submission -->
+                <button type="submit" id="submit-button" data-bs-dismiss="modal" class="btn btn-primary mt-4">UPDATE CARD</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
+import { loadStripe } from '@stripe/stripe-js';
 import { mapState } from 'vuex';
+import { Modal } from 'bootstrap';
 
 export default {
   computed: mapState(['userData']),
+  data() {
+    return {
+      userSubscriptions: [],
+      pastInvoices: [],
+      upcomingInvoices: [],
+      upcomingLineData:[],
+      userPaymentMethod: null,
+      formData: {
+        cardHolderName: '',
+        payment_method: '',
+      },
+    };
+  },
+  mounted() {
+    this.getInvoices();
+    this.stripePaymentMethod();
+    console.log(this.userData);
+    this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
+  },
+  methods: {
+    showConfirmModel(){
+      if (this.confirmModalInstance) {
+        this.confirmModalInstance.show();
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
+    },
+    async getInvoices(){
+      try {
+        const response = await axios.get('/api/subscriptionInvoices');
+        this.userSubscriptions = response.data.Invoices.allUserSubscriptions;
+        this.pastInvoices = response.data.Invoices.previousInvoices;
+        this.upcomingInvoices = response.data.Invoices.upcomingInvoice;
+        this.upcomingLineData = response.data.Invoices.upcomingInvoice.lines.data;
+        this.userPaymentMethod = response.data.Invoices.paymentMethods;
+        console.log(response.data.Invoices);
+        console.log(this.userPaymentMethod);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle error appropriately
+      }
+    },
+    async cancelSubscription(subscriptionName){
+        try {
+          const response = await axios.post(`/api/cancelSubscription/${subscriptionName}`, {
+            withCredentials: true,
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+          });
+          this.getInvoices();
+          this.confirmModalInstance.hide();
+          console.log(response.data);
+        } catch (error) {
+            console.error('Error removing card:', error);
+            // Handle error appropriately
+        }
+    },
+    formatDate(timestamp) {
+      return new Date(timestamp * 1000).toLocaleString();
+    },
+    stripePaymentMethod() {
+      var stripePromise = loadStripe('pk_test_51Hwe7XJYG6q3yq60zNuah9X3DSCMF4142Y43Ufsz2KlZJpz1cLTKzrMkUMlFB3OATwluVbqWdzqrp2unJOAUt5Gg00EipuAVQa');
+
+      stripePromise.then(stripe => {
+          var elements = stripe.elements();
+          var card = elements.create('card');
+          card.mount('#card-element');
+          var cardElementContainer = document.getElementById('card-element'); cardElementContainer.style.border = '1px solid #ddd7d7'; cardElementContainer.style.padding = '10px'; cardElementContainer.style.borderRadius = '4px'; cardElementContainer.style.boxShadow = '0 1px 1px rgba(0, 0, 0, .05)';
+          var form = document.getElementById('UpdatePaymentMethod');
+          form.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              const { paymentMethod, error } = await stripe.createPaymentMethod('card', card, {
+                  billing_details: { name: this.formData.cardHolderName }
+              });
+              var paymentMethodID = paymentMethod.id;
+
+              // Submit the form
+              if (error) {
+                  alert(error.message);
+              } else {
+                  this.stripePaymentMethodHandler(paymentMethodID);
+              }
+          });
+      });
+    },
+    stripePaymentMethodHandler(paymentMethodId) {
+      var form = document.getElementById('UpdatePaymentMethod');
+      var paymentMethodInput = document.createElement('input');
+      paymentMethodInput.setAttribute('type', 'hidden');
+      paymentMethodInput.setAttribute('name', 'payment_method');
+      paymentMethodInput.setAttribute('value', paymentMethodId);
+      form.appendChild(paymentMethodInput);
+      this.formData.payment_method = paymentMethodId;
+      if (!paymentMethodId) {
+          console.error('Invalid payment method ID');
+      }else{
+          axios.post(`/api/updatePaymentMethod/`, this.formData)
+              .then(response => {
+                  // Handle response
+                  console.log('Response:', response.data);
+              })
+          .catch(error => {
+              // Handle error
+              console.error('Error:', error);
+          });
+      }
+    },
+    // handleSubmit() {
+    //     // Handle form submission (if needed)
+    // }
+  },
 };
 </script>
+<style>
+  .member_ship_card_main table,.member_ship_card_main th,.member_ship_card_main td ,.member_ship_card_main tr{
+    border: 1px solid #000 !important;
+    padding: 8px 12px;
+  }
+  .member_ship_card_main table{
+    width: 100%;
+  }
+  .text-secondary{
+    color: var(--cta-btn)!important;
+  }
+  .member_ship_card_main th{
+    font:600 16px/28px Poppins;
+    color: #000;
+  }
+  p.no_payment, .no_invoices{
+    font:600 16px/28px Poppins;
+    color: #000;
+    margin: 0px;
+    padding: 10px
+  }
+  .update_card{
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+  }
+  .past_invoice{
+    overflow: auto;
+  }
+  .past_invoice table{
+    min-width: 1250px
+  }
+  a.subscription_cancel, a.download {
+    font: 600 12px /20px poppins;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    max-width: max-content;
+    padding: 5px 11px;
+    margin: auto;
+}
+  .member_ship_card_main table ul{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .border { border-color: #dfdfdf !important; }
+</style>

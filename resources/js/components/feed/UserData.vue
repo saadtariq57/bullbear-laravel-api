@@ -10,26 +10,25 @@
                     <img class="w-100 rounded-circle" :src="userData.avatar" alt="Profile Picture">
                 </div>
                 <div class="title text-center">
-                    <a class="text-black fw-bold" href="/admin">{{ userData.name }}</a>
+                    <a class="text-black fw-bold" href="/profile">{{ userData.name }}</a>
                     <p>@{{ userData.name }}</p>
                 </div>
             </div>
             <ul class="wo_user_side_info list-unstyled row text-center">
                 <li class="col-4">
-                    <a class="menu_list text-black" href="/admin" data-ajax="?link1=timeline&amp;u=admin">
+                    <a class="menu_list text-black" href="/profile">
                         <span class="split-link d-block"><b>Posts</b></span>
                         <span id="user_post_count">{{ userData.posts_count }}</span>
                     </a>
                 </li>
                 <li class="col-4 border-start border-end">
-                    <a class="menu_list text-black" href="/albums/admin" data-ajax="?link1=albums&amp;user=admin">
+                    <a class="menu_list text-black" href="/profile">
                         <span class="split-link d-block"><b>Watchlists</b></span>
                         <span>{{ userData.watchlists_count }}</span>
                     </a>
                 </li>
                 <li class="col-4">
-                    <a class="menu_list text-black" href="/admin/followers"
-                        data-ajax="?link1=timeline&amp;u=admin&amp;type=followers">
+                    <a class="menu_list text-black" href="/profile">
                         <span class="split-link d-block"><b>Followers</b></span>
                         <span>{{ userData.followers_count }}</span>
                     </a>

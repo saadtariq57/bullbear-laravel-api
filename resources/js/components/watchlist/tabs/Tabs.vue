@@ -302,14 +302,15 @@ export default {
             selectedWatchlist: null,
             watchlist_symbols: undefined,
             dataTableKey: null,
+            errorMessage:'',
         };
     },
     methods: {
         async getUserData() {
             try {
                 const response = await axios.get('/api/watchlist/');
-                this.watchlists = response.data;
-                console.log(this.watchlists = response.data);
+                this.watchlists = response.data.watchlistDetails;
+                console.log(response.data);
                 for (const watchlist of this.watchlists) {
                     if (watchlist.watchlist_symbols.length >= 1) {
                         await this.getSymbols(watchlist.id);
@@ -318,6 +319,14 @@ export default {
 
             } catch (error) {
                 console.error('Error fetching data:', error);
+                if (error.response && error.response.data && error.response.data.message) {
+                    // Handle specific error message from the backend
+                    this.errorMessage = error.response.data.message;
+                    console.log(this.errorMessage);
+                } else {
+                    // Handle generic error
+                    this.errorMessage = 'An error occurred while fetching data.';
+                }
                 // Handle error appropriately
             }
         },

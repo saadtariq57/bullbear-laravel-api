@@ -62,20 +62,7 @@
                     <!-- Features -->
                     <div class="form-group my-2">
                         <label for="features">Features</label>
-                        <div id="features-list">
-                            @php
-                                $features = json_decode($subscription_plan->features, true) ?: [];
-                            @endphp
-                            @foreach($features as $feature)
-                                <div class="input-group mb-2">
-                                    <input type="text" class="form-control" name="features[]" placeholder="Feature" value="{{ $feature }}">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-danger remove-feature" type="button">Remove</button>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <button type="button" class="btn btn-primary mt-2" id="add-feature">Add Feature</button>
+                        <div id="features-list"></div>
                     </div>
                 </div>
             </div>
@@ -97,29 +84,67 @@
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('add-feature').addEventListener('click', function () {
-                let featuresList = document.getElementById('features-list');
-                let newFeature = document.createElement('div');
-                newFeature.classList.add('input-group', 'mb-2');
-                newFeature.innerHTML = `
-                    <input type="text" class="form-control" name="features[]" placeholder="Feature">
-                    <div class="input-group-append">
-                        <button class="btn btn-danger remove-feature" type="button">Remove</button>
+            const existingFeatures = {!! json_encode($planFeatures) !!};
+            function generateFeatureHTML(feature) {
+                return `
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" name="feature_name[]" value="${feature.feature_name}" readonly>
+                        <input type="number" class="form-control" name="limit[]" placeholder="Limit" value="${feature.limit}">
+                        <select class="form-control" name="enabled[]">
+                            <option value="1" ${feature.enabled == 1 ? 'selected' : ''}>Enabled</option>
+                            <option value="0" ${feature.enabled == 0 ? 'selected' : ''}>Disabled</option>
+                        </select>
+                        <select class="form-control" name="featureType[]">
+                            <option value="" ${feature.feature_type == 'null' ? 'selected' : ''}>Select Feature Type</option>
+                            <option value="Free" ${feature.feature_type == 'Free' ? 'selected' : ''}>Free</option>
+                            <option value="Basic" ${feature.feature_type == 'Basic' ? 'selected' : ''}>Basic</option>
+                            <option value="Advanced" ${feature.feature_type == 'Advanced' ? 'selected' : ''}>Advanced</option>
+                            <option value="Pro" ${feature.feature_type == 'Pro' ? 'selected' : ''}>Pro</option>
+                            <option value="Premium" ${feature.feature_type == 'Premium' ? 'selected' : ''}>Premium</option>
+                        </select>
                     </div>
                 `;
-                featuresList.appendChild(newFeature);
-
-                newFeature.querySelector('.remove-feature').addEventListener('click', function () {
-                    this.parentElement.parentElement.remove();
+            }
+            function addFeaturesToForm() {
+                const featuresList = document.getElementById('features-list');
+                existingFeatures.forEach(feature => {
+                    const featureHTML = generateFeatureHTML(feature);
+                    featuresList.insertAdjacentHTML('beforeend', featureHTML);
                 });
-            });
+            }
+            addFeaturesToForm();
+            // document.getElementById('add-feature').addEventListener('click', function () {
+            //     let featuresList = document.getElementById('features-list');
+            //     let newFeature = document.createElement('div');
+            //     newFeature.classList.add('input-group', 'mb-2');
+            //     newFeature.innerHTML = `
+            //         <input type="text" class="form-control" name="feature_name[]" placeholder="Feature Name">
+            //         <input type="number" class="form-control" name="limit[]" placeholder="Limit">
+            //         <select class="form-control" name="enabled[]">
+            //             <option value="1">Enable</option>
+            //             <option value="0">Disable</option>
+            //         </select>
+            //         <select class="form-control" name="featureType[]">
+            //             <option value="Free">Free</option>
+            //             <option value="Basic">Basic</option>
+            //             <option value="Advanced">Advanced</option>
+            //             <option value="Pro">Pro</option>
+            //             <option value="Premium">Premium</option>
+            //         </select>
+            //     `;
+            //     featuresList.appendChild(newFeature);
+
+            //     newFeature.querySelector('.remove-feature').addEventListener('click', function () {
+            //         this.parentElement.parentElement.remove();
+            //     });
+            // });
 
             // Add remove functionality to existing features
-            document.querySelectorAll('.remove-feature').forEach(button => {
-                button.addEventListener('click', function () {
-                    this.parentElement.parentElement.remove();
-                });
-            });
+            // document.querySelectorAll('.remove-feature').forEach(button => {
+            //     button.addEventListener('click', function () {
+            //         this.parentElement.parentElement.remove();
+            //     });
+            // });
         });
     </script>
     <!-- Sweet Alerts js -->

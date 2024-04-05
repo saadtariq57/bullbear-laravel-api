@@ -9,5 +9,4 @@
         </main>
     @endsection
     @section('scripts')
-    
     @endsection

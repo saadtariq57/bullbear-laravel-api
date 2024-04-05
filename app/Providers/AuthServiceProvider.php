@@ -1,6 +1,8 @@
 <?php
-
 namespace App\Providers;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use App\Policies\UserPolicy;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -17,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Group::class => GroupPolicy::class,
-        \App\Models\User::class => \App\Policies\UserPolicy::class,
+        App\Policies\User::class => App\Policies\UserPolicy::class,
     ];
 
     /**
@@ -26,5 +28,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        Gate::define('isSubscribed', function ($user, $planName) {
+            // \Log::debug("Gate called with planName: $planName");
+            return $user->subscribed($planName);
+        });
     }
+    
 }

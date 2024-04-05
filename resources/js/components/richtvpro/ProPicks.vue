@@ -1,6 +1,6 @@
 <template>
     <div class="text-center border-bottom">
-        <h2 class="fs-2 mt-2 fw-6">RichTV Pro Picks</h2>
+        <h2 class="fs-2 mt-2 fw-6">Rich's Picks</h2>
     </div>
     <div class="mt-4 overflow-auto market-table-wapper">
                 <table class="table table-width table-striped border">

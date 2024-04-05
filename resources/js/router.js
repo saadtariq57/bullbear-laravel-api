@@ -477,6 +477,17 @@ const routes = [
         name: 'TradingBooks',
         component: () => import('./components/widgets/TradingBooks.vue'),
     },
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: () => import('./components/checkout/checkout.vue'),
+        props: true,
+    },
+    {
+        path: '/checkout/thank-you',
+        name: 'thank-you',
+        component: () => import('./components/checkout/ThankYou.vue'),
+    },
 ];
 
 // Create router instance

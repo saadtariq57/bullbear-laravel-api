@@ -696,6 +696,7 @@ export default {
 
 .multi-post-img {
   height: 285px;
+  width: 100%;
 }
 
 .multi-post-img-wrapper:has(.multi-post-img.w-100) {

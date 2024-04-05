@@ -9688,6 +9688,7 @@
 
                         </div>
                     </div>
+                <AlsoWatch />
                     <div class="chat-main mb-40 border-grey border pb-0">
                         <div class="heading-summary m-0 chat-main-common-padding border-bottom border-grey">
                             <h3 class="text-start">Dynamic Group Chats</h3>
@@ -9935,3 +9936,11 @@
             </div>
         </div>
 </template>
+<script>
+import AlsoWatch from '../widgets/AlsoWatch.vue';
+export default {
+  components: {
+    AlsoWatch
+  },
+}
+</script>

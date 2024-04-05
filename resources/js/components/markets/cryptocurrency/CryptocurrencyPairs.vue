@@ -1,244 +1,94 @@
 <template>
     <div class="container">
         <div class="cryptocurrency-table-wrapper my-5">
-            <h1 class="fw-6 fs-2 border-bottom pb-2">All CryptoCurrency Pairs</h1>
-            <div class="mt-4 overflow-auto cryptocurrency-table">
-                <h2 class="fs-3 mt-2">Tether USDt (70.71%)</h2>
-                <table class="table table-hover">
+            <div class="text-center">
+                <p class="mb-0 fw-bold text-black">CryptoCurrency</p>
+                <h1 class="fw-bold border-bottom pb-3">CryptoCurrency Pairs</h1>
+            </div>
+            <div class="mt-3 overflow-auto market-table-wapper">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-4 fw-6">Tether USDt</h2>
+                    <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
+                </div>
+                <table class="table table-width border">
                     <thead>
                         <tr>
-                            <th class="fw-6">#</th>
-                            <th class="fw-6">Name</th>
+                            <th class="fw-6">Sybmol</th>
                             <th class="text-end fw-6">Price</th>
-                            <th class="text-end fw-6">1h %</th>
-                            <th class="text-end fw-6">24 %</th>
-                            <th class="text-end fw-6">7d %</th>
+                            <th class="text-end fw-6">Change</th>
+                            <th class="text-end fw-6">Change %</th>
                             <th class="text-end fw-6">Market Cap</th>
-                            <th class="text-end fw-6">Volume(24h)</th>
-                            <th class="text-end fw-6">Circulating Supply</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="fw-5">1</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">USDT-USD</td>
+                            <td class="text-end fw-5">0.9995</td>
+                            <td class="text-end fw-5 Red">-0.000700</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.066600%</td>
+                            <td class="text-end fw-5">104.308B</td>
                         </tr>
                         <tr>
-                            <td class="fw-5">2</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">USDT-EUR</td>
+                            <td class="text-end fw-5">0.9236</td>
+                            <td class="text-end fw-5 Red">-0.000764</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.082668%</td>
+                            <td class="text-end fw-5">96.385B</td>
                         </tr>
                         <tr>
-                            <td class="fw-5">3</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">USDT-CAD</td>
+                            <td class="text-end fw-5">1.3571</td>
+                            <td class="text-end fw-5 Red">-0.0007</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after"> -0.0530%</td>
+                            <td class="text-end fw-5">141.607B</td>
                         </tr>
                         <tr>
-                            <td class="fw-5">4</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">5</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">USDT-INR</td>
+                            <td class="text-end fw-5">83.33</td>
+                            <td class="text-end fw-5 Green">-0.06</td>
+                            <td class="text-end fw-5 Green postive-arrow-icon-after">-0.07%</td>
+                            <td class="text-end fw-5">8.699T</td>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
-            <div class="mt-4 overflow-auto cryptocurrency-table">
-                <h2 class="fs-3 mt-2">Bitcoin (36.93%)</h2>
-                <table class="table table-hover">
+            <div class="mt-3 overflow-auto market-table-wapper">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fs-4 fw-6">Bitcoin</h2>
+                    <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
+                </div>
+                <table class="table table-width border">
                     <thead>
                         <tr>
-                            <th class="fw-6">#</th>
-                            <th class="fw-6">Name</th>
+                            <th class="fw-6">Sybmol</th>
                             <th class="text-end fw-6">Price</th>
-                            <th class="text-end fw-6">1h %</th>
-                            <th class="text-end fw-6">24 %</th>
-                            <th class="text-end fw-6">7d %</th>
+                            <th class="text-end fw-6">Change</th>
+                            <th class="text-end fw-6">Change %</th>
                             <th class="text-end fw-6">Market Cap</th>
-                            <th class="text-end fw-6">Volume(24h)</th>
-                            <th class="text-end fw-6">Circulating Supply</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="fw-5">1</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">BTC-USD</td>
+                            <td class="text-end fw-5">68,804.96</td>
+                            <td class="text-end fw-5 Red">-1,542.16</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after">-2.19%</td>
+                            <td class="text-end fw-5">1.352T</td>
                         </tr>
                         <tr>
-                            <td class="fw-5">2</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">-0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">BTC-CAD</td>
+                            <td class="text-end fw-5">93,279.16</td>
+                            <td class="text-end fw-5 Red">-2,170.28</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after">-2.27%</td>
+                            <td class="text-end fw-5">1.834T</td>
                         </tr>
                         <tr>
-                            <td class="fw-5">3</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5 Red negative-arrow-icon-after">0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">4</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-5">5</td>
-                            <td class="fw-5">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="/build/images/brands/cryptocurrency_btc.png" alt="cryptocurrency image"
-                                        width="25px">
-                                    <span>Bitcoin</span>
-                                    <span class="text-secondary">BTC</span>
-                                </div>
-                            </td>
-                            <td class="text-end fw-5">$67,560.61</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5 Green postive-arrow-icon-after">+0.51</td>
-                            <td class="text-end fw-5">$1,327,125,952,002</td>
-                            <td class="text-end fw-5">$40,913,884,564
-                                <p class="text-secondary fs-6 mb-0 lh-sm">400,500 BTC</p>
-                            </td>
-                            <td class="text-end fw-5">19,648,287 BTC</td>
+                            <td class="fw-5">BTC-EUR</td>
+                            <td class="text-end fw-5">63,500.88</td>
+                            <td class="text-end fw-5 Red">-1,467.47</td>
+                            <td class="text-end fw-5 Red negative-arrow-icon-after">-2.26%</td>
+                            <td class="text-end fw-5">1.249T</td>
                         </tr>
                     </tbody>
                 </table>
