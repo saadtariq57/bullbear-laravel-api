@@ -1,11 +1,13 @@
 {
-    "name": "laravel/laravel",
+    "name": "laravel/RichTv",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "RichTv Stock & Crypto Trading Education And Community",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ably/laravel-broadcaster": "^1.0",
+        "aws/aws-sdk-php": "^3.302",
         "embed/embed": "^4.4",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^14.13",
@@ -13,8 +15,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
-        "predis/predis": "*",
-        "pusher/pusher-php-server": "^7.2"
+        "predis/predis": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -49,6 +49,7 @@
                                                                 class="form-control @error('email') is-invalid @enderror"
                                                                 name="email" value="{{ $email ?? old('email') }}" required
                                                                 autocomplete="email" autofocus>
+                                                                <input type="hidden" name="token" value="{{ $token }}">
                                                             @error('email')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>

@@ -9,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AblyController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\SubscriptionStatusController;
 /*
@@ -29,6 +30,9 @@ Route::get('/check-login', function () {
         return response()->json(['loggedIn' => false]);
     }
 });
+
+Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
+Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);

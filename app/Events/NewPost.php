@@ -9,6 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Post;
+use Ably\AblyRest;
 
 class NewPost implements ShouldBroadcast
 {
@@ -43,22 +44,39 @@ class NewPost implements ShouldBroadcast
 
         // Add channels for groups, followers, and user
         foreach ($groupIds as $groupId) {
-            $channels[] = new PrivateChannel('group.posts.' . $groupId);
+            $channels[] = new PrivateChannel('group.posts.updates.' . $groupId);
         }
 
         foreach ($followerIds as $followerId) {
-            $channels[] = new PrivateChannel('feed.posts.' . $followerId);
+            $channels[] = new PrivateChannel('feed.posts.updates.' . $followerId);
         }
 
-        $channels[] = new PrivateChannel('feed.posts.' . $userId);
+        $channels[] = new PrivateChannel('feed.posts.updates.' . $userId);
 
         return $channels;
     }
     public function broadcastWith()
     {
-        // Customize the data you want to send
         return [
             'post' => $this->post->load(['user', 'comments', 'reactions']),
         ];
     }
+    public function broadcastAs()
+    {
+        return 'NewPost';
+    }
+    /*public function broadcastToAbly()
+    {
+        $ably = new AblyRest(env('ABLY_KEY'));
+        $channels = $this->broadcastOn();
+        $data = $this->broadcastWith();
+
+        foreach ($channels as $channel) {
+            $channelName = method_exists($channel, 'name') ? $channel->name : null;
+            if ($channelName) {
+                $ablyChannel = $ably->channels->get($channelName);
+                $ablyChannel->publish('NewPost', $data);
+            }
+        }
+    }*/
 }

@@ -13,28 +13,23 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-//User Specific for notification etc
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+// User-specific notifications
+Broadcast::channel('user.notifications.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-//Functional
-Broadcast::channel('feed.posts.{userId}', function ($user, $userId) {
+// Feed posts updates
+Broadcast::channel('feed.posts.updates.{userId}', function ($user, $userId) {
     return (int) $user->id === (int) $userId;
 });
 
-/*Broadcast::channel('App.Models.Post.{userId}', function ($user, $userId) {
-    return (int) $user->id === (int) $userId;
-});
-*/
-Broadcast::channel('feed.comments.{postId}', function ($user, $postId) {
-    return $user->canViewPost($postId); 
+// Group posts updates
+Broadcast::channel('group.posts.updates.{groupId}', function ($user, $groupId) {
+    return $user->can('view', $groupId);
 });
 
-Broadcast::channel('groups.posts.{groupId}', function ($user, $groupId) {
-    return $user->isMemberOfGroup($groupId);
+// Group messages (chat)
+Broadcast::channel('group.chat.{groupId}', function ($user, $groupId) {
+    return $user->can('view', $groupId);
 });
 
-Broadcast::channel('groups.messages.{groupId}', function ($user, $groupId) {
-    return $user->isMemberOfGroup($groupId);
-});

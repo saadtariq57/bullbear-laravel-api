@@ -7,6 +7,9 @@ use App\Policies\UserPolicy;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use App\Models\Group;
+use App\Policies\GroupPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -15,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        Group::class => GroupPolicy::class,
         App\Policies\User::class => App\Policies\UserPolicy::class,
     ];
 
@@ -28,7 +32,6 @@ class AuthServiceProvider extends ServiceProvider
             // \Log::debug("Gate called with planName: $planName");
             return $user->subscribed($planName);
         });
-        
     }
     
 }
