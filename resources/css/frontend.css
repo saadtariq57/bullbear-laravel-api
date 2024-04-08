@@ -486,6 +486,23 @@ td {
 }
 
 /* global css end  */
+
+.auth-input .form-control{
+    padding: .9rem 1.2rem;
+    border: 1px solid rgb(181, 181, 181);
+}
+.auth-input .form-label {
+    position: relative;
+    left: 14px;
+    top: 11px;
+    line-height: 20px;
+    background: var(--bs-tertiary-bg);
+    margin: 0;
+    padding: 0 7px;
+    z-index: 1;
+    font-weight: 700;
+}
+
 /* Home page CSS Start */
 /* hero section css Start */
 .login-popup-closebtn {
