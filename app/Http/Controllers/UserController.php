@@ -84,9 +84,11 @@ class UserController extends Controller
         // Check if the user is authenticated
         if ($authenticatedUser) {
             // Retrieve data for the authenticated user with additional counts
-            $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
-                                          ->first();
-
+            // $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
+            //                               ->first();
+            $userData = User::where('id', $authenticatedUser->id)
+                        ->withCount(['watchlists', 'posts', 'followers'])
+                        ->first();
             return response()->json($userData);
         } else {
             // Return an error response if the user is not authenticated
