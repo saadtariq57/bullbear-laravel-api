@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
   <div class="text-center">
     <p class="mb-0 fw-bold text-black">Markets</p>
     <h1 class="fw-bold border-bottom pb-3">Indices</h1>
@@ -209,6 +210,7 @@
       <TopTen />
     </div>
   </div>
+  </div>
 </template>
 <script>
 import TopMovers from '../widgets/TopMovers.vue';
@@ -227,10 +229,6 @@ export default {
   width: 1px;
   background-color: var(--Blue-Koi);
   height: 15px;
-}
-
-.table-width {
-  min-width: 650px;
 }
 
 .market-table-wapper::-webkit-scrollbar {

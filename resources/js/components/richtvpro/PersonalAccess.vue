@@ -1,4 +1,5 @@
 <template>
+    <div class="container my-4">
     <div class="personal-head text-center border-bottom mb-4">
         <h1 class="fs-2 fw-6">Personal Access</h1>
     </div>
@@ -48,6 +49,7 @@
             <button type="submit" class="btn btn-primary">Schedule</button>
         </form>
     </div>
+</div>
 </template>
 <style>
 .personal-form-wrapper form{

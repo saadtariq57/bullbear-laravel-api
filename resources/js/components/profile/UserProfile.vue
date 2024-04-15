@@ -1,5 +1,5 @@
 <template>
-    <div class="container profile-container ">
+    <div class="container profile-container my-4">
         <ProfileInfo />
         <div class="row">
             <div class="col-lg-8">

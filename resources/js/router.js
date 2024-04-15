@@ -426,7 +426,7 @@ const routes = [
         path: "/watchlist/edit/:id",
         name: "watchlist.edit",
         component: () =>
-            import("./components/watchlist/searchsymbols/Searchsymbols.vue"), 
+            import("./components/watchlist/searchsymbols/Searchsymbols.vue"),
     },
     {
         path: "/watchlist/manage",
@@ -475,7 +475,7 @@ const routes = [
     {
         path: '/trading-school',
         name: 'TradingBooks',
-        component: () => import('./components/widgets/TradingBooks.vue'),
+        component: () => import('./components/richtvpro/TradingSchool.vue'),
     },
     {
         path: '/checkout',
@@ -488,6 +488,57 @@ const routes = [
         name: 'thank-you',
         component: () => import('./components/checkout/ThankYou.vue'),
     },
+    {
+        path: '/ceo-interviews',
+        name: 'ceo-interviews',
+        component: () => import('./components/interviews/CeoInterviews.vue'),
+    },
+    {
+        path: '/dividend-calendar',
+        name: 'dividend-calendar',
+        component: () => import('./components/calendars/DividendCalendar.vue'),
+    },
+    {
+        path: '/earning-calendar',
+        name: 'earning-calendar',
+        component: () => import('./components/calendars/EarningsCalendar.vue'),
+    },
+    {
+        path: '/economic-calendar',
+        name: 'economic-calendar',
+        component: () => import('./components/calendars/EconomicCalendar.vue'),
+    },
+    {
+        path: '/holiday-calendar',
+        name: 'holiday-calendar',
+        component: () => import('./components/calendars/HolidayCalendar.vue'),
+    },
+    {
+        path: '/splits-calendar',
+        name: 'splits-calendar',
+        component: () => import('./components/calendars/SplitsCalendar.vue'),
+    },
+    {
+        path: '/ipo-calendar',
+        name: 'ipo-calendar',
+        component: () => import('./components/calendars/IpoCalendar.vue'),
+    },
+    {
+        path: '/futures-expiry-calendar',
+        name: 'futures-expiry-calendar',
+        component: () => import('./components/calendars/FuturesExpiryCalendar.vue'),
+    },
+    {
+        path: '/webinar',
+        name: 'webinar',
+        component: () => import('./components/richtvpro/Webinar.vue'),
+    },
+    {
+        path: '/email-alerts',
+        name: 'email-alerts',
+        component: () => import('./components/richtvpro/EmailAlerts.vue'),
+    },
+
 ];
 
 // Create router instance

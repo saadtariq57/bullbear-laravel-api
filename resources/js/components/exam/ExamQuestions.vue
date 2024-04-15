@@ -1,4 +1,5 @@
 <template>
+  <div class="container my-4">
   <!-- Exam Header with Timer -->
   <div class="exam-header bg-white shadow-sm p-4 mb-3">
     <p class="d-flex justify-content-end">
@@ -41,6 +42,7 @@
       <p>No questions available</p>
     </div>
   </div>
+</div>
 </template>
 
 <script>

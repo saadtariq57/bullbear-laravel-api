@@ -1,4 +1,5 @@
 <template>
+    <div class="container my-4">
     <div class="d-flex align-items-center flex-wrap gap-2">
         <h2 class="fs-28 my-1 watchlish-main-heading" v-if="selectedWatchlist">{{ selectedWatchlist.title }}</h2>
         <h2 class="fs-28 my-1 watchlish-main-heading" v-else>My Watchlists</h2>
@@ -271,6 +272,7 @@
             <!-- NEWS tab end  -->
         </div>
     </div>
+</div>
 </template>
 
 <script>

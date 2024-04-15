@@ -1,4 +1,5 @@
 <template>
+    <div class="container my-4">
     <div class="watchlistideas-table-wrapper row gy-5">
         <div class="col-lg-4">
             <div class="watchlist-idea-table-wrapper border">
@@ -337,4 +338,5 @@
         </div>
         </div>
     </div>
+</div>
 </template>

@@ -1,4 +1,5 @@
 <template>
+    <div class="container my-4">
     <div class="personal-head text-center border-bottom mb-4">
         <h1 class="fs-2 fw-6">Technical Analysis</h1>
     </div>
@@ -44,4 +45,5 @@
             </div>
         </div>
     </div>
+</div>
 </template>

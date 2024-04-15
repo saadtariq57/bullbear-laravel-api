@@ -2,8 +2,3 @@
 @section('body')
 <body>
   @endsection
-  @section('content')
-  <section class="container market-container my-5 px-2 px-md-3">
-  <router-view></router-view>
-  </section>
-  @endsection

@@ -1,4 +1,5 @@
 <template>
+    <div class="container">
     <div class="text-center">
     <p class="mb-0 fw-bold text-black">Stocks</p>
     <h1 class="fw-bold border-bottom pb-3">Most Active</h1>
@@ -69,23 +70,24 @@
         <div class="col-lg-4">
       <TopMovers />
       <Markets />
+      <TopTen />
     </div>
   </div>
+</div>
 </template>
 <script>
 import TopMovers from '../../widgets/TopMovers.vue';
+import TopTen from '../../widgets/TopTen.vue';
 import Markets from '../../widgets/Markets.vue';
 export default {
   components: {
     TopMovers,
-    Markets
+    Markets,
+    TopTen
   },
 }
 </script>
 <style>
-.table-width{
-    min-width: 500px;
-}
 .market-table-wapper::-webkit-scrollbar{
     height: 6px;
 }

@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
    <div class="text-center">
     <p class="mb-0 fw-bold text-black">Market</p>
     <h1 class="fw-bold border-bottom pb-3">Certificates</h1>
@@ -60,16 +61,27 @@
         <div class="col-lg-4">
       <TopMovers />
       <Markets />
+      <TopTen />
     </div>
+  </div>
   </div>
 </template>
 <script>
 import TopMovers from '../widgets/TopMovers.vue';
+import TopTen from '../widgets/TopTen.vue';
 import Markets from '../widgets/Markets.vue';
 export default {
   components: {
     TopMovers,
-    Markets
+    Markets,
+    TopTen
   },
 }
 </script>
+<style>
+@media (max-width: 1200px) {
+  .table-width {
+    min-width: 730px;
+}
+}
+</style>
