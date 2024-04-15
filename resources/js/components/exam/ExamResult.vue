@@ -1,5 +1,5 @@
 <template>
-  <div class="container-lg exam-result-container p-0">
+  <div class="container-lg exam-result-container p-0 my-4">
     <div class="card rounded-2 shadow-lg p-5">
       <h3 class="fw-4 m-0 py-4 text-capitalize fs-4">{{ examTitle }}</h3>
       <div class="row">
@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <div class="text-center mt-5">
+    <div class="text-center my-5">
       <router-link to="/exams" class="btn-primary">
         &lt; Back to Exam Center
       </router-link>
