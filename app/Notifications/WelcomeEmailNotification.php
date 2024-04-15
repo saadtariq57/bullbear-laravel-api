@@ -4,21 +4,19 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeEmail;
-use App\Models\User;
 
-class UserWelcome extends Notification
+class WelcomeEmailNotification extends Notification
 {
     use Queueable;
-    public $user;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user)
+    public function __construct()
     {
-        $this->user = $user;
+        //
     }
 
     /**
@@ -30,13 +28,16 @@ class UserWelcome extends Notification
     {
         return ['mail'];
     }
+
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail($notifiable)
+    public function toMail(object $notifiable): MailMessage
     {
-        $email = new WelcomeEmail($this->user);
-        Mail::to($notifiable->email)->send($email);
+        return (new MailMessage)
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
