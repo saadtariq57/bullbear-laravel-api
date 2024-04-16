@@ -1,7 +1,7 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage" :src="'upload/'+coverImagePath" alt="Cover Image"
+            <img ref="coverImage" :src="'uploads/'+coverImagePath" alt="Cover Image"
                 class="img-fluid w-100 profile-cover-photo object-fit-cover" />
             <div class="cover-photo-overlay" v-show="isRepositioning"></div>
             <!-- Overlay for better visibility -->
@@ -37,7 +37,7 @@
         <div class="user-profile-info-wapper d-flex gap-4">
             <div
                 class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
-                <img :src="'upload/'+profileImagePath" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
+                <img :src="'uploads/'+profileImagePath" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
                 <!-- Button trigger modal -->
                 <button @click="showUploadPhotoeModal"
                     class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center shadow"><i
