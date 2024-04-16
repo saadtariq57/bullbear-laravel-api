@@ -107,7 +107,7 @@ class PostController extends Controller
                 // Loop through all files in the request
                 foreach ($request->file('images') as $image) {
                         try {
-                            $path = $image->store("upload/photos/" . now()->year . "/" . now()->month, 'public');
+                            $path = $image->store("photos/" . now()->year . "/" . now()->month, 'public');
                             AlbumMedia::create([
                                 'post_id' => $post->id,
                                 'image' => $path

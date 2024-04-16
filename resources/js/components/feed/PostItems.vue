@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-between">
               <div class="user-avatar d-flex gap-2 align-items-center">
                 <div class="img">
-                  <img :src="`/${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
+                  <img :src="'upload/'+`${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
                 <div class="user-info text-start">
                   <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
@@ -42,17 +42,17 @@
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
                 class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
-                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img :src="'upload/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
                     <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
                   </div>
                 </div>
                 <div v-else-if="post.photos.length === 3" class="multi-post-img">
-                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
+                  <img :src="'upload/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
                     :class="{ 'w-100': index === 2 }">
                 </div>
                 <div v-else class="multi-post-img">
-                  <img :src="`/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img :src="'upload/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                 </div>
 
               </div>
@@ -60,7 +60,7 @@
             <div v-else class="text-center">
               <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)">
                 <!-- Pass the clicked post data -->
-                <img :src="`/${photo.image}`" alt="Post image" class="img-fluid">
+                <img :src="'upload/'+`${photo.image}`" alt="Post image" class="img-fluid">
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@
           <!-- link Media -->
           <div v-if="post.post_type === 'link'" class="link-file">
             <a :href="post.post_link" target="_blank">
-              <img :src="`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
+              <img :src="'upload/'+`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
               <div class="link-post-details px-3 pt-3">
                 <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
                 <span class="Blue fs-12">{{ post.post_link }}</span>
@@ -125,7 +125,7 @@
                 <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
                   <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
                     :key="index">
-                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
+                    <img :src="`${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
                       reactionDetail.count }}
                     <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
                       Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
@@ -151,7 +151,7 @@
               <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                 <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                   @click.stop="handleReaction(post.id, reactionType.id)">
-                  <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
+                  <img :src="`${reactionType.icon}`" class="reaction-icons-img">
                 </span>
               </div>
             </button>

@@ -111,7 +111,7 @@ class SubscriptionStatusController extends Controller
         try {
             // Delete the payment method
             $user->subscription($subscriptionName)->cancel();
-
+            $user->update(['subscription_plan' => 'free']);
             return response()->json(['message' => 'Subscription Cancelled']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to cancel Subscription']);

@@ -50,29 +50,18 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col">ID</th>
+                                    <th scope="col">Avatar</th>
+                                    <th scope="col">Owner Name</th>
                                     <th scope="col">Group Name</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Category</th>
                                     <th scope="col">Privacy</th>
-                                    <th scope="col" style="width: 200px;">Action</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Exchange</th>
+                                    <th scope="col">Members</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach($groups as $group)
-
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Avatar</th>
-                                        <th scope="col">Owner Name</th>
-                                        <th scope="col">Group Name</th>
-                                        <th scope="col">Privacy</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Symbol</th>
-                                        <th scope="col">Exchange</th>
-                                        <th scope="col">Members</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
+                            
                                 <tbody>
                                     @foreach($groups as $group)
                                         <tr>
@@ -168,7 +157,8 @@
                         }
                     });
                 });
-
+            });
+        </script>
     @if(session('success'))
         <script>
             Swal.fire({

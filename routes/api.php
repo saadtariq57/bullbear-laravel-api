@@ -48,6 +48,10 @@ Route::post('/add-or-update-reaction', [PostController::class, 'addOrUpdateReact
 Route::post('/remove-reaction', [PostController::class, 'removeReaction']);
 Route::get('/posts/{postId}/comments', [PostController::class, 'fetchPostComments']);
 
+Route::post('/uploadCover', [UserController::class, 'updateCoverPhoto']);
+Route::post('/removeCover', [UserController::class, 'removeCoverPhoto']);
+Route::post('/profileImage', [UserController::class, 'updateProfilePhoto']);
+
 Route::post('/add-vote', [PostController::class, 'addVote']);
 Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
@@ -92,6 +96,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
 
+    // user Album
+    Route::get('/userAlbumData', [UserController::class, 'getUserAlbumData'])->name('getUserAlbumData');
     //Exam Routes
 
     //initiating an exam
