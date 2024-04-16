@@ -2,7 +2,7 @@
   <!-- Comment box -->
   <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
-      <img class="avatar rounded-circle" :src="`/${userData.avatar}`" width="40" height="40">
+      <img class="avatar rounded-circle" :src="`/uploads/${userData.avatar}`" width="40" height="40">
     </div>
     <div class="comment-form w-100">
       <form @submit.prevent="submitComment(postId, null, false)" class="position-relative">
@@ -32,7 +32,7 @@
         <div class="d-flex gap-2">
           <div class="user-icon">
             <a :href="`/${comment.user.username}`">
-              <img :src="`/${comment.user.avatar}`" class="rounded-circle" width="40" height="40">
+              <img :src="`/uploads/${comment.user.avatar}`" class="rounded-circle" width="40" height="40">
             </a>
           </div>
           <div class="comment-body w-100">
@@ -94,7 +94,7 @@
                       class="reaction-icons-wrapper position-absolute d-flex gap-1">
                       <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                         @click.stop="handleReaction(postId, comment.id, reactionType.id, null, false)">
-                        <img :src="reactionType.icon" class="reply-reaction-icons-img">
+                        <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
                       </span>
                     </div>
                   </button>

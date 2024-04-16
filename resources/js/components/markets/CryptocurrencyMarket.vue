@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
         <div class="cryptocurrency-card-wrapper d-flex align-items-center flex-wrap py-2">
             <div class="card shadow">
                 <div class="card-body">
