@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container my-4">
   <div class="text-center">
     <p class="mb-0 fw-bold text-black">Currencies</p>
     <h1 class="fw-bold border-bottom pb-3">Currency Options</h1>

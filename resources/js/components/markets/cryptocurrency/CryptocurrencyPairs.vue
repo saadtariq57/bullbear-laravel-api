@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
         <div class="cryptocurrency-table-wrapper my-5">
             <div class="text-center">
                 <p class="mb-0 fw-bold text-black">CryptoCurrency</p>

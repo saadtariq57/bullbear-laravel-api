@@ -10,7 +10,7 @@
         <div class="row py-2">
             <div class="col-4" v-for="userAlbum in userAlbumPhotos" :key="userAlbum.id">
                 <a href="#">
-                    <img :src="'upload/'+userAlbum.image" alt="" class="img-fluid w-100 user_post-img">
+                    <img :src="'uploads/'+userAlbum.image" alt="" class="img-fluid w-100 user_post-img">
                 </a>
             </div>
         </div>

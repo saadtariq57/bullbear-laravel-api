@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
     <div class="text-center">
     <p class="mb-0 fw-bold text-black">Stocks</p>
     <h1 class="fw-bold border-bottom pb-3">United State</h1>

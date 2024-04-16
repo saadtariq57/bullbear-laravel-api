@@ -3,7 +3,7 @@
         <div class="chat-text-sec px-5 py-4">
             <div class="d-flex pt-3">
                 <div>
-                    <img src="/upload/photos/d-avatar.jpg" alt="" class="rounded-circle me-2" width="30" height="30">
+                    <img src="/uploads/photos/d-avatar.jpg" alt="" class="rounded-circle me-2" width="30" height="30">
                 </div>
                 <div class="bg-light-grey rounded-2 position-relative">
                     <div class="border-bottom px-3 py-1">
@@ -39,7 +39,7 @@
             </div>
             <div class="d-flex pt-3">
                 <div>
-                    <img src="/upload/photos/d-avatar.jpg" alt="" class="rounded-circle me-2" width="30" height="30">
+                    <img src="/uploads/photos/d-avatar.jpg" alt="" class="rounded-circle me-2" width="30" height="30">
                 </div>
                 <div class="bg-light-grey rounded-2 position-relative">
                     <div class="border-bottom px-3 py-1">

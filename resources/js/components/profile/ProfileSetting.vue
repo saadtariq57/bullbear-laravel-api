@@ -9,7 +9,7 @@
               aria-labelledby="v-pills-setting-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle">
                   </div>
                   <div class="avatar-holder_info ps-3 pt-3">
@@ -24,7 +24,7 @@
                   <div class="col-md-6">
                     <label for="username-lable" class="form-label col-form-label-lg">Username</label>
                     <input type="text" class="form-control form-control-lg" placeholder="Enter username" name="user-name"
-                      aria-label="username" :value="userData.name">
+                      aria-label="username" :value="userData.name" disabled>
                   </div>
                   <div class="col-md-6 pt-3 pt-md-0">
                     <label for="Phone-lable" class="form-label col-form-label-lg">Phone</label>
@@ -36,7 +36,7 @@
                   <div class="col">
                     <label for="email-lable" class="form-label col-form-label-lg">E-mail</label>
                     <input type="email" class="form-control form-control-lg email" name="email" placeholder="Enter email"
-                      aria-label="Email" :value="userData.email">
+                      aria-label="Email" :value="userData.email" disabled>
                   </div>
                 </div>
                 <div class="row g-3 px-3  pt-3">
@@ -327,7 +327,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar
                       rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -386,7 +386,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -433,7 +433,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -489,7 +489,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -802,7 +802,7 @@
               aria-labelledby="v-pills-social-links-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -840,7 +840,7 @@
               aria-labelledby="v-pills-notification-setting-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -1002,7 +1002,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
                     <p class="fs-28 pt-2">Membership</p>
