@@ -88,7 +88,7 @@ class SubscriptionPlanController extends Controller
 			
 			// Subscribe the user to the plan using Cashier
 			$user->newSubscription($planName, $priceIntent)->create($payment_method);
-
+			$user->update(['subscription_plan' => $planName]);
 			return 'Subscription created successfully';
 		} catch (\Exception $e) {
 			// Handle any errors that occur during subscription creation

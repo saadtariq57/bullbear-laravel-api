@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\AlbumMedia;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
@@ -79,19 +81,93 @@ class UserController extends Controller
     public function getUserData()
     {
         // Get the authenticated user
-        $authenticatedUser = auth()->user();
+        $authenticatedUser = Auth::user();
 
         // Check if the user is authenticated
         if ($authenticatedUser) {
             // Retrieve data for the authenticated user with additional counts
-            $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
-                                          ->first();
+            // $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
+            //                               ->first();
+            $userData = User::where('id', $authenticatedUser->id)
+                        ->withCount(['watchlists', 'posts', 'followers'])
+                        ->first();
 
             return response()->json($userData);
         } else {
             // Return an error response if the user is not authenticated
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
+    }
+
+    public function getUserAlbumData()
+    {
+        $user = Auth::user();
+        if ($user) {
+            $postIds = Post::where('user_id', $user->id)->pluck('id');
+            // $userId = $request->user_id;
+            // $postId = $request->post_id;
+
+            $photos = AlbumMedia::whereIn('post_id', $postIds)->get();
+            if ($photos->isEmpty()) {
+                return response()->json(['message' => 'No media found'], 404);
+            }
+            return response()->json($photos);
+        } else {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+    }
+
+    public function updateCoverPhoto(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Add validation for cover photo
+        ]);
+
+        // Upload cover photo
+        try {
+            $coverPhotoPath = $request->file('cover_photo')->store('/photos', 'public');
+            // Update cover photo path in user model
+            $user->update(['cover' => $coverPhotoPath]);
+        } catch (\Exception $e) {
+            Log::error("Cover photo upload failed: " . $e->getMessage());
+            return response()->json(['error' => 'Failed to upload cover photo'], 500);
+        }
+
+        return response()->json(['message' => 'Cover photo uploaded successfully', 'cover_photo' => $coverPhotoPath]);
+    }
+
+    public function removeCoverPhoto(Request $request){
+        $user = Auth::user();
+        try {
+            $user->update(['cover' => '']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to remove cover photo'], 500);
+        }
+
+        return response()->json(['message' => 'Cover photo removed successfully']);
+    }
+
+    public function updateProfilePhoto(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Add validation for cover photo
+        ]);
+
+        // Upload cover photo
+        try {
+            $profilePhotoPath = $request->file('profile_photo')->store('/photos', 'public');
+            // Update cover photo path in user model
+            $user->update(['avatar' => $profilePhotoPath]);
+        } catch (\Exception $e) {
+            Log::error("profile photo upload failed: " . $e->getMessage());
+            return response()->json(['error' => 'Failed to upload profile photo'], 500);
+        }
+
+        return response()->json(['message' => 'Profile photo updated successfully', 'profile_photo' => $profilePhotoPath]);
     }
     
 }
