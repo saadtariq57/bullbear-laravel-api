@@ -15,16 +15,16 @@
         </h4>
       </div>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-check-circle-fill text-success me-3"></i><span>Add your
+    <li class="px-3 py-1 fs-16"><i class="bi bi-check-circle-fill text-success me-3 fs-5"></i><span>Add your
         profile picture</span> </li>
-    <li class="px-3 py-1"><i class="bi bi-plus-circle-fill me-3"></i><span>Add your name</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your name</span>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-plus-circle-fill me-3"></i><span>Add your
+    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your
         workplace</span>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-check-circle-fill text-success me-3"></i><span>Add your
+    <li class="px-3 py-1 fs-16"><i class="bi bi-check-circle-fill text-success me-3 fs-5"></i><span>Add your
         country</span></li>
-    <li class="px-3 py-1"><i class="bi bi-plus-circle-fill me-3"></i><span>Add your address</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your address</span>
     </li>
   </ul>
   <!-- <div class="bg-white px-3 py-4 rounded-1 mb-3 shadow rounded border-top border-2 border-warning widgets-border">
@@ -57,23 +57,29 @@
                     </li>
                 </ul> -->
   <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
-    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
-        class="bi bi-info-circle-fill me-2 bg-cta text-white rounded-5 px-2 py-1"></i>Info
+    <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
+      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+          class="bi bi-info-circle-fill text-white"></i></span><span class="fs-5 text-black">Info</span>
     </div>
-    <li class="px-3 py-1"><i class="bi bi-eye-fill me-2 text-secondary"></i> <span class="text-success">Online</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-eye-fill me-2 text-black fs-5"></i> <span
+        class="text-success">Online</span>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-file-post me-2 text-secondary"></i> <span>2
+    <li class="px-3 py-1 fs-16"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>0
         posts</span></li>
+        <li class="px-3 py-1 fs-16"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>0
+        Watchlists</span></li>
+        <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>3
+        Followers</span></li>
     <li class="border-bottom my-1"></li>
-    <li class="px-3 py-1"><i class="bi bi-person-fill me-2 text-secondary"></i> <span>Male</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>Male</span>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-cake-fill me-2 text-secondary"></i> <span>03/01/00</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-cake-fill me-2 text-black fs-5"></i> <span>03/01/00</span>
     </li>
-    <li class="px-3 py-1"><i class="bi bi-globe-americas me-2 text-secondary"></i> <span> Living in
+    <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
         Pakistan</span>
     </li>
   </ul>
-  <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+  <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
     <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1 text-secondary"><i
         class="bi bi-images me-2 bg-cta text-white rounded-5 text-black px-2 py-1"></i><a href="#"
         class="text-secondary">Gallery <span>(1)</span></a>
@@ -81,40 +87,33 @@
     <li class="p-1 ">
       <div class="row gx-2 gy-2">
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          <div class="position-relative"><img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
               alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
-            </div>
           </div>
         </a>
 
       </div>
     </li>
-  </ul>
+  </ul> -->
   <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
-    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
-        class="bi bi-person-plus-fill me-2 bg-cta text-white text-black rounded-5 px-2 py-1"></i><a href="#"
-        class="text-secondary">Friends <span>(3)</span></a>
+    <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
+      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+          class="bi bi bi-person-fill-check text-white"></i></span><span class="fs-5 text-black">Friends <span
+          class="fs-12">(3)</span></span>
     </div>
     <li class="p-1 ">
       <div class="row gx-2 gy-2">
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
+          <div class="position-relative"><img src="/upload/photos/d-avatar.jpg" alt="" class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+              Wajid Fareed
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
+          <div class="position-relative"><img src="/upload/photos/f-avatar.jpg" alt="" class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
               dev123
-              test
             </div>
           </div>
         </a>
@@ -131,81 +130,189 @@
     </li>
   </ul>
   <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
-    <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1"><i
-        class="bi bi-chat-right-dots me-2 bg-cta text-white text-black rounded-5 px-2 py-1 fs-13"></i>
-      <a href="#" class="text-secondary">Chats <span>(7)</span></a>
+    <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
+      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+          class="bi bi-chat-right-dots text-white"></i></span><span class="fs-5 text-black">Popular Chatrooms <span
+          class="fs-12">(7)</span></span>
     </div>
     <li class="p-1 ">
       <div class="row gx-2 gy-2">
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
-              alt="" class="w-100">
-            <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
-              dev123
-              test
+          <div class="position-relative"><img
+              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              class="w-100">
+            <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
+              DeFi Technologies Inc.
             </div>
           </div>
         </a>
       </div>
     </li>
   </ul>
+  <div class="people-you-know mb-3 shadow-sm rounded border-top border-2 border-warning widgets-border">
+    <div class=" border-bottom">
+      <div class="d-flex align-items-center pt-2 pb-1 justify-content-between">
+        <div class="fw-6 fs-6 ps-3 mb-1 d-flex align-items-center">
+      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+          class="bi bi bi-person-plus-fill text-white"></i></span><span class="fs-5 text-black">People You May Know</span>
+    </div>
+        <div class="reload-widget pe-3"><i class="bi bi-arrow-clockwise" style="font-size: 22px;"></i></div>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+    <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
+      <div class="avatar user-chat-avatar-feed">
+        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+          alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle" width="50px">
+      </div>
+      <div class="text-start align-self-end">
+        <div class="user-lastseen text-light-emphasis fs-12 fw-5">7<span class="ps-1">W</span>
+        </div>
+        <a href="#"><span class="user_wrapper_link fs-16 fw-5 Blue d-inline-block">rommanch</span>
+        </a>
+      </div>
+      <div class="user_follow-button pt-2 flex-fill text-end">
+        <button class="btn fs-14 btn-primary rounded-pill px-4" type="button">Add
+          Friends</button>
+      </div>
+    </div>
+  </div>
   <div class="border-primary pt-4 pb-2 px-3 border mb-2 rounded-1" style="background-color: #ffb8001a">
     <h1 class="fw-6 fs-5 text-secondary"><img
-        src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20" height="20">
+        src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20" height="20" class="align-top">
       RISK DISCLAIMER!</h1>
     <p class="fs-14 text-black">Stock market investing is inherently risky. Rich TV is not
       responsible for any gains or losses that result from the opinions expressed on this website,
@@ -237,3 +344,9 @@
     </ul>
   </div>
 </template>
+<style>
+.icon-round-bg {
+  width: 27px;
+  height: 27px;
+}
+</style>

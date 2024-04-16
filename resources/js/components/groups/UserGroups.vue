@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
         <div class="row">
             <div class="col-lg-8">
                 <div class="bg-white py-2 px-3 rounded-1 fs-5 shadow-radius">

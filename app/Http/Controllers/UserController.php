@@ -91,7 +91,6 @@ class UserController extends Controller
             $userData = User::where('id', $authenticatedUser->id)
                         ->withCount(['watchlists', 'posts', 'followers'])
                         ->first();
-
             return response()->json($userData);
         } else {
             // Return an error response if the user is not authenticated

@@ -1,4 +1,5 @@
 <template>
+  <div class="container my-4">
   <div v-if="showAllExams" >
 
     <div v-for="(category, index) in categories" :key="index" class="my-3 exam-cards mt-5 pb-4">
@@ -90,6 +91,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>

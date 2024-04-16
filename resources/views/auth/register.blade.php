@@ -1,4 +1,4 @@
-@extends('admin.layouts.master-without-nav')
+@extends('layouts.master-without-nav')
 @section('title')
     Register
 @endsection
@@ -16,8 +16,8 @@
                                     <a href="index" class="">
                                         <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png" alt=""
                                             width="200" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
-                                            width="200" class="auth-logo logo-light mx-auto">
+                                        {{-- <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
+                                            width="200" class="auth-logo logo-light mx-auto"> --}}
                                     </a>
                                     <!-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> -->
                                 </div>
@@ -25,11 +25,8 @@
                                 <div class="card my-auto overflow-hidden">
                                     <div class="row g-0">
                                         <div class="col-lg-6">
-                                         
-                                            
-                                            <div class="bg-overlay bg-primary"></div>
                                             <div class="h-100 bg-auth align-items-end">
-                                                <div class="p-3 mt-4 d-none d-lg-block">
+                                                <div class="p-3 d-none d-lg-block">
                                                     <h4 class="fs-3 text-center">SET UP YOUR ACCOUNT</h4>
                                                             <p class="fs-5 text-center">Please enter the required details and follow the given instructions to finish setting up your account.</p>
                                                 </div>

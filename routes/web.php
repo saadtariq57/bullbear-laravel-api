@@ -10,7 +10,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 Broadcast::routes();
 
 // Public routes

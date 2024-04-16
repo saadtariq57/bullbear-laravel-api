@@ -223,6 +223,7 @@ export default {
     this.watchlistData = JSON.parse(JSON.stringify(this.watchlist));
     this.editedWatchlistName = this.watchlistData.title;
     this.initSortable();
+    console.log(this.watchlist);
   },
   data() {
     return {

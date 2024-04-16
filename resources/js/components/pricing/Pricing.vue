@@ -1,13 +1,14 @@
 <template>
+  <div class="container my-4">
   <div class="pricing-wrapper bg-white px-2 px-md-4 py-3 mt-4 border-1 border rounded-2 shadow-sm">
     <div class="text-center">
-      <h1 class="text-uppercase fw-bold">Pricing & Plan</h1>
+      <h1 class="fw-bold">Pricing & Plan</h1>
       <div class="border-heading d-inline-block mt-4 mb-3"></div>
       <p class="fs-4">“Make informed investing decisions with plans built for all kinds of traders - from newbies to
         professionals.”</p>
     </div>
     <div class="row justify-content-center">
-      <div class="col-12 col-md-7">
+      <div class="col-12">
         <div class="alert alert-light mb-5 mb-xl-9 shadow-sm" role="alert">
           <div class="d-flex justify-content-center align-items-center gap-3">
             <label class="form-check-label" for="rtv-plans">Paid Monthly</label>
@@ -20,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="row mb-3 gy-4 justify-content-center">
+    <div class="row mb-3 gy-4 justify-content-center" v-if="!PricePlan">
       <div v-for="plan in subscriptionPlans" :key="plan.id" class="col-xl-4 col-lg-6 col-md-12 px-1"  :class="plan.name">
         <div class="card shadow rounded-4 h-100">
           <div class="px-4 pt-4 pb-4">
@@ -58,7 +59,19 @@
         </div>
       </div>
     </div>
+    <div class="row mb-3 gy-4 justify-content-center" v-else >
+                    <div class="col-xl-4 col-lg-6 col-md-12 px-1">
+                        <Skeletor height="700" style="border-radius: 10px;" />
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-12 px-1">
+                        <Skeletor height="700" style="border-radius: 10px;" />
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-12 px-1">
+                        <Skeletor height="700" style="border-radius: 10px;" />
+                    </div>
+                </div>
   </div>
+</div>
 </template>
 <style>
 .rtv-form-switch.form-check.form-switch {
@@ -77,8 +90,17 @@
 </style>
 <script>
 import { mapState, mapActions } from 'vuex';
-
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
 export default {
+  data() {
+        return {
+          PricePlan : true
+        }
+  },
+  components : {
+    Skeletor
+  },
   name: 'PricingComponent',
   computed: {
     ...mapState('userSubscriptionModule', ['subscriptionPlans', 'selectedPlan', 'showYearly']),
@@ -94,25 +116,15 @@ export default {
     this.fetchSubscriptionPlans();
     localStorage.removeItem('selectedPlan');
     localStorage.removeItem('showYearly');
-    // Check if there's a selected plan in local storage
-    // const storedPlan = localStorage.getItem('selectedPlan');
-    // if (storedPlan) {
-    //     try {
-    //         const parsedPlan = JSON.parse(storedPlan);
-    //         this.setSelectedPlan(parsedPlan);
-    //     } catch (error) {
-    //         console.error('Error parsing selectedPlan from local storage:', error);
-    //     }
-    // }
-    // // Check if there's a stored showYearly state
-    // const storedShowYearly = localStorage.getItem('showYearly');
-    // if (storedShowYearly) {
-    //     this.setBillingCycle(JSON.parse(storedShowYearly));
-    // }
-    console.log(this.userData);
-    console.log(this.subscriptionPlans.currentSubscription);
+    // console.log(this.userData);
+    // console.log(this.subscriptionPlans.currentSubscription);
 
   },
+  mounted() {
+    setTimeout(() => {
+      this.PricePlan = false;
+    }, 5000);
+  }
 };
 </script>
 <style>

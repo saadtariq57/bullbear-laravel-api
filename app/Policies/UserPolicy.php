@@ -18,6 +18,11 @@ class UserPolicy
         return $user->type === 'admin';
     }
 
+    public function isActive(User $user)
+    {
+        return $user->status === 'active';
+    }
+
     public function isSubscribedPlan(User $user, string $planName)
     {
         // \Log::debug("Policy called with planName: {$planName}");

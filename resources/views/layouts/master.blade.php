@@ -20,28 +20,17 @@
 @yield('body')
 <div class="overlay_loader" id="overlay_loader"></div>
 <!-- Begin page -->
-
-<div id="app">
-    <?php //phpinfo(); ?>
     <div id="layout-wrapper">
-        <!-- topbar -->
-            <Navigation></Navigation>
+        <!-- Possibly non-Vue HTML content -->
+        <!-- Vue app mounts here -->
         <div class="main-content">
-
-            <div class="page-content">
-                @yield('content')
-                <!-- container-fluid -->
-            </div>
-            <!-- End Page-content -->
-
-            <!-- footer -->
+            <div id="app"></div>
             @include('layouts.footer')
-
         </div>
-        <!-- end main content-->
+
+        <!-- Possibly more non-Vue HTML content -->
     </div>
     <!-- END layout-wrapper -->
-</div>
 <!-- vendor-scripts -->
 @include('layouts.vendor-scripts')
 <script>

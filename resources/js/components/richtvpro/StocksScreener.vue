@@ -1,4 +1,5 @@
 <template>
+  <div class="container my-4">
   <div class="screener-filter-wrapper border shadow-sm rounded-2">
     <div
       class="filter-header d-flex align-items-center justify-content-between flex-wrap gap-1 border-bottom border-dark border-2 py-2 px-2 bg-light">
@@ -1527,6 +1528,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 <style>
 .filter {

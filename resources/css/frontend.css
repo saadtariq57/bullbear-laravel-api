@@ -486,6 +486,23 @@ td {
 }
 
 /* global css end  */
+
+.auth-input .form-control{
+    padding: .9rem 1.2rem;
+    border: 1px solid rgb(181, 181, 181);
+}
+.auth-input .form-label {
+    position: relative;
+    left: 14px;
+    top: 11px;
+    line-height: 20px;
+    background: var(--bs-tertiary-bg);
+    margin: 0;
+    padding: 0 7px;
+    z-index: 1;
+    font-weight: 700;
+}
+
 /* Home page CSS Start */
 /* hero section css Start */
 .login-popup-closebtn {
@@ -1238,6 +1255,38 @@ footer {
 
 /* footer css End */
 /* Home page CSS End */
+/* login page CSS End */
+.auth-maintenance {
+    background-image: url(/build/icons/overlay-1.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.bg-auth {
+    background-image: url('../images/login-img.png') !important;
+    background-position: bottom;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+    background-color: #eaecf4 !important
+  }
+  .auth-maintenance .bg-overlay.bg-light {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    opacity: .7;
+  }
+  
+  body[data-sidebar=colored] .vertical-menu,
+  body[data-sidebar=colored] .navbar-brand-box {
+    background: #183B56;
+    border-color: #003566;
+  }
+/* login page CSS End */
 /* Header-css Start */
 header {
     z-index: 9;
@@ -2272,7 +2321,7 @@ p.user-message {
     background-color: rgb(255 255 255 / 80%);
     position: absolute;
     top: 55px;
-    height: 150px;
+    height: 178px;
     width: 100%;
 }
 .completion-icon{
@@ -2335,7 +2384,7 @@ p.user-message {
 }
 
 .chat-text-sec {
-    height: calc(100vh - 215px);
+    height: calc(100vh - 265px);
     overflow-y: auto;
 }
 

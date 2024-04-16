@@ -1,4 +1,4 @@
-@extends('admin.layouts.master-without-nav')
+@extends('layouts.master-without-nav')
 @section('title')
     Login
 @endsection
@@ -12,11 +12,11 @@
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-5">
-                                    <a href="index" class="">
-                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo-welcome.png"
+                                    <a href="/" class="">
+                                        <img src="{{ URL::asset('build/images/logo.svg') }}"
                                             alt="" width="200" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
-                                            width="200" class="auth-logo logo-light mx-auto">
+                                        {{-- <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
+                                            width="200" class="auth-logo logo-light mx-auto"> --}}
                                     </a>
                                     <!-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> -->
                                 </div>
@@ -33,9 +33,8 @@
                                             <div class="p-lg-5 p-4">
                                                 <div>
                                                     <div class="text-center mt-1">
-                                                        <h4 class="font-size-18">LOG IN TO YOUR ACCOUNT</h4>
-                                                        <p class="text-muted">Please log in to start utilizing the different
-                                                            features available in your membership plan.</p>
+                                                        <h4 class="fs-18 mb-0">LOG IN TO YOUR ACCOUNT</h4>
+                                                        <p class="text-muted fs-14">Please log in to start continue your trading journey with RichTv.</p>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
@@ -45,7 +44,7 @@
                                                             <input id="email" type="email"
                                                                 class="form-control @error('email') is-invalid @enderror"
                                                                 name="email"
-                                                                value="{{ old('email', 'admin@themesbrand.com') }}" required
+                                                                value="{{ old('email') }}" required
                                                                 autocomplete="email" autofocus>
                                                             @error('email')
                                                                 <span class="invalid-feedback" role="alert">
@@ -60,7 +59,7 @@
                                                                 class="form-control @error('password') is-invalid @enderror"
                                                                 placeholder="Enter password" id="password-input"
                                                                 name="password" required autocomplete="current-password"
-                                                                value="12345678">
+                                                                value="">
                                                             @error('password')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
@@ -116,6 +115,7 @@
     </div>
 @endsection
 @section('scripts')
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
+<script src="{{ URL::asset('build/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ URL::asset('build/js/custom.js') }}"></script>
 @endsection

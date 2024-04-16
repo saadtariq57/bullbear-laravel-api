@@ -82,13 +82,11 @@
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-4">
-                                    <a href="index" class="">
-                                        <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt=""
-                                            height="22" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
-                                            height="22" class="auth-logo logo-light mx-auto">
+                                    <a href="/" class="">
+                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="Rich Tv logo"
+                                            width="200" class="auth-logo logo-dark mx-auto">
                                     </a>
-                                    <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p>
+                                    {{-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> --}}
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">
@@ -103,8 +101,8 @@
                                             <div class="p-lg-5 p-4">
                                                 <div>
                                                     <div class="text-center mt-1">
-                                                        <h4 class="font-size-18">Confirm Password</h4>
-                                                        <p class="text-muted">Get your free Tocly account now.</p>
+                                                        <h4 class="fs-18 mb-0">Confirm Password</h4>
+                                                        {{-- <p class="text-muted">Get your free Tocly account now.</p> --}}
                                                     </div>
 
                                                     <div class="alert alert-borderless alert-warning text-center mb-2 mx-2"

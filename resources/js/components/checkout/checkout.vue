@@ -1,7 +1,7 @@
 <template>
     <section class="container-fluid my-4">
         <div class="row justify-content-center">
-            <h1 class="fw-bold fs-1 text-uppercase px-0 text-center">Checkout</h1>
+            <h1 class="fw-bold fs-1 px-0 text-center">Confirm & Pay</h1>
             <div class="border-heading d-inline-block mt-1 mb-5"></div>
         </div>
         <div class="row">
@@ -12,30 +12,31 @@
                 </div>
                 <!-- Subscription Form -->
                 <form @submit.prevent="handleSubmit" id="subscription-form">
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="planName" class="form-label">Plan Name</label>
                         <input type="text" v-model="formData.planName" id="planName" name="planName"
                             class="form-control border shadow-sm" disabled>
                     </div>
-                    <div class="mb-2" v-if="userSelectedPlan">
+                    <div class="mb-3" v-if="userSelectedPlan">
                         <label for="planPrice" class="form-label">Plan Price</label>
                         <input type="text" id="planPrice" name="planPrice" class="form-control border shadow-sm"
                             :value="planType ? userSelectedPlan.yearly_price : userSelectedPlan.monthly_price" disabled>
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="cardHolderName" class="form-label">Enter Card Holder Name</label>
                         <input type="text" v-model="formData.cardHolderName" id="cardHolderName" name="cardHolderName"
                             class="form-control border shadow-sm" placeholder="Card holder name">
                     </div>
                     <!-- <input type="text" value="{{ showYearly ? selectedPlan.yearly_price : selectedPlan.monthly_price}}" name="price_intent" id="price_intent"> -->
                     <!-- Payment Method Element -->
-                    <label for="card-element">Credit or Debit Card</label>
+                        <label for="card-element">Credit or Debit Card</label>
                     <div id="card-element">
                         <!-- A Stripe Element will be inserted here. -->
                     </div>
 
                     <!-- Form submission -->
-                    <button type="submit" id="submit-button" class="btn btn-primary mt-4 w-100" :disabled="submitform">Subscribe</button>
+                    <button type="submit" id="submit-button" class="btn btn-primary mt-4 w-100"
+                        :disabled="submitform">Subscribe</button>
                 </form>
             </div>
         </div>
@@ -174,8 +175,12 @@ export default {
     border-color: #dfdfdf !important;
 }
 
+.border-heading {
+    width: 100px;
+}
+
 .checkout-wrapper {
-    max-width: 400px;
+    max-width: 700px;
     margin: 0 auto;
 }
 

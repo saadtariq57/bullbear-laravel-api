@@ -1,5 +1,5 @@
 <template>
-    <div class="container-md px-0 px-sm-3">
+    <div class="container-md px-0 px-sm-3 my-4">
         <div class="row">
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
@@ -41,14 +41,13 @@ export default {
         this.fetchPosts({context});
         this.fetchReactionTypes();
         this.$nextTick(() => {
-            this.initializeRealTimeUpdates({context});
+            this.initializeRealTimeUpdates({ context: 'feed' });
         });
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         handleShowPostModal(post) {
-      this.$refs.createPost.sharePostModal(post); // Call the method in the child component
-    //   console.log('Received post data:', post);
+      this.$refs.createPost.sharePostModal(post);
     }
     },
 };

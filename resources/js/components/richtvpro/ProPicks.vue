@@ -1,4 +1,5 @@
 <template>
+    <div class="container my-4">
     <div class="text-center border-bottom">
         <h2 class="fs-2 mt-2 fw-6">Rich's Picks</h2>
     </div>
@@ -59,4 +60,5 @@
                 </table>
 
             </div>
+    </div>
 </template>
