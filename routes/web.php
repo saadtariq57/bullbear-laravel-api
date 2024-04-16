@@ -389,6 +389,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('delete/{symbol}', [SymbolController::class, 'destroy'])->name('destroy');
             Route::get('search', [SymbolController::class, 'search'])->name('search');
         });
+      
 
         // route group for WidgetController
         Route::prefix('admin/widgets')->name('admin.widgets.')->group(function () {
@@ -422,7 +423,10 @@ Route::middleware(['auth'])->group(function () {
             Route::put('categories/{examCategory}', [ExamController::class, 'categoriesUpdate'])->name('categories.update');
             Route::delete('categories/{examCategory}', [ExamController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
-
+        Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
+            Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
+        });
+        
         // route group for GroupController
         Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');

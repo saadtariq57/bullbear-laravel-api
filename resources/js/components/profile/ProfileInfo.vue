@@ -1,6 +1,7 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
+
             <img ref="coverImage" :src="'uploads/' + coverImagePath" alt="Cover Image"
                 class="img-fluid w-100 profile-cover-photo object-fit-cover" />
             <!-- <div class="cover-photo-overlay" v-show="isRepositioning"></div> -->
