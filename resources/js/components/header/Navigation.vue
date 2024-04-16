@@ -1610,7 +1610,12 @@ ul.nested-mega-menu {
 .trading-school-menu {
     left: 190px !important;
 }
-
+.navbar-search::-webkit-search-cancel-button,
+.navbar-search::-webkit-search-decoration,
+.navbar-search::-webkit-search-results-button,
+.navbar-search::-webkit-search-results-decoration {
+    display: none;
+}
 @media (max-width: 767px) {
     .main-header {
         padding: 0 30px !important;

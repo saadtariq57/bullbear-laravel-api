@@ -1,21 +1,22 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage" :src="'upload/'+coverImagePath" alt="Cover Image"
+            <img ref="coverImage" :src="'uploads/' + coverImagePath" alt="Cover Image"
                 class="img-fluid w-100 profile-cover-photo object-fit-cover" />
-            <div class="cover-photo-overlay" v-show="isRepositioning"></div>
+            <!-- <div class="cover-photo-overlay" v-show="isRepositioning"></div> -->
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn">
-            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
-                @click="toggleDropdown($event)">
+            <button type="button"
+                class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
+                @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
+                      aria-expanded="false">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end z-1">
                 <li>
-                    <label class="dropdown-item fs-6 fw-5">
-                        <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
-                    </label>
+                        <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i
+                                class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
                 </li>
                 <!-- <li>
                     <button class="dropdown-item fs-6 fw-5" @click="repositionCoverPhoto">
@@ -37,7 +38,8 @@
         <div class="user-profile-info-wapper d-flex gap-4">
             <div
                 class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
-                <img :src="'upload/'+profileImagePath" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
+                <img :src="'uploads/' + profileImagePath" alt="Profile Picture" width="165px" height="165px"
+                    class="rounded-circle">
                 <!-- Button trigger modal -->
                 <button @click="showUploadPhotoeModal"
                     class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center shadow"><i
@@ -53,21 +55,23 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 @click="closeProfileModal"></button>
                         </div>
-                        <p v-if="message!=null">{{ message }}</p>
+                        <p v-if="message != null">{{ message }}</p>
                         <div v-else class="modal-body">
                             <div class="text-center py-3" v-if="!selectedImage">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
                                 <div class="my-5">
-                                    <img :src="'upload/'+coverImagePath" alt="Cover Photo" width="100%">
+                                    <img :src="'uploads/' + coverImagePath" alt="Cover Photo" width="100%">
                                 </div>
-                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a cover photo</p>
+                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a
+                                    cover photo</p>
                             </div>
                             <div v-if="selectedImage">
-                                <div class="user-cover-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
-                                    <vue-cropper ref="covercropper" :src="selectedImage.preview" :view-mode="1" :drag-mode="'move'"
-                                    :guides="true" :zoomable="true" :scalable="true" :crop-box-movable="true"
-                                    :crop-box-resizable="true" :aspect-ratio="16 / 9" @cropmove="updatePreview"
-                                    class="w-100 img-preview"></vue-cropper>
+                                <div
+                                    class="user-cover-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
+                                    <vue-cropper ref="covercropper" :src="selectedImage.preview" :view-mode="1"
+                                        :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
+                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="16 / 9"
+                                        @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
                                 <div class="my-4">
@@ -81,7 +85,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer" v-if="message==null">
+                        <div class="modal-footer" v-if="message == null">
                             <label class="btn btn-primary" v-if="!selectedImage">
                                 <input ref="profileInput" type="file" accept="image/jpeg,image/jpg,image/png"
                                     @change="handleCoverPhotoChange" class="upload-profile-photo d-none">
@@ -105,23 +109,29 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 @click="closeProfileModal"></button>
                         </div>
-                        <p v-if="message!=null">{{ message }}</p>
+                        <div v-if="message != null" class=" text-center py-5">
+                            <img :src="'uploads/' + profileImagePath" alt="Profile Photo" class="rounded-circle"
+                                        width="165" height="165">
+                        <p class="px-3 my-3">{{ message }}</p>
+                    </div>
                         <div v-else class="modal-body">
                             <div class="text-center py-3" v-if="!selectedImage">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
                                 <div class="my-5">
-                                    <img :src="'upload/'+profileImagePath" alt="Profile Photo" class="rounded-circle" width="165"
-                                        height="165">
+                                    <img :src="'uploads/' + profileImagePath" alt="Profile Photo" class="rounded-circle"
+                                        width="165" height="165">
                                 </div>
-                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a photo
+                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a
+                                    photo
                                     of yourself</p>
                             </div>
                             <div v-if="selectedImage">
-                                <div class="user-avatar-wrapper position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
-                                    <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1" :drag-mode="'move'"
-                                    :guides="true" :zoomable="true" :scalable="true" :crop-box-movable="true"
-                                    :crop-box-resizable="true" :aspect-ratio="1" @cropmove="updatePreview"
-                                    class="w-100 img-preview"></vue-cropper>
+                                <div
+                                    class="user-avatar-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
+                                    <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1"
+                                        :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
+                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="1"
+                                        @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
                                 <div class="my-4">
@@ -131,7 +141,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer" v-if="message==null">
+                        <div class="modal-footer" v-if="message == null">
                             <label class="btn btn-primary" v-if="!selectedImage">
                                 <input ref="profileInput" type="file" accept="image/jpeg,image/jpg,image/png"
                                     @change="handleProfileChange" class="upload-profile-photo d-none">
@@ -148,10 +158,12 @@
             <div class="user-profile-info align-self-end">
                 <div class="d-flex align-items-center gap-2">
                     <h1>{{ userData.name }}</h1>
-                    <span v-if="userData.subscription_plan != 'free'"><i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
+                    <span v-if="userData.subscription_plan != 'free'"><i
+                            class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
                     <!-- <span class="user-pro text-white px-2 py-1 fs-10 rounded-2"
                         v-if="userData.subscription_plan == 'platinum'">PRO</span> -->
-                    <span class="user-pro text-white px-2 py-1 fs-10 rounded-2" v-if="userData.subscription_plan != 'free'">{{ userData.subscription_plan }}</span>
+                    <span class="user-pro text-white px-2 py-1 fs-10 rounded-2"
+                        v-if="userData.subscription_plan != 'free'">{{ userData.subscription_plan }}</span>
                 </div>
                 <a href="#" class="text-black fs-5"><span>{{ userData.followers_count }}</span> followers</a>
             </div>
@@ -167,8 +179,9 @@
     <div class="row user-chat-top-tab mb-3 px-2">
         <div class="col-12 user-bottom-nav bg-white shadow overflow-auto profile-main-navtab">
             <ul class="inner-tabs-btn nav justify-content-around flex-nowrap" id="admin-content-tab" role="tablist">
-                <li class="nav-item " role="presentation"> <a href="#" class="nav-link active user-li-navbtn text-secondary"
-                        id="user-Timeline-tab" data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
+                <li class="nav-item " role="presentation"> <a href="#"
+                        class="nav-link active user-li-navbtn text-secondary" id="user-Timeline-tab"
+                        data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
                         aria-controls="user-Timeline" aria-selected="true">
                         <span class="split-link d-block text-center"><i class="bi bi-ui-checks fs-18"></i></span>
                         Timeline
@@ -229,7 +242,7 @@ export default {
             maxTop: 0,
             selectedFiles: [],
             selectedImage: null,
-            zoomLevel:0,
+            zoomLevel: 0,
             profileImagePath: 'photos/d-avatar.jpg',
             coverImagePath: 'photos/d-cover.jpg',
             message: null,
@@ -249,11 +262,11 @@ export default {
                 console.error('Modal instance is not initialized.');
             }
         },
-        showUploadCoverPhotoModal(){
+        showUploadCoverPhotoModal() {
             this.message = null;
-            if(this.coverPhotoModalInstance){
+            if (this.coverPhotoModalInstance) {
                 this.coverPhotoModalInstance.show();
-            }else {
+            } else {
                 console.error('Modal instance is not initialized.');
             }
         },
@@ -348,7 +361,7 @@ export default {
                 this.uploadImage(file, 'cover');
             }, 'image/jpeg');
         },
-        updatePreview() {},
+        updatePreview() { },
         async uploadImage(file) {
             const formData = new FormData();
             formData.append('cover_photo', file);
@@ -381,17 +394,17 @@ export default {
                 });
 
                 // Handle response from server
-                this.profileImagePath = response.data.profile_photo; 
+                this.profileImagePath = response.data.profile_photo;
                 this.message = response.data.message;
                 console.log('Profile photo:', response.data);
                 this.closeProfileModal();
-                
+
             } catch (error) {
                 console.error('Error uploading profile photo:', error);
                 this.message = response.data.error;
             }
         },
-        async RemoveCoverImage(){
+        async RemoveCoverImage() {
             try {
                 const response = await axios.post('/api/removeCover', {
                     headers: {
@@ -407,29 +420,29 @@ export default {
         }
     },
     mounted() {
-        if(this.userData.avatar != ''){
+        if (this.userData.avatar != '') {
             this.profileImagePath = this.userData.avatar;
         }
-        if(this.userData.cover != ''){
+        if (this.userData.cover != '') {
             this.coverImagePath = this.userData.cover;
         }
-        
+
         this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
-        this.coverPhotoModalInstance  = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
+        this.coverPhotoModalInstance = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
         console.log(this.userData);
     }
 }
 </script>
 <style>
-.profile_bg_img{
+.profile_bg_img {
     position: relative;
-    height:400px;
+    height: 400px;
 }
 
 .profile-cover-photo {
     width: 100%;
     height: 400px;
-    object-fit: cover!important;
+    object-fit: cover !important;
     position: absolute;
     top: 0;
     left: 0;
@@ -478,7 +491,8 @@ export default {
     right: 0;
     bottom: 10px;
 }
-.rounded-circle{
+
+.rounded-circle {
     object-fit: cover;
 }
 
@@ -500,7 +514,7 @@ export default {
     height:400px!important;
 } */
 @media (max-width: 767px) {
-    .inner-tabs-btn{
+    .inner-tabs-btn {
         min-width: 660px;
     }
 }

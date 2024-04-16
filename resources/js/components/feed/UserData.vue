@@ -3,11 +3,11 @@
         <!-- Display user information -->
         <div class="wow_content wow_side_loggd_usr bg-white p-3 mb-3 shadow">
             <div class="wow_side_loggd_usr_cvr">
-                <img class="w-100 h-100 object-fit-cover" :src="userData.cover" alt="Cover Image">
+                <img class="w-100 h-100 object-fit-cover" :src="`/uploads/${userData.cover}`" alt="Cover Image">
             </div>
             <div class="wow_side_loggd_usr_hdr">
                 <div class="avatar">
-                    <img class="w-100 rounded-circle" :src="userData.avatar" alt="Profile Picture">
+                    <img class="w-100 rounded-circle" :src="`/uploads/${userData.avatar}`" alt="Profile Picture">
                 </div>
                 <div class="title text-center">
                     <a class="text-black fw-bold" href="/profile">{{ userData.name }}</a>
