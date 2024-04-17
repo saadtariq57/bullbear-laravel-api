@@ -1,16 +1,9 @@
 <template>
-    <div class="mb-3 ps-3 pt-3 pb-3 bg-white shadow rounded">
-        <div class="d-flex align-items-center gap-3">
-            <div><span class="bg-primary rounded-circle user-top-bar d-inline-block text-center"><i
-                        class="bi bi-image-fill fs-12"></i></span></div>
-            <div class="fs-18 fw-6">Photos</div>
-        </div>
-    </div>
-    <div class="mt-5 bg-white shadow-sm rounded p-2">
-        <div class="row py-2">
-            <div class="col-4" v-for="userAlbum in userAlbumPhotos" :key="userAlbum.id">
+    <div class="bg-white shadow-sm rounded">
+        <div class="row">
+            <div class="col-4 mb-4" v-for="userAlbum in userAlbumPhotos" :key="userAlbum.id">
                 <a href="#">
-                    <img :src="'uploads/'+userAlbum.image" alt="" class="img-fluid w-100 user_post-img">
+                    <img :src="'uploads/'+userAlbum.image" alt="" class="img-fluid w-100 user-post-img rounded-1">
                 </a>
             </div>
         </div>
@@ -99,3 +92,9 @@ export default {
     }
 }
 </script>
+<style>
+.user-post-img{
+ object-fit: cover;
+ height: 250px;
+}
+</style>
