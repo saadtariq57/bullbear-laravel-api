@@ -133,6 +133,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 
+Route::post('/update-cover-position', [UserController::class, 'updateCoverPosition']);
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);

@@ -3,29 +3,30 @@
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
 
             <img ref="coverImage" :src="'uploads/' + coverImagePath" alt="Cover Image"
-                class="img-fluid w-100 profile-cover-photo object-fit-cover" />
-            <!-- <div class="cover-photo-overlay" v-show="isRepositioning"></div> -->
+                class="img-fluid w-100 profile-cover-photo" @load="calculateOffsets"
+                :style="{ top: userData.cover_position }" />
+            <div class="cover-photo-overlay" v-if="isRepositioning" @wheel="repositionWithWheel"></div>
             <!-- Overlay for better visibility -->
         </div>
-        <div class="btn-group position-absolute cover-photo-btn">
+        <div class="btn-group position-absolute cover-photo-btn" v-if="!isRepositioning">
             <button type="button"
                 class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
                 @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
-                      aria-expanded="false">
+                aria-expanded="false">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end z-1">
                 <li>
-                        <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i
-                                class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
+                    <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i
+                            class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
                 </li>
-                <!-- <li>
+                <li>
                     <button class="dropdown-item fs-6 fw-5" @click="repositionCoverPhoto">
                         <i class="bi bi-arrows-move me-2 fs-5"></i> Reposition
                     </button>
-                </li> -->
+                </li>
                 <li>
-                    <hr class="dropdown-divider" />
+                    <hr class="dropdown-divider m-0" />
                 </li>
                 <li>
                     <button class="dropdown-item fs-6 fw-5" @click="RemoveCoverImage">
@@ -33,6 +34,14 @@
                     </button>
                 </li>
             </ul>
+        </div>
+        <div class="btn-group position-absolute cover-photo-btn" v-if="isRepositioning">
+            <button type="button" class="btn btn-primary px-3 rounded-3 z-1" @click="SetCoverPosition">
+                <i class="bi bi-check-lg fs-5 icon-bold"></i>
+            </button>
+            <button type="button" class="btn bg-white px-3 ms-3 rounded-3 z-1" @click="CancelCoverPosition">
+                <i class="bi bi-x-lg fs-5 icon-bold"></i>
+            </button>
         </div>
     </div>
     <div class="user-profile-wrapper position-relative d-flex justify-content-between px-4">
@@ -56,7 +65,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 @click="closeProfileModal"></button>
                         </div>
-                        <p v-if="message != null">{{ message }}</p>
+                        <div v-if="message != null" class=" text-center py-5">
+                            <img :src="'uploads/' + coverImagePath" alt="Profile Photo" class="img-fluid px-3">
+                            <p class="px-3 my-3">{{ message }}</p>
+                        </div>
                         <div v-else class="modal-body">
                             <div class="text-center py-3" v-if="!selectedImage">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
@@ -112,9 +124,9 @@
                         </div>
                         <div v-if="message != null" class=" text-center py-5">
                             <img :src="'uploads/' + profileImagePath" alt="Profile Photo" class="rounded-circle"
-                                        width="165" height="165">
-                        <p class="px-3 my-3">{{ message }}</p>
-                    </div>
+                                width="165" height="165">
+                            <p class="px-3 my-3">{{ message }}</p>
+                        </div>
                         <div v-else class="modal-body">
                             <div class="text-center py-3" v-if="!selectedImage">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
@@ -222,6 +234,7 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import { Dropdown } from 'bootstrap';
 import { Modal } from 'bootstrap';
 import { mapState } from 'vuex';
@@ -237,10 +250,10 @@ export default {
     data() {
         return {
             isRepositioning: false,
-            initialY: 0,
+            cover_position: 0,
             offsetY: 0,
-            initialTop: 0,
-            maxTop: 0,
+            maxOffsetY: 0,
+            minOffsetY: 0,
             selectedFiles: [],
             selectedImage: null,
             zoomLevel: 0,
@@ -277,24 +290,44 @@ export default {
         },
         repositionCoverPhoto(event) {
             this.isRepositioning = true;
-            this.initialY = event.clientY;
-            const coverImage = this.$refs.coverImage;
-            this.initialTop = parseInt(window.getComputedStyle(coverImage).top, 10) || 0;
-            this.maxTop = -(coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
-            document.addEventListener('mousemove', this.handleMouseMove);
-            document.addEventListener('mouseup', this.handleMouseUp);
         },
-        handleMouseMove(event) {
-            if (!this.isRepositioning) return;
-            this.offsetY = event.clientY - this.initialY;
-            const newTop = Math.min(Math.max(this.initialTop + this.offsetY, this.maxTop), 0);
-            const coverImage = this.$refs.coverImage;
-            coverImage.style.top = `${newTop}px`;
+        repositionWithWheel(event) {
+            if (this.isRepositioning) {
+                // Adjust deltaY value as needed based on mouse wheel sensitivity
+                const deltaY = event.deltaY;
+                // Update offsetY within its boundaries
+                this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
+                this.$refs.coverImage.style.top = this.offsetY + 'px';
+                // Prevent default scrolling behavior
+                event.preventDefault();
+            }
         },
-        handleMouseUp() {
+        async SetCoverPosition() {
             this.isRepositioning = false;
-            document.removeEventListener('mousemove', this.handleMouseMove);
-            document.removeEventListener('mouseup', this.handleMouseUp);
+            this.cover_position = this.offsetY + 'px';
+            this.userData.cover_position = this.cover_position;
+            try {
+                // Update cover position via API
+                await axios.post('/api/update-cover-position', {
+                    cover_position: this.cover_position
+                });
+
+                // Refetch user data to update the Vuex store
+                await this.$store.dispatch('fetchUserData');
+
+                console.log('Cover position updated successfully');
+            } catch (error) {
+                console.error('Error updating cover position:', error);
+            }
+        },
+        CancelCoverPosition() {
+            this.isRepositioning = false;
+            this.$refs.coverImage.style.top = cover_position;
+        },
+        calculateOffsets() {
+            // Calculate the maximum and minimum offset values based on the actual height of the cover photo
+            this.maxOffsetY = 0;
+            this.minOffsetY = -(this.$refs.coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
         },
         handleCoverPhotoChange(event) {
             const file = event.target.files[0];
@@ -399,6 +432,7 @@ export default {
                 this.message = response.data.message;
                 console.log('Profile photo:', response.data);
                 this.closeProfileModal();
+                this.$store.dispatch('fetchUserData');
 
             } catch (error) {
                 console.error('Error uploading profile photo:', error);
@@ -430,23 +464,26 @@ export default {
 
         this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
         this.coverPhotoModalInstance = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
-        console.log(this.userData);
+        // console.log(this.userData);
+        this.cover_position = this.userData.cover_position;
     }
 }
 </script>
 <style>
 .profile_bg_img {
     position: relative;
-    height: 400px;
+    height: 500px;
 }
 
 .profile-cover-photo {
     width: 100%;
-    height: 400px;
-    object-fit: cover !important;
+    height: auto;
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 0;
+    /* Ensure cover photo is above overlay */
+    /* cursor: move; Make the cover photo draggable */
 }
 
 .cover-photo-overlay {
@@ -456,8 +493,10 @@ export default {
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    display: none;
-    /* Hide by default */
+    /* Semi-transparent overlay for better visibility */
+    /* z-index: 1; Ensure overlay is above cover photo */
+    cursor: ns-resize;
+    /* Change cursor to indicate vertical resize */
 }
 
 .cover-photo-btn {
@@ -470,8 +509,8 @@ export default {
 }
 
 .user-avater-wappar {
-    width: 165px;
-    height: 165px;
+    width: 170px;
+    height: 170px;
 }
 
 .user-verified-icon {
@@ -509,6 +548,7 @@ export default {
 .user-avatar-wrapper .cropper-face {
     border-radius: 100%;
 }
+
 /* .user-cover-wrapper .cropper-view-box,
 .user-cover-wrapper .cropper-face,.user-cover-wrapper .cropper-crop-box {
     width: 100%!important;
