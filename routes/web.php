@@ -425,6 +425,7 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
             Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
+            Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
         });
         
         // route group for GroupController
