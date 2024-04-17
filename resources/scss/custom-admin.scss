@@ -5,6 +5,9 @@
   background-repeat: no-repeat;
   position: relative;
 }
+ul.pagination svg{
+  max-width: 30px;
+}
 .auth-full-page-content  {
   .bg-overlay.bg-primary {
     background-color: #EAECF4 !important;

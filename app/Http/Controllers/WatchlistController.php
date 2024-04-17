@@ -147,10 +147,10 @@ class WatchlistController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -309,21 +309,23 @@ class WatchlistController extends Controller
 
     // Admin panel Routes Below
     public function AdminIndex(Request $request)
-{
-    $search = $request->query('search');
+    {
+        $search = $request->query('search');
 
-    if ($search) {
-        $watchlists = UserWatchlist::where('title', 'LIKE', "%{$search}%")
-            // ... add other fields if needed
-            ->paginate(10);
-    } else {
-        $watchlists = UserWatchlist::paginate(10);
+        if ($search) {
+            $watchlists = UserWatchlist::where('title', 'LIKE', "%{$search}%")
+                // ... add other fields if needed
+                ->paginate(10);
+        } else {
+            $watchlists = UserWatchlist::paginate(10);
+        }
+
+        return view('admin.watchlist.index', compact('watchlists'));
     }
-
-    return view('admin.watchlist.index', compact('watchlists'));
-}
-
-
-
+    public function WatchlistCreate()
+    {
+        // $watchlists = watchlists::all();
+        return view('admin.watchlist.create');
+    }
 }
 
