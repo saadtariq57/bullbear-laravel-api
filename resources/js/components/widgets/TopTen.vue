@@ -1,7 +1,7 @@
 <template>
-  <div class="trendingvideos-widget my-3 shadow-sm rounded border-top border-2 border-warning">
+  <div class="trendingvideos-widget pt-2 my-3 shadow-sm rounded border-top border-2 border-warning">
     <div class="border-bottom">
-      <h2 class="fs-18 fw-6 px-2 text-uppercase icon-short-heading">TOP 10</h2>
+      <h2 class="fs-18 fw-6 px-2 text-uppercase icon-short-heading">Top 10 Performers of the month</h2>
       <nav>
         <div class="nav nav-tabs px-2" id="nav-tab" role="tablist">
           <button class="nav-link topmovers-nav-btn active" id="nav-top-crypto-tab" data-bs-toggle="tab"

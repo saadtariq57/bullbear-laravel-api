@@ -2002,9 +2002,9 @@ p.user-message {
 }
 
 .wow_side_loggd_usr_hdr .avatar {
-    width: 70px;
-    height: 70px;
-    margin: -40px auto 13px;
+    width: 80px;
+    height: 80px;
+    margin: -30px auto 13px;
 }
 
 .create_new a.plus-icon-feed {
@@ -2703,8 +2703,8 @@ p.user-message {
     background: var(--cta-btn);
     border-color: var(--cta-btn);
 }
-.generel_setting_section input {
-    border: 1px solid var(--cta-btn);
+.generel_setting_section .form-check-input {
+    border: 1px solid var(--cta-btn) !important;
 }
 .generel_setting_section input,
 .generel_setting_section select,
@@ -3195,7 +3195,6 @@ p.user-message {
         flex-direction: column;
         flex-wrap: wrap;
         row-gap: 20px;
-        top: -80px !important;
     }
     .user-avater-wappar{
         align-self: center !important;
@@ -3386,6 +3385,13 @@ p.user-message {
     .user-avater-wappar img{
         width: 100px !important;
         height: 100px !important;
+    }
+    .profile-photo-btn{
+        width: 30px;
+        height: 30px;
+    }
+    .profile-photo-btn i{
+        font-size: 16px !important;
     }
 }
 

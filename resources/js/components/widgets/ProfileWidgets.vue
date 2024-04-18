@@ -207,7 +207,7 @@
       </div>
     </li>
   </ul>
-  <div class="people-you-know mb-3 shadow-sm rounded border-top border-2 border-warning widgets-border">
+  <div class="people-you-know mb-3 pb-2 shadow-sm rounded border-top border-2 border-warning widgets-border">
     <div class=" border-bottom">
       <div class="d-flex align-items-center pt-2 pb-1 justify-content-between">
         <div class="fw-6 fs-6 ps-3 mb-1 d-flex align-items-center">
@@ -334,9 +334,9 @@
       <li><a href="#" class="fs-13 text-secondary">About</a></li>
       <li><a href="#" class="fs-13 text-secondary">Contact Us</a></li>
       <li>
-        <div class="btn-group dropup">
+        <div class="btn-group">
           <button type="button" class="btn bg-transparent dropdown-toggle border-0 fs-13 text-secondary"
-            data-bs-toggle="dropdown" aria-expanded="false">
+            data-bs-toggle="dropdown" aria-expanded="false" @click="toggleDropdown($event)">
             More
           </button>
           <ul class="dropdown-menu text-uppercase">
@@ -348,6 +348,18 @@
     </ul>
   </div>
 </template>
+<script>
+import { Dropdown } from 'bootstrap';
+export default {
+  methods: {
+    toggleDropdown(event) {
+            const dropdownElement = event.target.closest('.dropdown-toggle');
+            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+            dropdownInstance.toggle();
+        },
+  }
+}
+</script>
 <style>
 .icon-round-bg {
   width: 27px;
