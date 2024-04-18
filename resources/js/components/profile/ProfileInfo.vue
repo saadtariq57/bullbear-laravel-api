@@ -21,7 +21,7 @@
                             class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
                 </li>
                 <li>
-                    <button class="dropdown-item fs-6 fw-5" @click="repositionCoverPhoto">
+                    <button class="dropdown-item fs-6 fw-5 d-none d-lg-block" @click="repositionCoverPhoto">
                         <i class="bi bi-arrows-move me-2 fs-5"></i> Reposition
                     </button>
                 </li>
@@ -106,7 +106,7 @@
                             </label>
                             <!-- Apply Button -->
                             <button class="btn btn-primary w-100 my-3" @click="applyCoverImageSetting"
-                                v-if="selectedImage">Apply & Upload</button>
+                                v-if="selectedImage" :disabled="!uploadingProfilePhoto">Apply & Upload</button>
                         </div>
                     </div>
                 </div>
@@ -161,8 +161,8 @@
                                 Upload photo
                             </label>
                             <!-- Apply Button -->
-                            <button class="btn btn-primary w-100 my-3" @click="applyProfileSetting"
-                                v-if="selectedImage">Apply & Upload</button>
+                            <button class="btn btn-primary w-100 my-3" @click="applyProfileSetting" v-if="selectedImage"
+                                :disabled="!uploadingProfilePhoto">Apply & Upload</button>
                         </div>
                     </div>
                 </div>
@@ -260,6 +260,7 @@ export default {
             profileImagePath: 'photos/d-avatar.jpg',
             coverImagePath: 'photos/d-cover.jpg',
             message: null,
+            uploadingProfilePhoto: true,
         }
     },
     methods: {
@@ -287,6 +288,7 @@ export default {
         closeProfileModal() {
             this.selectedImage = null;
             this.selectedFiles = [];
+            this.uploadingProfilePhoto = true;
         },
         repositionCoverPhoto(event) {
             this.isRepositioning = true;
@@ -304,6 +306,7 @@ export default {
         },
         async SetCoverPosition() {
             this.isRepositioning = false;
+            this.uploadingProfilePhoto = false;
             this.cover_position = this.offsetY + 'px';
             this.userData.cover_position = this.cover_position;
             try {
@@ -352,6 +355,7 @@ export default {
             }
         },
         readFilesAndPreview(files) {
+            this.uploadingProfilePhoto = true;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = e => {
@@ -389,6 +393,7 @@ export default {
             }, 'image/jpeg');
         },
         applyCoverImageSetting() {
+            this.uploadingProfilePhoto = false;
             const canvas = this.$refs.covercropper.getCroppedCanvas();
             const croppedBlob = canvas.toBlob((blob) => {
                 const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
@@ -407,16 +412,29 @@ export default {
                     }
                 });
 
+                // Update cover image path
+                this.coverImagePath = response.data.cover_photo;
+
+                // Update cover position and fetch user data again
+                this.userData.cover_position = "0px";
+                await axios.post('/api/update-cover-position', {
+                    cover_position: this.userData.cover_position
+                });
+                await this.$store.dispatch('fetchUserData');
+
                 // Handle response from server
                 console.log('Cover photo:', response.data);
-                this.coverImagePath = response.data.cover_photo;
                 this.message = response.data.message;
+                this.uploadingProfilePhoto = true;
+                this.$refs.coverImage.style.top = '0px';
                 this.closeProfileModal();
             } catch (error) {
                 console.error('Error uploading cover photo:', error);
+                this.uploadingProfilePhoto = true;
             }
         },
         async uploadProfileImage(file) {
+            this.uploadingProfilePhoto = false;
             const formData = new FormData();
             formData.append('profile_photo', file);
 
@@ -448,6 +466,13 @@ export default {
                 });
                 console.log('cover photo:', response.data);
                 this.coverImagePath = 'photos/d-cover.jpg';
+                // Update cover position and fetch user data again
+                this.userData.cover_position = "0px";
+                await axios.post('/api/update-cover-position', {
+                    cover_position: this.userData.cover_position
+                });
+                await this.$store.dispatch('fetchUserData');
+                this.$refs.coverImage.style.top = '0px';
             } catch (error) {
                 console.error('Error removing cover photo:', error);
                 this.message = response.data.error;
@@ -472,7 +497,7 @@ export default {
 <style>
 .profile_bg_img {
     position: relative;
-    height: 500px;
+    height: 50vh;
 }
 
 .profile-cover-photo {
@@ -559,4 +584,16 @@ export default {
         min-width: 660px;
     }
 }
+
+@media (max-width: 991px) {
+    .profile-cover-photo {
+        top: 0px !important;
+    }
+}
+
+/* @media (max-width: 1199px) {
+    .profile-cover-photo{
+        top: 0px !important;
+    }
+} */
 </style>

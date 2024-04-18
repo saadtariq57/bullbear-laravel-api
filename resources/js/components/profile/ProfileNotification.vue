@@ -1,5 +1,7 @@
 <template>
-  <div class="col-lg-8">
+  <div class="container mt-2 mb-4">
+  <div class="row">
+  <div class="col-lg-8 mt-3">
     <div class="bg-white shadow">
       <div class="border-bottom p-3 ">
       <h2 class="mb-0 fs-4 fw-6">All Notifications</h2>
@@ -111,12 +113,21 @@
   </div>
 </div>
 <div class="col-lg-4">
-  
+  <Markets />
+  <LatestArticles />
+</div>
+</div>
 </div>
 </template>
 <script>
 import { Dropdown } from 'bootstrap';
+import Markets from '../widgets/Markets.vue';
+import LatestArticles from '../widgets/LatestArticles.vue'
 export default{
+  components: {
+        LatestArticles,
+        Markets
+    },
   methods: {
         toggleDropdown(event) {
             const dropdownElement = event.target.closest('.dropdown-toggle');
@@ -124,7 +135,7 @@ export default{
             dropdownInstance.toggle();
         },
       }
-}
+    }
 </script>
 <style>
 .list-group-item-action:hover {

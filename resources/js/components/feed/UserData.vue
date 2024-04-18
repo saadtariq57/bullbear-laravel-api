@@ -6,8 +6,10 @@
                 <img class="w-100 h-100 object-fit-cover" :src="`/uploads/${userData.cover}`" alt="Cover Image">
             </div>
             <div class="wow_side_loggd_usr_hdr">
-                <div class="avatar">
-                    <img class="w-100 rounded-circle" :src="`/uploads/${userData.avatar}`" alt="Profile Picture">
+                <div class="rounded-circle bg-white d-flex justify-content-center align-items-center">
+                <div class="avatar bg-white rounded-circle text-center d-flex justify-content-center align-items-center">
+                    <img class="rounded-circle" :src="`/uploads/${userData.avatar}`" alt="Profile Picture" width="75px" height="75px">
+                </div>
                 </div>
                 <div class="title text-center">
                     <a class="text-black fw-bold" href="/profile">{{ userData.name }}</a>
