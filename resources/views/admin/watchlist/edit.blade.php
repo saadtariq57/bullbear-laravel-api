@@ -1,9 +1,9 @@
 \@extends('admin.layouts.master')
 @section('title')
-    Add New Watchlist
+    Edit Watchlist
 @endsection
 @section('page-title')
-    Add New Watchlist
+    Edit Watchlist
 @endsection
 @section('body')
 
@@ -13,7 +13,8 @@
         <!-- Start your content -->
         <div class=" manage-watchlist-con position-relative">
             <div class="Manage-list pl-1">
-                <input type="text" v-model="editedWatchlistName" class="WatchlistName" @input="handleInput" value="My Watchlist 1">
+                <input type="text" v-model="editedWatchlistName" class="WatchlistName" @input="handleInput"
+                    value="My Watchlist 1">
             </div>
             <div class="manage-watchlist-sidebar mt-3 d-flex">
                 <div>
@@ -45,9 +46,6 @@
                                             <p class="text-oneline company_name mb-0">Apple Inc</p>
                                         </td>
                                         <td>USA</td>
-                                    </tr>
-                                    <tr v-show="error">
-                                        <td colspan="3" class="text-center">No symbols found</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -169,19 +167,21 @@
             right: 5px;
             top: 3px;
         }
-        .WatchlistName{
+
+        .WatchlistName {
             border: 0;
-    outline: 0;
-    height: 39px;
-    width: 270px;
-    padding: 10px;
-    color: black;
-    font: 600 25px/40px "sans-serif";
-    font-family: sans-serif
+            outline: 0;
+            height: 39px;
+            width: 270px;
+            padding: 10px;
+            color: black;
+            font: 600 25px/40px "sans-serif";
+            font-family: sans-serif
         }
-        div.manage-watchlist-con{
+
+        div.manage-watchlist-con {
             border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px 20px !important;
+            border-radius: 10px;
+            padding: 20px 20px !important;
         }
     </style>

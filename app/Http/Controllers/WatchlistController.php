@@ -327,5 +327,10 @@ class WatchlistController extends Controller
         // $watchlists = watchlists::all();
         return view('admin.watchlist.create');
     }
+    public function WatchlistEdit()
+    {
+        // $watchlists = watchlists::all();
+        return view('admin.watchlist.edit');
+    }
 }
 

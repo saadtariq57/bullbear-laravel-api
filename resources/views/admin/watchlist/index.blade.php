@@ -58,9 +58,9 @@
                                         <td>My Watchlist 1</td>
                                         <td>10</td>
                                         <td>
-                                            <ul class="list-inline mb-0">
+                                            <ul class="list-inline mb-0 d-flex align-items-center">
                                                 <li class="list-inline-item">
-                                                    <a href=""
+                                                    <a href="{{ route('admin.watchlist.edit') }}"
                                                         class="px-2 text-primary">
                                                         <i class="ri-pencil-line font-size-18"></i>
                                                     </a>
