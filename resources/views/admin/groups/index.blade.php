@@ -70,7 +70,7 @@
                                                 <img src="{{ URL::asset($group->avatar) }}" alt="" class="avatar-xs rounded-circle">
                                             </td>
                                             <!-- Assuming you have a method in your Group model to get the user name -->
-                                            <td>{{ $group->user->name }}</td>
+                                            <td></td>
                                             <td>{{ $group->group_name }}</td>
                                             <td>{{ ucfirst($group->privacy) }}</td>
                                             <td>{{ $group->active == 0 ? 'Inactive' : 'Active' }}</td>
