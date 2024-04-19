@@ -328,9 +328,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Single Exam route
     Route::get('/exam/{examName}/question/{questionId}', [ExamController::class, 'getExamQuestions'])
-    ->name('exam.question')
-    ->where('examName', '[a-zA-Z0-9\-]+')
-    ->where('questionId', '[0-9]+');
+        ->name('exam.question')
+        ->where('examName', '[a-zA-Z0-9\-]+')
+        ->where('questionId', '[0-9]+');
 
     // Exam Results route
     Route::get('/exam/result/{id}', function () {
@@ -389,7 +389,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('delete/{symbol}', [SymbolController::class, 'destroy'])->name('destroy');
             Route::get('search', [SymbolController::class, 'search'])->name('search');
         });
-      
+
 
         // route group for WidgetController
         Route::prefix('admin/widgets')->name('admin.widgets.')->group(function () {
@@ -427,7 +427,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
             Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
         });
-        
+        Route::get('/admin/emails', function () {
+            return view('admin.emails.mass_emails');
+        })->name('emails');
+        // routes/web.php
+
+        Route::get('admin/emails/editors/empty_editor', function () {
+            return view('admin.emails.editors.empty_editor');
+        })->name('code-editor');
+        Route::get('admin/emails/editors/text_editor', function () {
+            return view('admin.emails.editors.text_editor');
+        })->name('text-editor');
         // route group for GroupController
         Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
@@ -450,15 +460,15 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // route group for UserController
-        Route::prefix('admin/users')->name('admin.users.')->group(function() {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('create', [UserController::class, 'create'])->name('create');
-        Route::post('/', [UserController::class, 'store'])->name('store');
-        Route::get('{user}/edit', [UserController::class, 'edit'])->name('edit');
-        Route::put('{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
-        Route::get('search', [UserController::class, 'search'])->name('search');
-        // Additional routes for user management can be added here
+        Route::prefix('admin/users')->name('admin.users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('create', [UserController::class, 'create'])->name('create');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::get('{user}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::put('{user}', [UserController::class, 'update'])->name('update');
+            Route::delete('{user}', [UserController::class, 'destroy'])->name('destroy');
+            Route::get('search', [UserController::class, 'search'])->name('search');
+            // Additional routes for user management can be added here
             // Categories Routes
             Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');
             Route::get('categories/create', [GroupController::class, 'categoriesCreate'])->name('categories.create');
@@ -480,7 +490,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Route group for PostController
-        Route::prefix('admin/posts')->name('admin.posts.')->group(function() {
+        Route::prefix('admin/posts')->name('admin.posts.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::get('create', [PostController::class, 'create'])->name('create');
             Route::post('/', [PostController::class, 'store'])->name('store');
@@ -502,6 +512,5 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{subscription_plan}', [SubscriptionPlanController::class, 'destroy'])->name('destroy');
             // Additional routes for subscription plan management can be added here
         });
-
     });
 });

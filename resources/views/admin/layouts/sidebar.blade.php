@@ -12,7 +12,7 @@
             </span>
         </a>
 
-        <a href="index" class="logo logo-light">
+        <a href="/" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm-light.png') }}" alt="logo-sm-light" height="24">
             </span>
@@ -118,7 +118,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.settings.subscription_plans.index') }}">Subscription Plans</a></li>
-                        <li><a href="ui-alerts">Mass Emails</a></li>
+                        <li><a href="/admin/emails">Mass Emails</a></li>
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
                     </ul>
