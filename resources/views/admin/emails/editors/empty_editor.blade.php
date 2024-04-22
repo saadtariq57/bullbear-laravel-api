@@ -1,10 +1,10 @@
 <!-- resources/views/email/editor.blade.php -->
 @extends('admin.layouts.master')
 @section('title')
-    Empty Template
+    Empty Email
 @endsection
 @section('page-title')
-Empty Template
+Empty Email
 @endsection
 @section('css')   <!-- Sweet Alert CSS -->
     <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />

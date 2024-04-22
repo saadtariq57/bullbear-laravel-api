@@ -22,8 +22,9 @@ Verfication Email
 }
 </style>
     <div class="row">
-        <div class="col-12">
-            <textarea name="email_template_content" id="email_template_content"></textarea>
+        <div class="col-12 text-end">
+            <button class="btn btn-primary">Save</button>
+            <textarea name="email_template_content" id="email_template_content" hidden></textarea>
         </div>
     </div>
 @endsection
@@ -42,7 +43,7 @@ Verfication Email
             toolbar_mode: 'floating',
             toolbar: 'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | fontsizeselect | link unlink image | table | codesample | pagebreak | fullscreen | help',
             menubar: true,
-            height: 700,
+            height: 650,
             setup: function (editor) {
                 editor.on('change', function () {
                     editor.save();
