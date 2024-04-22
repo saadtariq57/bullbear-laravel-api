@@ -48,7 +48,7 @@
                                 <div class="themes-card-wrapper d-flex justify-content-around gap-1 py-2">
                                     <div class="card border shadow-lg">
                                         <div class="card-body text-center">
-                                            <h5 class="card-title">Empty Template</h5>
+                                            <h5 class="card-title">Empty Email</h5>
                                             <div class="theme-img-wrapper d-flex justify-content-center align-items-center">
                                                 <i class="fa fa-code fs-1"></i>
                                             </div>
@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="card border shadow-lg">
                                         <div class="card-body text-center">
-                                            <h5 class="card-title">text Mode</h5>
+                                            <h5 class="card-title">Verfication Email</h5>
                                             <div class="theme-img-wrapper d-flex justify-content-center align-items-center">
                                                 <i class="fa fa-code fs-1"></i>
                                             </div>
