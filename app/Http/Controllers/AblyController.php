@@ -16,7 +16,7 @@ class AblyController extends Controller
             'user.notifications.'.$clientId => ['subscribe'],
             'private:feed.posts.updates.'.$clientId  => ['subscribe'],
             'private:group.posts.updates.*' => ['subscribe'],
-            'private:group.chat.*' => ['publish', 'subscribe', 'presence'],
+            'private:groups.chat.*' => ['publish', 'subscribe', 'presence'],
         ];
 
         $tokenRequestData = $ably->auth->createTokenRequest([

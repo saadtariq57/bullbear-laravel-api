@@ -17,12 +17,12 @@ return new class extends Migration
             $table->integer('group_id')->nullable(); // For referencing old DB
             $table->string('group_name', 32);
             $table->string('group_title', 40);
-            $table->string('avatar', 120)->default('upload/photos/d-group.jpg');
-            $table->string('cover', 120)->default('upload/photos/d-cover.jpg');
+            $table->string('avatar', 120)->default('photos/d-group.jpg');
+            $table->string('cover', 120)->default('photos/d-cover.jpg');
             $table->text('about')->nullable();
             $table->unsignedBigInteger('category_id');
             $table->string('privacy', 120)->default('public');
-            $table->enum('join_privacy', ['1', '2'])->default('1');
+            $table->enum('join_privacy', ['0', '1'])->default('0');
             $table->enum('active', ['0', '1'])->default('0');
             $table->unsignedBigInteger('time');
             $table->string('symbol', 10)->nullable();
