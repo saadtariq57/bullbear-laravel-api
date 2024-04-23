@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\EmailTemplateController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -428,17 +429,18 @@ Route::middleware(['auth'])->group(function () {
             Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
             Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
         });
-        Route::get('/admin/emails', function () {
-            return view('admin.emails.mass_emails');
-        })->name('emails');
-        // routes/web.php
 
-        Route::get('admin/emails/editors/empty_editor', function () {
-            return view('admin.emails.editors.empty_editor');
-        })->name('code-editor');
-        Route::get('admin/emails/editors/text_editor', function () {
-            return view('admin.emails.editors.text_editor');
-        })->name('text-editor');
+        // mass emails routes
+        Route::prefix('admin/emails')->name('admin.emails.')->group(function () {
+            Route::get('/', [EmailTemplateController::class, 'index'])->name('index');  // View all templates
+            Route::get('/editors/{id}', [EmailTemplateController::class, 'editor'])->name('editor');  // Edit template in TinyMCE
+            // Route::get('/{id}/edit', [EmailTemplateController::class, 'edit'])->name('edit');  // Edit template details
+            Route::post('/{id}', [EmailTemplateController::class, 'update'])->name('update');  // Update existing template
+            Route::post('/', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('saveAsNew');  // Save as a new template
+            // Route::post('/{id}/reset', [EmailTemplateController::class, 'resetToDefault'])->name('reset');  // Reset template to default
+        });
+        
+
         // route group for GroupController
         Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
