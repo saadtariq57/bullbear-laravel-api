@@ -69,23 +69,6 @@
                                                             <button class="btn btn-primary w-100"
                                                                 type="submit">Reset</button>
                                                         </div>
-
-                                                        <div class="mt-4 pt-2 text-center">
-                                                            <div class="signin-other-title">
-                                                                <h5 class="font-size-14 mb-4 title">Sign In with</h5>
-                                                            </div>
-                                                            <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-sm p-1"><i
-                                                                        class="bi bi-facebook Blue fs-4"></i></button>
-                                                                <button type="button" class="btn btn-sm p-1">
-                                                                    <img src="{{ URL::asset('build/images/brands/google.png') }}" alt="google" width="20px">
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm p-1"><i
-                                                                        class="bi bi-github fs-4"></i></button>
-                                                                <button type="button" class="btn btn-sm p-1"><i
-                                                                        class="bi bi-twitter-x fs-4"></i></button>
-                                                            </div>
-                                                        </div>
                                                     </form>
                                                 </div>
 
