@@ -65,18 +65,4 @@ class NewPost implements ShouldBroadcast
     {
         return 'NewPost';
     }
-    /*public function broadcastToAbly()
-    {
-        $ably = new AblyRest(env('ABLY_KEY'));
-        $channels = $this->broadcastOn();
-        $data = $this->broadcastWith();
-
-        foreach ($channels as $channel) {
-            $channelName = method_exists($channel, 'name') ? $channel->name : null;
-            if ($channelName) {
-                $ablyChannel = $ably->channels->get($channelName);
-                $ablyChannel->publish('NewPost', $data);
-            }
-        }
-    }*/
 }

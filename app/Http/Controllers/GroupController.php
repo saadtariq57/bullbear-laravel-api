@@ -7,6 +7,7 @@ use App\Models\GroupCategory;
 use App\Models\GroupMembers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -57,33 +58,70 @@ class GroupController extends Controller
         return view('admin.groups.index', compact('groups'));
     }
 
-    public function showMembers(Group $group)
+
+    public function showMembers($groupId)
     {
-        $members = $group->members()
-                         ->with('user')
-                         ->get(['user_id', 'role', 'active', 'last_seen']);
+        $group = Group::with(['members' => function($query) {
+            $query->select('users.id', 'users.name', 'users.email')
+                  ->withPivot('role', 'active', 'last_seen');
+        }])->find($groupId);
 
-        return view('admin.groups.members', ['members' => $members, 'group' => $group]);
-    }
-
-    public function updateMembers(Request $request, Group $group)
-    {
-        $incomingMembers = $request->input('members');
-
-        // Handle adding/updating members
-        foreach ($incomingMembers as $memberData) {
-            $group->members()->updateOrCreate(
-                ['user_id' => $memberData['user_id']],
-                ['role' => $memberData['role'], 'active' => $memberData['active']]
-            );
+        if (!$group) {
+            Log::info('Group not found for ID: ' . $groupId);
+            return response()->json(['message' => 'Group not found'], 404);
         }
 
-        // Handle removing members
-        $incomingMemberIds = array_column($incomingMembers, 'user_id');
-        $group->members()->whereNotIn('user_id', $incomingMemberIds)->delete();
-
-        return response()->json(['message' => 'Members updated successfully.']);
+        Log::info('Members data:', ['members' => $group->members->toArray()]);
+        return view('admin.groups.members', ['members' => $group->members, 'group' => $group]);
     }
+
+    /*public function updateMember(Request $request, Group $group)
+    {
+        $userId = $request->user_id;
+        $role = $request->role;
+        $active = $request->active;
+
+        $group->members()->updateOrCreate(
+            ['user_id' => $userId],
+            ['role' => $role, 'active' => $active]
+        );
+
+        return response()->json(['message' => 'Member updated successfully.']);
+    }*/
+
+
+    public function updateMember(Request $request, Group $group)
+    {
+        $userId = $request->user_id;
+        $role = $request->role;
+        $active = $request->active;
+
+        // Specify the table name in the where clause to avoid ambiguity
+        $member = $group->members()->where('group_members.user_id', $userId)->first();
+
+        if ($member) {
+            // Update pivot table details
+            $member->pivot->role = $role;
+            $member->pivot->active = $active;
+            $member->pivot->save();
+            return response()->json(['message' => 'Member updated successfully.']);
+        } else {
+            // If the member is not already part of the group, add them
+            $group->members()->attach($userId, ['role' => $role, 'active' => $active]);
+            return response()->json(['message' => 'New member added successfully.']);
+        }
+    }
+
+
+
+    public function removeMember(Request $request, Group $group)
+    {
+        $userId = $request->user_id;
+        $group->members()->detach($userId);
+
+        return response()->json(['message' => 'Member removed successfully.']);
+    }
+
 
     public function create()
     {

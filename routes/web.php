@@ -449,7 +449,12 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
             // Member Routes
             Route::get('{group}/members', [GroupController::class, 'showMembers'])->name('members');
-            Route::post('{group}/members', [GroupController::class, 'updateMembers']);
+            // Update a single member
+            Route::post('{group}/updateMember', [GroupController::class, 'updateMember'])->name('updateMember');
+
+            // Remove a single member
+            Route::delete('{group}/removeMember', [GroupController::class, 'removeMember'])->name('removeMember');
+
 
             // Group Categories Routes
             Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');
