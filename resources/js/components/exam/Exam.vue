@@ -36,9 +36,14 @@
     </div>
   </div>
   <div  v-if="!showAllExams" class="exams">
-    <div class="mb-4">
-      <h2 class="fw-6 text-uppercase m-0">Exams</h2>
-      <div class="border border-bottom border-primary d-inline-block mb-2" style="width: 74px;"></div>
+    <div class="mb-4 d-flex align-items-center justify-content-between">
+      <div>
+        <h2 class="fw-6 text-uppercase m-0">Exams</h2>
+        <div class="border border-bottom border-primary d-inline-block mb-2" style="width: 74px;"></div>
+      </div>
+      <div>
+        <a href="/previous-results" class="btn btn-primary">Previous Results</a>
+      </div>
     </div>
     <div class="exam-card-wrapper row gy-4">
       <div class="col-lg-6 col-md-6 col-12">

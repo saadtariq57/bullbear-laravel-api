@@ -338,6 +338,10 @@ Route::middleware(['auth'])->group(function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
 
+    Route::get('/previous-results', function () {
+        return view('exams.previous-results');
+    })->name('exams.previous-results');
+
     // RichTv Pro
     Route::get('/watchlist-ideas', function () {
         return view('markets.market');

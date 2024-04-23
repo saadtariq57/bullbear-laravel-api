@@ -12,7 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AblyController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\SubscriptionStatusController;
-
+use App\Http\Controllers\ExamResultController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +23,9 @@ use App\Http\Controllers\SubscriptionStatusController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/exam/results', [ExamResultController::class, 'index']);
+Route::get('/api/exam/{examId}/questions', [ExamResultController::class, 'getExamQuestions']);
+Route::get('/api/exam/titles', [ExamResultController::class, 'getAllExamTitles']);
 
 Route::get('/check-login', function () {
     if (auth()->check()) {
