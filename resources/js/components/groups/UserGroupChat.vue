@@ -176,7 +176,6 @@
 </template>
 
 <script>
-//need group id here somehow and send to fetchPosts
 import { mapState, mapActions } from 'vuex';
 import CreatePost from '../feed/CreatePost.vue';
 import PostItems from '../feed/PostItems.vue';
@@ -204,8 +203,7 @@ export default {
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         handleShowPostModal(post) {
-            this.$refs.createPost.sharePostModal(post); // Call the method in the child component
-            //   console.log('Received post data:', post);
+            this.$refs.createPost.sharePostModal(post);
         }
     },
 }

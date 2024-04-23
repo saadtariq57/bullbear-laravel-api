@@ -31,8 +31,8 @@ return new class extends Migration
             $table->string('city', 50)->nullable();
             $table->string('state', 50)->nullable();
             $table->string('zip', 11)->nullable();
-            $table->string('avatar')->default('upload/photos/d-avatar.jpg');
-            $table->string('cover')->default('upload/photos/d-cover.jpg');
+            $table->string('avatar')->default('photos/d-avatar.jpg');
+            $table->string('cover')->default('photos/d-cover.jpg');
             $table->string('website', 50)->nullable();
             $table->string('twitter', 50)->nullable();
             $table->string('linkedin', 32)->nullable();
