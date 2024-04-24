@@ -33,9 +33,7 @@
                         </template>
                         <template v-else>
                             <div class="text-center my-5 py-5">
-                                <div
-                                    class="no-chat-wrapper rounded-circle bg-cta d-flex justify-content-center align-items-center position-relative mx-auto">
-
+                                <div class="no-chat-wrapper rounded-circle bg-cta d-flex justify-content-center align-items-center position-relative mx-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         width="35" height="35" viewBox="0 0 39 37"
                                         class="conversations-visitor-open-icon">
@@ -60,12 +58,11 @@
                                                 </g>
                                             </g>
                                         </g>
-
                                     </svg>
                                 </div>
-                                <p class="fs-5 fw-5 mb-0 mt-2">You have not joined any chats.</p>
+                                <p class="fs-5 fw-5 mb-0 mt-2">You haven't joined any chat rooms. See suggested rooms below.</p>
                             </div>
-                            <ActiveChatRooms :chats="suggestedChats" :joined="false" hidden />
+                            <ActiveChatRooms :chats="suggestedChats" :joined="false" />
                         </template>
                     </div>
                 </div>

@@ -33,13 +33,13 @@
                     <div class="form-group">
                         <label for="avatar">Avatar</label>
                         <input type="file" class="form-control" name="avatar">
-                        <img src="{{ URL::asset($group->avatar) }}" class="rounded-circle me-2" height="100px" width="100px">
+                        <img src="{{ URL::asset('uploads/' . $group->avatar) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
                         <label for="cover">Cover Image</label>
                         <input type="file" class="form-control" name="cover">
-                        <img src="{{ URL::asset($group->cover) }}" class="rounded-circle me-2" height="100px" width="100px">
+                        <img src="{{ URL::asset('uploads/' . $group->cover) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
@@ -79,8 +79,8 @@
                     <div class="form-group">
                         <label for="join_privacy">Join Privacy</label>
                         <select class="form-control" name="join_privacy">
-                            <option value="1" {{ $group->join_privacy ? 'selected' : '' }}>Open</option>
-                            <option value="0" {{ !$group->join_privacy ? 'selected' : '' }}>Closed</option>
+                            <option value="public" {{ $group->join_privacy == 'public' ? 'selected' : '' }}>Public</option>
+                            <option value="private" {{ $group->join_privacy == 'private' ? 'selected' : '' }}>Private</option>
                         </select>
                     </div>
 

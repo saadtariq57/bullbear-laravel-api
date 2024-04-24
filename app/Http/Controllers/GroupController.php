@@ -17,84 +17,56 @@ class GroupController extends Controller
         return view('groups.group');
     }
 
-    public function joinedChats(Request $request)
-    {
-        $user = $request->user();
-        $joinedGroups = Group::whereHas('members', function($query) use ($user) {
-            $query->where('group_members.user_id', $user->id);
-        })->get();
 
-        return response()->json($joinedGroups);
+public function index(Request $request)
+{
+    $search = $request->query('search');
+
+    if ($search) {
+        $groups = Group::with('category')
+                       ->withCount('members')  // Add count of members
+                       ->where(function ($query) use ($search) {
+                           $query->where('group_name', 'LIKE', "%{$search}%")
+                                 ->orWhere('symbol', 'LIKE', "%{$search}%")
+                                 ->orWhere('group_title', 'LIKE', "%{$search}%")
+                                 ->orWhereHas('category', function ($query) use ($search) {
+                                     $query->where('name', 'LIKE', "%{$search}%");
+                                 });
+                       })
+                       ->paginate(15);
+    } else {
+        $groups = Group::with('category')
+                       ->withCount('members')
+                       ->paginate(15);
     }
 
-    public function suggestedChats(Request $request)
-    {
-        $recentlyActiveGroups = Group::whereHas('messages', function($query) {
-            $query->orderBy('created_at', 'desc');
-        })->take(10)->get();
+    return view('admin.groups.index', compact('groups'));
+}
 
-        return response()->json($recentlyActiveGroups);
-    }
-
-    public function index(Request $request)
-    {
-        $search = $request->query('search');
-
-
-        if($search) {
-            $groups = Group::with('category')
-                            ->where(function ($query) use ($search) {
-                                $query->where('group_name', 'LIKE', "%{$search}%")
-                                      ->orWhere('symbol', 'LIKE', "%{$search}%")
-                                      ->orWhereHas('category', function ($query) use ($search) {
-                                          $query->where('name', 'LIKE', "%{$search}%");
-                                      });
-                            })
-                            ->paginate(15);
-        } else {
-            $groups = Group::with('category')->paginate(15);
-        }
-
-        return view('admin.groups.index', compact('groups'));
-    }
 
 
     public function showMembers($groupId)
     {
         $group = Group::with(['members' => function($query) {
-            $query->select('users.id', 'users.name', 'users.email')
-                  ->withPivot('role', 'active', 'last_seen');
-        }])->find($groupId);
+                    $query->select('users.id', 'users.name', 'users.email')
+                          ->withPivot('role', 'active', 'last_seen');
+                }])
+                ->withCount('members')
+                ->find($groupId);
 
         if (!$group) {
-            Log::info('Group not found for ID: ' . $groupId);
             return response()->json(['message' => 'Group not found'], 404);
         }
-
-        Log::info('Members data:', ['members' => $group->members->toArray()]);
-        return view('admin.groups.members', ['members' => $group->members, 'group' => $group]);
+        
+        return view('admin.groups.members', ['members' => $group->members, 'group' => $group, 'membersCount' => $group->members_count]);
     }
-
-    /*public function updateMember(Request $request, Group $group)
-    {
-        $userId = $request->user_id;
-        $role = $request->role;
-        $active = $request->active;
-
-        $group->members()->updateOrCreate(
-            ['user_id' => $userId],
-            ['role' => $role, 'active' => $active]
-        );
-
-        return response()->json(['message' => 'Member updated successfully.']);
-    }*/
 
 
     public function updateMember(Request $request, Group $group)
     {
         $userId = $request->user_id;
         $role = $request->role;
-        $active = $request->active;
+        $status = $request->status;
 
         // Specify the table name in the where clause to avoid ambiguity
         $member = $group->members()->where('group_members.user_id', $userId)->first();
@@ -102,12 +74,13 @@ class GroupController extends Controller
         if ($member) {
             // Update pivot table details
             $member->pivot->role = $role;
-            $member->pivot->active = $active;
+            $member->pivot->status = $status;
+            $member->pivot->updated_at = now();
             $member->pivot->save();
             return response()->json(['message' => 'Member updated successfully.']);
         } else {
             // If the member is not already part of the group, add them
-            $group->members()->attach($userId, ['role' => $role, 'active' => $active]);
+            $group->members()->attach($userId, ['role' => $role, 'active' => $active, 'created_at' => now(), 'updated_at' => now() ]);
             return response()->json(['message' => 'New member added successfully.']);
         }
     }
@@ -118,9 +91,87 @@ class GroupController extends Controller
     {
         $userId = $request->user_id;
         $group->members()->detach($userId);
-
         return response()->json(['message' => 'Member removed successfully.']);
     }
+
+    public function joinGroup(Request $request, $groupId)
+    {
+        $user = $request->user();
+        $group = Group::findOrFail($groupId);
+
+        $member = $group->members()->where('group_members.user_id', $user->id)->first();
+
+        if ($group->join_privacy == 'public') {
+            if (!$member) {
+                $group->members()->attach($user->id, ['status' => 'active']);
+                return response()->json(['joined' => true, 'requestPending' => false, 'message' => 'You have joined the group.']);
+            }
+        } elseif ($group->join_privacy == 'private') {
+            if (!$member) {
+                $group->members()->attach($user->id, ['status' => 'pending']);
+                return response()->json(['joined' => false, 'requestPending' => true, 'message' => 'Your request to join the group has been sent.']);
+            }
+        }
+
+        return response()->json(['error' => true, 'message' => 'Unable to process join request.'], 400);
+    }
+
+
+    public function joinedChats(Request $request)
+    {
+        $user = $request->user();
+        $joinedGroups = Group::whereHas('members', function($query) use ($user) {
+            $query->where('group_members.user_id', $user->id)
+                  ->whereIn('group_members.status', ['active', 'pending', 'rejected']);
+        })
+        ->withCount('members')
+        ->with(['members' => function($query) use ($user) {
+            $query->where('group_members.user_id', $user->id)
+                  ->select(['group_members.user_id', 'group_members.status', 'group_members.updated_at']);
+        }])
+        ->get();
+        return response()->json($joinedGroups->map(function($group) {
+            $member = $group->members->first();
+            if ($member) {
+                $group->joined = $member->status === 'active';
+                $group->requestPending = $member->status === 'pending';
+            } else {
+                // Default settings if no member data found
+                $group->joined = false;
+                $group->requestPending = false;
+            }
+            $group->membersCount = $group->members_count;
+            return $group;
+        }));
+    }
+
+    public function suggestedChats(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $recentlyActiveGroups = Group::whereHas('messages', function($query) {
+            $query->orderBy('created_at', 'desc');
+        })
+        ->whereDoesntHave('members', function($query) use ($userId) {
+            // Specify the table name in the where clause to avoid ambiguity
+            $query->where('group_members.user_id', $userId);
+        })
+        ->with(['members' => function($query) use ($userId) {
+            // Again, be specific with table names to prevent SQL errors
+            $query->where('group_members.user_id', $userId);
+        }])
+        ->withCount('members')
+        ->take(10)
+        ->get();
+
+        return response()->json($recentlyActiveGroups->map(function($group) {
+            $member = $group->members->first(); // Since it's filtered by user, it should have only one entry if any
+            $group->joined = $member && $member->pivot->status === 'active';
+            $group->requestPending = $member && $member->pivot->status === 'pending';
+            return $group;
+        }));
+    }
+
 
 
     public function create()
@@ -149,13 +200,13 @@ class GroupController extends Controller
 
         if ($request->hasFile('avatar')) {
             $validatedData['avatar'] = $request->file('avatar')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         }
 
         if ($request->hasFile('cover')) {
             $validatedData['cover'] = $request->file('cover')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         }
 
@@ -180,7 +231,7 @@ class GroupController extends Controller
             'about' => 'nullable|string',
             'category_id' => 'required|exists:group_categories,id',
             'privacy' => 'required|string|in:public,private',
-            'join_privacy' => 'required|boolean',
+            'join_privacy' => 'required|in:public,private',
             'active' => 'required|boolean',
             'symbol' => 'nullable|string|max:255',
             'exchange' => 'nullable|string|max:255'
@@ -188,7 +239,7 @@ class GroupController extends Controller
 
         if ($request->hasFile('avatar')) {
             $validatedData['avatar'] = $request->file('avatar')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         } else {
             $validatedData['avatar'] = $group->avatar;
@@ -196,7 +247,7 @@ class GroupController extends Controller
 
         if ($request->hasFile('cover')) {
             $validatedData['cover'] = $request->file('cover')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         } else {
             $validatedData['cover'] = $group->cover;
