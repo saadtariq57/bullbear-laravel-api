@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AblyController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\SubscriptionStatusController;
+use App\Http\Controllers\WidgetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -69,7 +70,7 @@ Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 //     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
 //     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
 // });
-Route::prefix('watchlist')->name('watchlist.')->group(function() {
+Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
@@ -82,7 +83,7 @@ Route::prefix('watchlist')->name('watchlist.')->group(function() {
 
 //Exam Routes
 
-Route::prefix('exams')->name('exam.')->group(function() {
+Route::prefix('exams')->name('exam.')->group(function () {
     Route::get('/', [ExamController::class, 'getExams']);
     Route::get('/questions/start-exam/{examId}', [ExamController::class, 'getExamQuestions'])->name('questions.exam_queries');
 });
@@ -111,7 +112,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route to retrieve and show exam result
     Route::get('/exam/result/{examResultId}', [ExamController::class, 'getExamResult'])->name('exam.result');
 
-    
+
     Route::get('/pricingPlans', [SubscriptionPlanController::class, 'userIndex'])->name('userIndex');
     Route::post('/createUserSubscription', [SubscriptionPlanController::class, 'createUserSubscription'])->name('createUserSubscription');
     // Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->middleware(Subscribed::class);
@@ -122,7 +123,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
 
     //User Feed Routes
-    Route::prefix('userposts')->name('post.')->group(function() {
+    Route::prefix('userposts')->name('post.')->group(function () {
         Route::get('/all', [PostController::class, 'getUserPosts'])->name('all');
         Route::get('/text', [PostController::class, 'getTextPosts'])->name('text');
         Route::get('/image', [PostController::class, 'getImagePosts'])->name('image');
@@ -138,3 +139,4 @@ Route::post('/update-cover-position', [UserController::class, 'updateCoverPositi
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
 Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
+Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);

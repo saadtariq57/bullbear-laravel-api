@@ -28,19 +28,24 @@ class HomeController extends Controller
         return view('admin.index');
     }
 
-    public function feedPage(){
+    public function feedPage()
+    {
         return view('feed');
     }
-    public function post(){
+    public function post()
+    {
         return view('single-post');
     }
-    public function profilePage(){
+    public function profilePage()
+    {
         return view('profile.index');
     }
-    public function groupPage(){
+    public function groupPage()
+    {
         return view('groups.index');
     }
-    public function singleGroupPage(){
+    public function singleGroupPage()
+    {
         return view('groups.single');
     }
     public function colorOptions()
@@ -74,4 +79,5 @@ class HomeController extends Controller
             return response()->json(['error' => 'Unable to fetch link data: ' . $e->getMessage()], 500);
         }
     }
+    
 }

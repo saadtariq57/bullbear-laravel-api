@@ -234,12 +234,12 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
-import { Dropdown } from 'bootstrap';
-import { Modal } from 'bootstrap';
-import { mapState } from 'vuex';
-import VueCropper from 'vue-cropperjs';
-import 'cropperjs/dist/cropper.css';
+import "cropperjs/dist/cropper.css";
+import VueCropper from "vue-cropperjs";
+import axios from "axios";
+import { Dropdown } from "bootstrap";
+import { Modal } from "bootstrap";
+import { mapState } from "vuex";
 export default {
     components: {
         VueCropper
@@ -477,7 +477,7 @@ export default {
                 console.error('Error removing cover photo:', error);
                 this.message = response.data.error;
             }
-        }
+        },
     },
     mounted() {
         if (this.userData.avatar != '') {
