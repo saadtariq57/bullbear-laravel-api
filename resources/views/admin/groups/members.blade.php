@@ -68,11 +68,12 @@
                                             <option value="admin" {{ $member->pivot->role === 'admin' ? 'selected' : '' }}>Admin</option>
                                         </select>
                                     </td>
-                                    <td data-field="active">
-                                        <select class="form-control active-select">
-                                            <option value="1" {{ $member->pivot->active ? 'selected' : '' }}>Active</option>
-                                            <option value="0" {{ !$member->pivot->active ? 'selected' : '' }}>Inactive</option>
-                                        </select>
+                                    <td data-field="status">
+                                    <select class="form-control status-select" data-id="{{ $member->id }}">
+                                        <option value="active" @if($member->pivot->status == 'active') selected @endif>Active</option>
+                                        <option value="pending" @if($member->pivot->status == 'pending') selected @endif>Pending</option>
+                                        <option value="rejected" @if($member->pivot->status == 'rejected') selected @endif>Rejected</option>
+                                    </select>
                                     </td>
                                     <td>{{ $member->pivot->last_seen }}</td>
                                     <td>
@@ -155,10 +156,11 @@ $(document).ready(function() {
                                 <option value="admin">Admin</option>
                             </select>
                         </td>
-                        <td data-field="active">
-                            <select class="form-control active-select">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
+                        <td data-field="status">
+                            <select class="form-control status-select">
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
                             </select>
                         </td>
                         <td>Just now</td>
@@ -181,14 +183,22 @@ $(document).ready(function() {
         let row = $(this).closest('tr');
         let userID = row.data('id');
         let role = row.find('.role-select').val();
-        let active = row.find('.active-select').val();
+        let status = row.find('.status-select').val();
+
+        if (status === 'rejected') {
+            // If status is rejected, confirm and proceed to remove the member
+            if (confirm("This member will be rejected and removed from the group. Continue?")) {
+                removeMember(userID, row); // Call removeMember function
+            }
+        } else {
+            // Otherwise, proceed to update the member details
             $.ajax({
                 url: '/admin/groups/' + $('#groupId').val() + '/updateMember',
                 type: 'POST',
                 data: {
                     user_id: userID,
                     role: role,
-                    active: active
+                    status: status
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -197,36 +207,42 @@ $(document).ready(function() {
                     alert("Member updated successfully.");
                 },
                 error: function(error) {
-                    alert("Error updating member.");
+                    alert("Error updating member: " + error.responseJSON.message);
                 }
             });
-        });
+        }
+    });
 
-        // Remove Member from Group
-        $(document).on('click', '.removeMember', function() {
-            let row = $(this).closest('tr');
-            let userIDToRemove = row.data('id');
-
-            if (confirm("Are you sure you want to remove this member?")) {
-                $.ajax({
-                    url: '/admin/groups/' + $('#groupId').val() + '/removeMember',
-                    type: 'DELETE',
-                    data: {
-                        user_id: userIDToRemove
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        row.remove();
-                        alert("Member removed successfully.");
-                    },
-                    error: function(error) {
-                        alert("Error removing member.");
-                    }
-                });
+    // Function to remove a member
+    function removeMember(userID, rowElement) {
+        $.ajax({
+            url: '/admin/groups/' + $('#groupId').val() + '/removeMember',
+            type: 'DELETE',
+            data: {
+                user_id: userID
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                rowElement.remove();
+                alert("Member removed successfully.");
+            },
+            error: function(error) {
+                alert("Error removing member: " + error.responseJSON.message);
             }
         });
+    }
+
+    // Remove Member from Group
+    $(document).on('click', '.removeMember', function() {
+        let row = $(this).closest('tr');
+        let userIDToRemove = row.data('id');
+
+        if (confirm("Are you sure you want to remove this member?")) {
+            removeMember(userIDToRemove, row); // Reuse the removeMember function
+        }
+    });
     });
 
 </script>

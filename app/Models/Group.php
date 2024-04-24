@@ -38,6 +38,13 @@ class Group extends Model
 
     public function members()
     {
-        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'user_id');
+        return $this->belongsToMany(User::class, 'group_members', 'group_id', 'user_id')
+                ->withPivot('status', 'updated_at')
+                ->withTimestamps();
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }
