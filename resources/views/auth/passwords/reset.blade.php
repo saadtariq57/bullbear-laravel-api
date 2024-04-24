@@ -13,13 +13,10 @@
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-4">
-                                    <a href="index" class="">
-                                        <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt=""
-                                            height="22" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
-                                            height="22" class="auth-logo logo-light mx-auto">
+                                    <a href="/" class="">
+                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="Rich Tv logo"
+                                            width="200" class="auth-logo logo-dark mx-auto">
                                     </a>
-                                    <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p>
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">

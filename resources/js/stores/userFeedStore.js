@@ -196,7 +196,7 @@ const userFeedModule = {
         if (!rootState.loggedIn || !rootState.userData) return;
         const userId = rootState.userData.id;
         if (context === 'group' && groupId) {
-          ablyService.subscribeToGroupPosts(groupId, (message) => {
+          ablyService.subscribeToGroupPostsUpdates(groupId, (message) => {
             // Handle group posts message For example: commit('someMutation', message.data);
           });
           ablyService.subscribeToGroupChat(groupId, (message) => {

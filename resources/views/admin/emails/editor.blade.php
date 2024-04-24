@@ -1,10 +1,10 @@
 <!-- resources/views/email/editor.blade.php -->
 @extends('admin.layouts.master')
 @section('title')
-    Empty Template
+{{ $template->name }}
 @endsection
 @section('page-title')
-Empty Template
+{{ $template->name }}
 @endsection
 @section('css')   <!-- Sweet Alert CSS -->
     <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -23,7 +23,20 @@ Empty Template
 </style>
     <div class="row">
         <div class="col-12">
-            <textarea name="email_template_content" id="email_template_content"></textarea>
+            <div class="">
+                <form method="POST" action="{{ route('admin.emails.saveAsNew') }}" class="w-75 d-flex gap-3 position-absolute">
+                    @csrf
+                    <input type="hidden" name="email_template_content" id="new_template_content">
+                    <input type="text" name="template_name" placeholder="Enter new template name" class="form-control w-25">
+                    <button type="submit" onclick="copyContent()" class="btn btn-primary">Save as New Template</button>
+                </form>
+                <form method="POST" action="{{ route('admin.emails.update', $template->id) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary d-block ms-auto">Save</button>
+                    <textarea name="email_template_content" id="email_template_content">{{ $template->body }}</textarea>
+                </form>
+            </div>
+            {{-- <textarea name="email_template_content" id="email_template_content"></textarea> --}}
         </div>
     </div>
 @endsection
@@ -35,7 +48,6 @@ Empty Template
     <!-- TinyMCE js -->
     <script src="https://cdn.jsdelivr.net/npm/tinymce@5.10.2/tinymce.min.js"></script>
     <script>
-        // Initialize TinyMCE
         tinymce.init({
             selector: '#email_template_content',
             plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak code',
@@ -44,16 +56,22 @@ Empty Template
             menubar: true,
             height: 700,
             setup: function (editor) {
+                editor.on('init', function () {
+                    // Set content when initializing
+                    editor.setContent(`{!! $template->default_body !!}`);
+                });
                 editor.on('change', function () {
                     editor.save();
                 });
             }
         });
     </script>
-    
-    
-    
-    
+    <script>
+        function copyContent() {
+            document.getElementById('new_template_content').value = tinymce.get('email_template_content').getContent();
+        }
+    </script>
+
     @if (session('success'))
         <script>
             Swal.fire({
@@ -76,3 +94,4 @@ Empty Template
         </script>
     @endif
 @endsection
+

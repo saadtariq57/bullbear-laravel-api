@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\EmailTemplateController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -337,6 +338,10 @@ Route::middleware(['auth'])->group(function () {
         return view('exams.exam-result');
     })->name('exams.exam-result');
 
+    Route::get('/previous-results', function () {
+        return view('exams.previous-results');
+    })->name('exams.previous-results');
+
     // RichTv Pro
     Route::get('/watchlist-ideas', function () {
         return view('markets.market');
@@ -428,17 +433,18 @@ Route::middleware(['auth'])->group(function () {
             Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
             Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
         });
-        Route::get('/admin/emails', function () {
-            return view('admin.emails.mass_emails');
-        })->name('emails');
-        // routes/web.php
 
-        Route::get('admin/emails/editors/empty_editor', function () {
-            return view('admin.emails.editors.empty_editor');
-        })->name('code-editor');
-        Route::get('admin/emails/editors/text_editor', function () {
-            return view('admin.emails.editors.text_editor');
-        })->name('text-editor');
+        // mass emails routes
+        Route::prefix('admin/emails')->name('admin.emails.')->group(function () {
+            Route::get('/', [EmailTemplateController::class, 'index'])->name('index');  // View all templates
+            Route::get('/editors/{id}', [EmailTemplateController::class, 'editor'])->name('editor');  // Edit template in TinyMCE
+            // Route::get('/{id}/edit', [EmailTemplateController::class, 'edit'])->name('edit');  // Edit template details
+            Route::post('/{id}', [EmailTemplateController::class, 'update'])->name('update');  // Update existing template
+            Route::post('/', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('saveAsNew');  // Save as a new template
+            // Route::post('/{id}/reset', [EmailTemplateController::class, 'resetToDefault'])->name('reset');  // Reset template to default
+        });
+        
+
         // route group for GroupController
         Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
@@ -449,7 +455,12 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
             // Member Routes
             Route::get('{group}/members', [GroupController::class, 'showMembers'])->name('members');
-            Route::post('{group}/members', [GroupController::class, 'updateMembers']);
+            // Update a single member
+            Route::post('{group}/updateMember', [GroupController::class, 'updateMember'])->name('updateMember');
+
+            // Remove a single member
+            Route::delete('{group}/removeMember', [GroupController::class, 'removeMember'])->name('removeMember');
+
 
             // Group Categories Routes
             Route::get('categories', [GroupController::class, 'categoriesIndex'])->name('categories.index');

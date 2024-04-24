@@ -35,4 +35,5 @@ class Message extends Model
     {
         return $this->belongsTo(Message::class, 'reply_to_message_id');
     }
+
 }
