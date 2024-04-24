@@ -139,4 +139,19 @@ class WidgetController extends Controller
 
             return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
         }
+    
+        public function fetchPostWordpress(Request $request, $categoryIds)
+        {
+            $wordpressApiUrl = config('services.wordpress.api_url');
+            $wordpressApiUrl .= $categoryIds . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
+
+            try {
+                $response = file_get_contents($wordpressApiUrl);
+                $posts = json_decode($response, true);
+                return $posts;
+            } catch (\Exception $e) {
+                \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
+                return [];
+            }
+        }
 }
