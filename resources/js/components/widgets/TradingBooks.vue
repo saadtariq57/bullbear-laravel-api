@@ -69,6 +69,7 @@
   </div>
 </template>
 <script>
+
 export default {
   mounted() {
     $('.trading-books-slider').slick({

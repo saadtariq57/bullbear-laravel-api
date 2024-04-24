@@ -5,108 +5,57 @@
         <h3 class="fs-6 fw-bolder lh-base">LATEST FINANCIAL NEWS</h3>
       </div>
 
-      <div class="market-news border-bottom border-1 border-grey">
+      <div class="market-news border-bottom border-1 border-grey" v-for="(post, index) in financialNews.slice(0, 6)" :key="index">
         <div class="d-flex">
           <div class="feature-img">
             <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
+              <img :src="post.thumbnail" alt="thumbnail-img">
             </div>
           </div>
           <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
-          </div>
-        </div>
-      </div>
-      <div class="market-news border-bottom border-1 border-grey">
-        <div class="d-flex">
-          <div class="feature-img">
-            <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
-            </div>
-          </div>
-          <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
-          </div>
-        </div>
-      </div>
-      <div class="market-news border-bottom border-1 border-grey">
-        <div class="d-flex">
-          <div class="feature-img">
-            <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
-            </div>
-          </div>
-          <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
-          </div>
-        </div>
-      </div>
-      <div class="market-news border-bottom border-1 border-grey">
-        <div class="d-flex">
-          <div class="feature-img">
-            <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
-            </div>
-          </div>
-          <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
-          </div>
-        </div>
-      </div>
-      <div class="market-news border-bottom border-1 border-grey">
-        <div class="d-flex">
-          <div class="feature-img">
-            <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
-            </div>
-          </div>
-          <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
-          </div>
-        </div>
-      </div>
-      <div class="market-news">
-        <div class="d-flex">
-          <div class="feature-img">
-            <div class="stock-post-img">
-              <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg" alt="thumbnail-img">
-            </div>
-          </div>
-          <div class="stock-post-content">
-            <h4><a href="https://richtv.io/financial-news/initial-jobless-claims-unexpectedly-decline-to-216000/"
-                aria-label="tittle">Initial jobless claims unexpectedly decl ...</a>
-            </h4>
-            <a class="stock-author-meta" href="https://richtv.io/author/admin/" aria-label="author_link">Rich
-              TV</a>
-            <span>Sep 7, 2023</span>
+            <h4><a :href="`https://richtv.io${post.link}`" aria-label="title">{{ truncate(post.title) }}</a></h4>
+            <a class="stock-author-meta" :href="post.authorLink" aria-label="author_link">{{ post.author }}</a>
+            <span>{{ post.date }}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      financialNews: [],
+    };
+  },
+  mounted() {
+    this.fetchFinancialNews();
+  },
+  methods: {
+    fetchFinancialNews() {
+      const categories = '224'; 
+      axios.get(`/api/fetch-wordpress-posts/${categories}`, {
+        withCredentials: true,
+        
+      })
+      .then(response => {
+        this.financialNews = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching financial news:', error);
+      });
+    },
+    truncate(text) {
+      if (text.length > 75) {
+        return text.substring(0, 75) + '...';
+      } else {
+        return text;
+      }
+    }
+  }
+}
+</script>
