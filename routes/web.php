@@ -10,6 +10,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\MauticController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -438,13 +439,11 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('admin/emails')->name('admin.emails.')->group(function () {
             Route::get('/', [EmailTemplateController::class, 'index'])->name('index');  // View all templates
             Route::get('/editors/{id}', [EmailTemplateController::class, 'editor'])->name('editor');  // Edit template in TinyMCE
-            // Route::get('/{id}/edit', [EmailTemplateController::class, 'edit'])->name('edit');  // Edit template details
             Route::post('/{id}', [EmailTemplateController::class, 'update'])->name('update');  // Update existing template
             Route::post('/', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('saveAsNew');  // Save as a new template
-            // Route::post('/{id}/reset', [EmailTemplateController::class, 'resetToDefault'])->name('reset');  // Reset template to default
+            Route::post('/', [EmailTemplateController::class, 'sendEmails'])->name('send');
         });
         
-
         // route group for GroupController
         Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
