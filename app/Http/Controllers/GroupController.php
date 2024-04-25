@@ -254,9 +254,9 @@ public function index(Request $request)
         }
         $validatedData['time'] = time();
         $group->update($validatedData);
-
-        return redirect()->route('admin.groups.index')->with('success', 'Group updated successfully');
+        return response()->json(['message' => 'Group updated successfully']);
     }
+
 
 
     public function destroy(Group $group)
