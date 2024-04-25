@@ -39,15 +39,13 @@
                                         <a href="#" class="btn btn-primary builder-link disabled"
                                             aria-disabled="true">Builder</a>
                                     @endif
-                                    <a href="" class="btn btn-primary">Save</a>
-                                    <a href="" class="btn btn-primary">Cancel</a>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-9 border shadow">
                                 <h6 class="pt-2">Themes</h6>
-                                <div class="themes-card-wrapper d-flex justify-content-around gap-1 py-2">
+                                <div class="themes-card-wrapper d-flex justify-content-between gap-5 px-3 py-2">
                                     @foreach ($templates as $template)
                                         <div class="card border shadow-lg">
                                             <div class="card-body text-center px-0 pt-0">
@@ -56,8 +54,8 @@
                                                     {{ $template->name }}
                                                 </div>
                                                 <a href="{{ route('admin.emails.editor', ['id' => $template->id]) }}"
-                                                    class="btn btn-primary template-select px-3" data-id="{{ $template->id }}"
-                                                    id="select-button-{{ $template->id }}">
+                                                    class="btn btn-primary template-select px-3"
+                                                    data-id="{{ $template->id }}" id="select-button-{{ $template->id }}">
                                                     {{ session('selected_id') == $template->id ? 'Selected' : 'Select' }}
                                                 </a>
                                             </div>
@@ -68,38 +66,33 @@
 
                             </div>
                             <div class="col-lg-3 border shadow">
-                                <form class="py-2">
-                                    <div class="mb-3">
-                                        <label for="inputsubject" class="form-label">Subject</label>
-                                        <input type="email" class="form-control" id="inputsubject">
-                                    </div>
+                                <form  method="POST" action="{{ route('admin.emails.send') }}">
+                                    @csrf
+                                    <input type="hidden" name="template_id" id="selectedTemplateId"
+                                        value="{{ session('selected_id') }}">
+                                        <div class="mb-3">
+                                            <label for="inputSubject" class="form-label">Subject</label>
+                                            <input type="text" name="subject" class="form-control" id="inputSubject" required>
+                                        </div>
                                     <div class="mb-3">
                                         <label for="selectsegment" class="form-label">Contact Segment</label>
-                                        <div class="dropdown">
-                                            <ul class="form-control" type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <li class="selected-segments-field">
-                                                    <input class="border-0 text-secondary bg-transparent" type="text"
-                                                        autocomplete="off" value="Choose one or more..."
-                                                        style="width: 167.375px;" disabled>
-                                                </li>
-                                            </ul>
-                                            <ul class="dropdown-menu w-100">
-                                                <li><a class="dropdown-item" href="#">Admiral Court</a></li>
-                                                <li><a class="dropdown-item" href="#">Dockleys - Cedars Valid</a></li>
-                                                <li><a class="dropdown-item" href="#">Dockleys Landlords Valid</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        @if (!empty($filteredSegments))
+                                            @foreach ($filteredSegments as $segment)
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        id="segment{{ $segment['id'] }}" name="segments[]" value="{{ $segment['id'] }}">
+                                                    <label class="form-check-label"
+                                                        for="segment{{ $segment['id'] }}">{{ $segment['name'] }}</label>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p>No segments available for category 38.</p>
+                                        @endif
+
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="selectcategory" the class="form-label">Category</label>
-                                        <select class="form-select" id="selectcategory">
-                                            <option selected>Open this select menu</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
-                                        </select>
+                                    <div class="mb-3 float-end">
+                                        <button type="submit" class="btn btn-primary">Send Emails</button>
+                                        <a href="" class="btn btn-primary">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -131,7 +124,7 @@
                         builderLink.classList.remove('disabled');
                         builderLink.removeAttribute('aria-disabled');
                         builderLink.removeEventListener('click',
-                        preventDefaultAction); // Remove the listener if it exists
+                            preventDefaultAction); // Remove the listener if it exists
                     } else {
                         builderLink.href = '#';
                         builderLink.classList.add('disabled');
@@ -166,6 +159,20 @@
                 if (!selectedTemplateId || !document.querySelector('.template-select.disabled')) {
                     updateBuilderLink(false);
                 }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectButtons = document.querySelectorAll('.template-select');
+                const selectedTemplateIdInput = document.getElementById('selectedTemplateId');
+
+                selectButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        selectButtons.forEach(btn => btn.textContent = 'Select');
+                        this.textContent = 'Selected';
+                        selectedTemplateIdInput.value = this.getAttribute(
+                        'data-id'); // Update hidden input
+                    });
+                });
             });
         </script>
 
