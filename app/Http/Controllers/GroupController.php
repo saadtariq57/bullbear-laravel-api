@@ -120,6 +120,7 @@ public function index(Request $request)
     public function joinedChats(Request $request)
     {
         $user = $request->user();
+        // return response()->json($user);
         $joinedGroups = Group::whereHas('members', function($query) use ($user) {
             $query->where('group_members.user_id', $user->id)
                   ->whereIn('group_members.status', ['active', 'pending', 'rejected']);
@@ -127,7 +128,7 @@ public function index(Request $request)
         ->withCount('members')
         ->with(['members' => function($query) use ($user) {
             $query->where('group_members.user_id', $user->id)
-                  ->select(['group_members.user_id', 'group_members.status', 'group_members.updated_at']);
+                  ->select(['group_members.user_id', 'group_members.status', 'group_members.updated_at', 'group_members.role']);
         }])
         ->get();
         return response()->json($joinedGroups->map(function($group) {

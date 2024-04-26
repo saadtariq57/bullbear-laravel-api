@@ -1,6 +1,7 @@
 <template>
     <div class="container my-4">
         <div class="row">
+            {{ group_id }}
             <div class="col-lg-8">
                 <div class="bg-transparent py-0 single-group-chats">
                     <ul class="nav border-0 m-0 p-0" id="chats-content-tab" role="tablist">
@@ -190,9 +191,16 @@ export default {
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
+        ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+    },
+    data() {
+        return {
+            group_id: null
+        }
     },
     created() {
         const groupId = this.$route.params.group_id;
+        this.group_id = this.$route.params.group_id;
         const context = 'group';
         this.fetchPosts({ context, groupId });
         this.fetchReactionTypes();
