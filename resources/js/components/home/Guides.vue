@@ -3,7 +3,12 @@
     <div class="container">
       <div class="heading-summary">
         <h2 class="icon-heading mb-4 px-10 ">How To Guides</h2>
-        <div class="guide-slider">
+        <div class="guide-slider" v-if="wordpressPosts.length === 0">
+          <div class="guide-content-slider">
+          <p>Loading...</p>
+        </div>
+        </div>
+        <div v-else class="guide-slider">
           <div class="guide-content-slider" v-for="(post, index) in wordpressPosts.slice(0, 6)" :key="index">
             <a :href="post.link" class="guide-card-hover d-block">
               <div class="guide-card-wrapper" :style="{ 'background-image': 'url(' + post.thumbnail + ')', 'background-size': 'cover', 'background-position': 'center center' }">
@@ -27,6 +32,7 @@
   </section>
 </template>
 
+
 <script>
 export default {
   data() {
@@ -35,10 +41,10 @@ export default {
     };
   },
   mounted() {
-    this.fetchWordPressPosts();
+    this.fetchGuidesPosts();
   },
   methods: {
-  fetchWordPressPosts() {
+  fetchGuidesPosts() {
     const categories = '4341';
     axios.get(`/api/fetch-wordpress-posts/${categories}`, {
       withCredentials: true,
@@ -61,8 +67,8 @@ export default {
       infinite: true,
       speed: 1000,
       arrows: true,
-      autoplay: true, // Add this line to enable autoplay
-      autoplaySpeed: 3000, // Adjust the autoplay speed as needed
+      autoplay: true, 
+      autoplaySpeed: 3000, 
       slidesToShow: 3,
       responsive: [{
         breakpoint: 992,
