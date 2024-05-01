@@ -1,4 +1,5 @@
 <template>
+    <ProfileGroupHeader context="groupHeader" ref="ProfileGroupHeader" />
     <div class="container my-4">
             {{ group_id }}
         <div class="row">
@@ -50,6 +51,7 @@ import { mapState, mapActions } from 'vuex';
 import CreatePost from '../feed/CreatePost.vue';
 import PostItems from '../feed/PostItems.vue';
 import LiveChat from './LiveChat.vue';
+import ProfileGroupHeader from '../header/ProfileGroupHeader.vue';
 import LatestVideos from '../widgets/LatestVideos.vue';
 export default {
     name: 'UserFeed',
@@ -57,6 +59,7 @@ export default {
         CreatePost,
         PostItems,
         LiveChat,
+        ProfileGroupHeader
         LatestVideos,
     },
     computed: {

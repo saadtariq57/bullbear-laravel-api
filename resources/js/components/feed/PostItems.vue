@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-between">
               <div class="user-avatar d-flex gap-2 align-items-center">
                 <div class="img">
-                  <img :src="'/uploads/'+`${post.user.avatar}`" class="rounded-circle" :alt="post.user.name + ' profile picture'">
+                  <img :src="'/uploads/'+post.user.avatar" class="rounded-circle" :alt="post.user.name + ' profile picture'">
                 </div>
                 <div class="user-info text-start">
                   <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
@@ -42,17 +42,17 @@
               <div v-for="(photo, index) in  post.photos " :key="photo.id"
                 class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
                 <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
-                  <img :src="'uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                   <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
                     <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
                   </div>
                 </div>
                 <div v-else-if="post.photos.length === 3" class="multi-post-img">
-                  <img :src="'uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
+                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
                     :class="{ 'w-100': index === 2 }">
                 </div>
                 <div v-else class="multi-post-img">
-                  <img :src="'uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
                 </div>
 
               </div>
@@ -60,7 +60,7 @@
             <div v-else class="text-center single-post-img">
               <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)">
                 <!-- Pass the clicked post data -->
-                <img :src="'uploads/'+`${photo.image}`" alt="Post image" class="img-fluid">
+                <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid">
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@
           <!-- link Media -->
           <div v-if="post.post_type === 'link'" class="link-file">
             <a :href="post.post_link" target="_blank">
-              <img :src="'uploads/'+`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
+              <img :src="'/uploads/'+`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
               <div class="link-post-details px-3 pt-3">
                 <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
                 <span class="Blue fs-12">{{ post.post_link }}</span>
@@ -346,6 +346,7 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
+    ...mapState('userProfile', ['profileImagePath']),
     ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags']),
     computedPosts() {
       return this.posts.map(post => {
@@ -674,7 +675,7 @@ export default {
 }
 
 .post-reach span.angry::before {
-  background-image: url('/upload/icons/angry.png');
+  background-image: url('/uploads/icons/angry.png');
 }
 
 .colored-post-text {

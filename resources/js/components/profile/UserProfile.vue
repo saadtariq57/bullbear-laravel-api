@@ -6,7 +6,9 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="user-Timeline" role="tabpanel"
                         aria-labelledby="user-Timeline-tab">
-                        <CreatePost context="profile" ref="createPost" />
+                        <div v-if="isOwnProfile">
+                            <CreatePost context="profile" ref="createPost" />
+                        </div>
                         <PostItems :posts="posts" :reactionTypes="reactionTypes" context="profile"
                             @show-post-modal="handleShowPostModal" />
                     </div>
@@ -66,41 +68,44 @@ export default {
     data() {
         return {
             myChats: [
-                // Your chat data specific to UserProfile.vue
                 {
                     id: 1,
                     group_name: 'My Group 1',
                     group_title: 'My Group Title 1',
                     avatar: 'path-to-avatar-1',
                 },
-                // Add more chat objects as needed
             ],
         };
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
         ...mapState('UserGroups', ['suggestedChats']),
+        ...mapState('userProfile',['isOwnProfile']),
         allChats() {
-            // Combine suggestedChats with any other chat data you may have
-            return this.suggestedChats.concat(this.myChats); // Add more chat data as needed
+            return this.suggestedChats.concat(this.myChats);
         },
     },
     created() {
         const context = 'profile';
+        const userName = this.$route.params.userName;
         this.fetchSuggestedChats();
-        this.fetchPosts({ context });
+        this.fetchPosts({ context, userName });
         this.fetchReactionTypes();
+        this.getUserProfileData({ context, userName });
         this.$nextTick(() => {
             this.initializeRealTimeUpdates({ context });
         });
+        
     },
     methods: {
+        ...mapActions('userProfile',['getUserProfileData']),
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         ...mapActions('UserGroups', ['fetchSuggestedChats']),
+       
         handleShowPostModal(post) {
             this.$refs.createPost.sharePostModal(post); // Call the method in the child component
             //   console.log('Received post data:', post);
         }
-    },
+    }
 }
 </script>

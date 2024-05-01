@@ -12,7 +12,7 @@
                                     <div class="carousel-item preview-modal-item" v-for="(photo, index) in post.photos"
                                         :key="post.id + index" :class="{ 'active': index === 0 }">
                                         <!-- Add 'active' class conditionally -->
-                                        <img :src="'uploads/'+`${photo.image}`" class="img-fluid" alt="Post Preview Image">
+                                        <img :src="'/uploads/'+`${photo.image}`" class="img-fluid" alt="Post Preview Image">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" v-if="post.photos.length > 1" type="button"

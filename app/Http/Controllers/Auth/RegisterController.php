@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,6 +42,21 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    public function checkUsernameAvailability(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9]+$/', 'max:255'],
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'error' => true]);
+        }
+    
+        $username = $request->input('username');
+        $available = !User::where('name', $username)->exists();
+        
+        return response()->json(['available' => $available, 'requestedUsername' => $username]);
+    }
     /**
      * Get a validator for an incoming registration request.
      *
@@ -50,9 +66,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:users', 'regex:/^[a-zA-Z0-9]+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{8,}$/'],
+        ],[
+            'password.regex' => 'The password must be at least 8 characters long and contain at least one special character, one uppercase letter, one lowercase letter, and one number.',
+            'name.regex' => 'the username can only be with letters and numbers, no special character or spaces',
         ]);
     }
 

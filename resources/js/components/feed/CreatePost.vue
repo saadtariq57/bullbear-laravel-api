@@ -4,7 +4,7 @@
       <div class="d-flex align-items-center gap-3 px-sm-1 px-2">
         <a href="#">
           <img class="post-avatar img-fluid rounded-circle border-2 border-primary" width="50px"
-            :src="'/uploads/'+`${userData.avatar}`">
+            :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar">
         </a>
         <!-- Model Handleing Buttons -->
         <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3"
@@ -38,7 +38,7 @@
               <div class="modal-header">
                 <!-- Post Settings trigger button -->
                 <button class="btn d-flex gap-3 align-items-center" @click="showPostSettingModal">
-                  <img class="post-avatar img-fluid rounded-circle border-2 border-primary" :src="'/uploads/'+`${userData.avatar}`"
+                  <img class="post-avatar img-fluid rounded-circle border-2 border-primary" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar"
                     width="50px" height="50px">
                   <div>
                     <div class="d-flex gap-2 align-items-center">
@@ -380,6 +380,8 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
+    ...mapState('userProfile', ['profileImagePath']),
+    ...mapState('profileGroupHeader',['UpdatedProfileImagePath']),
     postClass() {
       return this.selectedColor ? 'colored-post' : '';
     },

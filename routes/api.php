@@ -12,6 +12,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AblyController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\SubscriptionStatusController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
 /*
@@ -35,9 +37,36 @@ Route::get('/check-login', function () {
         return response()->json(['loggedIn' => false]);
     }
 });
+Route::post('/check-username-availability', [RegisterController::class, 'checkUsernameAvailability']);
 
 Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
+
+
+Route::get('/color-options', [HomeController::class, 'colorOptions']);
+Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
+Route::post('/create-post', [PostController::class, 'createPost']);
+Route::get('/user-feed', [PostController::class, 'getUserFeed']);
+Route::get('/user-profile/{userName?}', [PostController::class, 'getUserProfileFeed']);
+Route::get('/user-group/{groupId}', [PostController::class, 'getUserGroupFeed']);
+Route::post('/submit-comment', [PostController::class, 'submitComment']);
+Route::post('/edit-comment', [PostController::class, 'editComment']);
+Route::post('/delete-comment', [PostController::class, 'deleteComment']);
+Route::get('/reaction-types', [PostController::class, 'getReactionTypes']);
+Route::post('/add-or-update-reaction', [PostController::class, 'addOrUpdateReaction']);
+Route::post('/remove-reaction', [PostController::class, 'removeReaction']);
+Route::get('/posts/{postId}/comments', [PostController::class, 'fetchPostComments']);
+
+
+Route::post('/uploadCover', [UserController::class, 'updateCoverPhoto']);
+Route::post('/removeCover', [UserController::class, 'removeCoverPhoto']);
+Route::post('/profileImage', [UserController::class, 'updateProfilePhoto']);
+
+Route::post('/add-vote', [PostController::class, 'addVote']);
+Route::post('/remove-vote', [PostController::class, 'removeVote']);
+
+Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
+Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 
 //Watchlist Routes
 // Route::prefix('watchlist')->name('watchlist.')->middleware([Subscribed::class])->group(function() {
@@ -101,8 +130,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
+
+    Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
+    Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
+    Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
+
     // user Album
-    Route::get('/userAlbumData', [UserController::class, 'getUserAlbumData'])->name('getUserAlbumData');
+    // Route::get('/userAlbumData', [UserController::class, 'getUserAlbumData'])->name('getUserAlbumData');
     //Exam Routes
     //initiating an exam
     Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
@@ -136,4 +170,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
 Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
+
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);

@@ -3,16 +3,14 @@
         <!-- Display user information -->
         <div class="wow_content wow_side_loggd_usr bg-white p-3 mb-3 shadow">
             <div class="wow_side_loggd_usr_cvr">
-                <img class="w-100 h-100 object-fit-cover" :src="`/uploads/${userData.cover}`" alt="Cover Image">
+                <img class="w-100 h-100 object-fit-cover" :src="UpdatedCoverImagePath != null ? '/uploads/'+UpdatedCoverImagePath : '/uploads/'+userData.cover" alt="Cover Image">
             </div>
             <div class="wow_side_loggd_usr_hdr">
-                <div class="rounded-circle bg-white d-flex justify-content-center align-items-center">
-                <div class="avatar bg-white rounded-circle text-center d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle" :src="`/uploads/${userData.avatar}`" alt="Profile Picture" width="75px" height="75px">
-                </div>
+                <div class="avatar">
+                    <img class="w-100 rounded-circle" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" alt="Profile Picture">
                 </div>
                 <div class="title text-center">
-                    <a class="text-black fw-bold" href="/profile">{{ userData.name }}</a>
+                    <a class="text-black fw-bold" :href="'profile/'+userData.name">{{ userData.name }}</a>
                     <p>@{{ userData.name }}</p>
                 </div>
             </div>
@@ -44,7 +42,10 @@
 import { mapState } from 'vuex';
 
 export default {
-    computed: mapState(['userData']),
+    computed: {
+        ...mapState(['userData']),
+        ...mapState('profileGroupHeader',['UpdatedCoverImagePath', 'UpdatedProfileImagePath']),
+    }
 };
 </script>
 <style>

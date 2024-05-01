@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follower;
 use App\Models\AlbumMedia;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -98,23 +99,60 @@ class UserController extends Controller
         }
     }
 
-    public function getUserAlbumData()
+    public function getUserProfileData($userName)
     {
-        $user = Auth::user();
-        if ($user) {
-            $postIds = Post::where('user_id', $user->id)->pluck('id');
-            // $userId = $request->user_id;
-            // $postId = $request->post_id;
-
-            $photos = AlbumMedia::whereIn('post_id', $postIds)->get();
-            if ($photos->isEmpty()) {
-                return response()->json(['message' => 'No media found'], 404);
-            }
-            return response()->json($photos);
-        } else {
-            return response()->json(['error' => 'Unauthenticated'], 401);
+        $user = User::where('name', $userName)->firstOrFail();
+        $loggedInUser = Auth::user();
+        $userId = null;
+        $isFollowing = false;
+        if ($loggedInUser) {
+            $isFollowing = Follower::where('follower_id', $loggedInUser->id)
+                ->where('following_id', $user->id)
+                ->exists();
         }
+        if($user->id === $loggedInUser->id){
+            $isOwnProfile = true;
+            $userId = $loggedInUser->id;
+        }else{
+            $isOwnProfile = false;
+            $userId = $user->id;
+        }
+        $postIds = Post::where('user_id', $userId)->pluck('id');
+        $photos = AlbumMedia::whereIn('post_id', $postIds)->get();
+        $followersCount = Follower::where('following_id', $user->id)->count();
+        $followingsCount = Follower::where('follower_id', $user->id)->count();
+        $followers = $user->followings()->with('follower:id,name,email,avatar,first_name')->get();
+        $followings = $user->followers()->with('following:id,name,email,avatar,first_name')->get();
+        // 'following:id,name,email,avatar,first_name'
+        // if ($photos->isEmpty()) {
+        //     $photos = 'No Media Found';
+        // }
+        return response()->json([
+            'userProfile' => $user, 
+            'isOwnProfile' => $isOwnProfile, 
+            'userMedia' => $photos,
+            'isFollowing' => $isFollowing,
+            'followersCount' => $followersCount,
+            'followingsCount' => $followingsCount,
+            'followerUserData' => $followers,
+            'followingsUserData' => $followings,
+        ]);
     }
+
+    // public function getUserAlbumData()
+    // {
+    //     $user = Auth::user();
+    //     if ($user) {
+    //         $postIds = Post::where('user_id', $user->id)->pluck('id');
+    //         $photos = AlbumMedia::whereIn('post_id', $postIds)->get();
+    //         if ($photos->isEmpty()) {
+    //             return response()->json(['message' => 'No media found'], 404);
+    //         }
+    //         return response()->json($photos);
+    //     } else {
+    //         return response()->json(['error' => 'Unauthenticated'], 401);
+    //     }
+    // }
 
     public function updateCoverPhoto(Request $request)
     {
@@ -134,13 +172,13 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to upload cover photo'], 500);
         }
 
-        return response()->json(['message' => 'Cover photo uploaded successfully', 'cover_photo' => $coverPhotoPath]);
+        return response()->json(['success' => true, 'message' => 'Cover photo uploaded successfully', 'cover_photo' => $coverPhotoPath]);
     }
 
     public function removeCoverPhoto(Request $request){
         $user = Auth::user();
         try {
-            $user->update(['cover' => '']);
+            $user->update(['cover' => 'photos/d-cover.jpg']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to remove cover photo'], 500);
         }

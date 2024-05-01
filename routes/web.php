@@ -16,6 +16,7 @@ Auth::routes(['verify' => true]);
 Broadcast::routes();
 
 // Public routes
+
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('feed');
@@ -312,17 +313,18 @@ Route::get('/groups', [HomeController::class, 'groupPage'])->name('group');
 Route::middleware(['auth'])->group(function () {
     Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
     Route::get('/single-post', [HomeController::class, 'post'])->name('single-post');
-    Route::get('/profile', [HomeController::class, 'profilePage'])->name('profile');
+    Route::get('/profile/{username}', [HomeController::class, 'profilePage'])->name('profile');
     Route::get('/groups/{group_id}/{group_name}', [HomeController::class, 'singleGroupPage'])->name('groups.single');
     // Profile route
-    Route::get('/profile/setting', function () {
-        return view('profile.setting');
-    })->name('profile.setting');
-    Route::get('/profile/follow', function () {
-        return view('profile.follow');
-    })->name('profile.follow');
+    Route::get('/profile/{username}/setting', [HomeController::class, 'profileSettings'])->name('profile.setting');
+    // Route::get('/profile/{username}/setting', function () {
+    //     return view('profile.setting');
+    // })->name('profile.setting');
+    // Route::get('/profile/{username}/follow', function () {
+    //     return view('profile.follow');
+    // })->name('profile.follow');
 
-    Route::get('/profile/notification', function () {
+    Route::get('/profile/{username}/notification', function () {
         return view('profile.notification');
     })->name('profile.notification');
 

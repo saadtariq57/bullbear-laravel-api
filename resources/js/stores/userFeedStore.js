@@ -111,13 +111,13 @@ const userFeedModule = {
         }
     },
     actions: {
-        async fetchPosts({ commit, rootState }, { context, groupId = null }) {
+        async fetchPosts({ commit, rootState }, { context, groupId = null, userName = null }) {
           commit('setLoading', true);
           try {
             const userId = rootState.userData.id;
-            console.log('Group Id Feed Store ' + groupId)
+            // console.log('Group Id Feed Store ' + groupId);
             let posts;
-              posts = await UserFeedService.fetchUserPosts(userId, context, groupId);
+              posts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName);
             commit('setPosts', posts);
           } catch (error) {
             commit('setError', error.message);

@@ -1,7 +1,7 @@
 @component('mail::message')
 # Verify Your Email Address
 
-Please click the button below to verify your email address.
+Please click button below to verify your email address.
 
 @component('mail::button', ['url' => $verificationUrl])
 Verify Email
