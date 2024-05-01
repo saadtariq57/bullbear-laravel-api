@@ -104,14 +104,14 @@
     <li class="p-1 ">
       <div class="row gx-2 gy-2">
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="/upload/photos/d-avatar.jpg" alt="" class="w-100">
+          <div class="position-relative"><img src="/uploads/photos/d-avatar.jpg" alt="" class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
               Wajid Fareed
             </div>
           </div>
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
-          <div class="position-relative"><img src="/upload/photos/f-avatar.jpg" alt="" class="w-100">
+          <div class="position-relative"><img src="/uploads/photos/f-avatar.jpg" alt="" class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
               dev123
             </div>

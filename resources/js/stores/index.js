@@ -3,6 +3,8 @@ import userFeedModule from './userFeedStore';
 import userFeedCommentModule from './userFeedCommentStore';
 import userGroupModule from './groupStore';
 import userSubscriptionModule from './pricingStore';
+import userProfileModule from './profileStore';
+import ProfileGroupHeaderModule from './profileGroupHeaderStore';
 import axios from 'axios';
 
 export default createStore({
@@ -50,13 +52,14 @@ export default createStore({
                 console.error('Error fetching user data:', error);
                 commit('SET_LOGOUT');
             }
-        }
+        },
     },
     modules:{
         userFeed: userFeedModule,
         userFeedComment: userFeedCommentModule,
         UserGroups: userGroupModule,
-        userSubscriptionModule: userSubscriptionModule
-
+        userSubscriptionModule: userSubscriptionModule,
+        userProfile: userProfileModule,
+        profileGroupHeader: ProfileGroupHeaderModule
     }
 });

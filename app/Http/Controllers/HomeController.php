@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ColoredPost;
+use Illuminate\Support\Facades\Auth;
 use Embed\Embed;
 
 class HomeController extends Controller
@@ -34,8 +35,19 @@ class HomeController extends Controller
     public function post(){
         return view('single-post');
     }
-    public function profilePage(){
-        return view('profile.index');
+    public function profilePage($username){
+        // return view('profile.index');
+        $user = User::where('name', $username)->firstOrFail();
+        return view('profile.index', compact('user'));
+    }
+    public function profileSettings($username)
+    {
+        $currentUser = Auth::user();
+        if ($currentUser->name === $username) {
+            return view('profile.setting');
+        } else {
+            return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+        }
     }
     public function groupPage(){
         return view('groups.index');

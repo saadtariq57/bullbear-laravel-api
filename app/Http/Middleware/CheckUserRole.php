@@ -30,6 +30,7 @@ class CheckUserRole
         if ($user->type === 'admin') {
             return $next($request); // Allow admin users to proceed
         }
+        
 
         // Redirect non-admin users to the /feed route
         return redirect('/feed');

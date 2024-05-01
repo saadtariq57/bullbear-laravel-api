@@ -9,8 +9,7 @@
         <a href="#"
           class="list-group-item list-group-item-action px-4 py-3 d-flex align-items-center gap-3 border-bottom position-relative unread-notification-wrapper">
           <div class="unread-notification"></div>
-          <img
-            src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+          <img  src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
           <div class="flex-fill">
             <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
             <p class="text-uppercase mb-0 fs-6 fw-4 text-wrap">bitcoin recently just hit 31k on

@@ -3,8 +3,6 @@ import { createApp } from "vue";
 import router from "./router";
 import store from './stores/index';
 import App from "./components/App.vue"; 
-//import ablyService from './services/ablyService';
-//ablyService.initializeAbly();
 
 // Set axios with common header
 import axios from 'axios';

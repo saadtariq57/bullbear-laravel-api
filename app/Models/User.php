@@ -79,7 +79,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'emailNotification' => 'boolean',
         // Other casts as necessary
     ];
-
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -92,7 +91,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function followers()
     {
-        // This assumes your Follower model is named 'Follower'
+        return $this->hasMany(Follower::class, 'follower_id');
+    }
+    public function followings()
+    {
         return $this->hasMany(Follower::class, 'following_id');
     }
     

@@ -111,13 +111,13 @@ class GroupController extends Controller
 
         if ($request->hasFile('avatar')) {
             $validatedData['avatar'] = $request->file('avatar')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         }
 
         if ($request->hasFile('cover')) {
             $validatedData['cover'] = $request->file('cover')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         }
 
@@ -150,7 +150,7 @@ class GroupController extends Controller
 
         if ($request->hasFile('avatar')) {
             $validatedData['avatar'] = $request->file('avatar')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         } else {
             $validatedData['avatar'] = $group->avatar;
@@ -158,7 +158,7 @@ class GroupController extends Controller
 
         if ($request->hasFile('cover')) {
             $validatedData['cover'] = $request->file('cover')->store(
-                "upload/photos/" . now()->year . "/" . now()->month, 'public'
+                "photos/" . now()->year . "/" . now()->month, 'public'
             );
         } else {
             $validatedData['cover'] = $group->cover;

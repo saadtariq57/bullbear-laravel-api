@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Follower;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class FollowerController extends Controller
 {
@@ -26,9 +29,27 @@ class FollowerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $userId)
     {
-        //
+        // Get the authenticated user
+        $follower = Auth::user();
+
+        // Check if the user is already following
+        $existingFollower = Follower::where('following_id', $userId)
+                                    ->where('follower_id', $follower->id)
+                                    ->exists();
+
+        if (!$existingFollower) {
+            // Create a new follower entry
+            Follower::create([
+                'following_id' => $userId,
+                'follower_id' => $follower->id,
+                'time' => now(),
+            ]);
+            return response()->json(['message' => 'User followed successfully']);
+        } else {
+            return response()->json(['message' => 'User is already followed']);
+        }
     }
 
     /**
@@ -58,8 +79,15 @@ class FollowerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Follower $follower)
+    public function destroy(Request $request, $userId)
     {
-        //
+        // Get the authenticated user
+        $followerId = auth()->id();
+
+        // Delete the follower entry
+        Follower::where('following_id', $userId)
+                ->where('follower_id', $followerId)
+                ->delete();
+        return response()->json(['message' => 'User unfollowed successfully']);
     }
 }

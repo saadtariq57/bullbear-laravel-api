@@ -1,4 +1,5 @@
 <template>
+    <ProfileGroupHeader context="groupHeader" ref="ProfileGroupHeader" />
     <div class="container my-4">
         <div class="row">
             <div class="col-lg-8">
@@ -181,13 +182,14 @@ import { mapState, mapActions } from 'vuex';
 import CreatePost from '../feed/CreatePost.vue';
 import PostItems from '../feed/PostItems.vue';
 import LiveChat from './LiveChat.vue';
-
+import ProfileGroupHeader from '../header/ProfileGroupHeader.vue';
 export default {
     name: 'UserFeed',
     components: {
         CreatePost,
         PostItems,
         LiveChat,
+        ProfileGroupHeader
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),

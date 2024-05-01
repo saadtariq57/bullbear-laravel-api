@@ -390,22 +390,22 @@ const routes = [
         component: () => import('./components/feed/SinglePost.vue'),
     },
     {
-        path: '/profile',
+        path: '/profile/:userName',
         name: 'profile',
         component: () => import('./components/profile/UserProfile.vue'),
     },
     {
-        path: '/profile/setting',
+        path: '/profile/:userName/setting',
         name: 'profile.setting',
         component: () => import('./components/profile/ProfileSetting.vue'),
     },
     {
-        path: '/profile/follow',
+        path: '/profile/:userName/follow',
         name: 'profile.follow',
         component: () => import('./components/profile/ProfileFollowers.vue'),
     },
     {
-        path: '/profile/notification',
+        path: '/profile/:userName/notification',
         name: 'profile.notification',
         component: () => import('./components/profile/ProfileNotification.vue'),
 

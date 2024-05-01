@@ -16,6 +16,8 @@ class Follower extends Model
         'time'
     ];
 
+    public $timestamps = false;
+    
     public function following()
     {
         return $this->belongsTo(User::class, 'following_id');

@@ -3,7 +3,10 @@
     Register
 @endsection
 @section('content')
-
+<style>
+    #usernameNotavaible{color: red;}
+    #usernameAvaible{color: green;}
+</style>
     <div class="auth-maintenance d-flex align-items-center min-vh-100">
         <div class="bg-overlay bg-light"></div>
         <div class="container">
@@ -44,16 +47,22 @@
                                                         class="auth-input">
                                                         @csrf
                                                         <div class="mb-2">
-                                                            <label for="name" class="form-label">Name</label>
+                                                            <label for="name" class="form-label">User Name</label>
                                                             <input id="name" type="text"
                                                                 class="form-control @error('name') is-invalid @enderror"
                                                                 name="name" value="{{ old('name') }}" required
-                                                                autocomplete="name" autofocus placeholder="Enter name">
+                                                                autocomplete="name" autofocus placeholder="Enter user name">
                                                             @error('name')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
                                                                 </span>
                                                             @enderror
+                                                                <span class="error-feedback" role="alert">
+                                                                    <strong id="usernameNotavaible"></strong>
+                                                                </span>
+                                                                <span class="success-feedback" role="alert">
+                                                                    <strong id="usernameAvaible"></strong>
+                                                                </span>
                                                         </div>
 
                                                         <div class="mb-2">
@@ -99,7 +108,7 @@
 
                                                         <div class="mt-4">
                                                             <button class="btn btn-primary w-100"
-                                                                type="submit">Register</button>
+                                                                type="submit" id="registerButton">Register</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -130,8 +139,65 @@
             <!-- end row -->
         </div>
     </div>
+    <!-- Axios js -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Debounce function to delay API calls
+        function debounce(func, wait, immediate) {
+            let timeout;
+            return function() {
+                const context = this,
+                    args = arguments;
+                const later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                const callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        }
+
+        // Function to check username availability
+        const checkUsernameAvailability = debounce(function(username) {
+            axios.post('/api/check-username-availability', { username: username })
+                .then(function(response) {
+                    if (response.status === 200) {
+                        if(response.data.error != true){
+                            if (response.data.available) {
+                                console.log('Username is available');
+                                document.getElementById('usernameNotavaible').innerHTML = '';
+                                document.getElementById('usernameAvaible').innerHTML = response.data.requestedUsername + ' is availble';
+                            } else {
+                                console.log('Username is not available');
+                                document.getElementById('usernameAvaible').innerHTML = '';
+                                document.getElementById('usernameNotavaible').innerHTML = response.data.requestedUsername + ' is not availble please try different';
+                            }
+                        }else{
+                            document.getElementById('usernameNotavaible').innerHTML = '';
+                            document.getElementById('usernameAvaible').innerHTML = '';
+                            document.getElementById('usernameNotavaible').innerHTML = 'Incorrect username, the username can only be with letters and numbers, no special character or spaces';
+                        }
+                        
+                    } else {
+                        console.log('Something went wrong!');
+                    }
+                })
+                .catch(function(error) {
+                    console.log('Something went terribly wrong!');
+                });
+        }, 1000);
+
+        document.getElementById('name').addEventListener('input', function() {
+            var username = this.value;
+            checkUsernameAvailability(username);
+        });
+    </script>
 @endsection
 @section('scripts')
+    
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    
 @endsection

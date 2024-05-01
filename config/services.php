@@ -37,4 +37,8 @@ return [
     'secret' => env('STRIPE_SECRET'),
     ],
 
+    'wordpress' => [
+        'api_url' => env('WORDPRESS_API_URL'),
+    ],
+
 ];

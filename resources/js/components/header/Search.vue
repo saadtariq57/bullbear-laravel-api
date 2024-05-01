@@ -169,7 +169,7 @@
                                                 <a href="" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-2">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">
@@ -183,7 +183,7 @@
                                                 <a href="" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-2">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">
@@ -197,7 +197,7 @@
                                                 <a href="" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-2">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">
@@ -217,7 +217,7 @@
                                                 <a href="" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-3">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">
@@ -231,7 +231,7 @@
                                                 <a href="" class="d-flex align-items-center search-people-data">
                                                     <div class="col-3 d-flex align-items-center gap-3">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">
@@ -245,7 +245,7 @@
                                                 <a href="" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-3">
                                                         <div class="search-group-icon">
-                                                            <img src="build/images/brands/cryptocurrency_btc.png"
+                                                            <img src="/build/images/brands/cryptocurrency_btc.png"
                                                                 alt="search-icon">
                                                         </div>
                                                         <div class="search-group-symbol-name">

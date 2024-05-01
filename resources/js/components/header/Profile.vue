@@ -136,14 +136,14 @@
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div class="img">
-                <img :src="'/' + userData.avatar" class="rounded-circle" width="40" height="40"
+                <img :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" class="rounded-circle" width="40" height="40"
                     :alt="`${userData.name} profile picture`">
             </div>
         </button>
         <ul class="dropdown-menu bg-light dropdown-menu-end m-0 p-0">
             <li class="px-4 py-4">
                 <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/feed" class="d-flex align-items-center gap-2">
-                        <img :src="'/' + userData.avatar" class="rounded-circle" width="40" height="40"
+                        <img :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" class="rounded-circle" width="40" height="40"
                         :alt="`${userData.name} profile picture`">
                         <b class="text-uppercase text-black">{{ userData.name }}</b></a>
                 </div>
@@ -151,10 +151,10 @@
             <li class="px-4 pb-4">
                 <div class="bg-white rounded-3 px-3 py-3 w180">
                     <!-- <a class="dropdown-item text-black ps-0 fw-6" href="/profile/`${ userData.id }`">My Profile</a> -->
-                    <a class="dropdown-item text-black ps-0 fw-6" href="/profile">My Profile</a>
+                    <a class="dropdown-item text-black ps-0 fw-6" :href="'/profile/'+userData.name">My Profile</a>
                     <a class="dropdown-item text-black ps-0 fw-6" href="/pricing">Upgrade To Pro</a>
                     <!-- <a class="dropdown-item text-black ps-0 fw-6" href="#">Find Friend</a> -->
-                    <a class="dropdown-item text-black ps-0 fw-6" href="/profile/setting">Settings</a>
+                    <a class="dropdown-item text-black ps-0 fw-6" :href="'/profile/'+userData.name+'/setting'">Settings</a>
                 </div>
             </li>
             <li class="px-4 pb-4">
@@ -170,18 +170,21 @@
 import { mapState } from 'vuex';
 
 export default {
-    computed: mapState(['userData']),
-     methods: {
+    computed: {
+        ...mapState(['userData']),
+        ...mapState('profileGroupHeader',['UpdatedProfileImagePath']),
+    },
+    methods: {
         logout() {
-          axios.post('/logout')
+            axios.post('/logout')
             .then(response => {
-              window.location.href = '/';
+                window.location.href = '/';
             })
             .catch(error => {
-              console.error('Logout failed:', error);
+                console.error('Logout failed:', error);
             });
         }
-      },
+    },
 };
 </script>
 <style>

@@ -3,7 +3,7 @@
     <div v-for="chat in chats" :key="chat.id" class="col-lg-4 col-md-6">
       <div class="card m-0 h-100">
         <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="chat-avatar-wrapper">
-          <img :src="chat.avatar" class="card-img-top" :alt="`${chat.group_title} Profile Picture`"
+          <img src="" class="card-img-top" :alt="`${chat.group_title} Profile Picture`"
             @error="handleAvatarError(chat)" :class="{ 'd-none': chat.avatarFailed }">
           <div v-if="showGroupName(chat)" class="group_name">
             <p>{{ chat.group_title }}</p>

@@ -169,7 +169,7 @@ class PostController extends Controller
     {
         $user = $request->user();
         $groupIds = $user->groupMemberships()->pluck('group_id');
-
+        $followingsIds = $user->followers()->pluck('following_id')->toArray();
         // Create a query combining posts from groups, followed users, and user's own posts
         $postsQuery = Post::with([
                             'user:id,name,avatar',
@@ -186,7 +186,7 @@ class PostController extends Controller
                         ])
                         ->withCount(['comments', 'reactions'])
                         ->whereIn('group_id', $groupIds)
-                        ->orWhereIn('user_id', $user->followers()->pluck('follower_id'))
+                        ->orWhereIn('user_id', $followingsIds)
                         ->orWhere('user_id', $user->id)
                         ->orderByDesc('created_at');
         if ($request->has('lastPostId')) {
@@ -226,10 +226,8 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
-    public function getUserProfileFeed(Request $request){
-        $user = $request->user();
-
-        // Create a query for user's own posts
+    public function getUserProfileFeed(Request $request, $userName){
+        $user = User::where('name', $userName)->first();
         $postsQuery = Post::with([
                             'user:id,name,avatar',
                             'photos', 

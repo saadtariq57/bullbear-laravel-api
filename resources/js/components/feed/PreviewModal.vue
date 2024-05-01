@@ -12,7 +12,7 @@
                                     <div class="carousel-item preview-modal-item" v-for="(photo, index) in post.photos"
                                         :key="post.id + index" :class="{ 'active': index === 0 }">
                                         <!-- Add 'active' class conditionally -->
-                                        <img :src="'upload/'+`${photo.image}`" class="img-fluid" alt="Post Preview Image">
+                                        <img :src="'/uploads/'+`${photo.image}`" class="img-fluid" alt="Post Preview Image">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" v-if="post.photos.length > 1" type="button"
@@ -35,7 +35,7 @@
                                     <div class="d-flex justify-content-between">
                                         <div class="user-avatar d-flex gap-2">
                                             <div class="img">
-                                                <img :src="`/${post.user.avatar}`" class="rounded-circle"
+                                                <img :src="'/uploads/'+`/${post.user.avatar}`" class="rounded-circle"
                                                     :alt="post.user.name + ' profile picture'">
                                             </div>
                                             <div class="user-info text-start">
