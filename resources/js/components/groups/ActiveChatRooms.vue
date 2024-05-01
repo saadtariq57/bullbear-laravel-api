@@ -20,15 +20,16 @@
           
           <p class="mb-0"><i :class="{'bi-globe': chat.join_privacy === 'public', 'bi-lock-fill': chat.join_privacy === 'private'}"></i> {{ chat.join_privacy.charAt(0).toUpperCase() + chat.join_privacy.slice(1) }}</p>
         </div>
-          <button 
+          <button v-show="!chat.joined"
             @click="joinChat(chat)" 
             class="btn" 
-            :class="{'btn-primary': !chat.joined && !chat.requestPending, 'btn-secondary': chat.requestPending}" 
+            :class="{'btn-primary': !chat.joined && !chat.requestPending, 'btn-secondary': chat.requestPending }" 
             :disabled="chat.requestPending">
             <span v-if="chat.joined">Visit Chat Room</span>
             <span v-else-if="chat.requestPending">Request Pending</span>
             <span v-else>Join Group</span>
           </button>
+          <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="btn btn-primary" v-show="chat.joined">Visit Chat Room</a>
         </div>
       </div>
     </div>
