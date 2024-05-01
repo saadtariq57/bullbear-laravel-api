@@ -16,6 +16,11 @@
             .selected-segments-field {
                 list-style: none;
             }
+
+            .segments-switch .form-check-input:checked {
+                background-color: #003566;
+                border-color: #003566;
+            }
         </style>
     @endsection
 
@@ -66,33 +71,35 @@
 
                             </div>
                             <div class="col-lg-3 border shadow">
-                                <form  method="POST" action="{{ route('admin.emails.send') }}">
+                                <form method="POST" action="{{ route('admin.emails.send') }}" class="pt-2">
                                     @csrf
                                     <input type="hidden" name="template_id" id="selectedTemplateId"
                                         value="{{ session('selected_id') }}">
-                                        <div class="mb-3">
-                                            <label for="inputSubject" class="form-label">Subject</label>
-                                            <input type="text" name="subject" class="form-control" id="inputSubject" required>
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="inputSubject" class="form-label">Subject</label>
+                                        <input type="text" name="subject" class="form-control" id="inputSubject"
+                                            required>
+                                    </div>
                                     <div class="mb-3">
                                         <label for="selectsegment" class="form-label">Contact Segment</label>
                                         @if (!empty($filteredSegments))
                                             @foreach ($filteredSegments as $segment)
-                                                <div class="form-check form-switch">
+                                                <div class="form-check form-switch segments-switch">
                                                     <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="segment{{ $segment['id'] }}" name="segments[]" value="{{ $segment['id'] }}">
+                                                        id="segment{{ $segment['id'] }}" name="segments[]"
+                                                        value="{{ $segment['id'] }}">
                                                     <label class="form-check-label"
                                                         for="segment{{ $segment['id'] }}">{{ $segment['name'] }}</label>
                                                 </div>
                                             @endforeach
                                         @else
-                                            <p>No segments available for category 38.</p>
+                                            <p>No segments available.</p>
                                         @endif
 
                                     </div>
                                     <div class="mb-3 float-end">
                                         <button type="submit" class="btn btn-primary">Send Emails</button>
-                                        <a href="" class="btn btn-primary">Cancel</a>
+                                        {{-- <a href="" class="btn btn-primary">Cancel</a> --}}
                                     </div>
                                 </form>
                             </div>
@@ -117,7 +124,7 @@
                 }
 
                 function updateBuilderLink(enable, templateId) {
-                    console.log('Updating builder link:', enable, templateId);
+                    // console.log('Updating builder link:', enable, templateId);
 
                     if (enable && templateId) {
                         builderLink.href = `/admin/emails/editors/${templateId}`;
@@ -170,7 +177,7 @@
                         selectButtons.forEach(btn => btn.textContent = 'Select');
                         this.textContent = 'Selected';
                         selectedTemplateIdInput.value = this.getAttribute(
-                        'data-id'); // Update hidden input
+                            'data-id'); // Update hidden input
                     });
                 });
             });

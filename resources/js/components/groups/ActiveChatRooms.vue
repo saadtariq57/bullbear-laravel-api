@@ -4,27 +4,32 @@
       <div class="card m-0 h-100">
         <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="chat-avatar-wrapper">
           <img :src="`uploads/${chat.avatar}`" class="card-img-top" :alt="`${chat.group_title} Profile Picture`" @error="handleAvatarError(chat)" :class="{ 'd-none': chat.avatarFailed }">
+          <div class="group_name" :class="{ 'd-flex': chat.avatarFailed }">
+          <p class="px-2">{{ chat.group_title }}</p>
+          </div>
         </a>
         <div class="card-body position-relative">
         <h3 class="fs-14 fw-6">{{ chat.group_title }}</h3>
-          <p class="fs-14 text-secondary"> 
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <p class="fs-14 text-secondary mb-0"> 
             <span v-if="chat.symbol && chat.exchange">
               <i class="bi bi-graph-up-arrow"></i> {{ chat.symbol }}/{{ chat.exchange }}
             </span>
             Members: {{ chat.members_count }}
           </p>
           
-          <p><i :class="{'bi-globe': chat.join_privacy === 'public', 'bi-lock-fill': chat.join_privacy === 'private'}"></i> {{ chat.join_privacy.charAt(0).toUpperCase() + chat.join_privacy.slice(1) }}</p>
-          <button 
+          <p class="mb-0"><i :class="{'bi-globe': chat.join_privacy === 'public', 'bi-lock-fill': chat.join_privacy === 'private'}"></i> {{ chat.join_privacy.charAt(0).toUpperCase() + chat.join_privacy.slice(1) }}</p>
+        </div>
+          <button v-show="!chat.joined"
             @click="joinChat(chat)" 
             class="btn" 
-            :class="{'btn-primary': !chat.joined && !chat.requestPending, 'btn-secondary': chat.requestPending}" 
-            :disabled="chat.requestPending"
-            style="position: absolute; bottom: 0; start: 0;">
+            :class="{'btn-primary': !chat.joined && !chat.requestPending, 'btn-secondary': chat.requestPending }" 
+            :disabled="chat.requestPending">
             <span v-if="chat.joined">Visit Chat Room</span>
             <span v-else-if="chat.requestPending">Request Pending</span>
             <span v-else>Join Group</span>
           </button>
+          <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="btn btn-primary" v-show="chat.joined">Visit Chat Room</a>
         </div>
       </div>
     </div>
@@ -72,7 +77,7 @@ export default {
 }
 
 .group_name {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   height: 100%;

@@ -127,6 +127,6 @@ class EmailTemplateController extends Controller
         $template->save();
     
         return redirect()->route('admin.emails.index')->with('success', 'New template created successfully!')->with('selected_id', $template->id);
-    }    
+    }   
 
 }

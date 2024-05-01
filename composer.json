@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
         "mautic/api-library": "^3.1",
-        "predis/predis": "*"
+        "predis/predis": "*",
+        "symfony/http-kernel": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
