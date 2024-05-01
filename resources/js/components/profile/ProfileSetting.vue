@@ -9,7 +9,7 @@
               aria-labelledby="v-pills-setting-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle">
                   </div>
                   <div class="avatar-holder_info ps-3 pt-3">
@@ -24,7 +24,7 @@
                   <div class="col-md-6">
                     <label for="username-lable" class="form-label col-form-label-lg">Username</label>
                     <input type="text" class="form-control form-control-lg" placeholder="Enter username" name="user-name"
-                      aria-label="username" :value="userData.name">
+                      aria-label="username" :value="userData.name" disabled>
                   </div>
                   <div class="col-md-6 pt-3 pt-md-0">
                     <label for="Phone-lable" class="form-label col-form-label-lg">Phone</label>
@@ -33,10 +33,31 @@
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3">
+                  <div class="col-md-6">
+                    <label for="colFormLabelLg" class="form-label col-form-label-lg">First
+                      name</label>
+                    <input type="text" class="form-control form-control-lg first-name" id="fname" name="fname"
+                      placeholder="Enter first name" aria-label="fname" :value="userData.first_name">
+                  </div>
+                  <div class="col-md-6 pt-3 pt-md-0">
+                    <label for="colFormLabelLg" class="form-label col-form-label-lg">Last
+                      name</label>
+                    <input type="text" class="form-control form-control-lg" placeholder="Enter ast name"
+                      aria-label="lname" :value="userData.last_name">
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3">
                   <div class="col">
                     <label for="email-lable" class="form-label col-form-label-lg">E-mail</label>
                     <input type="email" class="form-control form-control-lg email" name="email" placeholder="Enter email"
-                      aria-label="Email" :value="userData.email">
+                      aria-label="Email" :value="userData.email" disabled>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3">
+                  <div class="col-md-12">
+                    <label for="aboutme" class="form-label col-form-label-lg">About me</label>
+                    <textarea class="form-control form-control-lg" placeholder="Describe yourself here..."
+                      name="about">{{ userData.about }}</textarea>
                   </div>
                 </div>
                 <div class="row g-3 px-3  pt-3">
@@ -317,57 +338,6 @@
                       aria-label="zip" :value="userData.zip">
                   </div>
                 </div>
-                <div class="mt-4 text-center">
-                  <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Save</a>
-                </div>
-              </form>
-            </div>
-            <!-- Profile-tabs start -->
-            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab"
-              tabindex="0">
-              <div class="wo_general_settings_page ">
-                <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar
-                      rounded-circle"></div>
-                  <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
-                    <p class="fs-28 pt-2">Profile Setting</p>
-                  </div>
-                </div>
-
-              </div>
-              <form action="" class="mt-5 pt-3">
-                <div class="row g-3 px-3 ">
-                  <div class="col-md-6">
-                    <label for="colFormLabelLg" class="form-label col-form-label-lg">First
-                      name</label>
-                    <input type="text" class="form-control form-control-lg first-name" id="fname" name="fname"
-                      placeholder="Enter first name" aria-label="fname" :value="userData.first_name">
-                  </div>
-                  <div class="col-md-6 pt-3 pt-md-0">
-                    <label for="colFormLabelLg" class="form-label col-form-label-lg">Last
-                      name</label>
-                    <input type="text" class="form-control form-control-lg" placeholder="Enter ast name"
-                      aria-label="lname" :value="userData.last_name">
-                  </div>
-                </div>
-                <div class="row g-3 px-3 pt-3">
-                  <div class="col-md-12">
-                    <label for="aboutme" class="form-label col-form-label-lg">About me</label>
-                    <textarea class="form-control form-control-lg" placeholder="Describe yourself here..."
-                      name="about">{{ userData.about }}</textarea>
-                  </div>
-                </div>
-                <div class="row g-3 px-3 pt-3">
-                  <div class="col">
-                    <label for="Location" class="form-label col-form-label-lg">Location</label>
-                    <input type="text" class="form-control form-control-lg Location" name="Address" aria-label="Address"
-                      disabled :value="userData.state">
-
-                  </div>
-
-                </div>
-
                 <div class="row g-3 px-3 pt-3">
                   <div class="col-md-12">
                     <label for="colFormLabelLg" class="form-label col-form-label-lg mb-0">Website</label>
@@ -386,7 +356,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -433,7 +403,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -489,7 +459,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -802,7 +772,7 @@
               aria-labelledby="v-pills-social-links-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -840,7 +810,7 @@
               aria-labelledby="v-pills-notification-setting-tab" tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
                       class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
@@ -884,51 +854,51 @@
                     </div>
                     <div class="col-md-9 pt-3 pt-md-0">
                       <div class="form-check round-check">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-1">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-1">
                           Someone liked my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-2">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-2">
                           Someone commented on my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-3">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-3">
                           Someone shared on my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-4">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-4">
                           Someone followed me
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-5">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-5">
                           Someone mentioned me
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-6">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-6">
                           Someone joined my chats
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="notification-check-7">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="notification-check-7">
                           Someone accepted my friend/follow requset
                         </label>
                       </div>
@@ -942,51 +912,51 @@
                     </div>
                     <div class="col-md-9 pt-3 pt-md-0">
                       <div class="form-check round-check">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-1">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-1">
                           Someone liked my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-2">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-2">
                           Someone commented on my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-3">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-3">
                           Someone shared on my posts
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-4">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-4">
                           Someone followed me
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-5">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-5">
                           Someone mentioned me
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-6">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-6">
                           Someone joined my chats
                         </label>
                       </div>
                       <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg" type="checkbox" value=""
-                          name="Completed-checkbox">
-                        <label class="form-check-label fs-14 text-secondary" for="Completed">
+                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                          name="Completed-checkbox" id="email-check-7">
+                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-7">
                           Someone accepted my friend/follow requset
                         </label>
                       </div>
@@ -1002,7 +972,7 @@
               tabindex="0">
               <div class="wo_general_settings_page ">
                 <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
+                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`" class="avatar rounded-circle"></div>
                   <div class="avatar-holder_info ps-3 pt-3">
                     <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
                     <p class="fs-28 pt-2">Membership</p>
@@ -1190,11 +1160,6 @@
                 data-bs-target="#v-pills-setting" type="button" role="tab" aria-controls="v-pills-setting"
                 aria-selected="true">
                 <i class="bi bi-gear-fill pe-3 fs-18 align-middle"></i>General Setting
-              </button>
-              <button class="nav-link text-start" id="v-pills-profile-tab" data-bs-toggle="pill"
-                data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile"
-                aria-selected="false">
-                <i class="bi bi-person-circle pe-3 fs-18 align-middle"></i>Profile
               </button>
               <div class="collapse-tabs">
                 <p class="mb-0">

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('group_categories', function (Blueprint $table) {
-            $table->timestamps(); // This will add both created_at and updated_at columns
+        Schema::table('group_members', function (Blueprint $table) {
+            $table->enum('status', ['active', 'pending', 'rejected'])->default('pending');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('group_categories', function (Blueprint $table) {
-            $table->dropColumn(['created_at', 'updated_at']); // This will drop both columns if you roll back this migration
+        Schema::table('group_members', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

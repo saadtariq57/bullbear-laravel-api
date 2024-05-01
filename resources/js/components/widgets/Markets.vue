@@ -1,6 +1,6 @@
 <template>
     <div class="markets-widget-wrapper pt-2 mt-3 rounded border-top border-2 border-warning widgets-border">
-        <h4 class="fs-5 fw-6 px-2 mb-2 icon-short-heading">Market</h4>
+        <h4 class="fs-5 fw-6 px-2 mb-2 icon-short-heading">Markets</h4>
         <nav>
             <div class="nav nav-tabs px-2" id="nav-tab" role="tablist">
                 <button class="nav-link market-nav-btn active" id="nav-indices-tab" data-bs-toggle="tab"

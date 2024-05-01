@@ -6,16 +6,19 @@
             <router-view></router-view>
           </section>
         </div>
+        <StickyChat v-if="userData" />
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import Navigation from "./header/Navigation.vue";
 import ablyService from '../services/ablyService.js';
+import StickyChat from './widgets/StickyChat.vue';
 
 export default {
   components: {
     Navigation,
+    StickyChat
   },
   computed: {
     ...mapState(['userData', 'loggedIn']),

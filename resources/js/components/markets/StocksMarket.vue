@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
   <div class="text-center">
     <p class="mb-0 fw-bold text-black">Markets</p>
     <h1 class="fw-bold border-bottom pb-3">Stocks</h1>
@@ -117,8 +117,9 @@
         </div>
         <div class="col-lg-4">
       <TopMovers />
-      <Markets />
+      <RecentQuotes />
       <TopTen />
+      <LatestArticles />
     </div>
   </div>
   </div>
@@ -126,12 +127,14 @@
 <script>
 import TopMovers from '../widgets/TopMovers.vue';
 import TopTen from '../widgets/TopTen.vue';
-import Markets from '../widgets/Markets.vue';
+import LatestArticles from '../widgets/LatestArticles.vue';
+import RecentQuotes from '../widgets/RecentQuotes.vue';
 export default {
   components: {
     TopMovers,
-    Markets,
-    TopTen
+    LatestArticles,
+    TopTen,
+    RecentQuotes,
   },
 }
 </script>

@@ -112,19 +112,22 @@ export default {
       this.setAndRedirectToCheckout({ plan, router: this.$router });
     }
   },
-  created() {
-    this.fetchSubscriptionPlans();
+  async created() {
+    try {
+      await this.fetchSubscriptionPlans();
+    } catch (error) {
+      console.error('Error fetching subscription plans:', error);
+      // Handle error appropriately
+    } finally {
+      this.PricePlan = false; // Update loading state after fetching completes
+    }
+    // this.fetchSubscriptionPlans();
     localStorage.removeItem('selectedPlan');
     localStorage.removeItem('showYearly');
     // console.log(this.userData);
     // console.log(this.subscriptionPlans.currentSubscription);
 
   },
-  mounted() {
-    setTimeout(() => {
-      this.PricePlan = false;
-    }, 5000);
-  }
 };
 </script>
 <style>

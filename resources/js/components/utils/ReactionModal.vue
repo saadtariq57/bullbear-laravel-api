@@ -24,7 +24,7 @@
                 class="nav-link border-0 fs-6 text-black px-2 py-2 d-flex btn-feed-hover reactions-post-nav-btn text-nowrap"
                 :id="`${type}reactions-tab`" data-bs-toggle="tab" :data-bs-target="`#${type}reactions-tab-pane`"
                 type="button" role="tab" :aria-controls="`${type}reactions-tab-pane`" aria-selected="false">
-                <img :src="`/upload/icons/${type}.png`" alt="" width="18px" class="me-1">
+                <img :src="`/uploads/icons/${type}.png`" alt="" width="18px" class="me-1">
                 <span>{{ reaction.count }}</span>
               </button>
             </li>
@@ -40,7 +40,7 @@
                     class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0"
                     v-for="detail in reaction.details" :key="`${type}-${detail.userId}`">
                     <div class="position-relative">
-                      <img :src="`/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
+                      <img :src="`/uploads/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
                       <span
                         class="user-reaction position-absolute bg-white rounded-circle d-flex justify-content-center align-items-center">
                         <img :src="`/${detail.reactionImage}`" alt="" width="15px" height="15px">
@@ -60,7 +60,7 @@
                   class="list-group-item list-group-item-action px-0 py-0 d-flex align-items-center gap-3 border-0"
                   v-for="detail in reaction.details" :key="`${type}-${detail.userId}`">
                   <div class="position-relative">
-                    <img :src="`/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
+                    <img :src="`/uploads/${detail.userImage}`" alt="" width="45" height="45" class="rounded-circle">
                   </div>
                   <div class="flex-fill border-bottom py-3">
                     <h6 class="fs-6 fw-6 clr-primary user-name">{{ detail.userName }}</h6>

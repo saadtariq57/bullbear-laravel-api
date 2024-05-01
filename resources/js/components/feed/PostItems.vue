@@ -57,7 +57,7 @@
 
               </div>
             </div>
-            <div v-else class="text-center">
+            <div v-else class="text-center single-post-img">
               <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)">
                 <!-- Pass the clicked post data -->
                 <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid">
@@ -588,7 +588,11 @@ export default {
 .btn-feed-hover:active {
   background-color: transparent !important;
 }
-
+.user-avatar .img{
+  width: 35px;
+  height: 35px;
+  overflow: hidden;
+}
 .user-avatar img,
 .reaction-icons-img {
   width: 35px;
@@ -702,6 +706,9 @@ export default {
 
 .multi-post-img-wrapper:has(.multi-post-img.w-100) {
   width: 100% !important;
+}
+.single-post-img .btn img{
+  max-height: 600px;
 }
 
 .overlay-post-gallery {

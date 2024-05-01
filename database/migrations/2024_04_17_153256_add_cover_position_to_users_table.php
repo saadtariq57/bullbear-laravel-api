@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('group_categories', function (Blueprint $table) {
-            $table->string('about', 255)->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            // Add the new column
+            $table->string('cover_position')->default('0px');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('group_categories', function (Blueprint $table) {
-            $table->dropColumn(['about']); // This will drop both columns if you roll back this migration
+        Schema::table('users', function (Blueprint $table) {
+            // Drop the added column if needed
+            $table->dropColumn('cover_position');
         });
     }
 };

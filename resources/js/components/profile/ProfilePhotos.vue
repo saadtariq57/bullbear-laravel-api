@@ -44,3 +44,9 @@ export default {
     }
 }
 </script>
+<style>
+.user-post-img{
+ object-fit: cover;
+ height: 250px;
+}
+</style>

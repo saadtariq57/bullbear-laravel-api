@@ -53,7 +53,7 @@
                                     <th scope="col">Avatar</th>
                                     <th scope="col">Owner Name</th>
                                     <th scope="col">Group Name</th>
-                                    <th scope="col">Privacy</th>
+                                    <th scope="col">Join Privacy</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Symbol</th>
                                     <th scope="col">Exchange</th>
@@ -67,16 +67,14 @@
                                         <tr>
                                             <td>{{ $group->id }}</td>
                                             <td>
-                                                <img src="{{ URL::asset($group->avatar) }}" alt="" class="avatar-xs rounded-circle">
+                                                <img src="{{ URL::asset('uploads/' . $group->avatar) }}" alt="" class="avatar-xs rounded-circle">
                                             </td>
-                                            <!-- Assuming you have a method in your Group model to get the user name -->
-                                            <td>{{ $group->user->name }}</td>
+                                            <td></td>
                                             <td>{{ $group->group_name }}</td>
-                                            <td>{{ ucfirst($group->privacy) }}</td>
+                                            <td>{{ ucfirst($group->join_privacy) }}</td>
                                             <td>{{ $group->active == 0 ? 'Inactive' : 'Active' }}</td>
                                             <td>{{ $group->symbol }}</td>
                                             <td>{{ $group->exchange }}</td>
-                                            <!-- Assuming you have a method in your Group model to get members count -->
                                             <td>{{ $group->members_count }}</td>
                                             <td>
                                                 <ul class="list-inline mb-0">
@@ -90,11 +88,11 @@
                                                     <!-- New Members Action -->
                                                     <li class="list-inline-item">
                                                         <a href="{{ route('admin.groups.members', $group->id) }}" class="px-2 text-success">
-                                                            <i class="ri-group-line font-size-18"></i> <!-- You can use an appropriate icon -->
+                                                            <i class="ri-group-line font-size-18"></i>
                                                         </a>
                                                     </li>
 
-                                                    <!-- Existing Delete Action -->
+                                                    <!-- Delete Action -->
                                                     <li class="list-inline-item">
                                                         <form action="{{route('admin.groups.destroy', $group->id)}}" method="POST">
                                                             @csrf

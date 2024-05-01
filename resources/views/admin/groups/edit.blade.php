@@ -14,7 +14,7 @@
 
 @section('content')
     <div class="row">
-        <form action="{{ route('admin.groups.update', $group->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="editGroupForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); submitForm();">
             @csrf
             @method('PUT')
 
@@ -33,13 +33,13 @@
                     <div class="form-group">
                         <label for="avatar">Avatar</label>
                         <input type="file" class="form-control" name="avatar">
-                        <img src="{{ URL::asset($group->avatar) }}" class="rounded-circle me-2" height="100px" width="100px">
+                        <img src="{{ URL::asset('uploads/' . $group->avatar) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
                         <label for="cover">Cover Image</label>
                         <input type="file" class="form-control" name="cover">
-                        <img src="{{ URL::asset($group->cover) }}" class="rounded-circle me-2" height="100px" width="100px">
+                        <img src="{{ URL::asset('uploads/' . $group->cover) }}" class="rounded-circle me-2" height="100px" width="100px">
                     </div>
 
                     <div class="form-group">
@@ -79,8 +79,8 @@
                     <div class="form-group">
                         <label for="join_privacy">Join Privacy</label>
                         <select class="form-control" name="join_privacy">
-                            <option value="1" {{ $group->join_privacy ? 'selected' : '' }}>Open</option>
-                            <option value="0" {{ !$group->join_privacy ? 'selected' : '' }}>Closed</option>
+                            <option value="public" {{ $group->join_privacy == 'public' ? 'selected' : '' }}>Public</option>
+                            <option value="private" {{ $group->join_privacy == 'private' ? 'selected' : '' }}>Private</option>
                         </select>
                     </div>
 
@@ -97,9 +97,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
-                            Update Group
-                        </button>
+                        <button type="button" class="btn btn-success float-right" onclick="submitForm()">Update Group</button>
                     </div>
                 </div>
             </div>
@@ -109,27 +107,39 @@
 
 @section('scripts')
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    @if(session('success'))
-        <script>
+<script>
+    function submitForm() {
+        const formData = new FormData(document.getElementById('editGroupForm'));
+
+        axios.post('{{ route("admin.groups.update", $group->id) }}', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(function (response) {
             Swal.fire({
                 title: 'Success!',
-                text: '{{ session("success") }}',
+                text: response.data.message,
                 icon: 'success',
                 confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/admin/groups'; 
+                }
             });
-        </script>
-    @endif
-
-    @if(session('error'))
-        <script>
+        })
+        .catch(function (error) {
             Swal.fire({
                 title: 'Error!',
-                text: '{{ session("error") }}',
+                text: error.response.data.message || 'Failed to update group.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
-        </script>
-    @endif
+        });
+    }
+
+</script>
 @endsection

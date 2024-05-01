@@ -206,4 +206,9 @@ export default {
   background-color: #0A66C2;
   left: 7px;
 }
+.img{
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+}
 </style>

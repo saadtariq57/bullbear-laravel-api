@@ -9,13 +9,15 @@
         "ably/laravel-broadcaster": "*",
         "aws/aws-sdk-php": "^3.302",
         "embed/embed": "^4.4",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.8",
         "laravel/cashier": "^14.13",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
-        "predis/predis": "*"
+        "mautic/api-library": "^3.1",
+        "predis/predis": "*",
+        "symfony/http-kernel": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

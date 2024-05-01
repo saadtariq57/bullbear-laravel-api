@@ -77,6 +77,10 @@
     </li>
     <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
         Pakistan</span>
+        <li class="border-bottom my-1"></li>
+        <li class="px-3 py-1 fs-16"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a href="https://www.linkedin.com/in/wajid" class="text-black">Wajid Fareed</a></li>
+        <li class="px-3 py-1 fs-16"><i class="bi bi-twitter-x me-2 text-black fs-5"></i> <a href="https://www.twitter.com/in/wajid" class="text-black">Wajid Fareed</a></li>
+        <li class="px-3 py-1 fs-16"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a href="https://www.youtube.com/in/wajid" class="text-black">Wajid Fareed</a></li>
     </li>
   </ul>
   <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
@@ -98,7 +102,7 @@
   <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
-          class="bi bi bi-person-fill-check text-white"></i></span><span class="fs-5 text-black">Friends <span
+          class="bi bi bi-person-fill-check text-white"></i></span><span class="fs-5 text-black">Followers <span
           class="fs-12">(3)</span></span>
     </div>
     <li class="p-1 ">
@@ -139,7 +143,7 @@
       <div class="row gx-2 gy-2">
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -148,7 +152,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -157,7 +161,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -166,7 +170,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -175,7 +179,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -184,7 +188,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -193,7 +197,7 @@
         </a>
         <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
           <div class="position-relative"><img
-              src="upload/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
+              src="uploads/photos/2022/03/KtzcCYPA8QlNCuay1Qx7_14_c4d91fd1d21b8dacdd7f91ad5ef74b0a_avatar.png" alt=""
               class="w-100">
             <div class="position-absolute bottom-0 start-0 text-white px-1 img-text w-100 text-oneline">
               DeFi Technologies Inc.
@@ -203,7 +207,7 @@
       </div>
     </li>
   </ul>
-  <div class="people-you-know mb-3 shadow-sm rounded border-top border-2 border-warning widgets-border">
+  <div class="people-you-know mb-3 pb-2 shadow-sm rounded border-top border-2 border-warning widgets-border">
     <div class=" border-bottom">
       <div class="d-flex align-items-center pt-2 pb-1 justify-content-between">
         <div class="fw-6 fs-6 ps-3 mb-1 d-flex align-items-center">
@@ -330,9 +334,9 @@
       <li><a href="#" class="fs-13 text-secondary">About</a></li>
       <li><a href="#" class="fs-13 text-secondary">Contact Us</a></li>
       <li>
-        <div class="btn-group dropup">
+        <div class="btn-group">
           <button type="button" class="btn bg-transparent dropdown-toggle border-0 fs-13 text-secondary"
-            data-bs-toggle="dropdown" aria-expanded="false">
+            data-bs-toggle="dropdown" aria-expanded="false" @click="toggleDropdown($event)">
             More
           </button>
           <ul class="dropdown-menu text-uppercase">
@@ -344,6 +348,18 @@
     </ul>
   </div>
 </template>
+<script>
+import { Dropdown } from 'bootstrap';
+export default {
+  methods: {
+    toggleDropdown(event) {
+            const dropdownElement = event.target.closest('.dropdown-toggle');
+            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+            dropdownInstance.toggle();
+        },
+  }
+}
+</script>
 <style>
 .icon-round-bg {
   width: 27px;

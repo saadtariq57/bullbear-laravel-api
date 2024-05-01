@@ -59,26 +59,38 @@
                             </thead>
                             <tbody>
                                 @foreach($members as $member)
-                                    <tr data-id="{{ $member->user_id }}">
-                                        <td>{{ $member->user_id }}</td>
-                                        <td>{{ $member->user->name }}</td>
-                                        <td data-field="role">{{ $member->role }}</td>
-                                        <td data-field="active">{{ $member->active ? 'Active' : 'Inactive' }}</td>
-                                        <td>{{ $member->last_seen }}</td>
-                                        <td>
-                                            <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <a class="btn btn-danger btn-sm removeMember" title="Remove">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr data-id="{{ $member->id }}">
+                                    <td>{{ $member->id }}</td>
+                                    <td>{{ $member->name }}</td>
+                                    <td data-field="role">
+                                        <select class="form-control role-select">
+                                            <option value="member" {{ $member->pivot->role === 'member' ? 'selected' : '' }}>Member</option>
+                                            <option value="admin" {{ $member->pivot->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                        </select>
+                                    </td>
+                                    <td data-field="status">
+                                    <select class="form-control status-select" data-id="{{ $member->id }}">
+                                        <option value="active" @if($member->pivot->status == 'active') selected @endif>Active</option>
+                                        <option value="pending" @if($member->pivot->status == 'pending') selected @endif>Pending</option>
+                                        <option value="rejected" @if($member->pivot->status == 'rejected') selected @endif>Rejected</option>
+                                    </select>
+                                    </td>
+                                    <td>{{ $member->pivot->last_seen }}</td>
+                                    <td>
+                                        <button class="btn btn-outline-secondary btn-sm saveMember" title="Save">
+                                            <i class="fas fa-save"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm removeMember" title="Remove">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        <button id="updateMembers" class="btn btn-success" disabled>Update Members</button>
                     </div>
+
+
                 </div>
             </div>
         </div>
@@ -98,149 +110,140 @@
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
     <script>
-    $(document).ready(function() {
-        // Initialize table editable
-        function initializeEditable(target) {
-            // Initialize all fields with common editable settings
-            target.editable({
-                edit: function (values) {
-                    $(".edit i", this)
-                        .removeClass('fa-pencil-alt')
-                        .addClass('fa-save')
-                        .attr('title', 'Save');
-                },
-                save: function (values) {
-                    $(".edit i", this)
-                        .removeClass('fa-save')
-                        .addClass('fa-pencil-alt')
-                        .attr('title', 'Edit');
-                     // Enable UpdateSymbols Button
-                     $('#updateSymbols').prop('disabled', false);
-                },
-                cancel: function (values) {
-                    $(".edit i", this)
-                        .removeClass('fa-save')
-                        .addClass('fa-pencil-alt')
-                        .attr('title', 'Edit');
-                }
-            });
+$(document).ready(function() {
+    // Function to clear the search results and input
+    function clearSearchResults() {
+        $('#memberSearch').val('');
+        $('[data-testid="dropdownMemberResults"]').empty();
+    }
 
-            // Special initialization for date field
-            target.find('td[data-field="added_date"]').editable({
-                type: 'date',
-                format: 'yyyy-mm-dd',
-                viewformat: 'yyyy-mm-dd',
-                datepicker: {
-                    weekStart: 1
-                }
-            });
-        }
+    // Member search functionality
+    $('#memberSearch').on('input', function() {
+        let searchTerm = $(this).val().trim();
+        if (!searchTerm) return; // Avoid empty search requests
 
-        // Initialize table editable for existing rows
-        initializeEditable($('.table-edits tr'));
-
-        // Temporary array to store current member IDs
-        let currentMembers = @json($members).map(member => member.user_id);
-
-        // Member search functionality
-        $('#memberSearch').on('input', function() {
-            let searchTerm = $(this).val();
-            $.ajax({
-                url: '/admin/users/search', // Adjust the URL to your search endpoint
-                type: 'GET',
-                data: { query: searchTerm },
-                success: function(data) {
-                    let results = '';
-                    data.forEach(user => {
-                        results += `<tr class="MemberDropdownItem" 
-                                        data-id="${user.id}" 
-                                        data-name="${user.name}">
-                                        <td>${user.name}</td>
-                                        <td><button class="btn btn-success btn-sm addMemberToGroup">Add</button></td>
-                                    </tr>`;
-                    });
-                    $('[data-testid="dropdownMemberResults"]').html(results);
-                }
-            });
-        });
-
-        // Add Member to Group
-        $(document).on('click', '.addMemberToGroup', function() {
-            let memberRow = $(this).closest('tr');
-            let userID = memberRow.data('id');
-            let userName = memberRow.data('name');
-
-            if (currentMembers.includes(userID)) {
-                // Member already exists in the group
-                alert("Member already exists in the group.");
-                return;
+        $.ajax({
+            url: '/admin/users/search',
+            type: 'GET',
+            data: { query: searchTerm },
+            success: function(data) {
+                let results = '';
+                data.forEach(user => {
+                    results += `<tr class="MemberDropdownItem" 
+                                    data-id="${user.id}" 
+                                    data-name="${user.name}">
+                                    <td>${user.name}</td>
+                                    <td><button class="btn btn-success btn-sm addMemberToGroup">Add</button></td>
+                                </tr>`;
+                });
+                $('[data-testid="dropdownMemberResults"]').html(results);
             }
-
-            let newRow = `<tr data-id="${userID}">
-                            <td>${userID}</td>
-                            <td>${userName}</td>
-                            <td data-field="role">member</td>
-                            <td data-field="active">Active</td>
-                            <td>Just now</td>
-                            <td>
-                                <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <a class="btn btn-danger btn-sm removeMember" title="Remove">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                          </tr>`;
-
-            $('#groupMembers tbody').append(newRow);
-            initializeEditable($('#groupMembers tbody tr:last'));
-            $('#updateMembers').prop('disabled', false);
-            currentMembers.push(userID);
         });
+    });
 
-        // Update Members
-        $('#updateMembers').click(function() {
-            let membersData = [];
-            $('#groupMembers tbody tr').each(function() {
-                let row = $(this);
-                let memberData = {
-                    group_id: $('#groupId').val(),
-                    user_id: row.data('id'), 
-                    role: row.find('td[data-field="role"]').text(),
-                    active: row.find('td[data-field="active"]').text() === 'Active' ? 1 : 0
-                };
-                membersData.push(memberData);
-            });
+    // Add Member to Group
+    $(document).on('click', '.addMemberToGroup', function() {
+        let memberRow = $(this).closest('tr');
+        let userID = memberRow.data('id');
+        let userName = memberRow.data('name');
 
+        let newRow = `<tr data-id="${userID}">
+                        <td>${userID}</td>
+                        <td>${userName}</td>
+                        <td data-field="role">
+                            <select class="form-control role-select">
+                                <option value="member">Member</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </td>
+                        <td data-field="status">
+                            <select class="form-control status-select">
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </td>
+                        <td>Just now</td>
+                        <td>
+                            <button class="btn btn-outline-secondary btn-sm saveMember" title="Save">
+                                <i class="fas fa-save"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm removeMember" title="Remove">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+
+        $('#groupMembers tbody').append(newRow);
+        clearSearchResults(); // Clear the search input and results
+    });
+
+    // Save individual member changes
+    $(document).on('click', '.saveMember', function() {
+        let row = $(this).closest('tr');
+        let userID = row.data('id');
+        let role = row.find('.role-select').val();
+        let status = row.find('.status-select').val();
+
+        if (status === 'rejected') {
+            // If status is rejected, confirm and proceed to remove the member
+            if (confirm("This member will be rejected and removed from the group. Continue?")) {
+                removeMember(userID, row); // Call removeMember function
+            }
+        } else {
+            // Otherwise, proceed to update the member details
             $.ajax({
-                url: '/admin/groups/' + $('#groupId').val() + '/members', 
+                url: '/admin/groups/' + $('#groupId').val() + '/updateMember',
                 type: 'POST',
-                data: { members: membersData },
+                data: {
+                    user_id: userID,
+                    role: role,
+                    status: status
+                },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    alert("Members updated successfully.");
-                    $('#updateMembers').prop('disabled', true);
+                    alert("Member updated successfully.");
                 },
                 error: function(error) {
-                    alert("Error updating members.");
+                    alert("Error updating member: " + error.responseJSON.message);
                 }
             });
-        });
+        }
+    });
 
-        // Remove Member from Group
-        $(document).on('click', '.removeMember', function() {
-            let row = $(this).closest('tr');
-            let userIDToRemove = row.data('id');
-
-            // Confirm removal
-            if (confirm("Are you sure you want to remove this member?")) {
-                currentMembers = currentMembers.filter(userID => userID !== userIDToRemove);
-                row.remove();
-                $('#updateMembers').prop('disabled', false);
+    // Function to remove a member
+    function removeMember(userID, rowElement) {
+        $.ajax({
+            url: '/admin/groups/' + $('#groupId').val() + '/removeMember',
+            type: 'DELETE',
+            data: {
+                user_id: userID
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                rowElement.remove();
+                alert("Member removed successfully.");
+            },
+            error: function(error) {
+                alert("Error removing member: " + error.responseJSON.message);
             }
         });
+    }
+
+    // Remove Member from Group
+    $(document).on('click', '.removeMember', function() {
+        let row = $(this).closest('tr');
+        let userIDToRemove = row.data('id');
+
+        if (confirm("Are you sure you want to remove this member?")) {
+            removeMember(userIDToRemove, row); // Reuse the removeMember function
+        }
     });
+    });
+
 </script>
 @endsection

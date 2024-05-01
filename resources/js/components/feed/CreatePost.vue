@@ -141,7 +141,7 @@
                           <div v-for="(photo, index) in  sharePostPreview.photos " :key="photo.id"
                             class="multi-post-img-wrapper text-center btn p-0 border-0">
                             <div v-if="sharePostPreview.photos.length > 4" class="position-relative multi-post-img">
-                              <img :src="`/${photo.image}`" alt="Post image"
+                              <img :src="`/uploads/${photo.image}`" alt="Post image"
                                 class="img-fluid object-fit-cover multi-post-img share-preview-photo">
                               <div v-if="index === 3"
                                 class="overlay-post-gallery d-flex justify-content-center align-items-center">
@@ -149,12 +149,12 @@
                               </div>
                             </div>
                             <div v-else-if="sharePostPreview.photos.length === 3" class="multi-post-img">
-                              <img :src="`/${photo.image}`" alt="Post image"
+                              <img :src="`/uploads/${photo.image}`" alt="Post image"
                                 class="img-fluid object-fit-cover multi-post-img share-preview-photo"
                                 :class="{ 'w-100': index === 2 }">
                             </div>
                             <div v-else class="multi-post-img">
-                              <img :src="`/${photo.image}`" alt="Post image"
+                              <img :src="`/uploads/${photo.image}`" alt="Post image"
                                 class="img-fluid object-fit-cover multi-post-img share-preview-photo">
                             </div>
 
@@ -163,7 +163,7 @@
                         <div v-else class="text-center">
                           <div v-for="photo in sharePostPreview.photos" :key="photo.id" class="btn p-0">
                             <!-- Pass the clicked post data -->
-                            <img :src="`/${photo.image}`" alt="Post image" class="img-fluid share-preview-photo">
+                            <img :src="`/uploads/${photo.image}`" alt="Post image" class="img-fluid share-preview-photo single-share-preview-photo">
                           </div>
                         </div>
                       </div>
@@ -203,7 +203,7 @@
                       <div class="border-top border-1 border-secondary-subtle px-3 py-2">
                         <div class="d-flex gap-2 align-items-center mb-2">
                           <div>
-                            <img :src="`/${sharePostPreview.user.avatar}`" alt="" width="40px" height="40px"
+                            <img :src="`/uploads/${sharePostPreview.user.avatar}`" alt="" width="40px" height="40px"
                               class="rounded-circle">
                           </div>
                           <div>
@@ -816,6 +816,9 @@ export default {
 
 .share-preview-photo {
   cursor: auto;
+}
+.single-share-preview-photo{
+  max-height: 600px;
 }
 
 @media screen and (max-width: 768px) {

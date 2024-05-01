@@ -8,11 +8,11 @@
                 <img src="{{ URL::asset('build/images/logo-sm-dark.png') }}" alt="logo-sm-dark" height="24">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="logo-dark" height="22">
+                <img src="{{ URL::asset('build/images/logo.png') }}" alt="logo-dark" height="22">
             </span>
         </a>
 
-        <a href="index" class="logo logo-light">
+        <a href="/" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm-light.png') }}" alt="logo-sm-light" height="24">
             </span>
@@ -40,6 +40,12 @@
                     <a href="{{ route('admin.index') }}" class="waves-effect">
                         <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.watchlist.index') }}" class="waves-effect">
+                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">1</span>
+                        <span>Watchlist Management </span>
                     </a>
                 </li>
 
@@ -112,7 +118,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.settings.subscription_plans.index') }}">Subscription Plans</a></li>
-                        <li><a href="ui-alerts">Mass Emails</a></li>
+                        <li><a href="{{ route('admin.emails.index') }}">Mass Emails</a></li>
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
                     </ul>

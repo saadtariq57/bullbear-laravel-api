@@ -440,6 +440,11 @@ const routes = [
         component: () => import("./components/exam/Exam.vue"),
     },
     {
+        path: "/previous-results",
+        name: "previous-results",
+        component: () => import("./components/exam/PreviousResult.vue"),
+    },    
+    {
         path: "/exam/:examName/question/:questionId",
         name: "exam.question",
         component: () => import("./components/exam/ExamQuestions.vue"),

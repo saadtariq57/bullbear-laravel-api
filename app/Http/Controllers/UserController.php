@@ -206,5 +206,13 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Profile photo updated successfully', 'profile_photo' => $profilePhotoPath]);
     }
+    public function updateCoverPosition(Request $request)
+    {
+        $user = auth()->user(); // Assuming you are using authentication
+        $user->cover_position = $request->input('cover_position');
+        $user->save();
+
+        return response()->json(['message' => 'Cover position updated successfully'], 200);
+    }
     
 }
