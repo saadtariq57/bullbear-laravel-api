@@ -333,4 +333,9 @@ export default {
 .user-msg{
     width: 210px;
 }
+@media (max-width: 1200px) {
+    .chatrooms-widget-wrapper{
+        bottom: 90px;
+    }
+}
 </style>

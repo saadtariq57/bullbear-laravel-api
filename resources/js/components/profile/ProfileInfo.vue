@@ -1,6 +1,7 @@
 <template>
+    <div class="position-relative">
     <ProfileGroupHeader context="profileHeader" ref="ProfileGroupHeader" />
-    <div class="user-profile-info align-self-end" v-if="userProfileData">
+    <div class="user-profile-info" v-if="userProfileData">
         <div class="d-flex align-items-center gap-2">
             <h1>{{ userProfileData.name }}</h1>
             <span v-if="userProfileData.subscription_plan != 'free'"><i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
@@ -15,6 +16,7 @@
             UnFollow
         </button>
     </div>
+</div>
     <div class="row user-chat-top-tab mb-3 px-2">
         <div class="col-12 user-bottom-nav bg-white shadow overflow-auto profile-main-navtab">
             <ul class="inner-tabs-btn nav justify-content-around flex-nowrap" id="admin-content-tab" role="tablist">
@@ -90,9 +92,19 @@ export default {
 }
 </script>
 <style>
+.user-profile-info{
+    position: absolute;
+    bottom: 45px;
+    left: 210px;
+}
 @media (max-width: 767px) {
     .inner-tabs-btn {
         min-width: 660px;
+    }
+    .user-profile-info{
+        bottom: 110px;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 </style>

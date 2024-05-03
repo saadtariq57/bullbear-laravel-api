@@ -322,4 +322,113 @@ public function index(Request $request)
         $category->delete();
         return redirect()->route('admin.groups.categories.index')->with('success', 'Category deleted successfully');
     }
+
+    public function getGroupById($id)
+    {
+        $group = Group::withCount('members') // This counts the members relationship
+                   ->find($id);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        return response()->json($group);
+    }
+    public function groupCoverPosition(Request $request){
+        $group_id = $request->input('group_id');
+        $group = Group::find($group_id);
+    // Check if group exists
+    if (!$group) {
+        return response()->json(['message' => 'Group not found'], 404);
+    }
+
+    // Update the 'cover_position' from the request
+    $group->cover_position = $request->input('cover_position');
+    $group->save(); // Save the changes
+
+    // Return a success response
+    return response()->json(['message' => 'Cover position updated successfully'], 200);
+    }
+    public function updateGroupCover(Request $request){
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
+        ]);
+    
+        $group = Group::find($request->group_id);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Handle the file upload
+        if ($request->hasFile('cover_photo')) {
+            $file = $request->file('cover_photo')->store('/photos', 'public');
+            
+    
+            // Update the group cover image path and cover position
+            // $group->update(['cover' => $file]);
+            $group->cover = $file;
+            $group->cover_position = '0px';
+            $group->save();
+    
+            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
+        }
+    
+        return response()->json(['message' => 'Invalid file provided'], 400);
+    }
+    public function removeGroupCoverPhoto(Request $request) {
+        $group = Group::find($request->input('group_id'));
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Assuming the fields in your database are `cover` and `cover_position`
+        $group->cover = 'photos/d-cover.jpg';
+        $group->cover_position = '0px';
+        $group->save();
+
+        return response()->json(['message' => 'Cover removed successfully', 'group' => $group]);
+    }
+    public function GroupProfilePhoto(Request $request){
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
+        ]);
+    
+        $group = Group::find($request->group_id);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Handle the file upload
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo')->store('/photos', 'public');
+            
+    
+            // Update the group cover image path and cover position
+            $group->update(['avatar' => $file]);
+    
+            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
+        }
+    
+        return response()->json(['message' => 'Invalid file provided'], 400);
+    }
+    public function getGroupMembers($groupId)
+    {
+        $group = Group::with(['members' => function($query) {
+            $query->select('users.id', 'users.name', 'users.avatar'); // Customize the fields as needed
+        }])
+        ->withCount('members')
+        ->find($groupId);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // return response()->json($group->members);
+        $response = [
+            'members' => $group->members,
+            'members_count' => $group->members_count
+        ];
+    
+        return response()->json($response);
+    }
 }

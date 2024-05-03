@@ -178,7 +178,10 @@ class UserController extends Controller
     public function removeCoverPhoto(Request $request){
         $user = Auth::user();
         try {
-            $user->update(['cover' => 'photos/d-cover.jpg']);
+            // $user->update(['cover' => 'photos/d-cover.jpg' , 'cover_position' => '0px']);
+            $user->cover = 'photos/d-cover.jpg';
+            $user->cover_position = '0px';
+            $user->save();
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to remove cover photo'], 500);
         }

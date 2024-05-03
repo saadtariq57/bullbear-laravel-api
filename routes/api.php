@@ -65,8 +65,8 @@ Route::post('/profileImage', [UserController::class, 'updateProfilePhoto']);
 Route::post('/add-vote', [PostController::class, 'addVote']);
 Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
-Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
-Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
+// Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
+// Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 
 //Watchlist Routes
 // Route::prefix('watchlist')->name('watchlist.')->middleware([Subscribed::class])->group(function() {
@@ -128,6 +128,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
     Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
+    Route::get('/groups/join/{id}', [GroupController::class, 'getGroupById']);
+    Route::post('/group-cover-position', [GroupController::class, 'groupCoverPosition']);
+    Route::post('/uploadGroupCover', [GroupController::class, 'updateGroupCover']);
+    Route::post('/removeGroupCover', [GroupController::class, 'removeGroupCoverPhoto']);
+    Route::post('/profileGroupImage', [GroupController::class, 'GroupProfilePhoto']);
+    Route::get('groups/{groupId}/members', [GroupController::class, 'getGroupMembers']);
+
+
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
 
