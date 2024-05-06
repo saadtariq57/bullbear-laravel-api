@@ -2460,7 +2460,9 @@ p.user-message {
 .exam-main {
     max-width: 820px;
 }
-
+.exam-main form .form-check-label,.exam-main form input{
+    cursor: pointer;
+}
 .exam-progress {
     background-color: var(--light-grey);
     height: 10px;

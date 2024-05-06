@@ -3,7 +3,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="mb-5">
-                        <h1 class="fs-1 fw-bold">Economic Calendar</h1>
+                        <h1 class="fs-1 fw-bold icon-heading">Economic Calendar</h1>
                     </div>
                     <div class="mt-4 overflow-auto market-table-wapper">
                 <table class="table table-width border">

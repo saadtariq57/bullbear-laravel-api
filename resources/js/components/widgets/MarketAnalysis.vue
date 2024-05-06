@@ -1,8 +1,8 @@
 <template>
   <div class="col-xl-4 col-lg-6">
-    <div class="main_section mb-40 border-grey border">
+    <div class="main_section mb-40 border-grey border border-top border-2 border-warning widgets-border">
       <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-3 pb-1">
-        <h3 class="fs-6 fw-bolder lh-base">IN-DEPTH MARKET ANALYSIS</h3>
+        <h3 class="fs-6 fw-bolder lh-base icon-short-heading">IN-DEPTH MARKET ANALYSIS</h3>
       </div>
 
       <div class="chat_output">

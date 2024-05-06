@@ -1,8 +1,8 @@
 <template>
   <div class="col-xl-4 col-lg-6">
-          <div class="chat-main mb-40 border-grey border pb-0">
+          <div class="chat-main mb-40 border-grey border pb-0 border-top border-2 border-warning widgets-border">
             <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-3 pb-1">
-              <h3 class="fs-6 fw-bolder lh-base">Dynamic Group Chats</h3>
+              <h3 class="fs-6 fw-bolder lh-base icon-short-heading">Dynamic Group Chats</h3>
             </div>
             <div class="chat-search chat-main-common-padding">
               <form action="#">

@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="mb-5 border-bottom">
-                <h1 class="fs-1 fw-bold">Dividend Calendar</h1>
+                <h1 class="fs-1 fw-bold icon-heading">Dividend Calendar</h1>
             </div>
             <div class="mt-4 overflow-auto market-table-wapper">
         <table class="table table-width border">
