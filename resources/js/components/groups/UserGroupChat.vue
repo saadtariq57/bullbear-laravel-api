@@ -59,7 +59,7 @@ export default {
         CreatePost,
         PostItems,
         LiveChat,
-        ProfileGroupHeader
+        ProfileGroupHeader,
         LatestVideos,
     },
     computed: {

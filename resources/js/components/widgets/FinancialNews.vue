@@ -1,8 +1,8 @@
 <template>
   <div class="col-xl-4 col-lg-6">
-    <div class="main_section mb-40 border-grey border chat_output">
+    <div class="main_section mb-40 border-grey border chat_output border-top border-2 border-warning widgets-border">
       <div class="heading-summary mb-3 chat-main-common-padding border-bottom border-grey pt-3 pb-1">
-        <h3 class="fs-6 fw-bolder lh-base">LATEST FINANCIAL NEWS</h3>
+        <h3 class="fs-6 fw-bolder lh-base icon-short-heading">LATEST FINANCIAL NEWS</h3>
       </div>
 
       <div class="border-1 border-grey">

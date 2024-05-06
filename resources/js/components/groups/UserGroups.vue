@@ -1,8 +1,8 @@
 <template>
-    <div class="container my-4">
+    <div class="container my-5">
         <div class="row">
             <div class="col-lg-8">
-                <h1 class="fs-1 fw-bold border-bottom">Chat Rooms</h1>
+                <h1 class="icon-heading mb-4 fw-bold border-bottom">Chat Rooms</h1>
                 <div class="bg-white py-0 rounded-1 shadow-radius mt-3 groups-chats">
                     <ul class="nav border-0 m-0 p-0" id="chats-content-tab" role="tablist">
                         <li class="nav-item border-0 col-6" role="presentation">
