@@ -134,7 +134,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/removeGroupCover', [GroupController::class, 'removeGroupCoverPhoto']);
     Route::post('/profileGroupImage', [GroupController::class, 'GroupProfilePhoto']);
     Route::get('groups/{groupId}/members', [GroupController::class, 'getGroupMembers']);
-
+    Route::get('groups/{groupId}/check', [GroupController::class, 'checkUserGroupRole']);
+    Route::post('/groups/{groupId}/update-member', [GroupController::class, 'updateGroupMember']);
+    Route::post('/groups/{groupId}/remove-member', [GroupController::class, 'removeGroupMember']);
+    
 
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');

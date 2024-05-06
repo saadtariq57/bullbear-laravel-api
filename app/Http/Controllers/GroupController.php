@@ -8,6 +8,7 @@ use App\Models\GroupMembers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GroupController extends Controller
 {
@@ -431,4 +432,84 @@ public function index(Request $request)
     
         return response()->json($response);
     }
+    public function updateGroupMember(Request $request, $groupId)
+    {
+
+        $userId = $request->user_id;
+        $role = $request->role;
+        $status = $request->status;
+
+        // First, find the group to ensure it exists
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Check if the user is a member of the group
+        $member = $group->members()->where('users.id', $userId)->first();
+        if (!$member) {
+            return response()->json(['message' => 'Member not found in the group'], 404);
+        }
+
+        // Update role and status in the pivot table
+        $group->members()->updateExistingPivot($userId, [
+            'role' => $role,
+            'status' => $status,
+            // 'updated_at' => now();
+        ]);
+
+        // Optionally, you can reload the group with its members to reflect the change
+        $group->load('members');
+
+        // Return the updated group data
+        return response()->json([
+            'message' => 'Member updated successfully',
+            'group' => $group
+        ]);
+    }
+    
+    public function removeGroupMember(Request $request, $groupId)
+    {
+        $memberId = $request->member_id;
+
+        // First, find the group
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Check if the user is a member of the group
+        $isMember = $group->members()->where('users.id', $memberId)->exists();
+        if (!$isMember) {
+            return response()->json(['message' => 'Member not found in the group'], 404);
+        }
+    
+        // Remove the member from the group
+        $group->members()->detach($memberId);
+    
+        // Optionally, reload the group with its members
+        $group->load('members');
+    
+        // Return the updated group data
+        return response()->json(['message' => 'Cover updated successfully']);
+    }
+
+    public function checkUserGroupRole(Request $request, $groupId)
+    {
+        $memberId = $request->member_id;
+        $actingUserId = auth()->id();
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Check if the acting user is an admin of the group
+        $actingMember = $group->members()->where('users.id', $actingUserId)->first();
+        if (!$actingMember || $actingMember->pivot->role === 'admin') {
+            return response()->json(['authorized' => true]);
+        } else {
+            return response()->json(['authorized' => false]);
+        }
+        }
+
 }

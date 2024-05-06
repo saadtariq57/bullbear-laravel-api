@@ -8,12 +8,12 @@
             <img ref="coverGroupImage" v-else-if="groupData != null"
                 :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
                 alt="Group Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover"
-                @load="calculateOffsets" :style="{ top: groupData.cover_position }" />
+                @load="calculateOffsets" @error="handlegroupcoverError" :style="{ top: groupData.cover_position }" />
             <div class="cover-photo-overlay" v-if="isRepositioning" @wheel="repositionWithWheel"></div>
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn"
-            v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader'" v-show="!isRepositioning">
+            v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole" v-show="!isRepositioning">
             <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
                 class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
                 @click="toggleDropdown($event)">
@@ -59,20 +59,20 @@
                     alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
                 <img v-else-if="context === 'groupHeader' && groupData != null"
                     :src="groupData.avatar != null ? '/uploads/' + groupData.avatar : '/uploads/' + profileImagePath"
-                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
                 <!-- Button trigger modal -->
                 <button @click="showUploadPhotoeModal"
-                    v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader'"
+                    v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole"
                     class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center shadow"><i
                         class="bi bi-camera-fill fs-4 text-cta"></i></button>
             </div>
             <span v-if="context === 'groupHeader' && groupData != null" class="align-self-end">
                 <h1>{{ groupData.group_title }}</h1>
                 <div class="fw-5 text-capitalize d-flex gap-2 align-items-center">
-                <span>{{ groupData.privacy }} Group</span> 
-                <span class="group-privacy-divider rounded-circle"></span>
-                <span>{{ groupData.members_count }} Members</span> 
-            </div>
+                    <span>{{ groupData.privacy }} Group</span>
+                    <span class="group-privacy-divider rounded-circle"></span>
+                    <span>{{ groupData.members_count }} Members</span>
+                </div>
             </span>
             <!-- Cover Modal -->
             <div class="modal fade" ref="coverPhotoModal" id="coverPhoto" tabindex="-1"
@@ -257,7 +257,8 @@ export default {
             zoomLevel: 0,
             uploadingProfilePhoto: true,
             groupData: null,
-            showSkeletor: false
+            showSkeletor: false,
+            authRole: null,
         }
     },
     created() {
@@ -491,6 +492,29 @@ export default {
                 .catch(error => {
                     console.error('There was an error fetching the group data:', error);
                 });
+        },
+        handlegroupcoverError(event) {
+            event.target.src = '/uploads/photos/d-cover.jpg'; // Set default image
+            this.calculateOffsets();
+        },
+        handlegroupprofileError(event) {
+            event.target.src = '/uploads/photos/d-avatar.jpg';
+        },
+        checkUserRole() {
+            axios.get(`/api/groups/${this.id}/check`)
+                .then(response => {
+                    console.log('Role check:', response);
+                    if (response.data.authorized) {
+                        this.authRole = true;
+                    } else {
+                        this.authRole = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching group role:', error);
+                    this.authRole = false;
+                    // Optionally handle the error by displaying a message to the user
+                });
         }
     },
     mounted() {
@@ -499,6 +523,7 @@ export default {
         this.cover_position = this.userData.cover_position;
         // console.log(this.id);
         if (this.id) {
+            this. checkUserRole();
             this.fetchGroupData();
             this.showSkeletor = true
         }
@@ -584,11 +609,13 @@ export default {
 .user-avatar-wrapper .cropper-face {
     border-radius: 100%;
 }
-.group-privacy-divider{
+
+.group-privacy-divider {
     width: 5px;
     height: 5px;
     background-color: rgba(71, 72, 74);
 }
+
 @media (max-width: 991px) {
     .profile-cover-photo {
         top: 0px !important;
