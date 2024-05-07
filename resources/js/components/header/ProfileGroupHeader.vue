@@ -3,7 +3,7 @@
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
             <img ref="coverImage" v-if="context === 'profileHeader'"
                 :src="UpdatedCoverImagePath != null ? '/uploads/' + UpdatedCoverImagePath : '/uploads/' + coverImagePath"
-                alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets"
+                alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets" @error="handlegroupcoverError"
                 :style="{ top: userData.cover_position }" />
             <img ref="coverGroupImage" v-else-if="groupData != null"
                 :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
@@ -56,7 +56,7 @@
                 class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center gap-5">
                 <img v-if="context === 'profileHeader'"
                     :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + profileImagePath"
-                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
                 <img v-else-if="context === 'groupHeader' && groupData != null"
                     :src="groupData.avatar != null ? '/uploads/' + groupData.avatar : '/uploads/' + profileImagePath"
                     alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
@@ -503,7 +503,7 @@ export default {
         checkUserRole() {
             axios.get(`/api/groups/${this.id}/check`)
                 .then(response => {
-                    console.log('Role check:', response);
+                    // console.log('Role check:', response);
                     if (response.data.authorized) {
                         this.authRole = true;
                     } else {

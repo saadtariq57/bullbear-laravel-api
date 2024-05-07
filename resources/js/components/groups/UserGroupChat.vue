@@ -49,17 +49,32 @@
                             <h2 class="fs-5 fw-6 border-bottom mb-0">All Members</h2>
                             <div class="d-flex justify-content-between align-items-center gap-3" v-if="hideSkeletor"
                                 v-for="member in members" :key="member.id">
-                                <div class="group-members d-flex gap-3 align-item-center py-2">
+                                <a :href="'/profile/' + member.name"
+                                    class="group-members d-flex gap-3 align-item-center py-2 text-dark">
                                     <img :src="`/uploads/${member.avatar}`" alt="" width="50px" height="50px"
                                         @error="handleprofileError">
                                     <div class="align-self-center">
                                         <h4 class="mb-0 fs-18 text-capitalize">{{ member.name }}</h4>
                                         <p class="text-capitalize">{{ member.pivot.role }}</p>
                                     </div>
-                                </div>
+                                </a>
                                 <div class="d-flex gap-3">
-                                    <button class="btn border-btn px-4 fw-5">Follow</button>
-                                    <button class="btn btn-primary px-3" @click="showMemberEditModal(member)" v-if="authRole">Edit</button>
+                                    <!-- <button class="btn border-btn px-4 fw-5">Follow</button> -->
+                                    <div v-if="followersData">
+                                        <div v-if="userData.id !== member.id">
+                                            <button v-if="isAlreadyFollowing(member.id)" type="button"
+                                                class="btn border-btn fs-6 fw-5 px-3"
+                                                @click="HandleUnfollowUser(member.id, followersCount)">
+                                                UnFollow
+                                            </button>
+                                            <button v-else @click="handleFollowUser(member.id, followersCount)"
+                                                type="button" class="btn btn-primary fs-6 fw-5 px-3">
+                                                Follow
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary px-3" @click="showMemberEditModal(member)"
+                                        v-if="authRole">Edit</button>
                                 </div>
                             </div>
                             <div v-else>
@@ -181,8 +196,10 @@ export default {
         Skeletor
     },
     computed: {
+        ...mapState(['userData']),
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
         ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+        ...mapState('userProfile', ['isOwnProfile', 'isFollowing', 'followersData', 'followingsData']),
     },
     data() {
         return {
@@ -197,15 +214,44 @@ export default {
     created() {
         const groupId = this.$route.params.group_id;
         this.group_id = this.$route.params.group_id;
+        const userName = this.userData.name;
         const context = 'group';
         this.fetchPosts({ context, groupId });
+        this.getUserProfileData({ context, userName });
         this.fetchReactionTypes();
         this.$nextTick(() => {
             this.initializeRealTimeUpdates({ context, groupId });
         });
     },
     methods: {
+        ...mapActions('userProfile', ['getUserProfileData']),
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+        ...mapActions('userProfile', ['followUser', 'unfollowUser']),
+        async handleFollowUser(userId, followersCount) {
+            try{
+            await this.followUser({ userId, followersCount });
+            const userName = this.userData.name;
+            const context = 'group';
+            await this.getUserProfileData({ context, userName });
+            }
+            catch{
+                console.log("User followed unsuccessfully");
+            }
+        },
+        async HandleUnfollowUser(userId, followersCount) {
+            try{
+            await this.unfollowUser({ userId, followersCount });
+            const userName = this.userData.name;
+            const context = 'group';
+            await this.getUserProfileData({ context, userName });
+        }
+            catch{
+                console.log("User following unsuccessfully");
+            }
+        },
+        isAlreadyFollowing(memberId) {
+            return this.followingsData.some(following => following.following_id === memberId);
+        },
         handleShowPostModal(post) {
             this.$refs.createPost.sharePostModal(post);
         },
@@ -228,7 +274,7 @@ export default {
                     this.members = response.data.members;
                     this.membersCount = response.data.members_count;
                     // console.log(response.data)
-                    this.hideSkeletor = true
+                    this.hideSkeletor = true;
                 })
                 .catch(error => {
                     console.error('Error fetching group members:', error);
