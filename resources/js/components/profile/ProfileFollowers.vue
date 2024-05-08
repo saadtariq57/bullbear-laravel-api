@@ -65,7 +65,7 @@
                   @error="handlegroupprofileError">
                 <a :href="'/profile/' + followerUser.follower.name" class="flex-fill">
                   <h6 class="text-uppercase fs-6 fw-6 text-dark user-name">{{ followerUser.follower.name }}</h6>
-                  <span v-if="isFollowingBack(followerUser.follower.id, false) && isOwnProfile">Followed back</span>
+                  <span v-if="isFollowingBack(followerUser.follower.id, false) && isOwnProfile" class="text-dark">Followed back</span>
                   <!-- <p class="text-uppercase mb-0 fs-6 text-wrap">CEO | Innovation | Technology | Global Commercialization | Growth @ Trinity Consulting
                   </p>
                   <span class="user-posts">
