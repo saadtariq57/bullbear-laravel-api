@@ -14,8 +14,8 @@
                     </div>
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div>
-                            <div>
-                                <!-- <ActiveChatRooms :chats="allChats" :joined="false" /> -->
+                            <div v-if="userProfileData">
+                                <ActiveChatRooms :chats="joinedChats" :joined="true" />
                             </div>
                         </div>
                     </div>
@@ -67,20 +67,21 @@ export default {
     },
     data() {
         return {
-            myChats: [
-                {
-                    id: 1,
-                    group_name: 'My Group 1',
-                    group_title: 'My Group Title 1',
-                    avatar: 'path-to-avatar-1',
-                },
-            ],
+            // myChats: [
+            //     {
+            //         id: 1,
+            //         group_name: 'My Group 1',
+            //         group_title: 'My Group Title 1',
+            //         avatar: 'path-to-avatar-1',
+            //     },
+            // ],
         };
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
         ...mapState('UserGroups', ['suggestedChats']),
-        ...mapState('userProfile',['isOwnProfile']),
+        ...mapState('userProfile',['userProfileData','isOwnProfile']),
+        ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
         allChats() {
             return this.suggestedChats.concat(this.myChats);
         },
@@ -89,6 +90,7 @@ export default {
         const context = 'profile';
         const userName = this.$route.params.userName;
         this.fetchSuggestedChats();
+        this.fetchJoinedChats();
         this.fetchPosts({ context, userName });
         this.fetchReactionTypes();
         this.getUserProfileData({ context, userName });
@@ -100,7 +102,7 @@ export default {
     methods: {
         ...mapActions('userProfile',['getUserProfileData']),
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
-        ...mapActions('UserGroups', ['fetchSuggestedChats']),
+        ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
        
         handleShowPostModal(post) {
             this.$refs.createPost.sharePostModal(post); // Call the method in the child component

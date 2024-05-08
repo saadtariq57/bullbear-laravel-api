@@ -221,5 +221,49 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Cover position updated successfully'], 200);
     }
+    public function updateUserData(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the request data except for name, email, and subscription_plan
+        // $validatedData = $request->validate([
+        //     'phone_number' => 'required|string|max:255',
+        //     'first_name' => 'nullable|string|max:255',
+        //     'last_name' => 'nullable|string|max:255',
+        //     'about' => 'nullable|string',
+        //     'gender' => 'nullable|string|in:male,female,other',
+        //     'birthday' => 'nullable|date',
+        //     'country' => 'nullable|string|max:255',
+        //     'city' => 'nullable|string|max:255',
+        //     'zip' => 'nullable|string|max:255',
+        //     'website' => 'nullable|string|max:255'
+        // ]);
+
+        // Update user with validated data
+        // $user->update($validatedData);
+
+        $dataToUpdate = $request->only([
+            'phone_number', 
+            'first_name', 
+            'last_name', 
+            'about', 
+            'gender', 
+            'birthday', 
+            'country', 
+            'city', 
+            'zip', 
+            'website',
+            'twitter',
+            'linkedin',
+            'youtube'
+        ]);
     
+        // Update the user with the data
+        $user->update($dataToUpdate);
+
+        return response()->json([
+            'message' => 'User updated successfully.',
+            'user' => $user
+        ]);
+    }
 }

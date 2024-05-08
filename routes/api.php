@@ -141,7 +141,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
-
+    Route::post('/user/update', [UserController::class, 'updateUserData']);
+    // Route::post('/user/update', 'UserController@update')->middleware('auth:api');
     Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
     Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
