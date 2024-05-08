@@ -23,7 +23,8 @@ class Group extends Model
         'active',
         'time',
         'symbol',
-        'exchange'
+        'exchange',
+        'cover_position'
     ];
 
     public function user()
@@ -39,7 +40,7 @@ class Group extends Model
     public function members()
     {
         return $this->belongsToMany(User::class, 'group_members', 'group_id', 'user_id')
-                ->withPivot('status', 'updated_at')
+                ->withPivot('status','role', 'updated_at')
                 ->withTimestamps();
     }
 

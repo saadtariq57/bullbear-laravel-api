@@ -15,7 +15,7 @@
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div>
                             <div>
-                                <ActiveChatRooms :chats="allChats" :joined="false" />
+                                <!-- <ActiveChatRooms :chats="allChats" :joined="false" /> -->
                             </div>
                         </div>
                     </div>
