@@ -16,6 +16,8 @@ const userProfileModule = {
         followingsCount: 0,
         followersData: null,
         followingsData: null,
+        currentFollowersData: null,
+        currentFollowingsData: null,
     }),
     mutations: {
         SET_PROFILE_DATA(state, userProfileData) {
@@ -39,13 +41,19 @@ const userProfileModule = {
         SET_FOLLOWINGS_DATA(state, followingsData) {
             state.followingsData = followingsData;
         },
+        SET_CURRENT_FOLLOWERS_DATA(state, currentFollowersData) {
+            state.currentFollowersData = currentFollowersData;
+        },
+        SET_CURRENT_FOLLOWINGS_DATA(state, currentFollowingsData) {
+            state.currentFollowingsData = currentFollowingsData;
+        },
         SET_FOLLOWERS_DATA(state, followersData) {
             state.followersData = followersData;
         },
         SET_IS_FOLLOWING_COUNT(state, followingsCount) {
             state.followingsCount = followingsCount;
         },
-        SET_USER_MEDIA(state, userMedia){
+        SET_USER_MEDIA(state, userMedia) {
             state.userMedia = userMedia;
         },
         SET_LOADING(state, isLoading) {
@@ -70,10 +78,12 @@ const userProfileModule = {
                 commit('SET_IS_FOLLOWING_COUNT', data.followingsCount);
                 commit('SET_FOLLOWINGS_DATA', data.followingsUserData);
                 commit('SET_FOLLOWERS_DATA', data.followerUserData);
+                commit('SET_CURRENT_FOLLOWINGS_DATA', data.currentFollowingsUserData);
+                commit('SET_CURRENT_FOLLOWERS_DATA', data.currentFollowerUserData);
                 commit('SET_COVER_IMAGE_PATH', data.userProfile.cover);
                 if (data.avatar != '') {
                     commit('SET_PROFILE_IMAGE_PATH', data.userProfile.avatar);
-                }else{
+                } else {
                     commit('SET_COVER_IMAGE_PATH', 'photos/d-avatar.jpg');
                 }
                 console.log('Profile data: ', data);
@@ -81,7 +91,7 @@ const userProfileModule = {
                 console.error('Error fetching profile data:', error);
             }
         },
-        async followUser({ commit }, {userId, followersCount}) {
+        async followUser({ commit }, { userId, followersCount }) {
             try {
                 const data = await ProfileService.followUser(userId);
                 commit('SET_IS_FOLLOWING', true);
@@ -93,7 +103,7 @@ const userProfileModule = {
                 throw error;
             }
         },
-        async unfollowUser({ commit }, {userId, followersCount}) {
+        async unfollowUser({ commit }, { userId, followersCount }) {
             try {
                 const data = await ProfileService.unfollowUser(userId);
                 commit('SET_IS_FOLLOWING', false);
@@ -108,22 +118,22 @@ const userProfileModule = {
         // Add more actions as needed
     },
     getters: {
-        getProfileData(state){
+        getProfileData(state) {
             return state.userProfileData;
         },
-        getIsOwnProfile(state){
+        getIsOwnProfile(state) {
             return state.isOwnProfile;
         },
-        getIsFollowing(state){
+        getIsFollowing(state) {
             return state.isFollowing;
         },
-        getFollowersCount(state){
+        getFollowersCount(state) {
             return state.followersCount;
         },
-        getFollowingsCount(state){
+        getFollowingsCount(state) {
             return state.followingsCount;
         },
-        getUserMedia(state){
+        getUserMedia(state) {
             return state.userMedia;
         },
         isLoading(state) {
@@ -132,10 +142,10 @@ const userProfileModule = {
         getError(state) {
             return state.error;
         },
-        getCoverImagePath(state){
+        getCoverImagePath(state) {
             return state.coverImagePath;
         },
-        getProfileImagePath(state){
+        getProfileImagePath(state) {
             return state.profileImagePath;
         },
     }

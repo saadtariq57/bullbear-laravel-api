@@ -3,10 +3,10 @@
     <div class="container">
       <div class="row gy-5">
         <div class="col-xl-4 col-md-6 mb-32">
-          <div class="stock-table-wrapper">
+          <div class="stock-table-wrapper border-top border-2 border-warning widgets-border">
             <div class="top-cryptocurrency-heading">
               <div class="">
-                <h3 class="fs-6 fw-bolder mb-0">Top 10 Soaring Stocks </h3>
+                <h3 class="fs-6 fw-bolder mb-0 icon-short-heading">Top 10 Soaring Stocks </h3>
               </div>
             </div>
             <div class="stock-table-data position-relative ">
@@ -144,10 +144,10 @@
           </div>
         </div>
         <div class="col-xl-4 col-md-6 mb-32">
-          <div class="stock-table-wrapper">
+          <div class="stock-table-wrapper border-top border-2 border-warning widgets-border">
             <div class="top-cryptocurrency-heading">
               <div class="">
-                <h3 class="fs-6 fw-bolder mb-0">Top 10 Soaring Stocks </h3>
+                <h3 class="fs-6 fw-bolder mb-0 icon-short-heading">Top 10 Soaring Stocks </h3>
               </div>
             </div>
             <div class="stock-table-data position-relative ">
@@ -285,10 +285,10 @@
           </div>
         </div>
         <div class="col-xl-4 mb-32">
-          <div class="stock-table-wrapper">
+          <div class="stock-table-wrapper border-top border-2 border-warning widgets-border">
             <div class="top-cryptocurrency-heading">
               <div class="">
-                <h3 class="fs-6 fw-bolder mb-0">Top 10 Soaring Stocks </h3>
+                <h3 class="fs-6 fw-bolder mb-0 icon-short-heading">Top 10 Soaring Stocks </h3>
               </div>
             </div>
             <div class="stock-table-data position-relative ">

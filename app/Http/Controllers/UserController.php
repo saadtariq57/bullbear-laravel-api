@@ -125,6 +125,9 @@ class UserController extends Controller
         $followings = $user->followers()->with('following:id,name,email,avatar,first_name')->get();
         $loggedInFollowers = $loggedInUser->followings()->with('follower:id,name,email,avatar,first_name')->get();
         $loggedInFollowings = $loggedInUser->followers()->with('following:id,name,email,avatar,first_name')->get();
+        $currentFollowers = $loggedInUser->followings()->with('follower:id,name,email,avatar,first_name')->get();
+        $currentFollowings = $loggedInUser->followers()->with('following:id,name,email,avatar,first_name')->get();
+
         // 'following:id,name,email,avatar,first_name'
         // if ($photos->isEmpty()) {
         //     $photos = 'No Media Found';
@@ -140,7 +143,8 @@ class UserController extends Controller
             'followingsUserData' => $followings,
             'loggedInFollowers' => $loggedInFollowers,
             'loggedInFollowings' => $loggedInFollowings
-
+            'currentFollowerUserData' => $currentFollowers,
+            'currentFollowingsUserData' => $currentFollowings,
         ]);
     }
 
@@ -183,7 +187,10 @@ class UserController extends Controller
     public function removeCoverPhoto(Request $request){
         $user = Auth::user();
         try {
-            $user->update(['cover' => 'photos/d-cover.jpg']);
+            // $user->update(['cover' => 'photos/d-cover.jpg' , 'cover_position' => '0px']);
+            $user->cover = 'photos/d-cover.jpg';
+            $user->cover_position = '0px';
+            $user->save();
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to remove cover photo'], 500);
         }
@@ -219,5 +226,49 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Cover position updated successfully'], 200);
     }
+    public function updateUserData(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the request data except for name, email, and subscription_plan
+        // $validatedData = $request->validate([
+        //     'phone_number' => 'required|string|max:255',
+        //     'first_name' => 'nullable|string|max:255',
+        //     'last_name' => 'nullable|string|max:255',
+        //     'about' => 'nullable|string',
+        //     'gender' => 'nullable|string|in:male,female,other',
+        //     'birthday' => 'nullable|date',
+        //     'country' => 'nullable|string|max:255',
+        //     'city' => 'nullable|string|max:255',
+        //     'zip' => 'nullable|string|max:255',
+        //     'website' => 'nullable|string|max:255'
+        // ]);
+
+        // Update user with validated data
+        // $user->update($validatedData);
+
+        $dataToUpdate = $request->only([
+            'phone_number', 
+            'first_name', 
+            'last_name', 
+            'about', 
+            'gender', 
+            'birthday', 
+            'country', 
+            'city', 
+            'zip', 
+            'website',
+            'twitter',
+            'linkedin',
+            'youtube'
+        ]);
     
+        // Update the user with the data
+        $user->update($dataToUpdate);
+
+        return response()->json([
+            'message' => 'User updated successfully.',
+            'user' => $user
+        ]);
+    }
 }

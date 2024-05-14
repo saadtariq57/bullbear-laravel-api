@@ -125,7 +125,7 @@
                 <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
                   <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
                     :key="index">
-                    <img :src="`${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
+                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
                       reactionDetail.count }}
                     <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
                       Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
@@ -151,7 +151,7 @@
               <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
                 <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                   @click.stop="handleReaction(post.id, reactionType.id)">
-                  <img :src="`${reactionType.icon}`" class="reaction-icons-img">
+                  <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
                 </span>
               </div>
             </button>

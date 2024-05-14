@@ -31,11 +31,11 @@ const ProfileGroupHeaderModule = {
         }
     },
     actions: {
-        async uploadCoverImage({ commit }, {file, context}) {
+        async uploadCoverImage({ commit }, {file, context , groupId}) {
             // commit('SET_LOADING', true);
             // commit('SET_ERROR', null); // Clear previous error
             try {
-                const data = await ProfileGroupHeaderService.uploadCoverImage({file, context});
+                const data = await ProfileGroupHeaderService.uploadCoverImage({file, context , groupId});
                 commit('SET_COVER_IMAGE_PATH', data.cover_photo);
                 commit('SET_MESSAGE', data.message);
                 // return ;
@@ -47,9 +47,9 @@ const ProfileGroupHeaderModule = {
                 commit('SET_SUCCESS', null);
             }
         },
-        async RemoveCoverImage({ commit }, context) {
+        async RemoveCoverImage({ commit }, { context, group_Id }) {
             try {
-                const data = await ProfileGroupHeaderService.RemoveCoverImage(context);
+                const data = await ProfileGroupHeaderService.RemoveCoverImage(context , group_Id);
                 
                 commit('SET_COVER_IMAGE_PATH', 'photos/d-cover.jpg');
                 commit('SET_MESSAGE', data.message);
@@ -60,11 +60,11 @@ const ProfileGroupHeaderModule = {
                 commit('SET_LOADING', false);
             }
         },
-        async uploadProfileImage({ commit }, {file, context}) {
+        async uploadProfileImage({ commit }, {file, context, group_Id}) {
             // commit('SET_LOADING', true);
             // commit('SET_ERROR', null); // Clear previous error
             try {
-                const data = await ProfileGroupHeaderService.uploadProfileImage({file, context});
+                const data = await ProfileGroupHeaderService.uploadProfileImage({file, context, group_Id});
                 commit('SET_PROFILE_IMAGE_PATH', data.profile_photo);
                 commit('SET_MESSAGE', data.message);
                 

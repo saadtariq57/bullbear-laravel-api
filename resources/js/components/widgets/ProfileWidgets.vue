@@ -56,32 +56,40 @@
                             Watchlist</a>
                     </li>
                 </ul> -->
-  <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
           class="bi bi-info-circle-fill text-white"></i></span><span class="fs-5 text-black">Info</span>
     </div>
     <li class="px-3 py-1 fs-16"><i class="bi bi-eye-fill me-2 text-black fs-5"></i> <span
-        class="text-success">Online</span>
+        :class="userData.status === 'active' ? 'text-success' : 'text-danger'"> {{ userData.status == 'active' ?
+          'Online' : 'Offline' }}</span>
     </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>0
-        posts</span></li>
-        <li class="px-3 py-1 fs-16"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>0
+    <li class="px-3 py-1 fs-16"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>{{ userData.posts_count }}
+        Posts</span></li>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>{{ userData.watchlists_count
+        }}
         Watchlists</span></li>
-        <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>3
+    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
+          userData.followers_count }}
         Followers</span></li>
     <li class="border-bottom my-1"></li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>Male</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>{{
+          userData.gender }}</span>
     </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-cake-fill me-2 text-black fs-5"></i> <span>03/01/00</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-cake-fill me-2 text-black fs-5"></i> <span>{{ userData.birthday
+        }}</span>
     </li>
     <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
-        Pakistan</span>
-        <li class="border-bottom my-1"></li>
-        <li class="px-3 py-1 fs-16"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a href="https://www.linkedin.com/in/wajid" class="text-black">Wajid Fareed</a></li>
-        <li class="px-3 py-1 fs-16"><i class="bi bi-twitter-x me-2 text-black fs-5"></i> <a href="https://www.twitter.com/in/wajid" class="text-black">Wajid Fareed</a></li>
-        <li class="px-3 py-1 fs-16"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a href="https://www.youtube.com/in/wajid" class="text-black">Wajid Fareed</a></li>
-    </li>
+        {{ userData.state }}</span></li>
+    <li class="border-bottom my-1"></li>
+    <li class="px-3 py-1 fs-16" v-if="userData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
+        :href="userData.linkedin" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
+    <li class="px-3 py-1 fs-16" v-if="userData.twitter"><i class="bi bi-twitter me-2 text-black fs-5"></i> <a
+        :href="userData.twitter" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
+    <li class="px-3 py-1 fs-16" v-if="userData.youtube"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a
+        :href="userData.youtube" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
+
   </ul>
   <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
     <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1 text-secondary"><i
@@ -99,7 +107,7 @@
       </div>
     </li>
   </ul> -->
-  <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
+  <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
           class="bi bi bi-person-fill-check text-white"></i></span><span class="fs-5 text-black">Followers <span
@@ -206,14 +214,15 @@
         </a>
       </div>
     </li>
-  </ul>
+  </ul> -->
   <div class="people-you-know mb-3 pb-2 shadow-sm rounded border-top border-2 border-warning widgets-border">
     <div class=" border-bottom">
       <div class="d-flex align-items-center pt-2 pb-1 justify-content-between">
         <div class="fw-6 fs-6 ps-3 mb-1 d-flex align-items-center">
-      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
-          class="bi bi bi-person-plus-fill text-white"></i></span><span class="fs-5 text-black">People You May Know</span>
-    </div>
+          <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+              class="bi bi bi-person-plus-fill text-white"></i></span><span class="fs-5 text-black">People You May
+            Know</span>
+        </div>
         <div class="reload-widget pe-3"><i class="bi bi-arrow-clockwise" style="font-size: 22px;"></i></div>
       </div>
     </div>
@@ -316,7 +325,8 @@
   </div>
   <div class="border-primary pt-4 pb-2 px-3 border mb-2 rounded-1" style="background-color: #ffb8001a">
     <h1 class="fw-6 fs-5 text-secondary"><img
-        src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20" height="20" class="align-top">
+        src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20" height="20"
+        class="align-top">
       RISK DISCLAIMER!</h1>
     <p class="fs-14 text-black">Stock market investing is inherently risky. Rich TV is not
       responsible for any gains or losses that result from the opinions expressed on this website,
@@ -349,14 +359,18 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
 import { Dropdown } from 'bootstrap';
 export default {
+  computed: {
+    ...mapState(['userData']),
+  },
   methods: {
     toggleDropdown(event) {
-            const dropdownElement = event.target.closest('.dropdown-toggle');
-            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
-            dropdownInstance.toggle();
-        },
+      const dropdownElement = event.target.closest('.dropdown-toggle');
+      const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+      dropdownInstance.toggle();
+    },
   }
 }
 </script>

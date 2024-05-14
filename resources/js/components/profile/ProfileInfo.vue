@@ -1,20 +1,27 @@
 <template>
+    <div class="position-relative">
     <ProfileGroupHeader context="profileHeader" ref="ProfileGroupHeader" />
-    <div class="user-profile-info align-self-end" v-if="userProfileData">
+    <div class="user-profile-info d-flex align-items-center" v-if="userProfileData">
+        <div>
         <div class="d-flex align-items-center gap-2">
             <h1>{{ userProfileData.name }}</h1>
             <span v-if="userProfileData.subscription_plan != 'free'"><i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
             <span class="user-pro text-white px-2 py-1 fs-10 rounded-2" v-if="userProfileData.subscription_plan != 'free'">{{ userProfileData.subscription_plan }}</span>
         </div>
         <p class="text-black fs-5"><span>{{ followersCount }} Followers</span> | <span>{{ followingsCount }} Followings</span></p>
-        <p class="text-black fs-5"> </p>
+        </div>
+        <div>
         <button v-if="!isOwnProfile && !isFollowing" type="button" class="btn btn-primary fs-6 fw-5 px-3" @click="handleFollowUser(userProfileData.id, followersCount)">
             Follow
         </button>
         <button v-if="!isOwnProfile && isFollowing" type="button" class="btn btn-primary fs-6 fw-5 px-3" @click="HandleUnfollowUser(userProfileData.id, followersCount)">
             UnFollow
         </button>
+            <a :href="'/profile/' + userData.name + '/setting'" class="btn btn-primary fs-6 fw-5 px-3" v-if="isOwnProfile"><i
+                    class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</a>
     </div>
+    </div>
+</div>
     <div class="row user-chat-top-tab mb-3 px-2">
         <div class="col-12 user-bottom-nav bg-white shadow overflow-auto profile-main-navtab">
             <ul class="inner-tabs-btn nav justify-content-around flex-nowrap" id="admin-content-tab" role="tablist">
@@ -90,9 +97,21 @@ export default {
 }
 </script>
 <style>
+.user-profile-info{
+    position: absolute;
+    bottom: 45px;
+    left: 210px;
+    width: calc(100% - 230px);
+    justify-content: space-between;
+}
 @media (max-width: 767px) {
     .inner-tabs-btn {
         min-width: 660px;
+    }
+    .user-profile-info{
+        bottom: 110px;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 </style>

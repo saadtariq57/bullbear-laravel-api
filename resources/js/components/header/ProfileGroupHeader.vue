@@ -1,23 +1,35 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage" v-if="context === 'profileHeader'" :src="UpdatedCoverImagePath != null ? '/uploads/'+UpdatedCoverImagePath : '/uploads/'+coverImagePath" alt="Cover Image"
-                class="img-fluid w-100 profile-cover-photo object-fit-cover" /> 
-            <img ref="coverImage" v-else :src="'uploads/'+UpdatedCoverImagePath" alt="Group Cover Image"
-                class="img-fluid w-100 profile-cover-photo object-fit-cover" /> 
-            <div class="cover-photo-overlay" v-show="isRepositioning"></div>
+            <img ref="coverImage" v-if="context === 'profileHeader'"
+                :src="UpdatedCoverImagePath != null ? '/uploads/' + UpdatedCoverImagePath : '/uploads/' + coverImagePath"
+                alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets" @error="handlegroupcoverError"
+                :style="{ top: userData.cover_position }" />
+            <img ref="coverGroupImage" v-else-if="groupData != null"
+                :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
+                alt="Group Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover"
+                @load="calculateOffsets" @error="handlegroupcoverError" :style="{ top: groupData.cover_position }" />
+            <div class="cover-photo-overlay" v-if="isRepositioning" @wheel="repositionWithWheel"></div>
             <!-- Overlay for better visibility -->
         </div>
-        <div class="btn-group position-absolute cover-photo-btn" v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader'">
-            <button type="button" class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
+        <div class="btn-group position-absolute cover-photo-btn"
+            v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole" v-show="!isRepositioning">
+            <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
                 @click="toggleDropdown($event)">
                 <i class="bi bi-camera-fill fs-5"></i><span class="fs-6 fw-5">Edit Cover Photo</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end z-1">
                 <li>
-                    <label class="dropdown-item fs-6 fw-5">
-                        <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
-                    </label>
+                <li>
+                    <button @click="showUploadCoverPhotoModal" class="dropdown-item fs-6 fw-5"><i
+                            class="bi bi-upload me-2 fs-5"></i>Change Cover</button>
+                </li>
+                <li>
+                    <button class="dropdown-item fs-6 fw-5 d-none d-lg-block" @click="repositionCoverPhoto">
+                        <i class="bi bi-arrows-move me-2 fs-5"></i> Reposition
+                    </button>
+                </li>
                 </li>
                 <li>
                     <hr class="dropdown-divider" />
@@ -29,18 +41,39 @@
                 </li>
             </ul>
         </div>
+        <div class="btn-group position-absolute cover-photo-btn" v-if="isRepositioning">
+            <button type="button" class="btn btn-primary px-3 rounded-3 z-1" @click="SetCoverPosition">
+                <i class="bi bi-check-lg fs-5 icon-bold"></i>
+            </button>
+            <button type="button" class="btn bg-white px-3 ms-3 rounded-3 z-1" @click="CancelCoverPosition">
+                <i class="bi bi-x-lg fs-5 icon-bold"></i>
+            </button>
+        </div>
     </div>
     <div class="user-profile-wrapper position-relative d-flex justify-content-between px-4">
-        <div class="user-profile-info-wapper d-flex gap-4">
+        <div class="user-profile-info-wapper d-flex gap-4 align-item-center">
             <div
-                class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
-                <img v-if="context === 'profileHeader'" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+profileImagePath" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
-                <img v-else :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+profileImagePath" alt="Profile Picture" width="165px" height="165px" class="rounded-circle">
+                class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center gap-5">
+                <img v-if="context === 'profileHeader'"
+                    :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + profileImagePath"
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
+                <img v-else-if="context === 'groupHeader' && groupData != null"
+                    :src="groupData.avatar != null ? '/uploads/' + groupData.avatar : '/uploads/' + profileImagePath"
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
                 <!-- Button trigger modal -->
-                <button @click="showUploadPhotoeModal" v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader'" 
+                <button @click="showUploadPhotoeModal"
+                    v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole"
                     class="position-absolute btn bg-white rounded-circle profile-photo-btn px-0 d-flex justify-content-center align-items-center shadow"><i
                         class="bi bi-camera-fill fs-4 text-cta"></i></button>
             </div>
+            <span v-if="context === 'groupHeader' && groupData != null" class="align-self-end">
+                <h1>{{ groupData.group_title }}</h1>
+                <div class="fw-5 text-capitalize d-flex gap-2 align-items-center">
+                    <span>{{ groupData.privacy }} Group</span>
+                    <span class="group-privacy-divider rounded-circle"></span>
+                    <span>{{ groupData.members_count }} Members</span>
+                </div>
+            </span>
             <!-- Cover Modal -->
             <div class="modal fade" ref="coverPhotoModal" id="coverPhoto" tabindex="-1"
                 aria-labelledby="coverPhotoModalLabel" aria-hidden="true">
@@ -51,21 +84,43 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 @click="closeProfileModal"></button>
                         </div>
-                        <p v-if="message!=null">{{ message }}</p>
+                        <div v-if="message != null" class=" text-center py-5">
+                            <img v-if="context === 'profileHeader'"
+                                :src="UpdatedCoverImagePath != null ? '/uploads/' + UpdatedCoverImagePath : '/uploads/' + coverImagePath"
+                                alt="Profile Photo" class="img-fluid px-3">
+                            <img v-else-if="context === 'groupHeader' && groupData != null"
+                                :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
+                                alt="Profile Photo" class="img-fluid px-3">
+                            <p class="px-3 my-3">{{ message }}</p>
+                        </div>
                         <div v-else class="modal-body">
-                            <div class="text-center py-3" v-if="!selectedImage">
+                            <div class="text-center py-3" v-if="!selectedImage && context === 'profileHeader'">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
                                 <div class="my-5">
-                                    <img :src="UpdatedCoverImagePath != null ? '/uploads/'+UpdatedCoverImagePath : '/uploads/'+coverImagePath" alt="Cover Photo" width="100%">
+                                    <img :src="UpdatedCoverImagePath != null ? '/uploads/' + UpdatedCoverImagePath : '/uploads/' + coverImagePath"
+                                        alt="Cover Photo" width="100%">
                                 </div>
-                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a cover photo</p>
+                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a
+                                    cover photo</p>
+                            </div>
+                            <div class="text-center py-3"
+                                v-else-if="!selectedImage && context === 'groupHeader' && groupData != null">
+                                <p><span>{{ groupData.group_title }}</span>, help others recognize you!</p>
+                                <div class="my-5">
+                                    <img :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
+                                        alt="Cover Photo" width="100%">
+                                </div>
+                                <p class="px-3">On Rich Tv, we require admin to use group real identities, upload a
+                                    cover photo
+                                    of group</p>
                             </div>
                             <div v-if="selectedImage">
-                                <div class="user-cover-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
-                                    <vue-cropper ref="covercropper" :src="selectedImage.preview" :view-mode="1" :drag-mode="'move'"
-                                    :guides="true" :zoomable="true" :scalable="true" :crop-box-movable="true"
-                                    :crop-box-resizable="true" :aspect-ratio="16 / 9" @cropmove="updatePreview"
-                                    class="w-100 img-preview"></vue-cropper>
+                                <div
+                                    class="user-cover-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
+                                    <vue-cropper ref="covercropper" :src="selectedImage.preview" :view-mode="1"
+                                        :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
+                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="16 / 9"
+                                        @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
                                 <div class="my-4">
@@ -79,7 +134,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer" v-if="message==null">
+                        <div class="modal-footer" v-if="message == null">
                             <label class="btn btn-primary" v-if="!selectedImage">
                                 <input ref="profileInput" type="file" accept="image/jpeg,image/jpg,image/png"
                                     @change="handleCoverPhotoChange" class="upload-profile-photo d-none">
@@ -103,23 +158,40 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 @click="closeProfileModal"></button>
                         </div>
-                        <p v-if="message!=null">{{ message }}</p>
+                        <div v-if="message != null" class=" text-center py-5">
+                            <img :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + profileImagePath"
+                                alt="Profile Photo" class="rounded-circle" width="165" height="165">
+                            <p class="px-3 my-3">{{ message }}</p>
+                        </div>
                         <div v-else class="modal-body">
-                            <div class="text-center py-3" v-if="!selectedImage">
+                            <div class="text-center py-3" v-if="!selectedImage && context === 'profileHeader'">
                                 <p><span>{{ userData.name }}</span>, help others recognize you!</p>
                                 <div class="my-5">
-                                    <img :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+profileImagePath" alt="Profile Photo" class="rounded-circle" width="165"
-                                        height="165">
+                                    <img :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + profileImagePath"
+                                        alt="Profile Photo" class="rounded-circle" width="165" height="165">
                                 </div>
-                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a photo
+                                <p class="px-3">On Rich Tv, we require members to use their real identities, upload a
+                                    photo
                                     of yourself</p>
                             </div>
+                            <div class="text-center py-3"
+                                v-else-if="!selectedImage && context === 'groupHeader' && groupData != null">
+                                <p><span>{{ groupData.group_title }}</span>, help others recognize you!</p>
+                                <div class="my-5">
+                                    <img :src="groupData.avatar != null ? '/uploads/' + groupData.avatar : '/uploads/' + coverImagePath"
+                                        alt="Profile Photo" class="rounded-circle" width="165" height="165">
+                                </div>
+                                <p class="px-3">On Rich Tv, we require admin to use group real identities, upload a
+                                    photo
+                                    of group</p>
+                            </div>
                             <div v-if="selectedImage">
-                                <div class="user-avatar-wrapper position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
-                                    <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1" :drag-mode="'move'"
-                                    :guides="true" :zoomable="true" :scalable="true" :crop-box-movable="true"
-                                    :crop-box-resizable="true" :aspect-ratio="1" @cropmove="updatePreview"
-                                    class="w-100 img-preview"></vue-cropper>
+                                <div
+                                    class="user-avatar-wrapper position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
+                                    <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1"
+                                        :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
+                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="1"
+                                        @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
                                 <div class="my-4">
@@ -129,7 +201,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer" v-if="message==null">
+                        <div class="modal-footer" v-if="message == null">
                             <label class="btn btn-primary" v-if="!selectedImage">
                                 <input ref="profileInput" type="file" accept="image/jpeg,image/jpg,image/png"
                                     @change="handleProfileChange" class="upload-profile-photo d-none">
@@ -144,10 +216,6 @@
             </div>
             <!-- end profile Modal -->
         </div>
-        <div class="user-profile-btn align-self-end" v-if="isOwnProfile && context === 'profileHeader'">
-            <a href="/profile/setting" class="btn btn-primary fs-6 fw-5 px-3"><i
-                    class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</a>
-        </div>
     </div>
 </template>
 <script>
@@ -155,80 +223,144 @@ import { Dropdown, Modal } from 'bootstrap';
 import { mapState, mapActions } from 'vuex';
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
 
 export default {
     components: {
-        VueCropper
+        VueCropper,
+        Skeletor
     },
     props: {
-        context: String 
+        context: String,
+        id: String,
     },
     computed: {
-        ...mapState(['userData','success']),
-        ...mapState('userProfile',['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
-        ...mapState('profileGroupHeader',['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
+        ...mapState(['userData', 'success']),
+        ...mapState('userProfile', ['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
+        ...mapState('profileGroupHeader', ['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
     },
     data() {
         return {
             isRepositioning: false,
-            initialY: 0,
+            cover_position: 0,
             offsetY: 0,
-            initialTop: 0,
-            maxTop: 0,
+            maxOffsetY: 0,
+            minOffsetY: 0,
             selectedFiles: [],
             selectedImage: null,
-            zoomLevel:0,
+            zoomLevel: 0,
+            uploadingProfilePhoto: true,
+            groupData: null,
+            showSkeletor: false,
+            authRole: null,
         }
     },
     created() {
         console.log('the context is: ', this.context);
-     },
+    },
     methods: {
-        ...mapActions('profileGroupHeader',['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),
+        ...mapActions('profileGroupHeader', ['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),
         toggleDropdown(event) {
             const dropdownElement = event.target.closest('.dropdown-toggle');
             const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
             dropdownInstance.toggle();
         },
         showUploadPhotoeModal() {
+            this.clearMessage();
             if (this.profilePhotoModalInstance) {
                 this.profilePhotoModalInstance.show();
             } else {
                 console.error('Modal instance is not initialized.');
             }
         },
-        showUploadCoverPhotoModal(){
-            if(this.coverPhotoModalInstance){
+        showUploadCoverPhotoModal() {
+            this.clearMessage();
+            if (this.coverPhotoModalInstance) {
                 this.coverPhotoModalInstance.show();
-            }else {
+            } else {
                 console.error('Modal instance is not initialized.');
             }
         },
         closeProfileModal() {
             this.selectedImage = null;
             this.selectedFiles = [];
+            this.uploadingProfilePhoto = true;
             this.clearMessage();
         },
         repositionCoverPhoto(event) {
             this.isRepositioning = true;
-            this.initialY = event.clientY;
-            const coverImage = this.$refs.coverImage;
-            this.initialTop = parseInt(window.getComputedStyle(coverImage).top, 10) || 0;
-            this.maxTop = -(coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
-            document.addEventListener('mousemove', this.handleMouseMove);
-            document.addEventListener('mouseup', this.handleMouseUp);
         },
-        handleMouseMove(event) {
-            if (!this.isRepositioning) return;
-            this.offsetY = event.clientY - this.initialY;
-            const newTop = Math.min(Math.max(this.initialTop + this.offsetY, this.maxTop), 0);
-            const coverImage = this.$refs.coverImage;
-            coverImage.style.top = `${newTop}px`;
+        repositionWithWheel(event) {
+            if (this.isRepositioning) {
+                // Adjust deltaY value as needed based on mouse wheel sensitivity
+                if (this.context == "profileHeader") {
+                    const deltaY = event.deltaY;
+                    // Update offsetY within its boundaries
+                    this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
+                    this.$refs.coverImage.style.top = this.offsetY + 'px';
+                }
+                else {
+                    const deltaY = event.deltaY;
+                    this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
+                    this.$refs.coverGroupImage.style.top = this.offsetY + 'px';
+                }
+                // Prevent default scrolling behavior
+                event.preventDefault();
+            }
         },
-        handleMouseUp() {
+        async SetCoverPosition() {
             this.isRepositioning = false;
-            document.removeEventListener('mousemove', this.handleMouseMove);
-            document.removeEventListener('mouseup', this.handleMouseUp);
+            this.uploadingProfilePhoto = false;
+            try {
+                if (this.context == "profileHeader") {
+                    this.cover_position = this.offsetY + 'px';
+                    this.userData.cover_position = this.cover_position;
+                    // Update cover position via API
+                    await axios.post('/api/update-cover-position', {
+                        cover_position: this.cover_position
+                    });
+
+                    // Refetch user data to update the Vuex store
+                    await this.$store.dispatch('fetchUserData');
+
+                    console.log('Cover position updated successfully');
+                }
+                else {
+                    this.cover_position = this.offsetY + 'px';
+                    this.groupData.cover_position = this.cover_position;
+
+                    // console.log("Header")
+                    await axios.post('/api/group-cover-position', {
+                        cover_position: this.cover_position,
+                        group_id: this.id
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating cover position:', error);
+            }
+        },
+        CancelCoverPosition() {
+            if (this.context == "profileHeader") {
+                this.isRepositioning = false;
+                this.$refs.coverImage.style.top = this.cover_position;
+            }
+            else {
+                this.isRepositioning = false;
+                this.$refs.coverGroupImage.style.top = this.cover_position;
+            }
+        },
+        calculateOffsets() {
+            // Calculate the maximum and minimum offset values based on the actual height of the cover photo
+            if (this.context == "profileHeader") {
+                this.maxOffsetY = 0;
+                this.minOffsetY = -(this.$refs.coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
+                // console.log(this.minOffsetY);
+            }
+            else {
+                this.maxOffsetY = 0;
+                this.minOffsetY = -(this.$refs.coverGroupImage.clientHeight - this.$refs.coverGroupImage.parentElement.clientHeight);
+            }
         },
         handleCoverPhotoChange(event) {
             const file = event.target.files[0];
@@ -284,42 +416,130 @@ export default {
         },
         applyProfileSetting(context) {
             const canvas = this.$refs.cropper.getCroppedCanvas();
-            canvas.toBlob((blob) => {
-                const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
-                this.uploadProfileImage({file, context});
-            }, 'image/jpeg');
+            if (context === 'profileHeader') {
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
+                    this.uploadProfileImage({ file, context });
+                    this.$store.dispatch('fetchUserData');
+                }, 'image/jpeg');
+            }
+            else {
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
+                    const group_Id = this.id;
+                    this.uploadProfileImage({ file, context, group_Id });
+                    this.fetchGroupData();
+                }, 'image/jpeg');
+            }
         },
-        applyCoverImageSetting(context) {
+        async applyCoverImageSetting(context) {
             const canvas = this.$refs.covercropper.getCroppedCanvas();
-            canvas.toBlob((blob) => {
-                const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
-                this.uploadCoverImage({file, context});
-            }, 'image/jpeg');
+
+            if (context === 'profileHeader') {
+                this.userData.cover_position = "0px";
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
+                    this.uploadCoverImage({ file, context });
+                }, 'image/jpeg');
+                try {
+                    this.$refs.coverImage.style.top = '0px';
+                    await axios.post('/api/update-cover-position', {
+                        cover_position: this.userData.cover_position
+                    });
+                    this.calculateOffsets();
+                    await this.$store.dispatch('fetchUserData');
+                } catch (error) {
+                    this.uploadingProfilePhoto = true;
+                }
+            }
+            else {
+                this.groupData.cover_position = "0px";
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
+                    const groupId = this.id;
+                    await this.uploadCoverImage({ file, context, groupId });
+                    await this.fetchGroupData(); // Ensure this is called after the cover position update
+                    await this.calculateOffsets();
+                }, 'image/jpeg');
+            }
         },
-        RemoveCover(context){
-            this.RemoveCoverImage(context);
+        async RemoveCover(context) {
+            if (context === 'profileHeader') {
+                this.RemoveCoverImage(context);
+                this.$refs.coverImage.style.top = '0px';
+                this.$store.dispatch('fetchUserData');
+                this.calculateOffsets();
+            }
+            else {
+                const group_Id = this.id;
+                this.RemoveCoverImage({ context, group_Id });
+                this.fetchGroupData();
+                this.calculateOffsets();
+            }
         },
-        updatePreview() {},
+        updatePreview() { },
+        fetchGroupData() {
+            axios.get(`/api/groups/join/${this.id}`)
+                .then(response => {
+                    this.groupData = response.data;
+                    console.log(this.groupData);
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the group data:', error);
+                });
+        },
+        handlegroupcoverError(event) {
+            event.target.src = '/uploads/photos/d-cover.jpg'; // Set default image
+            this.calculateOffsets();
+        },
+        handlegroupprofileError(event) {
+            event.target.src = '/uploads/photos/d-avatar.jpg';
+        },
+        checkUserRole() {
+            axios.get(`/api/groups/${this.id}/check`)
+                .then(response => {
+                    // console.log('Role check:', response);
+                    if (response.data.authorized) {
+                        this.authRole = true;
+                    } else {
+                        this.authRole = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching group role:', error);
+                    this.authRole = false;
+                    // Optionally handle the error by displaying a message to the user
+                });
+        }
     },
     mounted() {
         this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
-        this.coverPhotoModalInstance  = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
+        this.coverPhotoModalInstance = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
+        this.cover_position = this.userData.cover_position;
+        // console.log(this.id);
+        if (this.id) {
+            this. checkUserRole();
+            this.fetchGroupData();
+            this.showSkeletor = true
+        }
     }
 }
 </script>
 <style>
-.profile_bg_img{
+.profile_bg_img {
     position: relative;
-    height:400px;
+    height: 50vh;
 }
 
 .profile-cover-photo {
     width: 100%;
-    height: 400px;
-    object-fit: cover!important;
+    height: auto;
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 0;
+    /* Ensure cover photo is above overlay */
+    /* cursor: move; Make the cover photo draggable */
 }
 
 .cover-photo-overlay {
@@ -329,8 +549,10 @@ export default {
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    display: none;
-    /* Hide by default */
+    /* Semi-transparent overlay for better visibility */
+    /* z-index: 1; Ensure overlay is above cover photo */
+    cursor: ns-resize;
+    /* Change cursor to indicate vertical resize */
 }
 
 .cover-photo-btn {
@@ -339,12 +561,12 @@ export default {
 }
 
 .user-profile-wrapper {
-    top: -30px;
+    top: -55px;
 }
 
 .user-avater-wappar {
-    width: 165px;
-    height: 165px;
+    width: 170px;
+    height: 170px;
 }
 
 .user-verified-icon {
@@ -365,7 +587,8 @@ export default {
     right: 0;
     bottom: 10px;
 }
-.rounded-circle{
+
+.rounded-circle {
     object-fit: cover;
 }
 
@@ -380,5 +603,23 @@ export default {
 .user-avatar-wrapper .cropper-view-box,
 .user-avatar-wrapper .cropper-face {
     border-radius: 100%;
+}
+
+.group-privacy-divider {
+    width: 5px;
+    height: 5px;
+    background-color: rgba(71, 72, 74);
+}
+
+@media (max-width: 991px) {
+    .profile-cover-photo {
+        top: 0px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .user-profile-wrapper {
+        row-gap: 120px;
+    }
 }
 </style>

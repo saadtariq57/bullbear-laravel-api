@@ -65,8 +65,8 @@ Route::post('/profileImage', [UserController::class, 'updateProfilePhoto']);
 Route::post('/add-vote', [PostController::class, 'addVote']);
 Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
-Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
-Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
+// Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
+// Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
 
 //Watchlist Routes
 // Route::prefix('watchlist')->name('watchlist.')->middleware([Subscribed::class])->group(function() {
@@ -130,9 +130,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
     Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
+    Route::get('/groups/join/{id}', [GroupController::class, 'getGroupById']);
+    Route::post('/group-cover-position', [GroupController::class, 'groupCoverPosition']);
+    Route::post('/uploadGroupCover', [GroupController::class, 'updateGroupCover']);
+    Route::post('/removeGroupCover', [GroupController::class, 'removeGroupCoverPhoto']);
+    Route::post('/profileGroupImage', [GroupController::class, 'GroupProfilePhoto']);
+    Route::get('groups/{groupId}/members', [GroupController::class, 'getGroupMembers']);
+    Route::get('groups/{groupId}/check', [GroupController::class, 'checkUserGroupRole']);
+    Route::post('/groups/{groupId}/update-member', [GroupController::class, 'updateGroupMember']);
+    Route::post('/groups/{groupId}/remove-member', [GroupController::class, 'removeGroupMember']);
+    
+
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
-
+    Route::post('/user/update', [UserController::class, 'updateUserData']);
+    // Route::post('/user/update', 'UserController@update')->middleware('auth:api');
     Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
     Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);

@@ -54,6 +54,21 @@ export default createStore({
                 commit('SET_LOGOUT');
             }
         },
+        updateUserData({ commit }, userData) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            axios.post('/api/user/update', userData, {
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+                withCredentials: true
+            })
+            .then(response => {
+                commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
+                alert('User data updated successfully!');
+            })
+            .catch(error => {
+                console.error('Error updating user data:', error.response.data);
+                alert('Failed to update data.');
+            });
+        }
     },
     modules:{
         userFeed: userFeedModule,
