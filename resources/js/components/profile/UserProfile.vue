@@ -44,7 +44,7 @@
 </template>
 
 <script>
-// import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
+import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
 import ProfileWigets from '../widgets/ProfileWidgets.vue';
 import { mapState, mapActions } from 'vuex';
 import ProfileInfo from './ProfileInfo.vue';
@@ -60,7 +60,7 @@ export default {
         ProfileInfo,
         PostItems,
         CreatePost,
-        // ActiveChatRooms,
+        ActiveChatRooms,
         ProfileWatchlists,
         ProfilePhotos,
         ProfileFollowers,
