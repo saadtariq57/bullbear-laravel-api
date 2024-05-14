@@ -431,11 +431,11 @@ Route::middleware(['auth'])->group(function () {
             Route::put('categories/{examCategory}', [ExamController::class, 'categoriesUpdate'])->name('categories.update');
             Route::delete('categories/{examCategory}', [ExamController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
-        Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
-            Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
-            Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
-            Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
-        });
+        // Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
+        //     Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
+        //     Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
+        //     Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
+        // });
 
         // mass emails routes
         Route::prefix('admin/emails')->name('admin.emails.')->group(function () {

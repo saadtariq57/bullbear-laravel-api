@@ -14,6 +14,8 @@ class UserWatchlist extends Model
         'user_id',
         'title',
         'who_can_view',
+        'featured',
+        'symbol_count',
         'position'
     ];
 
