@@ -200,71 +200,58 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="symbolData in selectedWatchlist.watchlist_symbols" :key="symbolData.id">
-                                <td>{{ symbolData.symbol.name }} <p class="small-para fw-bold mb-0">{{
-                                    symbolData.symbol.company_name }}
-                                    </p>
-                                </td>
-                                <td class="text-end">
-                                    <span v-if="!symbolData.symbol.stats">
-                                        <Skeletor height="15" />
-                                    </span>
-                                    <span v-else>
-                                        {{ symbolData.symbol.stats.regularMarketPrice }} {{
-                                            symbolData.symbol.stats.currency }}
-                                        <p class="small-para fw-bold mb-0">
-                                            {{ symbolData.symbol.stats.updated_at }}
-                                        </p>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div :class="backgroundChangeClasses(symbolData)" v-if="symbolData.symbol.stats">
-                                        {{ symbolData.symbol.stats.regularMarketChange }} <p class="mb-0 mt-1 text-white">{{
-                                            symbolData.symbol.stats.regularMarketChangePercent }}%</p>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <span v-if="symbolData.symbol.stats">
-                                        {{ symbolData.symbol.stats.regularMarketVolume }}
-                                    </span>
-                                </td>
-                                <td class="text-end">
-                                    <div class="d-flex justify-content-between fs-14" v-if="symbolData.symbol.stats">
-                                        <span>{{ symbolData.symbol.stats.fiftyTwoWeekHigh }}</span>
-                                        <span>{{ symbolData.symbol.stats.fiftyTwoWeekLow }}</span>
-                                    </div>
-                                    <meter class="w-100 position-relative" id="table-meter"
-                                        :value="symbolData.symbol.stats.regularMarketPrice"
-                                        :min="symbolData.symbol.stats.fiftyTwoWeekLow"
-                                        :max="symbolData.symbol.stats.fiftyTwoWeekHigh"
-                                        :style="{ '--caret-position': calculateCaretPosition(symbolData) }"
-                                        v-if="symbolData.symbol.stats">
-                                        2 out of 10
-                                    </meter>
-                                </td>
-                                <td class="text-end">
-                                    <span v-if="symbolData.symbol.stats">
-                                        {{ symbolData.symbol.stats.regularMarketDayRange }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="position-relative news-para">
-                                <td class="position-absolute d-flex align-items-center">
-                                    <div class="fw-bold fs-16">
-                                        <a href="#" class="text-black">
-                                            Tesla’s Q3 conference call was the definition of a disaster,
-                                            says Wedbush’s Dan Ives
-                                        </a>
-                                        <span class="small-para">50 Min Ago</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            <template :key="symbolData.id" v-for="symbolData in selectedWatchlist.watchlist_symbols">
+                                <tr >
+                                    <td>{{ symbolData.symbol.name }} <p class="small-para fw-bold mb-0">{{ symbolData.symbol.company_name }}</p></td>
+                                    <td class="text-end">
+                                        <span v-if="!symbolData.symbol.stats">
+                                            <Skeletor height="15" />
+                                        </span>
+                                        <span v-else>
+                                            {{ symbolData.symbol.stats.regularMarketPrice }} {{ symbolData.symbol.stats.currency }}
+                                            <p class="small-para fw-bold mb-0">{{ symbolData.symbol.stats.updated_at }}</p>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div :class="backgroundChangeClasses(symbolData)" v-if="symbolData.symbol.stats">
+                                            {{ symbolData.symbol.stats.regularMarketChange }}
+                                            <p class="mb-0 mt-1 text-white">{{ symbolData.symbol.stats.regularMarketChangePercent }}%</p>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <span v-if="symbolData.symbol.stats">{{ symbolData.symbol.stats.regularMarketVolume }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-between fs-14" v-if="symbolData.symbol.stats">
+                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekHigh }}</span>
+                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekLow }}</span>
+                                        </div>
+                                        <meter class="w-100 position-relative" id="table-meter"
+                                            :value="symbolData.symbol.stats.regularMarketPrice"
+                                            :min="symbolData.symbol.stats.fiftyTwoWeekLow"
+                                            :max="symbolData.symbol.stats.fiftyTwoWeekHigh"
+                                            :style="{ '--caret-position': calculateCaretPosition(symbolData) }"
+                                            v-if="symbolData.symbol.stats">
+                                            2 out of 10
+                                        </meter>
+                                    </td>
+                                    <td class="text-end">
+                                        <span v-if="symbolData.symbol.stats">{{ symbolData.symbol.stats.regularMarketDayRange }}</span>
+                                    </td>
+                                </tr>
+                                <tr class="WatchlistSymbolRow-news">
+                                    <td colspan="6">
+                                        <div class="fw-bold fs-16">
+                                            <a href="#" class="text-black">
+                                                Tesla’s Q3 conference call was the definition of a disaster, says Wedbush’s Dan Ives
+                                            </a>
+                                            <span class="small-para">50 Min Ago</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
                         </tbody>
+
                     </DataTable>
 
                 </div>

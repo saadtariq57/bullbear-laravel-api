@@ -2702,7 +2702,7 @@ p.user-message {
 }
 
 .generel_setting_section .form-check-input:checked {
-    background: var(--cta-btn);
+    /* background: var(--cta-btn); */
     border-color: var(--cta-btn);
 }
 .generel_setting_section .form-check-input {
