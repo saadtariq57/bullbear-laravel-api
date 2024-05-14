@@ -1,8 +1,8 @@
 <template>
   <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con position-relative">
     <div class="Manage-list pl-1">
-      <!-- <h3 class="fw-bold py-2 px-2">{{ watchlistData.title }}</h3> -->
-      <input type="text" v-model="editedWatchlistName" @input="handleInput">
+      <!-- <h3 class="fw-bold py-2 px-2">{{ watchlist.title }}</h3> -->
+      <input type="text" v-if="editWatchlistData" v-model="editWatchlistData.title" @input="handleInput">
     </div>
     <div class="manage-watchlist-sidebar mt-3 d-flex">
       <div>
@@ -21,13 +21,13 @@
         <div class="symbol-search-form position-absolute bg-white rounded-3 mt-2">
           <form action="" class="position-relative">
             <input class="form-control form-control-lg" type="search" placeholder="Search"
-              aria-label=".form-control-lg example" v-model="search" @input="searchTags">
+              aria-label=".form-control-lg example" v-model="search" @input="searchSymbols">
             <button type="button" class="btn btn-primary px-3 py-2 position-absolute">ADD</button>
           </form>
           <div class="table-responsive symbol-table">
             <table class="table border-top border-cta-clr px-3 mb-0" v-show="search">
               <tbody>
-                <tr v-for="symbol in symbols" v-on:click="addWatchlistSymbol(symbol.id)">
+                <tr v-for="symbol in searchedSymbols" v-on:click="addWatchlistSymbol(symbol.id)">
                   <td>{{ symbol.name }}</td>
                   <td>
                     <p class="text-oneline company_name mb-0">{{ symbol.company_name }}</p>
@@ -46,7 +46,7 @@
     </div>
     <hr class="mt-3 divider">
     <ul class="px-0" ref="sortableList">
-      <li class="d-flex align-items-center" v-for="item in watchlistData.watchlist_symbols" :key="item.id">
+      <li class="d-flex align-items-center" v-for="item in editWatchlistData.watchlist_symbols" :key="item.id">
         <div class="d-flex align-items-center flex-fill gap-3">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
@@ -64,7 +64,7 @@
         </div>
         <div>
           <button class="btn-close" type="button" data-bs-toggle="modal" data-bs-target="#delete-symbol"
-            @click="openModal(item)"></button>
+            @click="openModal(item.id, item.symbol.name)"></button>
         </div>
       </li>
     </ul>
@@ -74,13 +74,34 @@
       </p>
     </div>
   </div>
-  <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" />
+  <!-- <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" /> -->
+    <div class="modal fade" id="delete-symbol" data-bs-keyboard="false" tabindex="-1">
+      <div class="modal-dialog" v-if="modalData != undefined">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">{{ modalData.title }}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete
+            {{ modalData.title }}
+            symbol ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal" aria-label="Close">DON’T
+              DELETE</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              @click="ConfirmDelete(modalData.id)">DELETE</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
-import axios from "axios";
 import Confirm from '../../shared/confirm.vue';
 import Sortable from "sortablejs";
 import Swal from 'sweetalert2';
@@ -89,36 +110,65 @@ export default {
   components: {
     Skeletor,
     Confirm,
-    Sortable
+    Sortable,
+  },
+  computed: {
+        ...mapState('userWatchlists', ['searchedSymbols', 'editWatchlistData', 'error']),
+    },
+  data() {
+    return {
+      search: '',
+      isModalOpen: false,
+      modalData: {},
+      inputTimeout: null,
+      sortableInstance: null,
+    };
+  },
+  created() {
+    const watchlistId = this.$route.params.id;
+    this.editWatchlist(watchlistId).then(() => {
+      this.initSortable();
+    });
   },
   methods: {
-    searchTags() {
-      this.initValues();
+    ...mapActions('userWatchlists', ['searchSymbol', 'addSymbolToWatchlist', 'editWatchlist', 'editWatchlistName', 'deleteSymbolFromWatchlist', 'updateSymbolPosition']),
+    
+    searchSymbols() {
       if (this.search) {
-        axios.get('/api/symbol/search?query=' + this.search).then(response => {
-          this.symbols = response.data;
-          this.error = this.symbols.length == 0 ? 'No symbols found against this search' : '';
-        }).catch(error => {
-          this.error = 'Error while fetching symbols';
-          console.log(error)
-        });
+        const searchedSymbol = this.search;
+        this.searchSymbol({searchedSymbol});
       }
     },
     addWatchlistSymbol(symbolId) {
       let postData = {
-        user_id: this.watchlist.user_id,
-        watchlist_id: this.watchlist.id,
+        user_id: this.editWatchlistData.user_id,
+        watchlist_id: this.editWatchlistData.id,
         symbol_id: symbolId
       }
-      axios.post('/api/watchlist/symbol', postData).then(response => {
-        if (response.data) {
-          this.watchlistData = response.data;
-          this.search = '';
-        }
-      }).catch(error => {
-        this.error = 'Error while adding symbol';
-        console.log(error)
-      });
+      if(postData){
+        this.addSymbolToWatchlist(postData).then(() => {
+            this.search = '';
+            // Show SweetAlert on success
+            Swal.fire({
+              icon: 'success',
+              title: 'New Symbol added successfully',
+              timer: 1000,
+              showConfirmButton: false,
+              timerProgressBar: true,
+            });
+          })
+          .catch((error) => {
+            console.error('Error adding new symbol:', error);
+
+            // Show SweetAlert on error
+            Swal.fire({
+              icon: 'error',
+              title: 'Error adding new symbol',
+              text: 'An error occurred while adding new symbol. Please try again.',
+            });
+          });
+        
+      }
     },
     toggleSearch() {
       $('.symbol-search-form').toggle();
@@ -126,44 +176,58 @@ export default {
     handleInput() {
       clearTimeout(this.inputTimeout);
       this.inputTimeout = setTimeout(() => {
-        this.editWatchlistName();
-      }, 1000);
-    },
-    editWatchlistName() {
-      if (this.editedWatchlistName.trim() !== "") {
-        const watchlistId = this.watchlist.id;
-        axios.put(`/api/watchlist/update/${watchlistId}`, { title: this.editedWatchlistName })
-          .then(response => {
-            this.watchlistData.title = response.data.title;
-            this.editedWatchlistName = response.data.title;
+        if (this.editWatchlistData.title.trim() !== "") {
+          const newWatchlistName = this.editWatchlistData.title;
+          const watchlistId = this.$route.params.id;
+          this.editWatchlistName({watchlistId, newWatchlistName}).then(() => {
+            // Show SweetAlert on success
+            Swal.fire({
+              icon: 'success',
+              title: 'Watchlist Name Updated',
+              timer: 1000,
+              showConfirmButton: false,
+              timerProgressBar: true,
+            });
           })
-          .catch(error => {
-            console.error("Error editing watchlist name:", error);
+          .catch((error) => {
+            console.error('Error updating watchlist name:', error);
+
+            // Show SweetAlert on error
+            Swal.fire({
+              icon: 'error',
+              title: 'Error updating watchlist name',
+              text: 'An error occurred while updating watchlist name. Please try again.',
+            });
           });
-      }
-    },
-    deleteWatchlistSymbol(id) {
-      axios.delete(`/api/watchlist/symbol?id=${id}&watchlist_id=${this.watchlist.id}`).then(response => {
-        if (response.data) {
-          this.watchlistData = response.data;
         }
-      }).catch(error => {
-        this.error = 'Error while deleting symbol';
-        console.log(error)
-      });
+      }, 2000);
     },
-    initValues() {
-      this.error = '';
-      this.symbols = [];
+    openModal(symbolId, symbolName) {
+      this.modalData = { id: symbolId, title: symbolName };
+      // this.isModalOpen = true
     },
-    openModal(item) {
-      this.modalData = { id: item.id, modalId: 'delete-symbol', title: item.symbol.name, body: `Are you sure you want to delete symbol : ${item.symbol.name}?` },
-        this.isModalOpen = true
-    },
-    handleActionFromModal(response) {
-      if (response.type == 'confirm') {
-        this.deleteWatchlistSymbol(response.id);
-      }
+    ConfirmDelete(symbolId) {
+      const watchlistId = this.$route.params.id;
+      this.deleteSymbolFromWatchlist({watchlistId, symbolId}).then(() => {
+          // Show SweetAlert on success
+          Swal.fire({
+            icon: 'success',
+            title: 'Symbol deleted Successfully',
+            timer: 1000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+          });
+        })
+        .catch((error) => {
+          console.error('Error deleting symbol:', error);
+
+          // Show SweetAlert on error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error deleting symbol',
+            text: 'An error occurred while deleting symbol. Please try again.',
+          });
+        });
     },
     initSortable() {
       if (this.sortableInstance) {
@@ -178,30 +242,22 @@ export default {
       });
     },
     handleItemReordering(event) {
-      const movedItem = this.watchlistData.watchlist_symbols.splice(event.oldIndex, 1)[0];
-      this.watchlistData.watchlist_symbols.splice(event.newIndex, 0, movedItem);
+      const movedItem = this.editWatchlistData.watchlist_symbols.splice(event.oldIndex, 1)[0];
+      this.editWatchlistData.watchlist_symbols.splice(event.newIndex, 0, movedItem);
 
       // Create a new array with updated positions
-      const updatedPositions = this.watchlistData.watchlist_symbols.map((symbol, index) => ({
+      const updatedPositions = this.editWatchlistData.watchlist_symbols.map((symbol, index) => ({
         id: symbol.id,
         position: index + 1,
       }));
 
-      console.log('Frontend payload:', { symbol_positions: updatedPositions });
-
-      const watchlistId = this.watchlist.id;
-
-      axios.put(`/api/watchlist/update/${watchlistId}`, {
-        symbol_positions: updatedPositions,
-      })
-        .then((response) => {
-          console.log('Positions updated successfully:', response.data);
-
+      const watchlistId = this.editWatchlistData.id;
+      this.updateSymbolPosition({watchlistId, updatedPositions}).then(() => {
           // Show SweetAlert on success
           Swal.fire({
             icon: 'success',
             title: 'Positions updated successfully',
-            timer: 2000,
+            timer: 1000,
             showConfirmButton: false,
             timerProgressBar: true,
           });
@@ -217,32 +273,6 @@ export default {
           });
         });
     }
-  },
-  mounted() {
-    this.initValues();
-    this.watchlistData = JSON.parse(JSON.stringify(this.watchlist));
-    this.editedWatchlistName = this.watchlistData.title;
-    this.initSortable();
-    console.log(this.watchlist);
-  },
-  data() {
-    return {
-      watchlistData: Object,
-      error: '',
-      search: '',
-      symbols: [],
-      isModalOpen: false,
-      modalData: undefined,
-      editedWatchlistName: '',
-      inputTimeout: null,
-      sortableInstance: null,
-    };
-  },
-  props: {
-    watchlist: {
-      type: Object, // Adjust the type based on your data structure
-      required: true,
-    },
   },
 };
 </script>

@@ -5,6 +5,7 @@ import userGroupModule from './groupStore';
 import userSubscriptionModule from './pricingStore';
 import userProfileModule from './profileStore';
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
+import userWatchlistModule from './watchlistStore';
 import axios from 'axios';
 
 export default createStore({
@@ -60,6 +61,7 @@ export default createStore({
         UserGroups: userGroupModule,
         userSubscriptionModule: userSubscriptionModule,
         userProfile: userProfileModule,
-        profileGroupHeader: ProfileGroupHeaderModule
+        profileGroupHeader: ProfileGroupHeaderModule,
+        userWatchlists: userWatchlistModule
     }
 });

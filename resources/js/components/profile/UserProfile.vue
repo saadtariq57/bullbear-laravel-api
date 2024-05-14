@@ -15,14 +15,14 @@
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div>
                             <div>
-                                <ActiveChatRooms :chats="allChats" :joined="false" />
+                                <!-- <ActiveChatRooms :chats="allChats" :joined="false" /> -->
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="user-watchlists" role="tabpanel"
                         aria-labelledby="user-watchlists-tab">
                         <div>
-                            <watchlistTables />
+                            <ProfileWatchlists />
                         </div>
                     </div>
                     <div class="tab-pane fade" id="user-photos" role="tabpanel" aria-labelledby="user-photos-tab">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
+// import ActiveChatRooms from '../groups/ActiveChatRooms.vue';
 import ProfileWigets from '../widgets/ProfileWidgets.vue';
 import { mapState, mapActions } from 'vuex';
 import ProfileInfo from './ProfileInfo.vue';
@@ -58,7 +58,7 @@ export default {
         ProfileInfo,
         PostItems,
         CreatePost,
-        ActiveChatRooms,
+        // ActiveChatRooms,
         ProfileWatchlists,
         ProfilePhotos,
         ProfileFollowers,
@@ -67,23 +67,23 @@ export default {
     },
     data() {
         return {
-            myChats: [
-                {
-                    id: 1,
-                    group_name: 'My Group 1',
-                    group_title: 'My Group Title 1',
-                    avatar: 'path-to-avatar-1',
-                },
-            ],
+            // myChats: [
+            //     {
+            //         id: 1,
+            //         group_name: 'My Group 1',
+            //         group_title: 'My Group Title 1',
+            //         avatar: 'path-to-avatar-1',
+            //     },
+            // ],
         };
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
         ...mapState('UserGroups', ['suggestedChats']),
         ...mapState('userProfile',['isOwnProfile']),
-        allChats() {
-            return this.suggestedChats.concat(this.myChats);
-        },
+        // allChats() {
+        //     return this.suggestedChats.concat(this.myChats);
+        // },
     },
     created() {
         const context = 'profile';

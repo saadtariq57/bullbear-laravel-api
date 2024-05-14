@@ -123,6 +123,8 @@ class UserController extends Controller
         $followingsCount = Follower::where('follower_id', $user->id)->count();
         $followers = $user->followings()->with('follower:id,name,email,avatar,first_name')->get();
         $followings = $user->followers()->with('following:id,name,email,avatar,first_name')->get();
+        $loggedInFollowers = $loggedInUser->followings()->with('follower:id,name,email,avatar,first_name')->get();
+        $loggedInFollowings = $loggedInUser->followers()->with('following:id,name,email,avatar,first_name')->get();
         // 'following:id,name,email,avatar,first_name'
         // if ($photos->isEmpty()) {
         //     $photos = 'No Media Found';
@@ -136,6 +138,9 @@ class UserController extends Controller
             'followingsCount' => $followingsCount,
             'followerUserData' => $followers,
             'followingsUserData' => $followings,
+            'loggedInFollowers' => $loggedInFollowers,
+            'loggedInFollowings' => $loggedInFollowings
+
         ]);
     }
 

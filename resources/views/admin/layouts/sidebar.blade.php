@@ -42,12 +42,12 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('admin.watchlist.index') }}" class="waves-effect">
+                <!-- <li>
+                    <a href="--{ -{ route -('admin.watchlist.index') } -} --" class="waves-effect">
                         <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">1</span>
                         <span>Watchlist Management </span>
                     </a>
-                </li>
+                </li> -->
 
                 <li>
                     <a href="{{ route('admin.symbols.index') }}" class="waves-effect">

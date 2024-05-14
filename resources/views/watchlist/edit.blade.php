@@ -4,8 +4,8 @@
 <body>
     @endsection
     @section('content')
-    <section class="container-fluid manage-watchlist py-5">
-        <router-view :watchlist="{{ $watchlist }}"></router-view>
+    <section class="container-fluid manage-watchlist py-5" id="app">
+        <router-view></router-view>
     </section>
 
     @endsection

@@ -17,21 +17,23 @@ class WatchlistController extends Controller
     {
         $this->featureService = $featureService;
     }
-    public function getWatchLists()
+    public function getWatchLists(Request $request)
     {
+        
         if (Auth::check()) {
-            $user = Auth::user();
-            $user_id = $user->id;
+            $user_id = null;
+            $loggedInUser = Auth::user();
+            $user_id = $request->input('user_id');
             $records = UserWatchlist::where('user_id', $user_id);
             $RequestedFeature = 'Watchlist Limit';
             $watchlists = [];
 
-            if ($user->can('isFeaturePermission', [User::class, $RequestedFeature])) {
-                $featureDetails = $this->featureService->getFeatures($user, $RequestedFeature);
-                $watchlists['featureDetails'] = $featureDetails;
-            } else {
-                $watchlists['featureLimit'] = 'this feature is disabled for this plan';
-            }
+            // if ($user->can('isFeaturePermission', [User::class, $RequestedFeature])) {
+            //     $featureDetails = $this->featureService->getFeatures($user, $RequestedFeature);
+            //     $watchlists['featureDetails'] = $featureDetails;
+            // } else {
+            //     $watchlists['featureLimit'] = 'this feature is disabled for this plan';
+            // }
 
             if ($records->exists()) {
                 $records = UserWatchlist::where('user_id', $user_id)
@@ -43,6 +45,7 @@ class WatchlistController extends Controller
                         'watchlistSymbols.symbol'
                     ])->get();
                 $watchlists['watchlistDetails'] = $records;
+                $watchlists['hasUserWatchlist'] = true;
             } else {
                 $records = UserWatchlist::where('featured', 1)
                     ->orderBy('position')
@@ -53,8 +56,9 @@ class WatchlistController extends Controller
                         'watchlistSymbols.symbol'
                     ])->get();
                 $watchlists['watchlistDetails'] = $records;
+                $watchlists['hasUserWatchlist'] = false;
             }
-
+            
             return response()->json($watchlists);
         } else {
             $records = UserWatchlist::where('featured', 1)
@@ -161,27 +165,37 @@ class WatchlistController extends Controller
         if ($user) {
             $user_id = $user->id;
             $userWatchlistCount = UserWatchlist::where('user_id', $user_id)->count();
+            // if ($this->authorize('isAdmin', $user)) {
+            if ($user->can('isAdmin')) {
+                $featured = 1;
+            } else {
+                $featured = 0;
+            }
             // $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
-            if ($user->can('isFeaturePermission', [User::class, 'Watchlist Limit'])) {
-                $featureDetails = $this->featureService->getFeatures($user, 'Watchlist Limit');
-                $watchlistLimit = $featureDetails['limit'];
-                if ($userWatchlistCount < $watchlistLimit) {
+            // if ($user->can('isFeaturePermission', [User::class, 'Watchlist Limit'])) {
+            //     $featureDetails = $this->featureService->getFeatures($user, 'Watchlist Limit');
+            //     $watchlistLimit = $featureDetails['limit'];
+            //     if ($userWatchlistCount < $watchlistLimit) {
                     $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
+                    
                     $data = [
                         'user_id' => $user_id,
                         'title' => $newWatchlistName,
-                        'who_can_view' => 'Everyone'
+                        'who_can_view' => 'Everyone',
+                        'featured' => $featured,
+                        'symbol_count' => 0
                     ];
+                    
                     $watchlist = UserWatchlist::create($data);
                     return redirect()->route('watchlist.edit', $watchlist);
-                } else {
-                    $message = 'you have exceeded the limit to create watchlist';
-                    return redirect()->route('watchlist.index')->withErrors($message);
-                }
-            } else {
-                $message = 'this feature is disabled for this plan';
-                return redirect()->route('watchlist.index')->withErrors($message);
-            }
+                // } else {
+                //     $message = 'you have exceeded the limit to create watchlist';
+                //     return redirect()->route('watchlist.index')->withErrors($message);
+                // }
+            // } else {
+            //     $message = 'this feature is disabled for this plan';
+            //     return redirect()->route('watchlist.index')->withErrors($message);
+            // }
         }
     }
 
@@ -203,16 +217,14 @@ class WatchlistController extends Controller
             $user_id = $user->id;
             $userWatchlist = UserWatchlist::where('user_id', $user_id)->where('id', $watchlist->id)->first();
             if ($userWatchlist) {
-                $watchlist = $this->getWatchListAllData($watchlist->id);
-                return view('watchlist.edit', compact('watchlist'));
+                // $watchlist = $this->getWatchListAllData($watchlist->id);
+                return view('watchlist.edit');
             } else {
                 return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
             }
         } else {
             return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
         }
-
-
     }
 
     /**
@@ -241,7 +253,7 @@ class WatchlistController extends Controller
                 $watchlist->update([
                     'title' => $request->input('title'),
                 ]);
-                return response()->json(['title' => $watchlist->title]);
+                return response()->json(['title' => $watchlist]);
             }
         } catch (\Exception $e) {
             // Add this line to log the validation errors
@@ -267,6 +279,22 @@ class WatchlistController extends Controller
 
         return response()->json(['message' => 'Positions updated successfully']);
     }
+
+    public function updatePrivacy(Request $request)
+    {
+        $selectedPrivacy = $request->input('privacy_option');
+        $watchlistID = $request->input('watchlist_id');
+        $userWatchlist = UserWatchlist::where('id', $watchlistID)->first();
+        if($userWatchlist){
+            $userWatchlist->update([
+                'who_can_view' => $selectedPrivacy,
+            ]);
+            return response()->json(['message' => 'watchlist privacy updated', 'selectedPrivacy' => $selectedPrivacy]);
+        }else{
+            return response()->json(['message' => 'Watchlist does not exist']);
+        }
+        
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -289,7 +317,15 @@ class WatchlistController extends Controller
         $response = false;
         $data = $request->all();
         if ($data) {
+
             WatchlistSymbol::create($data);
+
+            $userWatchlist = UserWatchlist::find($data['watchlist_id']);
+            if ($userWatchlist) {
+                $userWatchlist->increment('symbol_count');
+                $userWatchlist->save();
+            }
+
             $response = $this->getWatchListAllData($data['watchlist_id']);
         }
         return response()->json($response);
@@ -300,37 +336,49 @@ class WatchlistController extends Controller
         $response = false;
         $id = $request->input('id');
         $watchlistId = $request->input('watchlist_id');
+        $userWatchlist = UserWatchlist::find($watchlistId);
         if ($id && $watchlistId) {
             WatchlistSymbol::destroy($id);
+            if ($userWatchlist && $userWatchlist->symbol_count > 0) {
+                $userWatchlist->decrement('symbol_count');
+                $userWatchlist->save();
+            }
             $response = $this->getWatchListAllData($watchlistId);
         }
         return response()->json($response);
     }
 
     // Admin panel Routes Below
-    public function AdminIndex(Request $request)
-    {
-        $search = $request->query('search');
+    // public function AdminIndex(Request $request)
+    // {
+    //     if (Auth::check()) {
+    //         $user = Auth::user();
+    //         $user_id = $user->id;
+    //         $records = UserWatchlist::where('user_id', $user_id);
+    //         $watchlists = [];
 
-        if ($search) {
-            $watchlists = UserWatchlist::where('title', 'LIKE', "%{$search}%")
-                // ... add other fields if needed
-                ->paginate(10);
-        } else {
-            $watchlists = UserWatchlist::paginate(10);
-        }
-
-        return view('admin.watchlist.index', compact('watchlists'));
-    }
-    public function WatchlistCreate()
-    {
-        // $watchlists = watchlists::all();
-        return view('admin.watchlist.create');
-    }
-    public function WatchlistEdit()
-    {
-        // $watchlists = watchlists::all();
-        return view('admin.watchlist.edit');
-    }
+    //         if ($records->exists()) {
+    //             $records = UserWatchlist::where('featured', 1)
+    //                 ->orderBy('position')
+    //                 ->with([
+    //                     'watchlistSymbols' => function ($query) {
+    //                         $query->orderBy('position');
+    //                     },
+    //                     'watchlistSymbols.symbol'
+    //                 ])->get();
+    //             $watchlists['watchlistDetails'] = $records;
+    //         }
+    //         // return response()->json($watchlists);
+    //         return view('admin.watchlist.index', compact('watchlists'));
+    //      } 
+    // }
+    // public function WatchlistCreate()
+    // {
+    //     return view('admin.watchlist.create');
+    // }
+    // public function WatchlistEdit()
+    // {
+    //     return view('admin.watchlist.edit');
+    // }
 }
 

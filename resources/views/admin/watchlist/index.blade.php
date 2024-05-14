@@ -53,14 +53,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                @if(isset($watchlists['watchlistDetails']))
+                                    @foreach($watchlists['watchlistDetails'] as $watchlist)
                                     <tr>
-                                        <td>1</td>
-                                        <td>My Watchlist 1</td>
-                                        <td>10</td>
+                                        <td>{{ $watchlist->id }}</td>
+                                        <td>{{ $watchlist->title }}</td>
+                                        <td>{{ $watchlist->symbol_count }}</td>
                                         <td>
                                             <ul class="list-inline mb-0 d-flex align-items-center">
                                                 <li class="list-inline-item">
-                                                    <a href="{{ route('admin.watchlist.edit') }}"
+                                                    <a href="{{ route('admin.watchlist.edit', ['id' => $watchlist->id]) }}"
                                                         class="px-2 text-primary">
                                                         <i class="ri-pencil-line font-size-18"></i>
                                                     </a>
@@ -71,14 +73,15 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button class="btn btn-danger delete-exam" type="button"
-                                                            data-exam-id="">
+                                                            data-watchlist-id="{{ $watchlist->id }}">
                                                             <i class="fas fa-trash-alt"></i>
                                                     </form>
                                                 </li>
                                             </ul>
                                         </td>
                                     </tr>
-
+                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
