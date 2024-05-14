@@ -425,8 +425,7 @@ const routes = [
     {
         path: "/watchlist/edit/:id",
         name: "watchlist.edit",
-        component: () =>
-            import("./components/watchlist/searchsymbols/Searchsymbols.vue"),
+        component: () => import("./components/watchlist/searchsymbols/Searchsymbols.vue"),
     },
     {
         path: "/watchlist/manage",

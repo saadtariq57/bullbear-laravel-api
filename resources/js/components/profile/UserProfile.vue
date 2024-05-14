@@ -14,15 +14,17 @@
                     </div>
                     <div class="tab-pane fade" id="user-chat" role="tabpanel" aria-labelledby="user-chat-tab">
                         <div>
+
                             <div v-if="userProfileData">
                                 <ActiveChatRooms :chats="joinedChats" :joined="true" />
+
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="user-watchlists" role="tabpanel"
                         aria-labelledby="user-watchlists-tab">
                         <div>
-                            <watchlistTables />
+                            <ProfileWatchlists />
                         </div>
                     </div>
                     <div class="tab-pane fade" id="user-photos" role="tabpanel" aria-labelledby="user-photos-tab">

@@ -8,19 +8,21 @@
             <a class="watchlive-header p-2 text-white"> WATCH LIVE </a>
         </div>
     </div>
-    <div class="d-flex mt-3" v-if="selectedWatchlist">
-        <a :href="'watchlist/edit/' + selectedWatchlist.id" class="watchlist-navlinks border-end pe-3 h-75">
-            <b>Edit<i class="bi bi-pencil-square icon-bold ms-1"></i></b>
-        </a>
+    <div v-if="userData != null">
+        <div class="d-flex mt-3" v-if="selectedWatchlist">
+            <a :href="'watchlist/edit/' + selectedWatchlist.id" class="watchlist-navlinks border-end pe-3 h-75">
+                <b>Edit<i class="bi bi-pencil-square icon-bold ms-1"></i></b>
+            </a>
 
-    </div>
-    <div class="d-flex mt-3" v-else>
-        <a href="/watchlist/manage" class="watchlist-navlinks border-end pe-3 h-75"><b>Manage<i
-                    class="bi bi-pencil-square icon-bold ms-1"></i></b></a>
+        </div>
+        <div class="d-flex mt-3" v-else>
+            <a href="/watchlist/manage" class="watchlist-navlinks border-end pe-3 h-75"><b>Manage<i
+                        class="bi bi-pencil-square icon-bold ms-1"></i></b></a>
 
-        <a href="/watchlist/store" class="watchlist-navlinks px-3 h-75"><b>Create New <i
-                    class="bi bi-plus-lg icon-bold"></i></b></a>
-        <a href="javascript:void(0)" class="watchlist-navlinks px-3" style="display:none;"><b>Stock Screener</b></a>
+            <a href="/watchlist/store" class="watchlist-navlinks px-3 h-75"><b>Create New <i
+                        class="bi bi-plus-lg icon-bold"></i></b></a>
+            <a href="javascript:void(0)" class="watchlist-navlinks px-3" style="display:none;"><b>Stock Screener</b></a>
+        </div>
     </div>
     <div class="col-12 mt-4">
         <ul class="nav border-0 nav-tabs justify-content-between flex-nowrap" id="course-content-tab" role="tablist">
@@ -47,9 +49,12 @@
             <!-- DASHBORD tab start  -->
             <div class="tab-pane fade show active" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab"
                 tabindex="0">
+                <div v-if="userHasWatchlist == false">
+                    <p>This user does not have watchlists checkout our featured watchlists</p>
+                </div>
                 <div class="row" v-show="watchlists">
                     <div class="col-lg-4 col-md-12 my-4" v-for="watchlist in watchlists">
-                        <div class="watchlist-dashboard-container border p-3">
+                        <div  :class="watchlist.featured == 1 ? 'featuredWathclist watchlist-dashboard-container border p-3' : 'watchlist-dashboard-container border p-3'">
                             <h3 class="fs-18" @click="selectWatchlist(watchlist, 'userSelection')"><b>{{ watchlist.title }}
                                 </b></h3>
                             <div class="table-responsive">
@@ -63,7 +68,7 @@
                                     </thead>
                                     <p v-if="watchlist.watchlist_symbols.length <= 0" class="p-3">This watchlist does not
                                         have any symbols.</p>
-                                    <tbody id="crypto-table-body">
+                                    <tbody id="crypto-table-body" v-else>
                                         <tr v-for="symbolData in watchlist.watchlist_symbols" :key="symbolData.id">
                                             <td class="gray2 sticky-side position-sticky bg-white pl-0">
                                                 <a href="/stock-quote/{{ symbolData.symbol.name }}"
@@ -197,59 +202,81 @@
                                 <th class="text-end">VOLUME</th>
                                 <th class="text-end">52 WEEK RANGE</th>
                                 <th class="text-end">DAY RANGE</th>
+                                <th class="text-end">News</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <template :key="symbolData.id" v-for="symbolData in selectedWatchlist.watchlist_symbols">
-                                <tr >
-                                    <td>{{ symbolData.symbol.name }} <p class="small-para fw-bold mb-0">{{ symbolData.symbol.company_name }}</p></td>
-                                    <td class="text-end">
-                                        <span v-if="!symbolData.symbol.stats">
-                                            <Skeletor height="15" />
-                                        </span>
-                                        <span v-else>
-                                            {{ symbolData.symbol.stats.regularMarketPrice }} {{ symbolData.symbol.stats.currency }}
-                                            <p class="small-para fw-bold mb-0">{{ symbolData.symbol.stats.updated_at }}</p>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div :class="backgroundChangeClasses(symbolData)" v-if="symbolData.symbol.stats">
-                                            {{ symbolData.symbol.stats.regularMarketChange }}
-                                            <p class="mb-0 mt-1 text-white">{{ symbolData.symbol.stats.regularMarketChangePercent }}%</p>
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <span v-if="symbolData.symbol.stats">{{ symbolData.symbol.stats.regularMarketVolume }}</span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="d-flex justify-content-between fs-14" v-if="symbolData.symbol.stats">
-                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekHigh }}</span>
-                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekLow }}</span>
-                                        </div>
-                                        <meter class="w-100 position-relative" id="table-meter"
-                                            :value="symbolData.symbol.stats.regularMarketPrice"
-                                            :min="symbolData.symbol.stats.fiftyTwoWeekLow"
-                                            :max="symbolData.symbol.stats.fiftyTwoWeekHigh"
-                                            :style="{ '--caret-position': calculateCaretPosition(symbolData) }"
-                                            v-if="symbolData.symbol.stats">
-                                            2 out of 10
-                                        </meter>
-                                    </td>
-                                    <td class="text-end">
-                                        <span v-if="symbolData.symbol.stats">{{ symbolData.symbol.stats.regularMarketDayRange }}</span>
-                                    </td>
-                                </tr>
-                                <tr class="WatchlistSymbolRow-news">
-                                    <td colspan="6">
-                                        <div class="fw-bold fs-16">
-                                            <a href="#" class="text-black">
-                                                Tesla’s Q3 conference call was the definition of a disaster, says Wedbush’s Dan Ives
-                                            </a>
-                                            <span class="small-para">50 Min Ago</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </template>
+                            <tr v-for="symbolData in selectedWatchlist.watchlist_symbols" :key="symbolData.id">
+                                <td>{{ symbolData.symbol.name }} <p class="small-para fw-bold mb-0">{{
+                                    symbolData.symbol.company_name }}
+                                    </p>
+                                </td>
+                                <td class="text-end">
+                                    <span v-if="!symbolData.symbol.stats">
+                                        <Skeletor height="15" />
+                                    </span>
+                                    <span v-else>
+                                        {{ symbolData.symbol.stats.regularMarketPrice }} {{
+                                            symbolData.symbol.stats.currency }}
+                                        <p class="small-para fw-bold mb-0">
+                                            {{ symbolData.symbol.stats.updated_at }}
+                                        </p>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div :class="backgroundChangeClasses(symbolData)" v-if="symbolData.symbol.stats">
+                                        {{ symbolData.symbol.stats.regularMarketChange }} <p class="mb-0 mt-1 text-white">{{
+                                            symbolData.symbol.stats.regularMarketChangePercent }}%</p>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <span v-if="symbolData.symbol.stats">
+                                        {{ symbolData.symbol.stats.regularMarketVolume }}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-between fs-14" v-if="symbolData.symbol.stats">
+                                        <span>{{ symbolData.symbol.stats.fiftyTwoWeekHigh }}</span>
+                                        <span>{{ symbolData.symbol.stats.fiftyTwoWeekLow }}</span>
+                                    </div>
+                                    <meter class="w-100 position-relative" id="table-meter"
+                                        :value="symbolData.symbol.stats.regularMarketPrice"
+                                        :min="symbolData.symbol.stats.fiftyTwoWeekLow"
+                                        :max="symbolData.symbol.stats.fiftyTwoWeekHigh"
+                                        :style="{ '--caret-position': calculateCaretPosition(symbolData) }"
+                                        v-if="symbolData.symbol.stats">
+                                        2 out of 10
+                                    </meter>
+                                </td>
+                                <td class="text-end">
+                                    <span v-if="symbolData.symbol.stats">
+                                        {{ symbolData.symbol.stats.regularMarketDayRange }}
+                                    </span>
+                                </td>
+                                <td colspan="6">
+                                    <div class="news-item">
+                                        <a href="#" class="text-black">Tesla’s Q3 conference call was the definition of a disaster,
+                                            says Wedbush’s Dan Ives</a>
+                                        <span class="small-para">50 Min Ago</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- <tr class="position-relative news-para">
+                                <td class="position-absolute d-flex align-items-center">
+                                    <div class="fw-bold fs-16">
+                                        <a href="#" class="text-black">
+                                            Tesla’s Q3 conference call was the definition of a disaster,
+                                            says Wedbush’s Dan Ives
+                                        </a>
+                                        <span class="small-para">50 Min Ago</span>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr> -->
                         </tbody>
 
                     </DataTable>
@@ -260,14 +287,18 @@
         </div>
     </div>
 </div>
+
 </template>
-
+<style>
+.featuredWathclist{
+    border: 5px solid#edb043ab!important;
+}
+</style>
 <script>
-
+import { mapState, mapActions } from 'vuex';
 import btcImage from '../../../../images/brands/cryptocurrency_btc.png';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
-import axios from "axios";
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import 'datatables.net-dt/css/jquery.dataTables.css';
@@ -279,65 +310,36 @@ export default {
         Skeletor,
         DataTable,
     },
+    computed: {
+        ...mapState(['userData']),
+        ...mapState('userWatchlists',['watchlists', 'userHasWatchlist']),
+    },
     props: {
         user: {
             type: Object
         },
+        watchlist_symbols: {
+            type: Array
+        }
     },
     data() {
         return {
             btcImage: btcImage,
-            watchlists: undefined,
             selectedWatchlist: null,
-            watchlist_symbols: undefined,
             dataTableKey: null,
             errorMessage:'',
         };
     },
+    created() {
+        let userId = null;
+        if(this.userData){
+           userId = this.userData.id;   
+        }
+        this.getUserWatchlistData({userId});
+    },
     methods: {
-        async getUserData() {
-            try {
-                const response = await axios.get('/api/watchlist/');
-                this.watchlists = response.data.watchlistDetails;
-                console.log(response.data);
-                for (const watchlist of this.watchlists) {
-                    if (watchlist.watchlist_symbols.length >= 1) {
-                        await this.getSymbols(watchlist.id);
-                    }
-                }
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                if (error.response && error.response.data && error.response.data.message) {
-                    // Handle specific error message from the backend
-                    this.errorMessage = error.response.data.message;
-                    console.log(this.errorMessage);
-                } else {
-                    // Handle generic error
-                    this.errorMessage = 'An error occurred while fetching data.';
-                }
-                // Handle error appropriately
-            }
-        },
-        async getSymbols(watchlistId) {
-            try {
-
-                const symbolsResponse = await axios.get(`/api/watchlist/symbols/${watchlistId}`);
-
-                const watchlistIndex = this.watchlists.findIndex(w => w.id === watchlistId);
-
-                this.watchlists[watchlistIndex] = {
-                    ...this.watchlists[watchlistIndex],
-                    watchlist_symbols: symbolsResponse.data.watchlist_symbols,
-
-                };
-
-                console.log('Symbols:', symbolsResponse.data);
-            } catch (error) {
-                console.error('Error fetching symbols:', error);
-            }
-        },
-
+        ...mapActions('userWatchlists',['getUserWatchlistData']),
+        
         calculateCaretPosition(symbolData) {
             const low = parseFloat(symbolData.symbol.stats.fiftyTwoWeekLow);
             const high = parseFloat(symbolData.symbol.stats.fiftyTwoWeekHigh);
@@ -386,7 +388,7 @@ export default {
         },
     },
     mounted() {
-        this.getUserData();
+        
     },
 
 };
