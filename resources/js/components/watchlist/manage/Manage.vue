@@ -4,10 +4,10 @@
     <div class="manage-watchlist-sidebar mt-3">
       <a href="/watchlist" class="border-start border-dark px-2 text-decoration-underline fw-bold">Done</a>
     </div>
-    <hr class="mt-4 divider">
+    <hr class="mt-4 mb-0 divider">
     <ul ref="sortableList" class="px-0">
-      <li v-for="watchlist in watchlists" :key="watchlist.id" class="d-flex align-items-center" :id="watchlist.id">
-        <div class="d-flex align-items-center flex-fill">
+      <li v-for="watchlist in watchlists" :key="watchlist.id" class="d-flex align-items-center watchlist-table border-bottom py-3 justify-content-between" :id="watchlist.id">
+        <div class="d-flex align-items-center">
           <div class="px-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
               viewBox="0 0 16 16">
@@ -19,15 +19,15 @@
             <a :href="'edit/' + watchlist.id" class="fw-bold py-2 pe-4 w-100 text-black fs-3">{{ watchlist.title }}</a>
           </div>
         </div>
-        <div>
-          <select v-model="watchlist.who_can_view" @change="watchlistView(watchlist.id, watchlist.who_can_view)">
+        <div class="d-flex align-items-center gap-3">
+          <select v-model="watchlist.who_can_view" @change="watchlistView(watchlist.id, watchlist.who_can_view)" class="form-select border shadow-sm">
             <option value="Everyone">Everyone</option>
             <option value="EveroneLoggedin" v-if="userData.type == 'admin'">Everyone (Logged in only)</option>
             <option value="Followers">Followers</option>
             <option value="ProUsers" v-if="userData.type == 'admin'">Pro members only</option>
             <option value="OnlyMe">Only Me</option>
           </select>
-          <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete-watchlist"
+          <button class="btn btn-primary px-4 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#delete-watchlist"
             @click="deleteWatchlistModal(watchlist.id, watchlist.title)">Remove Watchlist</button>
         </div>
       </li>
@@ -197,3 +197,8 @@ export default {
   mounted() {},
 };
 </script>
+<style>
+.watchlist-table{
+  cursor: grab;
+}
+</style>
