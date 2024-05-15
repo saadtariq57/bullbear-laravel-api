@@ -73,7 +73,7 @@
     <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
           userData.followers_count }}
         Followers</span></li>
-    <li class="border-bottom my-1"></li>
+    <!-- <li class="border-bottom my-1"></li>
     <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>{{
           userData.gender }}</span>
     </li>
@@ -81,7 +81,7 @@
         }}</span>
     </li>
     <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
-        {{ userData.state }}</span></li>
+        {{ userData.state }}</span></li> -->
     <li class="border-bottom my-1"></li>
     <li class="px-3 py-1 fs-16" v-if="userData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
         :href="userData.linkedin" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
@@ -364,6 +364,7 @@ import { Dropdown } from 'bootstrap';
 export default {
   computed: {
     ...mapState(['userData']),
+    ...mapState('userProfile', ['userProfileData']),
   },
   methods: {
     toggleDropdown(event) {

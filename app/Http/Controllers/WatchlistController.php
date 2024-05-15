@@ -80,11 +80,13 @@ class WatchlistController extends Controller
 
         if ($watchlist) {
             $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.symbol')->toArray();
+            $symbolExchanges = $watchlist->watchlistSymbols->pluck('symbol.exchange')->toArray();
             $stats = $this->getSymbolsStats($symbolNames);
-
-            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats) {
+            $news = $this->getSymbolNews($symbolNames, $symbolExchanges);
+            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats, $news) {
                 $symbol = $watchlistSymbol->symbol;
                 $symbol->stats = $stats[$symbol->symbol] ?? [];
+                $symbol->news = $news[$symbol->symbol] ?? [];
             });
 
             return response()->json($watchlist);
@@ -111,6 +113,32 @@ class WatchlistController extends Controller
             return $stats;
         } catch (Exception $e) {
             \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getSymbolNews($symbols, $exchanges)
+    {
+        $wordpressApiUrl = config('services.wordpresstags.api_url');
+        $tags = [];
+
+        foreach ($symbols as $index => $symbol) {
+            $tags[] = $symbol . ':' . $exchanges[$index];
+        }
+        $tagsParam = implode(',', $tags);
+
+        $wordpressApiUrl .= $tagsParam . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
+
+        try {
+            $response = file_get_contents($wordpressApiUrl);
+            $posts = json_decode($response, true);
+            $symbolNews = [];
+            foreach ($posts as $newsData) {
+                $symbolNews[$newsData['symbol']] = $newsData;
+            }
+            return $symbolNews;
+        } catch (\Exception $e) {
+            \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
             return [];
         }
     }

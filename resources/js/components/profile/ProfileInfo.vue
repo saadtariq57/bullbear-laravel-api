@@ -103,15 +103,20 @@ export default {
     left: 210px;
     width: calc(100% - 230px);
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 @media (max-width: 767px) {
     .inner-tabs-btn {
         min-width: 660px;
     }
     .user-profile-info{
-        bottom: 110px;
+        /* bottom: 110px; */
+        flex-direction: column;
+        position: relative;
+        justify-content: center;
         left: 50%;
         transform: translateX(-50%);
+        width: 100%;
     }
 }
 </style>

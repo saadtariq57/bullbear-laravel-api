@@ -1,8 +1,8 @@
 <template>
-  <div class="container-sm px-5 pt-5 pb-3 mt-5 manage-watchlist-con position-relative">
-    <div class="Manage-list pl-1">
+  <div class="container-sm px-5 pt-5 pb-3 my-5 manage-watchlist-con position-relative">
+    <div class="Manage-list p-2">
       <!-- <h3 class="fw-bold py-2 px-2">{{ watchlist.title }}</h3> -->
-      <input type="text" v-if="editWatchlistData" v-model="editWatchlistData.title" @input="handleInput">
+      <input type="text" class="watchlist-serach-symbol form-control border shadow-sm" v-if="editWatchlistData" v-model="editWatchlistData.title" @input="handleInput">
     </div>
     <div class="manage-watchlist-sidebar mt-3 d-flex">
       <div>
@@ -167,8 +167,8 @@ export default {
               text: 'An error occurred while adding new symbol. Please try again.',
             });
           });
-        
       }
+      this.toggleSearch();
     },
     toggleSearch() {
       $('.symbol-search-form').toggle();
@@ -276,3 +276,8 @@ export default {
   },
 };
 </script>
+<style>
+.watchlist-serach-symbol{
+  width: 200px;
+}
+</style>
