@@ -274,6 +274,7 @@
                             </tbody>
                         </DataTable>
                     </div>
+
                 </div>
                 <!-- NEWS tab end  -->
             </div>
