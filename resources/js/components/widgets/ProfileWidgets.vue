@@ -56,23 +56,26 @@
                             Watchlist</a>
                     </li>
                 </ul> -->
-  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
+  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize" v-if="userProfileData">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
           class="bi bi-info-circle-fill text-white"></i></span><span class="fs-5 text-black">Info</span>
     </div>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-eye-fill me-2 text-black fs-5"></i> <span
-        :class="userData.status === 'active' ? 'text-success' : 'text-danger'"> {{ userData.status == 'active' ?
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.status"><i class="bi bi-eye-fill me-2 text-black fs-5"></i> <span
+        :class="userProfileData.status === 'active' ? 'text-success' : 'text-danger'"> {{ userProfileData.status == 'active' ?
           'Online' : 'Offline' }}</span>
     </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>{{ userData.posts_count }}
-        Posts</span></li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>{{ userData.watchlists_count
-        }}
-        Watchlists</span></li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
-          userData.followers_count }}
-        Followers</span></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.posts_count"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>{{ userProfileData.posts_count }}</span>
+        <span v-if="userProfileData.posts_count > 1"> Posts</span>
+       <span v-else> Post</span></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.watchlists_count"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>{{ userProfileData.watchlists_count
+        }}</span>
+        <span v-if="userProfileData.watchlists_count > 1"> Watchlists</span>
+       <span v-else> Watchlist</span></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.followings_count"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
+          userProfileData.followings_count }}</span>
+       <span v-if="userProfileData.followings_count > 1"> Followers</span>
+       <span v-else> Follower</span></li>
     <!-- <li class="border-bottom my-1"></li>
     <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>{{
           userData.gender }}</span>
@@ -83,12 +86,12 @@
     <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
         {{ userData.state }}</span></li> -->
     <li class="border-bottom my-1"></li>
-    <li class="px-3 py-1 fs-16" v-if="userData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
-        :href="userData.linkedin" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
-    <li class="px-3 py-1 fs-16" v-if="userData.twitter"><i class="bi bi-twitter me-2 text-black fs-5"></i> <a
-        :href="userData.twitter" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
-    <li class="px-3 py-1 fs-16" v-if="userData.youtube"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a
-        :href="userData.youtube" class="text-black">{{ userData.first_name }} {{ userData.last_name }}</a></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
+        :href="userProfileData.linkedin" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.twitter"><i class="bi bi-twitter me-2 text-black fs-5"></i> <a
+        :href="userProfileData.twitter" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
+    <li class="px-3 py-1 fs-16" v-if="userProfileData.youtube"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a
+        :href="userProfileData.youtube" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
 
   </ul>
   <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">

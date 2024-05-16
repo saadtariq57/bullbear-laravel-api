@@ -6,7 +6,8 @@
     </div>
     <hr class="mt-4 mb-0 divider">
     <ul ref="sortableList" class="px-0">
-      <li v-for="watchlist in watchlists" :key="watchlist.id" class="d-flex align-items-center watchlist-table border-bottom py-3 justify-content-between" :id="watchlist.id">
+      <li v-for="watchlist in watchlists" :key="watchlist.id"
+        class="d-flex align-items-center watchlist-table border-bottom py-3 pe-3 justify-content-between bg-white" :id="watchlist.id">
         <div class="d-flex align-items-center">
           <div class="px-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
@@ -20,15 +21,17 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-          <select v-model="watchlist.who_can_view" @change="watchlistView(watchlist.id, watchlist.who_can_view)" class="form-select border shadow-sm">
+          <select v-model="watchlist.who_can_view" @change="watchlistView(watchlist.id, watchlist.who_can_view)"
+            class="form-select border shadow-sm">
             <option value="Everyone">Everyone</option>
             <option value="EveroneLoggedin" v-if="userData.type == 'admin'">Everyone (Logged in only)</option>
             <option value="Followers">Followers</option>
             <option value="ProUsers" v-if="userData.type == 'admin'">Pro members only</option>
             <option value="OnlyMe">Only Me</option>
           </select>
-          <button class="btn btn-primary px-4 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#delete-watchlist"
-            @click="deleteWatchlistModal(watchlist.id, watchlist.title)">Remove Watchlist</button>
+          <button class="btn btn-primary px-4 text-nowrap" type="button" data-bs-toggle="modal"
+            data-bs-target="#delete-watchlist" @click="deleteWatchlistModal(watchlist.id, watchlist.title)">Remove
+            Watchlist</button>
         </div>
       </li>
     </ul>
@@ -70,7 +73,7 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
-    ...mapState('userWatchlists',['watchlists']),
+    ...mapState('userWatchlists', ['watchlists']),
   },
   props: {
     user: {
@@ -89,14 +92,14 @@ export default {
     };
   },
   created() {
-      const watchlistType = 'manage';
-      const userId = this.userData.id;
-      this.getUserWatchlistData({userId, watchlistType}).then(() => {
-        this.initSortable();
-      });
+    const watchlistType = 'manage';
+    const userId = this.userData.id;
+    this.getUserWatchlistData({ userId, watchlistType }).then(() => {
+      this.initSortable();
+    });
   },
   methods: {
-    ...mapActions('userWatchlists',['getUserWatchlistData', 'deleteWatchlist', 'updateWatchlistPositions', 'watchlistPrivacy']),
+    ...mapActions('userWatchlists', ['getUserWatchlistData', 'deleteWatchlist', 'updateWatchlistPositions', 'watchlistPrivacy']),
     deleteWatchlistModal(id, title) {
       this.modalData = {
         id: id,
@@ -105,15 +108,15 @@ export default {
     },
     async ConfirmDelete(watchlistId) {
       this.deleteWatchlist(watchlistId).then(() => {
-          // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'Watchlist deleted Successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
-        })
+        // Show SweetAlert on success
+        Swal.fire({
+          icon: 'success',
+          title: 'Watchlist deleted Successfully',
+          timer: 1000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      })
         .catch((error) => {
           console.error('Error deleting watchlist:', error);
 
@@ -125,17 +128,17 @@ export default {
           });
         });
     },
-    watchlistView(watchlistId, selectedPrivacy){
-        this.watchlistPrivacy({watchlistId, selectedPrivacy}).then(() => {
-          // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'Privacy Updated Successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
-        })
+    watchlistView(watchlistId, selectedPrivacy) {
+      this.watchlistPrivacy({ watchlistId, selectedPrivacy }).then(() => {
+        // Show SweetAlert on success
+        Swal.fire({
+          icon: 'success',
+          title: 'Privacy Updated Successfully',
+          timer: 1000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      })
         .catch((error) => {
           console.error('Error updating privacy:', error);
 
@@ -153,7 +156,8 @@ export default {
       }
 
       this.sortableInstance = new Sortable(this.$refs.sortableList, {
-        animation: 150,
+        animation: 150, 
+        forceFallback: true,
         onUpdate: (event) => {
           this.handleItemReordering(event);
         },
@@ -172,16 +176,16 @@ export default {
         return { id: watchlist.id, position: index + 1 };
       });
 
-      this.updateWatchlistPositions({updatedPositions}).then(() => {
-          // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'Positions updated successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
-        })
+      this.updateWatchlistPositions({ updatedPositions }).then(() => {
+        // Show SweetAlert on success
+        Swal.fire({
+          icon: 'success',
+          title: 'Positions updated successfully',
+          timer: 1000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      })
         .catch((error) => {
           console.error('Error updating positions:', error);
 
@@ -194,11 +198,21 @@ export default {
         });
     },
   },
-  mounted() {},
+  mounted() { },
 };
 </script>
 <style>
-.watchlist-table{
+.watchlist-table {
   cursor: grab;
+}
+
+.grabbing {
+  cursor: grabbing !important;
+}
+
+.sortable-chosen {
+  cursor: grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: -moz-grabbing !important;
 }
 </style>
