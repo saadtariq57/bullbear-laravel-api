@@ -1,32 +1,95 @@
 <template>
-  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow position-relative">
-    <div class="profile-completion-overlay d-flex justify-content-center align-items-center">
-      <div class="completion-icon rounded-circle d-flex justify-content-center align-items-center text-cta"><i
-          class="bi bi-check-lg fs-1 fw-bolder"></i></div>
-    </div>
-    <li class="mb-1">
-      <div class="progress profile-progress position-relative rounded-top rounded-0">
-        <div class="progress-bar profile-progress-bar" role="progressbar" aria-label="Basic example" aria-valuenow="40"
-          aria-valuemin="0" aria-valuemax="100">
+  <div v-if="userProfileData">
+    <ul class="bg-white list-unstyled rounded-1 pb-2 shadow position-relative" v-if="userData.id == userProfileData.id">
+      <div class="profile-completion-overlay d-flex justify-content-center align-items-center" v-if="completionPercentage == 100">
+        <div class="completion-icon rounded-circle d-flex justify-content-center align-items-center text-cta">
+          <i class="bi bi-check-lg fs-1 fw-bolder"></i>
         </div>
-        <h4 class="d-flex justify-content-between position-absolute w-100 text-white m-0 px-3 py-2 fw-6 fs-6">
-          <span>Profile Completion</span>
-          <span>40%</span>
-        </h4>
       </div>
+      <li class="mb-1">
+        <div class="progress profile-progress position-relative rounded-top rounded-0">
+          <div class="progress-bar profile-progress-bar" role="progressbar" :aria-valuenow="completionPercentage"
+            aria-valuemin="0" aria-valuemax="100" :style="{ width: completionPercentage + '%' }"></div>
+          <h4 class="d-flex justify-content-between position-absolute w-100 text-white m-0 px-3 py-2 fw-6 fs-6">
+            <span>Profile Completion</span>
+            <span>{{ completionPercentage }}%</span>
+          </h4>
+        </div>
+      </li>
+      <li class="px-3 py-1 fs-16">
+        <i class="bi me-3 fs-5"
+          :class="userData.avatar == 'upload/photos/d-avatar.jpg' ? 'bi-plus-circle-fill' : 'bi-check-circle-fill text-success'"></i>
+        <span>Add your Profile Picture</span>
+      </li>
+      <li class="px-3 py-1 fs-16">
+        <i class="bi me-3 fs-5"
+          :class="userData.cover == 'upload/photos/d-cover.jpg' ? 'bi-plus-circle-fill' : 'bi-check-circle-fill text-success'"></i>
+        <span>Add your Cover Photo</span>
+      </li>
+      <li class="px-3 py-1 fs-16">
+        <i class="bi me-3 fs-5"
+          :class="userData.twitter || userData.linkedin || userData.youtube ? 'bi-check-circle-fill text-success' : 'bi-plus-circle-fill'"></i>
+        <span>Add your Socials Links</span>
+      </li>
+      <li class="px-3 py-1 fs-16">
+        <i class="bi me-3 fs-5"
+          :class="!userData.phone_number ? 'bi-plus-circle-fill' : 'bi-check-circle-fill text-success'"></i>
+        <span>Add your Phone Number</span>
+      </li>
+      <li class="px-3 py-1 fs-16">
+        <i class="bi me-3 fs-5"
+          :class="!userData.about ? 'bi-plus-circle-fill' : 'bi-check-circle-fill text-success'"></i>
+        <span>Add About Description</span>
+      </li>
+    </ul>
+    <ul
+      class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
+      <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
+        <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
+            class="bi bi-info-circle-fill text-white"></i></span><span class="fs-5 text-black">Info</span>
+      </div>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.status"><i class="bi bi-eye-fill me-2 text-black fs-5"></i>
+        <span :class="userProfileData.status === 'active' ? 'text-success' : 'text-danger'"> {{ userProfileData.status
+    == 'active' ?
+    'Online' : 'Offline' }}</span>
+      </li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.posts_count"><i
+          class="bi bi-file-post me-2 text-black fs-5"></i> <span>{{ userProfileData.posts_count }}</span>
+        <span v-if="userProfileData.posts_count > 1"> Posts</span>
+        <span v-else> Post</span>
+      </li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.watchlists_count"><i
+          class="bi bi-star-fill me-2 text-black fs-5"></i> <span>{{ userProfileData.watchlists_count
+          }}</span>
+        <span v-if="userProfileData.watchlists_count > 1"> Watchlists</span>
+        <span v-else> Watchlist</span>
+      </li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.followings_count"><i
+          class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
+    userProfileData.followings_count }}</span>
+        <span v-if="userProfileData.followings_count > 1"> Followers</span>
+        <span v-else> Follower</span>
+      </li>
+      <!-- <li class="border-bottom my-1"></li>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>{{
+          userData.gender }}</span>
     </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-check-circle-fill text-success me-3 fs-5"></i><span>Add your
-        profile picture</span> </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your name</span>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-cake-fill me-2 text-black fs-5"></i> <span>{{ userData.birthday
+        }}</span>
     </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your
-        workplace</span>
-    </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-check-circle-fill text-success me-3 fs-5"></i><span>Add your
-        country</span></li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-plus-circle-fill me-3 fs-5"></i><span>Add your address</span>
-    </li>
-  </ul>
+    <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
+        {{ userData.state }}</span></li> -->
+      <li class="border-bottom my-1"></li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
+          :href="userProfileData.linkedin" class="text-black">{{ userProfileData.name }}</a></li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.twitter"><i class="bi bi-twitter me-2 text-black fs-5"></i> <a
+          :href="userProfileData.twitter" class="text-black">{{ userProfileData.name }}</a></li>
+      <li class="px-3 py-1 fs-16" v-if="userProfileData.youtube"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a
+          :href="userProfileData.youtube" class="text-black">{{ userProfileData.name }}</a></li>
+
+    </ul>
+  </div>
+
   <!-- <div class="bg-white px-3 py-4 rounded-1 mb-3 shadow rounded border-top border-2 border-warning widgets-border">
                     <form action="">
                         <div class="form-group">
@@ -56,44 +119,7 @@
                             Watchlist</a>
                     </li>
                 </ul> -->
-  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize" v-if="userProfileData">
-    <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
-      <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center"><i
-          class="bi bi-info-circle-fill text-white"></i></span><span class="fs-5 text-black">Info</span>
-    </div>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.status"><i class="bi bi-eye-fill me-2 text-black fs-5"></i> <span
-        :class="userProfileData.status === 'active' ? 'text-success' : 'text-danger'"> {{ userProfileData.status == 'active' ?
-          'Online' : 'Offline' }}</span>
-    </li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.posts_count"><i class="bi bi-file-post me-2 text-black fs-5"></i> <span>{{ userProfileData.posts_count }}</span>
-        <span v-if="userProfileData.posts_count > 1"> Posts</span>
-       <span v-else> Post</span></li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.watchlists_count"><i class="bi bi-star-fill me-2 text-black fs-5"></i> <span>{{ userProfileData.watchlists_count
-        }}</span>
-        <span v-if="userProfileData.watchlists_count > 1"> Watchlists</span>
-       <span v-else> Watchlist</span></li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.followings_count"><i class="bi bi-person-fill-check me-2 text-black fs-5"></i> <span>{{
-          userProfileData.followings_count }}</span>
-       <span v-if="userProfileData.followings_count > 1"> Followers</span>
-       <span v-else> Follower</span></li>
-    <!-- <li class="border-bottom my-1"></li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-person-fill me-2 text-black fs-5"></i> <span>{{
-          userData.gender }}</span>
-    </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-cake-fill me-2 text-black fs-5"></i> <span>{{ userData.birthday
-        }}</span>
-    </li>
-    <li class="px-3 py-1 fs-16"><i class="bi bi-globe-americas me-2 text-black fs-5"></i> <span> Living in
-        {{ userData.state }}</span></li> -->
-    <li class="border-bottom my-1"></li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.linkedin"><i class="bi bi-linkedin me-2 text-black fs-5"></i> <a
-        :href="userProfileData.linkedin" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.twitter"><i class="bi bi-twitter me-2 text-black fs-5"></i> <a
-        :href="userProfileData.twitter" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
-    <li class="px-3 py-1 fs-16" v-if="userProfileData.youtube"><i class="bi bi-youtube me-2 text-black fs-5"></i> <a
-        :href="userProfileData.youtube" class="text-black">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</a></li>
 
-  </ul>
   <!-- <ul class="bg-white list-unstyled rounded-1 pb-1 shadow rounded border-top border-2 border-warning widgets-border">
     <div class="border-bottom fw-6 fs-6 py-3 ps-3 mb-1 text-secondary"><i
         class="bi bi-images me-2 bg-cta text-white rounded-5 text-black px-2 py-1"></i><a href="#"
@@ -368,6 +394,18 @@ export default {
   computed: {
     ...mapState(['userData']),
     ...mapState('userProfile', ['userProfileData']),
+    completionPercentage() {
+      let completedSteps = 0;
+      const totalSteps = 5;
+
+      if (this.userData.avatar !== 'upload/photos/d-avatar.jpg') completedSteps++;
+      if (this.userData.cover !== 'upload/photos/d-cover.jpg') completedSteps++;
+      if (this.userData.twitter || this.userData.linkedin || this.userData.youtube) completedSteps++;
+      if (this.userData.phone_number) completedSteps++;
+      if (this.userData.about) completedSteps++;
+
+      return Math.round((completedSteps / totalSteps) * 100);
+    },
   },
   methods: {
     toggleDropdown(event) {
@@ -382,5 +420,9 @@ export default {
 .icon-round-bg {
   width: 27px;
   height: 27px;
+}
+
+.profile-progress-bar {
+  background-color: var(--cta-btn);
 }
 </style>

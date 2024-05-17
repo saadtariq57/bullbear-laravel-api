@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use App\Models\GroupCategory;
 use App\Models\GroupMembers;
 use Illuminate\Http\Request;
@@ -119,33 +120,45 @@ public function index(Request $request)
 
 
     public function joinedChats(Request $request)
-    {
+{
+    $userName = $request->query('userName');
+
+    if ($userName) {
+        $user = User::where('name', $userName)->first();
+    } else {
         $user = $request->user();
-        // return response()->json($user);
-        $joinedGroups = Group::whereHas('members', function($query) use ($user) {
-            $query->where('group_members.user_id', $user->id)
-                  ->whereIn('group_members.status', ['active', 'pending', 'rejected']);
-        })
-        ->withCount('members')
-        ->with(['members' => function($query) use ($user) {
-            $query->where('group_members.user_id', $user->id)
-                  ->select(['group_members.user_id', 'group_members.status', 'group_members.updated_at', 'group_members.role']);
-        }])
-        ->get();
-        return response()->json($joinedGroups->map(function($group) {
-            $member = $group->members->first();
-            if ($member) {
-                $group->joined = $member->status === 'active';
-                $group->requestPending = $member->status === 'pending';
-            } else {
-                // Default settings if no member data found
-                $group->joined = false;
-                $group->requestPending = false;
-            }
-            $group->membersCount = $group->members_count;
-            return $group;
-        }));
     }
+    $currentUser = $request->user();
+    // return response()->json($user);
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    $joinedGroups = Group::whereHas('members', function($query) use ($user) {
+        $query->where('group_members.user_id', $user->id)
+              ->whereIn('group_members.status', ['active', 'pending', 'rejected']);
+    })
+    ->withCount('members')
+    ->with(['members' => function($query) use ($user) {
+        $query->where('group_members.user_id', $user->id)
+              ->select(['group_members.user_id', 'group_members.status', 'group_members.updated_at', 'group_members.role']);
+    }])
+    ->get();
+
+    return response()->json($joinedGroups->map(function($group) {
+        $member = $group->members->first();
+        if ($member) {
+            $group->joined = $member->status === 'active';
+            $group->requestPending = $member->status === 'pending';
+        } else {
+            $group->joined = false;
+            $group->requestPending = false;
+        }
+        $group->membersCount = $group->members_count;
+        return $group;
+    }));
+}
+
 
     public function suggestedChats(Request $request)
     {

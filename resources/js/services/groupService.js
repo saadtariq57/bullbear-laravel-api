@@ -11,17 +11,27 @@ const GroupService = {
         }
     },
 
-    async fetchJoinedChats() {
+    async fetchJoinedChats(userName = null) {
         try {
-            const response = await axios.get('/api/joined-chats');
-            // Transform the data as needed
-            const joinedChats = response.data;
-            return joinedChats;
+            if (userName) {
+                const response = await axios.get('/api/joined-chats', {
+                    params: { userName }
+                });
+                const joinedChats = response.data;
+                console.log(joinedChats);
+                return joinedChats;
+            }
+            else {
+                const response = await axios.get('/api/joined-chats');
+                const joinedChats = response.data;
+                console.log(joinedChats);
+                return joinedChats;
+            }
         } catch (error) {
-            console.error('Error fetching joined chats:', error);
+            console.error('Error fetching joined chats:', error.message);
             throw error;
         }
-    },
+    }
 };
 
 export default GroupService;

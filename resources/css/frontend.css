@@ -2316,10 +2316,6 @@ p.user-message {
     height: 50px;
 }
 
-.profile-progress-bar {
-    background-color: var(--cta-btn);
-    width: 40%;
-}
 .profile-completion-overlay{
     background-color: rgb(255 255 255 / 80%);
     position: absolute;
