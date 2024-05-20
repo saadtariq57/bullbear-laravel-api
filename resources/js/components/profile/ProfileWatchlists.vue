@@ -29,9 +29,7 @@
                         <div :class="watchlist.featured == 1 ? 'featuredWathclist watchlist-dashboard-container border p-3 shadow-sm' : 'watchlist-dashboard-container border p-3 shadow-sm'">
                             <div class="d-flex justify-content-between align-items-center"
                                 v-if="watchlist.featured == 1">
-                                <h3 class="fs-18 cursor-pointer" @click="showWatchlistModal(watchlist)"
-                                    v-if="isOwnProfile"><b>{{ watchlist.title }}</b></h3>
-                                <h3 class="fs-18" v-else><b>{{ watchlist.title }}</b></h3>
+                                <h3 class="fs-18 cursor-pointer" @click="showWatchlistModal(watchlist)"><b>{{ watchlist.title }}</b></h3>
                                 <a :href="'/watchlist/edit/' + watchlist.id" class="watchlist-navlinks pe-3 h-75"
                                     v-if="isOwnProfile">
                                     <b>Edit<i class="bi bi-pencil-square icon-bold ms-1"></i></b>
@@ -178,7 +176,7 @@
                                             symbolData.symbol.stats.regularMarketDayRange }}</span>
                                     </td>
                                     <div class="fw-bold fs-16 py-0" v-if="symbolData.symbol.news.title" :class="symbolData.symbol.news.title != null ? 'watchlist-table-news' : ''">
-                                            <a :href="symbolData.symbol.news.link" target="_blank" class="text-black">
+                                            <a :href="symbolData.symbol.news.link" target="_blank" class="text-black text-oneline watchlist-new">
                                                 {{ symbolData.symbol.news.title }}
                                             </a>
                                             <span class="small-para ms-2">{{ symbolData.symbol.news.date }}</span>
@@ -200,6 +198,16 @@
 }
 #viewWatchlisteModal .modal-dialog{
     max-width: 75%;
+}
+.watchlist-new{
+    max-width: 1150px;
+    display: inline-block;
+    vertical-align: middle;
+}
+@media (max-width: 1400px) {
+    .watchlist-new{
+    max-width: 1000px;
+    }
 }
 @media (max-width: 767px) {
     #viewWatchlisteModal .modal-dialog{

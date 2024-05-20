@@ -663,7 +663,7 @@ section.featured-video {
     max-width: 455px;
 }
 
-.video-featured .video-play-icon-small button {
+.video-featured .video-play-icon-small span {
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -2316,10 +2316,6 @@ p.user-message {
     height: 50px;
 }
 
-.profile-progress-bar {
-    background-color: var(--cta-btn);
-    width: 40%;
-}
 .profile-completion-overlay{
     background-color: rgb(255 255 255 / 80%);
     position: absolute;
@@ -2822,12 +2818,12 @@ p.user-message {
     height: 35px;
 }
 
-.switch-button .form-check-input:checked {
+/* .switch-button .form-check-input:checked {
     background-color: #367F2E;
     outline: none;
     border: 1px solid #367F2E;
 
-}
+} */
 
 .form-check-input:focus {
     border: 1px solid #367F2E;

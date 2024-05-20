@@ -2,7 +2,8 @@
   <div class="container-sm px-5 pt-5 pb-3 my-5 manage-watchlist-con position-relative">
     <div class="Manage-list p-2">
       <!-- <h3 class="fw-bold py-2 px-2">{{ watchlist.title }}</h3> -->
-      <input type="text" class="watchlist-serach-symbol form-control border shadow-sm" v-if="editWatchlistData" v-model="editWatchlistData.title" @input="handleInput">
+      <input type="text" class="watchlist-serach-symbol form-control border shadow-sm" v-if="editWatchlistData"
+        v-model="editWatchlistData.title" @input="handleInput">
     </div>
     <div class="manage-watchlist-sidebar mt-3 d-flex">
       <div>
@@ -46,7 +47,8 @@
     </div>
     <hr class="mt-3 divider">
     <ul class="px-0" ref="sortableList">
-      <li class="d-flex align-items-center" v-for="item in editWatchlistData.watchlist_symbols" :key="item.id">
+      <li class="d-flex align-items-center watchlist-table bg-white px-3" v-for="item in editWatchlistData.watchlist_symbols"
+        :key="item.id">
         <div class="d-flex align-items-center flex-fill gap-3">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
@@ -75,27 +77,27 @@
     </div>
   </div>
   <!-- <Confirm v-model:showModal="isModalOpen" :data="modalData" @action-performed="handleActionFromModal" /> -->
-    <div class="modal fade" id="delete-symbol" data-bs-keyboard="false" tabindex="-1">
-      <div class="modal-dialog" v-if="modalData != undefined">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5">{{ modalData.title }}</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to delete
-            {{ modalData.title }}
-            symbol ?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal" aria-label="Close">DON’T
-              DELETE</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-              @click="ConfirmDelete(modalData.id)">DELETE</button>
-          </div>
+  <div class="modal fade" id="delete-symbol" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog" v-if="modalData != undefined">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">{{ modalData.title }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete
+          {{ modalData.title }}
+          symbol ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary border-btn" data-bs-dismiss="modal" aria-label="Close">DON’T
+            DELETE</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+            @click="ConfirmDelete(modalData.id)">DELETE</button>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -113,8 +115,8 @@ export default {
     Sortable,
   },
   computed: {
-        ...mapState('userWatchlists', ['searchedSymbols', 'editWatchlistData', 'error']),
-    },
+    ...mapState('userWatchlists', ['searchedSymbols', 'editWatchlistData', 'error']),
+  },
   data() {
     return {
       search: '',
@@ -132,11 +134,11 @@ export default {
   },
   methods: {
     ...mapActions('userWatchlists', ['searchSymbol', 'addSymbolToWatchlist', 'editWatchlist', 'editWatchlistName', 'deleteSymbolFromWatchlist', 'updateSymbolPosition']),
-    
+
     searchSymbols() {
       if (this.search) {
         const searchedSymbol = this.search;
-        this.searchSymbol({searchedSymbol});
+        this.searchSymbol({ searchedSymbol });
       }
     },
     addWatchlistSymbol(symbolId) {
@@ -144,18 +146,18 @@ export default {
         watchlist_id: this.editWatchlistData.id,
         symbol_id: symbolId
       }
-      if(postData){
+      if (postData) {
         this.addSymbolToWatchlist(postData).then(() => {
-            this.search = '';
-            // Show SweetAlert on success
-            Swal.fire({
-              icon: 'success',
-              title: 'New Symbol added successfully',
-              timer: 1000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-            });
-          })
+          this.search = '';
+          // Show SweetAlert on success
+          Swal.fire({
+            icon: 'success',
+            title: 'New Symbol added successfully',
+            timer: 1000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+          });
+        })
           .catch((error) => {
             console.error('Error adding new symbol:', error);
 
@@ -178,7 +180,7 @@ export default {
         if (this.editWatchlistData.title.trim() !== "") {
           const newWatchlistName = this.editWatchlistData.title;
           const watchlistId = this.$route.params.id;
-          this.editWatchlistName({watchlistId, newWatchlistName}).then(() => {
+          this.editWatchlistName({ watchlistId, newWatchlistName }).then(() => {
             // Show SweetAlert on success
             Swal.fire({
               icon: 'success',
@@ -188,16 +190,16 @@ export default {
               timerProgressBar: true,
             });
           })
-          .catch((error) => {
-            console.error('Error updating watchlist name:', error);
+            .catch((error) => {
+              console.error('Error updating watchlist name:', error);
 
-            // Show SweetAlert on error
-            Swal.fire({
-              icon: 'error',
-              title: 'Error updating watchlist name',
-              text: 'An error occurred while updating watchlist name. Please try again.',
+              // Show SweetAlert on error
+              Swal.fire({
+                icon: 'error',
+                title: 'Error updating watchlist name',
+                text: 'An error occurred while updating watchlist name. Please try again.',
+              });
             });
-          });
         }
       }, 2000);
     },
@@ -207,16 +209,16 @@ export default {
     },
     ConfirmDelete(symbolId) {
       const watchlistId = this.$route.params.id;
-      this.deleteSymbolFromWatchlist({watchlistId, symbolId}).then(() => {
-          // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'Symbol deleted Successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
-        })
+      this.deleteSymbolFromWatchlist({ watchlistId, symbolId }).then(() => {
+        // Show SweetAlert on success
+        Swal.fire({
+          icon: 'success',
+          title: 'Symbol deleted Successfully',
+          timer: 1000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      })
         .catch((error) => {
           console.error('Error deleting symbol:', error);
 
@@ -235,6 +237,16 @@ export default {
 
       this.sortableInstance = new Sortable(this.$refs.sortableList, {
         animation: 150,
+        forceFallback: true,
+        onChoose: (e) => {
+          document.body.classList.add("grabbing");
+        },
+        onUnchoose: (e) => {
+          document.body.classList.remove("grabbing");
+        },
+        onUpdate: (event) => {
+          this.handleItemReordering(event);
+        },
         onUpdate: (event) => {
           this.handleItemReordering(event);
         },
@@ -251,16 +263,16 @@ export default {
       }));
 
       const watchlistId = this.editWatchlistData.id;
-      this.updateSymbolPosition({watchlistId, updatedPositions}).then(() => {
-          // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'Positions updated successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
-        })
+      this.updateSymbolPosition({ watchlistId, updatedPositions }).then(() => {
+        // Show SweetAlert on success
+        Swal.fire({
+          icon: 'success',
+          title: 'Positions updated successfully',
+          timer: 1000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      })
         .catch((error) => {
           console.error('Error updating positions:', error);
 
@@ -276,7 +288,17 @@ export default {
 };
 </script>
 <style>
-.watchlist-serach-symbol{
+.watchlist-serach-symbol {
   width: 200px;
+}
+
+.watchlist-table {
+  cursor: grab;
+}
+
+.sortable-chosen {
+  cursor: grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: -moz-grabbing !important;
 }
 </style>

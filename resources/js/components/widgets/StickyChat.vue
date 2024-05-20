@@ -267,14 +267,14 @@ export default {
         }
     },
     computed: {
-        ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+        // ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
     },
     created() {
-        this.fetchSuggestedChats();
-        this.fetchJoinedChats();
+        // this.fetchSuggestedChats();
+        // this.fetchJoinedChats();
     },
     methods: {
-        ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
+        // ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
         showchats() {
             this.showChatRooms = !this.showChatRooms; // Toggle the visibility
             this.showlivechat = false;

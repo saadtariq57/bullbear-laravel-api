@@ -29,19 +29,19 @@
             <ul class="nav border-0 nav-tabs justify-content-between flex-nowrap" id="course-content-tab"
                 role="tablist">
                 <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link border-0 fs-5 text-black active m-auto watchlist-nav-btn" id="dashboard-tab"
+                    <button class="nav-link fs-5 text-black active m-auto watchlist-nav-btn" id="dashboard-tab"
                         data-bs-toggle="tab" data-bs-target="#dashboard-tab-pane" type="button" role="tab"
                         aria-controls="dashboard-tab-pane" aria-selected="true"
                         @click="selectWatchlist(null, 'dashboard')">DASHBORD</button>
                 </li>
                 <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link border-0 fs-5 text-black m-auto watchlist-nav-btn" id="content-tab"
+                    <button class="nav-link fs-5 text-black m-auto watchlist-nav-btn" id="content-tab"
                         data-bs-toggle="tab" data-bs-target="#content-tab-pane" type="button" role="tab"
                         aria-controls="content-tab-pane" aria-selected="false"
                         @click="selectWatchlist(selectedWatchlist, 'list')">LIST</button>
                 </li>
                 <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link border-0 border-none fs-5 text-black m-auto watchlist-nav-btn"
+                    <button class="nav-link fs-5 text-black m-auto watchlist-nav-btn"
                         id="include-tab" data-bs-toggle="tab" data-bs-target="#include-tab-pane" type="button"
                         role="tab" aria-controls="include-tab-pane" aria-selected="false"
                         @click="selectWatchlist(selectedWatchlist, 'news')">NEWS</button>
@@ -264,8 +264,8 @@
                                         <span v-if="symbolData.symbol.stats">{{
                                             symbolData.symbol.stats.regularMarketDayRange }}</span>
                                     </td>
-                                    <div class="fw-bold fs-16 py-0" v-if="symbolData.symbol.news" :class="symbolData.symbol.news.title != null ? 'watchlist-table-news' : ''">
-                                            <a :href="symbolData.symbol.news.link" target="_blank" class="text-black">
+                                    <div class="fw-bold fs-16 py-0" v-if="symbolData.symbol.news.title" :class="symbolData.symbol.news.title != null ? 'watchlist-table-news' : ''">
+                                            <a :href="symbolData.symbol.news.link" target="_blank" class="text-black text-oneline watchlist-new">
                                                 {{ symbolData.symbol.news.title }}
                                             </a>
                                             <span class="small-para ms-2">{{ symbolData.symbol.news.date }}</span>
@@ -387,6 +387,13 @@ export default {
 };
 </script>
 <style>
+.watchlist-nav-btn{
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 2px solid #0000001c !important;
+    transition: 1s all;
+}
 .watchlist-dash-table{
     max-height: 500px;
 }
@@ -407,8 +414,18 @@ export default {
 .table-news-row{
     height: 100px;
 }
+.watchlist-new{
+    max-width: 1150px;
+    display: inline-block;
+    vertical-align: middle;
+}
 .table-news-watchlist-row{
     vertical-align: top !important;
     width: 16.67%;
+}
+@media (max-width: 1400px) {
+    .watchlist-new{
+    max-width: 1000px;
+    }
 }
 </style>

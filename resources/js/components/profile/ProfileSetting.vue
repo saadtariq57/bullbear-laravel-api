@@ -81,7 +81,8 @@
                   <div class="col-md-6">
                     <label for="country" class="form-label col-form-label-lg">Country</label>
                     <select class="form-select form-select-lg" id="country" v-model="userData.state">
-                      <option v-for="(name, code) in countries" :key="code" :value="name" :selected="userData.state == name">
+                      <option v-for="(name, code) in countries" :key="code" :value="name"
+                        :selected="userData.state == name">
                         {{ name }}
                       </option>
                     </select>
@@ -583,641 +584,476 @@
 
               </div>
               <div class="pt-5"></div>
-              
-              <div class="tab-content mx-3 pt-5" >
-                  <div class="alerts">
-                      <div class="d-flex align-items-center justify-content-between">
-                          <div class="emailalerts-heading">
-                              <h1 class="text-black fw-5 mb-0 fs-1">
-                                  Marketwatch Newsletter
-                              </h1>
-                          </div>
-                          <div>
-                              <span class="text-uppercase fs-18 fw-5">Subscribe</span>
-                          </div>
+
+              <div class="tab-content mx-3 pt-5">
+                <div class="alerts">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="emailalerts-heading">
+                      <h1 class="text-black fw-5 mb-0 fs-1">
+                        Marketwatch Newsletter
+                      </h1>
+                    </div>
+                    <div>
+                      <span class="text-uppercase fs-18 fw-5">Subscribe</span>
+                    </div>
+                  </div>
+                  <hr class="mt-2" />
+
+                  <div class="alert_headings d-none d-lg-flex align-items-center justify-content-end">
+                    <span>Email</span>
+                    <span>Notification</span>
+                  </div>
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Need To Know</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
+                      <span>Email</span>
+                      <span>Notification</span>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
                       </div>
-                      <hr class="mt-2" />
-                      
-                      <div class="alert_headings d-none d-lg-flex align-items-center justify-content-end">
-                        <span>Email</span>
-                        <span>Notification</span>
-                      </div>
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Need To Know</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
-                            <span>Email</span>
-                            <span>Notification</span>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                    <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                    />
-                                </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                                  <!-- <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        <!-- <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox
                                               input</label> -->
-                              </div>
-                          </div>
                       </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Distributed Ledger</h2>
-                              <p class="MarketWatch-p">
-                                  A distributed ledger is the consensus of replicated,
-                                  shared, and synchronized digital data that is
-                                  geographically spread (distributed) across many sites
-                              </p>
-                          </div>
-                          <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
-                            <span>Email</span>
-                            <span>Notification</span>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">How to Invest</h2>
-                              <p class="MarketWatch-p">
-                                  You can invest in Bitcoin directly by using one of the
-                                  major cryptocurrency exchanges, such as Coinbase or
-                                  Binance.
-                              </p>
-                          </div>
-                          <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
-                            <span>Notification</span>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Bulletin</h2>
-                              <p class="MarketWatch-p">
-                                  Get breaking News notification via email
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Personal Finance Daily</h2>
-                              <p class="MarketWatch-p">
-                                  Top stories in personal financial
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">The Moneyist</h2>
-                              <p class="MarketWatch-p">
-                                  Welcome to MarketWatch's private Facebook community for
-                                  advice on money ethics and financial etiquette. The
-                                  Moneyist (aka Quentin Fottrell) will lead
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Need To Know</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Need To Know</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Need To Know</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div class="d-flex align-items-center justify-content-between pt-5">
-                          <div class="emailalerts-heading">
-                              <h1 class="text-black fw-5 mb-0 fs-1">
-                                  Barron's Newsletter
-                              </h1>
-                          </div>
-                          <div>
-                              <span class="text-uppercase fs-18 fw-5">Subscribe</span>
-                          </div>
-                      </div>
-                      <hr class="mt-2" />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Barron's Update</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <!-- <div>
-                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
-                                      </div> -->
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">The Barron's Daily</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Benta Weekly</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <div>
-                                  <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                              </div>
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      
-                      <div class="d-flex align-items-center justify-content-between pt-5">
-                          <div class="emailalerts-heading">
-                              <h1 class="text-black fw-5 mb-0 fs-1">
-                                  Mansion Global Newsletter
-                              </h1>
-                          </div>
-                          <div>
-                              <span class="text-uppercase fs-18 fw-5">Subscribe</span>
-                          </div>
-                      </div>
-                      <hr class="mt-2" />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Daily Briefing</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <!-- <div>
-                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
-                                      </div> -->
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">Week In Review</h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <!-- <div>
-                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
-                                      </div> -->
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">
-                                  Best of the Mansion Global Boutique
-                              </h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <!-- <div>
-                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
-                                      </div> -->
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <div
-                          class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box"
-                      >
-                          <div>
-                              <h2 class="astronaut-blue">
-                                  Dow Jones Updates and Special Offers
-                              </h2>
-                              <p class="MarketWatch-p">
-                                  Need to know guide investor to the most important
-                                  ,insightful items required to chart a course ahead of
-                                  each trading day
-                              </p>
-                          </div>
-                          <div
-                              class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button"
-                          >
-                              <!-- <div>
-                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
-                                      </div> -->
-                              <div class="form-check form-switch">
-                                  <input
-                                      class="form-check-input"
-                                      type="checkbox"
-                                      role="switch"
-                                      id="flexSwitchCheckDefault"
-                                  />
-                              </div>
-                          </div>
-                      </div>
-                      <hr />
-                      <div class="d-flex justify-content-end py-4">
-                          <button
-                              class="btn-scrollbar text-white justify-content-between align-items-center gap-2"
-                              id="scroll_TopBtn"
-                              onclick="scrollToTopBtn()"
-                          >
-                              Back To Top <span class="fs-13">▲</span>
-                          </button>
-                      </div>
+                    </div>
                   </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Distributed Ledger</h2>
+                      <p class="MarketWatch-p">
+                        A distributed ledger is the consensus of replicated,
+                        shared, and synchronized digital data that is
+                        geographically spread (distributed) across many sites
+                      </p>
+                    </div>
+                    <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
+                      <span>Email</span>
+                      <span>Notification</span>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">How to Invest</h2>
+                      <p class="MarketWatch-p">
+                        You can invest in Bitcoin directly by using one of the
+                        major cryptocurrency exchanges, such as Coinbase or
+                        Binance.
+                      </p>
+                    </div>
+                    <div class="alert_headings d-flex d-lg-none mt-4 align-items-center justify-content-center">
+                      <span>Notification</span>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Bulletin</h2>
+                      <p class="MarketWatch-p">
+                        Get breaking News notification via email
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Personal Finance Daily</h2>
+                      <p class="MarketWatch-p">
+                        Top stories in personal financial
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">The Moneyist</h2>
+                      <p class="MarketWatch-p">
+                        Welcome to MarketWatch's private Facebook community for
+                        advice on money ethics and financial etiquette. The
+                        Moneyist (aka Quentin Fottrell) will lead
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Need To Know</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Need To Know</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Need To Know</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="d-flex align-items-center justify-content-between pt-5">
+                    <div class="emailalerts-heading">
+                      <h1 class="text-black fw-5 mb-0 fs-1">
+                        Barron's Newsletter
+                      </h1>
+                    </div>
+                    <div>
+                      <span class="text-uppercase fs-18 fw-5">Subscribe</span>
+                    </div>
+                  </div>
+                  <hr class="mt-2" />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Barron's Update</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <!-- <div>
+                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
+                                      </div> -->
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">The Barron's Daily</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Benta Weekly</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                        </div>
+                      </div>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+
+                  <div class="d-flex align-items-center justify-content-between pt-5">
+                    <div class="emailalerts-heading">
+                      <h1 class="text-black fw-5 mb-0 fs-1">
+                        Mansion Global Newsletter
+                      </h1>
+                    </div>
+                    <div>
+                      <span class="text-uppercase fs-18 fw-5">Subscribe</span>
+                    </div>
+                  </div>
+                  <hr class="mt-2" />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Daily Briefing</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <!-- <div>
+                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
+                                      </div> -->
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">Week In Review</h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <!-- <div>
+                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
+                                      </div> -->
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">
+                        Best of the Mansion Global Boutique
+                      </h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <!-- <div>
+                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
+                                      </div> -->
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="d-lg-flex emailalerts-heading align-items-center justify-content-lg-between text-center text-lg-start MarketWatch-box">
+                    <div>
+                      <h2 class="astronaut-blue">
+                        Dow Jones Updates and Special Offers
+                      </h2>
+                      <p class="MarketWatch-p">
+                        Need to know guide investor to the most important
+                        ,insightful items required to chart a course ahead of
+                        each trading day
+                      </p>
+                    </div>
+                    <div
+                      class="d-flex pt-4 pt-lg-0 align-items-center justify-content-center justify-content-lg-start gap-5 switch-button">
+                      <!-- <div>
+                                          <button class=" text-uppercase btn-preview text-black">Preview</button>
+                                      </div> -->
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="d-flex justify-content-end py-4">
+                    <button class="btn-scrollbar text-white justify-content-between align-items-center gap-2"
+                      id="scroll_TopBtn" onclick="scrollToTopBtn()">
+                      Back To Top <span class="fs-13">▲</span>
+                    </button>
+                  </div>
+                </div>
                 <div class="row">
-                    <div class="col-md-3">
-                      <h5 class="text-secondary fs-16">Email me when</h5>
+                  <div class="col-md-3">
+                    <h5 class="text-secondary fs-16">Email me when</h5>
+                  </div>
+                  <div class="col-md-9 pt-3 pt-md-0">
+                    <div class="form-check round-check">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-1">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-1">
+                        Someone liked my posts
+                      </label>
                     </div>
-                    <div class="col-md-9 pt-3 pt-md-0">
-                      <div class="form-check round-check">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-1">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-1">
-                          Someone liked my posts
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-2">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-2">
-                          Someone commented on my posts
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-3">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-3">
-                          Someone shared on my posts
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-4">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-4">
-                          Someone followed me
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-5">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-5">
-                          Someone mentioned me
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-6">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-6">
-                          Someone joined my chats
-                        </label>
-                      </div>
-                      <div class="form-check round-check pt-3">
-                        <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
-                          name="Completed-checkbox" id="email-check-7">
-                        <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-7">
-                          Someone accepted my friend/follow requset
-                        </label>
-                      </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-2">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-2">
+                        Someone commented on my posts
+                      </label>
+                    </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-3">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-3">
+                        Someone shared on my posts
+                      </label>
+                    </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-4">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-4">
+                        Someone followed me
+                      </label>
+                    </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-5">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-5">
+                        Someone mentioned me
+                      </label>
+                    </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-6">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-6">
+                        Someone joined my chats
+                      </label>
+                    </div>
+                    <div class="form-check round-check pt-3">
+                      <input class="form-check-input form-check-input-lg cursor-pointer" type="checkbox" value=""
+                        name="Completed-checkbox" id="email-check-7">
+                      <label class="form-check-label fs-14 text-secondary cursor-pointer" for="email-check-7">
+                        Someone accepted my friend/follow requset
+                      </label>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
 
@@ -1298,8 +1134,9 @@
                           <td v-else>Expired</td>
                           <!-- <td>{{ Subscription.name }}</td>
                           <td>{{ Subscription.name }}</td> -->
-                          <td>{{ Subscription.ends_at != null && Subscription.stripe_status == 'active' ? 'Expiring Soon'
-                            : Subscription.stripe_status }}</td>
+                          <td>
+                            {{ Subscription.ends_at != null && Subscription.stripe_status == 'active' ? 'Expiring Soon'
+                    : Subscription.stripe_status }}</td>
                           <td v-if="Subscription.stripe_status == 'active' && Subscription.ends_at == null">
                             <a @click="showConfirmModel" class="subscription_cancel btn btn-primary">Cancel
                               Subscription</a>
@@ -1430,14 +1267,16 @@
               </button>
               <div class="collapse-tabs">
                 <p class="mb-0">
-                  <a class="btn d-flex align-items-center border-0 px-3" data-bs-toggle="collapse"
-                    href="#collapseSecurity" role="button" aria-expanded="false" aria-controls="collapseSecurity"><i
-                      class="bi bi-shield-fill-check pe-3 fs-18"></i>
-                    <span class="d-flex justify-content-between w-100"> <span>Security</span> <i
-                        class="bi bi-chevron-down fs-18 align-middle"></i></span>
+                  <a class="btn d-flex align-items-center border-0 px-3" @click="toggleCollapse" role="button"
+                    ref="collapseToggle">
+                    <i class="bi bi-shield-fill-check pe-3 fs-18"></i>
+                    <span class="d-flex justify-content-between w-100">
+                      <span>Security</span>
+                      <i class="bi bi-chevron-down fs-18 align-middle"></i>
+                    </span>
                   </a>
                 </p>
-                <div class="collapse" id="collapseSecurity">
+                <div class="collapse" id="collapseSecurity" ref="collapseContent">
                   <div class="card card-body p-0 shadow-none">
                     <button class="nav-link text-start" id="v-pills-privacy-tab" data-bs-toggle="pill"
                       data-bs-target="#v-pills-privacy" type="button" role="tab" aria-controls="v-pills-privacy"
@@ -1504,7 +1343,7 @@
 <script>
 import { loadStripe } from '@stripe/stripe-js';
 import { mapState } from 'vuex';
-import { Modal } from 'bootstrap';
+import { Modal, Collapse } from 'bootstrap';
 import { getNames } from 'country-list';
 export default {
   computed: {
@@ -1531,6 +1370,11 @@ export default {
     this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
   },
   methods: {
+    toggleCollapse() {
+      const collapseElement = this.$refs.collapseContent;
+      const collapseInstance = Collapse.getOrCreateInstance(collapseElement);
+      collapseInstance.toggle();
+    },
     updateGeneralUserData() {
       this.$store.dispatch('updateUserData', this.userData);
     },
@@ -1693,10 +1537,12 @@ a.download {
 .border {
   border-color: #dfdfdf !important;
 }
-.alert_headings span{
+
+.alert_headings span {
   font: 600 15px /25px poppins;
 }
-.alert_headings{
+
+.alert_headings {
   gap: 30px;
 }
 </style>

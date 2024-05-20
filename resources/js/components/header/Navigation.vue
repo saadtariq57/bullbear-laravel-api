@@ -704,7 +704,7 @@
                                                     <a class="dropdown-item nav-link"
                                                         href="https://richtv.io/category/financial-news/market-analysis/">Market
                                                         analysis Pro
-                                                        Tipss</a>
+                                                        Tips</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/personal-access">Personal
@@ -1486,7 +1486,7 @@
                                                                     <a class="dropdown-item nav-link py-1"
                                                                         href="https://richtv.io/category/financial-news/market-analysis/">Market
                                                                         analysis Pro
-                                                                        Tipss</a>
+                                                                        Tips</a>
                                                                 </li>
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1"

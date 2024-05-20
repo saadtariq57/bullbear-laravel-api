@@ -101,7 +101,9 @@ class UserController extends Controller
 
     public function getUserProfileData($userName)
     {
-        $user = User::where('name', $userName)->firstOrFail();
+        $user = User::where('name', $userName)
+        ->withCount(['watchlists', 'posts', 'followers' , 'followings'])
+        ->firstOrFail();
         $loggedInUser = Auth::user();
         $userId = null;
         $isFollowing = false;

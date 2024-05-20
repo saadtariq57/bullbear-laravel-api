@@ -34,10 +34,10 @@ const userGroupModule = {
                 commit('setLoading', false);
             }
         },
-        async fetchJoinedChats({ commit }) {
+        async fetchJoinedChats({ commit }, userName = null) {
             commit('setLoading', true);
             try {
-                const chats = await GroupService.fetchJoinedChats();
+                const chats = await GroupService.fetchJoinedChats(userName);
                 commit('setJoinedChats', chats);
             } catch (error) {
                 commit('setError', error.message);
