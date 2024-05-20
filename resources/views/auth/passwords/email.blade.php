@@ -33,10 +33,10 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="fs-18 mb-0">Reset Password</h4>
-                                                        {{-- <p class="text-muted">Reset your password to Tocly.</p> --}}
+                                                        <p class="text-muted">Reset your password to RichTv.</p>
                                                     </div>
 
-                                                    <div class="alert alert-success mt-4 py-2" role="alert">
+                                                    <div class="alert alert-success mt-4 py-2 text-black" role="alert">
                                                         Enter your Email and instructions will be sent to you!
                                                     </div>
 
@@ -86,8 +86,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Tocly. Crafted with <i
-                                            class="mdi mdi-heart text-danger"></i> by Themesdesign
+                                        </script> Rich Tv
                                     </p>
                                 </div>
                             </div>

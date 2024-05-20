@@ -56,7 +56,7 @@
             <div class="time-quastion d-flex justify-content-between mb-3">
               <span class="questions">
                 <i class="bi bi-list-ol"></i>
-                30 Emaxms
+                30 Exams
               </span>
               <span class="time">
                 <i class="bi bi-stopwatch-fill"></i>
@@ -80,7 +80,7 @@
             <div class="time-quastion d-flex justify-content-between mb-3">
               <span class="questions">
                 <i class="bi bi-list-ol"></i>
-                30 Emaxms
+                30 Exams
               </span>
               <span class="time">
                 <i class="bi bi-stopwatch-fill"></i>
