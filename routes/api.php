@@ -85,12 +85,18 @@ Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
     Route::get('/editWatchlistData/{watchlistId}', [WatchlistController::class, 'getWatchListAllData']);
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
-    Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
+    Route::post('copyWatchlist', [WatchlistController::Class, 'copyWatchlist']);
     Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
     Route::put('update-privacy', [WatchlistController::class, 'updatePrivacy'])->name('update-privacy');
+    Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
+    
 });
+
+// user widgets
+Route::get('/getWidget', [WidgetController::class, 'getWidgetData']);
+Route::get('/widgetsymbols/{widgetId}', [WidgetController::class, 'getSymbols']);
 
 //Exam Routes
 

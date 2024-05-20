@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
-
 use App\Models\Widget;
 use App\Models\WidgetSymbol;
 use App\Models\Symbol;
@@ -151,6 +151,67 @@ class WidgetController extends Controller
                 return $posts;
             } catch (\Exception $e) {
                 \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
+                return [];
+            }
+        }
+
+        // user widgets
+        public function getWidgetData(Request $request){
+            $widgetId = $request->input('widgetId');
+            $widget = Widget::where('id', $widgetId)
+            ->with([
+                'symbols' => function ($query) {
+                    $query->orderBy('created_at');
+                },
+                'symbols.symbol'
+            ])->get();
+            // $existingSymbolIds = $widget->symbols()->pluck('symbol_id')->toArray();
+            return response()->json(['widgetDetails' => $widget]);
+        }
+
+        public function getSymbols($widgetId)
+        {
+            // $widget = $this->getWidgetData($widgetId);
+            $widget = Widget::where('id', $widgetId)
+            ->with([
+                'symbols' => function ($query) {
+                    $query->orderBy('created_at');
+                },
+                'symbols.symbol'
+            ])
+            ->first();
+
+            if ($widget) {
+                $symbolNames = $widget->symbols->pluck('symbol.symbol')->toArray();
+                $stats = $this->getSymbolsStats($symbolNames);
+                $widget->symbols->each(function ($widgetSymbol) use ($stats) {
+                    $symbol = $widgetSymbol->symbol;
+                    $symbol->stats = $stats[$symbol->symbol] ?? [];
+                });
+
+                return response()->json($widget);
+            } else {
+                return response()->json(['error' => 'Watchlist not found'], 404);
+            }
+        }
+        public function getSymbolsStats($symbols)
+        {
+            $url = config('thirdparty.mboum.base_url');
+            $url .= config('thirdparty.mboum.quote_endpoint');
+            $url .= implode(',', $symbols);
+            $url .= config('thirdparty.mboum.api_key');
+
+            try {
+                $response = file_get_contents($url);
+                $data = json_decode($response, true);
+                $stats = [];
+                foreach ($data['data'] as $symbolData) {
+                    $stats[$symbolData['symbol']] = $symbolData;
+                }
+
+                return $stats;
+            } catch (Exception $e) {
+                \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
                 return [];
             }
         }

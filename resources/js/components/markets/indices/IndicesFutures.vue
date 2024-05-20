@@ -126,17 +126,39 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
+import Swal from 'sweetalert2';
 import TopMovers from '../../widgets/TopMovers.vue';
 import TopTen from '../../widgets/TopTen.vue';
 import LatestArticles from '../../widgets/LatestArticles.vue';
 import RecentQuotes from '../../widgets/RecentQuotes.vue';
 export default {
   components: {
+    Skeletor,
     TopMovers,
     LatestArticles,
     TopTen,
     RecentQuotes,
   },
+  computed: {
+    ...mapState(['userData']),
+    ...mapState('userWidgtes', ['widget']),
+  },
+  data() {
+    return {};
+  },
+  created() {
+    const widgetId = 4;
+    this.getWidgetData(widgetId).then(() => {
+      console.log('single widget data: ', this.widget);
+    });
+  },
+  methods: {
+    ...mapActions('userWidgtes', ['getWidgetData']),
+  },
+  mounted() {},
 }
 </script>
 <style>
