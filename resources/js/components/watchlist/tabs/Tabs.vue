@@ -66,7 +66,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col"
-                                                    class="sticky-side position-sticky bg-white text-black ps-0">
+                                                    class="sticky-side position-sticky text-black ps-0">
                                                     Name</th>
                                                 <th scope="col" class="text-black text-end">Last</th>
                                             </tr>
@@ -76,7 +76,7 @@
                                             have any symbols.</p>
                                         <tbody id="crypto-table-body" v-else>
                                             <tr v-for="symbolData in watchlist.watchlist_symbols" :key="symbolData.id">
-                                                <td class="gray2 sticky-side position-sticky bg-white pl-0">
+                                                <td class="gray2 sticky-side position-sticky pl-0">
                                                     <a href="/stock-quote/{{ symbolData.symbol.name }}"
                                                         class="gray d-flex align-items-center gap-2"
                                                         aria-label="Stock Quote">
@@ -102,10 +102,12 @@
                                                     <div v-else>
                                                         {{ symbolData.symbol.stats.regularMarketPrice }}
                                                         <div :class="textChangeClasses(symbolData)">
-                                                            <span>{{ symbolData.symbol.stats.regularMarketChange
-                                                                }}</span>
-                                                            <span>{{ symbolData.symbol.stats.regularMarketChangePercent
-                                                                }}</span>
+                                                            <span>
+                                                                {{ formatNumber(symbolData.symbol.stats.regularMarketChange) }}
+                                                            </span>
+                                                            <span>
+                                                                {{ formatNumber(symbolData.symbol.stats.regularMarketChangePercent) }}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -164,11 +166,9 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div :class="backgroundChangeClasses(symbolData)"
-                                            v-if="symbolData.symbol.stats">
-                                            {{ symbolData.symbol.stats.regularMarketChange }} <p
-                                                class="mb-0 mt-1 text-white">{{
-                symbolData.symbol.stats.regularMarketChangePercent }}%</p>
+                                        <div :class="backgroundChangeClasses(symbolData)"  v-if="symbolData.symbol.stats">
+                                            {{ formatNumber(symbolData.symbol.stats.regularMarketChange) }} 
+                                            <p class="mb-0 mt-1 text-white">{{ formatNumber(symbolData.symbol.stats.regularMarketChangePercent) }}%</p>
                                         </div>
                                     </td>
                                     <td class="text-end">
@@ -236,9 +236,9 @@
                                     <td :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
                                         <div :class="backgroundChangeClasses(symbolData)"
                                             v-if="symbolData.symbol.stats">
-                                            {{ symbolData.symbol.stats.regularMarketChange }}
+                                            {{ formatNumber(symbolData.symbol.stats.regularMarketChange) }}
                                             <p class="mb-0 mt-1 text-white">{{
-                symbolData.symbol.stats.regularMarketChangePercent }}%</p>
+                formatNumber(symbolData.symbol.stats.regularMarketChangePercent) }}%</p>
                                         </div>
                                     </td>
                                     <td class="text-end" :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
@@ -374,6 +374,11 @@ export default {
                 return ' Red ' + extraClasses;
             }
         },
+        formatNumber(number) {
+            if(number != undefined){
+                return number.toFixed(2);
+            }            
+        },
     },
     mounted() {
         
@@ -386,7 +391,9 @@ export default {
     max-height: 500px;
 }
 .featuredWathclist {
-    border: 5px solid #183b56 !important;
+    background: #edb04317;
+    box-shadow: 0px 1px 7px 0px #edb0436b;
+    border-top: 3px solid #edb043 !important;
 }
 
 .watchlist-nav-btn.active {

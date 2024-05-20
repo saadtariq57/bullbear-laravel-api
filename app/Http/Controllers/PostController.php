@@ -228,22 +228,24 @@ class PostController extends Controller
 
     public function getUserProfileFeed(Request $request, $userName){
         $user = User::where('name', $userName)->first();
-        $postsQuery = Post::with([
-                            'user:id,name,avatar',
-                            'photos', 
-                            'poll.options', 
-                            'poll.userVotes' => function($query) use ($user) {
-                                $query->where('user_id', $user->id);
-                            },
-                            'coloredPost', 
-                            'reactions' => function($query) {
-                                $query->with('reactionType:id,name,icon')
-                                        ->with('user:id,name,avatar,about');
-                            }
-                        ])
-                        ->withCount(['comments', 'reactions'])
-                        ->where('user_id', $user->id) // Only include user's own posts
-                        ->orderByDesc('created_at');
+        if($user){
+            $postsQuery = Post::with([
+                'user:id,name,avatar',
+                'photos', 
+                'poll.options', 
+                'poll.userVotes' => function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                },
+                'coloredPost', 
+                'reactions' => function($query) {
+                    $query->with('reactionType:id,name,icon')
+                            ->with('user:id,name,avatar,about');
+                }
+            ])
+            ->withCount(['comments', 'reactions'])
+            ->where('user_id', $user->id) // Only include user's own posts
+            ->orderByDesc('created_at');
+        }
 
         if ($request->has('lastPostId')) {
             $lastPostId = $request->get('lastPostId');

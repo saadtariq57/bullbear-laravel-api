@@ -89,6 +89,14 @@ const watchlistService = {
             console.error('Error updating watchlist Privacy:', error);
         }
     },
+    async copyWatchlist(postData) {
+        try{
+            const response = await axios.post('/api/watchlist/copyWatchlist', postData);
+            return response.data;
+        } catch (error) {
+            console.error('Error adding symbol to watchlist:', error);
+        }
+    },
     
 };
 

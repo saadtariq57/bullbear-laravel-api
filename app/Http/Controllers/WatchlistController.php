@@ -227,6 +227,68 @@ class WatchlistController extends Controller
         }
     }
 
+    public function storeWatchListSymbol(Request $request)
+    {
+        $user = Auth::user();
+        $response = false;
+
+        $data = $request->all();
+        if($user){
+            if (!empty($data['symbol_id'])) {
+                $symbolIds = is_array($data['symbol_id']) ? $data['symbol_id'] : [$data['symbol_id']];
+                $symbolCount = count($symbolIds);
+                foreach ($symbolIds as $symbolId) {
+                    WatchlistSymbol::create([
+                        'user_id' => $user->id,
+                        'watchlist_id' => $data['watchlist_id'],
+                        'symbol_id' => $symbolId,
+                    ]);
+                }
+                // WatchlistSymbol::create($data);
+    
+                $userWatchlist = UserWatchlist::find($data['watchlist_id']);
+                if ($userWatchlist) {
+                    $userWatchlist->increment('symbol_count', $symbolCount);
+                    $userWatchlist->save();
+                }
+    
+                $response = $this->getWatchListAllData($data['watchlist_id']);
+                return response()->json($response);
+            }else{
+                return response()->json('unauthorized request');
+            }   
+        }
+    }
+
+
+    public function copyWatchlist(Request $request)
+    {
+        $data = $request->all();
+        $requestedUserId = $data['userid'];
+        $user = Auth::user();
+        if ($user && $requestedUserId != $user->id) {
+            $newWatchlistName = "Copy " . ($data['watchlist_name']);
+            $newWatchlistData = [
+                'user_id' => $user->id,
+                'title' => $newWatchlistName,
+                'who_can_view' => 'Everyone',
+                'featured' => 0,
+                'symbol_count' => 0
+            ];
+            
+            $newWatchlist = UserWatchlist::create($newWatchlistData);
+            if($newWatchlist){
+                $watchlistData = [
+                    'watchlist_id' => $newWatchlist->id,
+                    'symbol_id' => $data['symbol_id'] ?? []
+                ];
+                $storeSymbols = $this->storeWatchListSymbol((new Request())->merge((array)$watchlistData));
+                return response()->json($storeSymbols);
+            }
+        }else{
+            return response()->json('not allowed');
+        }
+    }
     /**
      * Display the specified resource.
      */
@@ -340,24 +402,6 @@ class WatchlistController extends Controller
         }
     }
 
-    public function storeWatchListSymbol(Request $request)
-    {
-        $response = false;
-        $data = $request->all();
-        if ($data) {
-
-            WatchlistSymbol::create($data);
-
-            $userWatchlist = UserWatchlist::find($data['watchlist_id']);
-            if ($userWatchlist) {
-                $userWatchlist->increment('symbol_count');
-                $userWatchlist->save();
-            }
-
-            $response = $this->getWatchListAllData($data['watchlist_id']);
-        }
-        return response()->json($response);
-    }
 
     public function deleteWatchListSymbol(Request $request)
     {

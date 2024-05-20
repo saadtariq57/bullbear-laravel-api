@@ -155,7 +155,30 @@ const userWatchlistModule = {
                 console.error('Error updating watchlist privacy:', error);
             }
         },
-        
+        async copyWatchlist({ commit }, postData) {
+            commit('SET_LOADING', true);
+            try {
+                const data = await watchlistService.copyWatchlist(postData);
+                if(data){
+                    commit('SET_LOADING', false);
+                }
+                // const updatedData = await watchlistService.getUserWatchlistData(data.original.user_id);
+                // commit('SET_HAS_WATCHLIST', updatedData.hasUserWatchlist);
+                // commit('SET_WATCHLISTS', updatedData.watchlistDetails);
+
+                // const copiedWatchlist = updatedData.watchlistDetails.find(watchlist => watchlist.title === data.title);
+                // if (copiedWatchlist) {
+                //     commit('SET_LOADING', false);
+                //     const symbolData = await watchlistService.getSymbols(copiedWatchlist.id);
+                //     commit('UPDATE_WATCHLIST_SYMBOLS', {
+                //         watchlistId: copiedWatchlist.id,
+                //         symbols: symbolData.watchlist_symbols,
+                //     });
+                // }
+            } catch (error) {
+                console.error('Error copying watchlist:', error);
+            }
+        } 
     },
     getters: {
         isLoading(state) {

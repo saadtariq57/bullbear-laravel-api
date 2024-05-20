@@ -141,7 +141,6 @@ export default {
     },
     addWatchlistSymbol(symbolId) {
       let postData = {
-        user_id: this.editWatchlistData.user_id,
         watchlist_id: this.editWatchlistData.id,
         symbol_id: symbolId
       }
