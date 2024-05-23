@@ -16,6 +16,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
+use App\Http\Controllers\MenuController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,6 +44,7 @@ Route::post('/check-username-availability', [RegisterController::class, 'checkUs
 Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 
+Route::get('/menus', [MenuController::class, 'fetchMenu']);
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);

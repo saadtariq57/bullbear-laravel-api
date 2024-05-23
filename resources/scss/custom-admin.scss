@@ -33,3 +33,13 @@ body[data-sidebar=colored] {
   background-color: #183b56;
   font-style: italic;
 }
+.btn-border {
+  background-color: transparent;
+  border: 1px solid #183b56 !important;
+  color: #183b56 !important;
+
+  &:hover {
+    background-color: #003566 !important;
+  color: white !important;
+  }
+}
