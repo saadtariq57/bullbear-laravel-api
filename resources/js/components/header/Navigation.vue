@@ -107,7 +107,7 @@
                                                                     class="nav-link nested-nav-dropdown fw-4">{{
                                 child.title }}</a>
                                                                 <ul
-                                                                    class="dropdown-menu px-4 py-3 nested-mega-menu dynamic-nested-mega-menu rounded-3">
+                                                                    class="dropdown-menu px-4 py-3 nested-mega-menu dynamic-nested-mega-menu rounded-3" :class="child.title == 'Trading School' ? 'trading-school-menu' : ''">
                                                                     <li v-for="subChild in child.children"
                                                                         :key="subChild.id">
                                                                         <a class="dropdown-item nav-link"
@@ -934,7 +934,6 @@ import Profile from './Profile.vue'
 import MenuItem from './MenuItem.vue';
 
 export default {
-    computed: mapState(['userData']),
     components: {
         Login,
         Search,
@@ -959,6 +958,7 @@ export default {
         this.fetchMenuItems();
     },
     computed: {
+        ...mapState(['userData']),
         menuHierarchy() {
             const menuMap = {};
             this.menuItems.forEach((item) => {
@@ -984,7 +984,7 @@ export default {
             try {
                 const response = await axios.get('/api/menus'); // Replace '/api/menus' with your actual API endpoint
                 this.menuItems = response.data;
-                console.log(this.menuItems);
+                // console.log(this.menuItems);
             } catch (response) {
                 console.error('Error fetching menu items:', response);
             }
@@ -1068,15 +1068,15 @@ ul.nested-mega-menu {
     top: 30px;
     border-radius: 0;
     transform: translateY(-30px) !important;
-    left: 170px;
+    left: 160px;
 }
 
-ul.dynamic-nested-mega-menu {
-    /* left: 135px; */
-}
+/* ul.dynamic-nested-mega-menu {
+    left: 135px;
+} */
 
 .trading-school-menu {
-    left: 190px !important;
+    left: 195px !important;
 }
 
 .navbar-search::-webkit-search-cancel-button,
