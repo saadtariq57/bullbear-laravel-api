@@ -147,10 +147,76 @@
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
                     <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="post_privacy">
+                      id="search_index_privacy" name="search_index_privacy">
                       <option value="1" selected>Everyone</option>
                       <option value="2">Friend</option>
                       <option value="2">No body</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3 align-items-center">
+                  <div class="col-12 col-sm-6">
+                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my posts?</p>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
+                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
+                      id="my_posts_privacy" name="my_posts_privacy">
+                      <option value="1" selected>Everyone</option>
+                      <option value="2">Followers Only</option>
+                      <option value="4">Only Me</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3 align-items-center">
+                  <div class="col-12 col-sm-6">
+                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my joined groups?</p>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
+                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
+                      id="groups_privacy" name="groups_privacy">
+                      <option value="1" selected>Everyone</option>
+                      <option value="2">Followers Only</option>
+                      <option value="4">Only Me</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3 align-items-center">
+                  <div class="col-12 col-sm-6">
+                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my watchlists?</p>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
+                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
+                      id="watchlist_privacy" name="watchlist_privacy">
+                      <option value="1" selected>Everyone</option>
+                      <option value="2">Followers Only</option>
+                      <option value="2">Only Me</option>
+                    </select>
+                    <p class="notice">If you want people to view your specifc watchlists please <a href="http://127.0.0.1:8000/watchlist/manage">click here to manage watchlists</a></p>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3 align-items-center">
+                  <div class="col-12 col-sm-6">
+                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my Photos?</p>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
+                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
+                      id="photos_privacy" name="photos_privacy">
+                      <option value="1" selected>Everyone</option>
+                      <option value="2">Followers Only</option>
+                      <option value="4">Only Me</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row g-3 px-3 pt-3 align-items-center">
+                  <div class="col-12 col-sm-6">
+                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my Followers and Followings?</p>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
+                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
+                      id="followers_privacy" name="followers_privacy">
+                      <option value="1" selected>Everyone</option>
+                      <option value="2">Followers Only</option>
+                      <option value="4">Only Me</option>
                     </select>
                   </div>
                 </div>
@@ -216,319 +282,6 @@
                     <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Save</a>
                   </div>
                 </form>
-              </div>
-            </div>
-            <!-- Manages-tabs start -->
-            <div class="tab-pane fade" id="v-pills-manage" role="tabpanel" aria-labelledby="v-pills-manage-tab"
-              tabindex="0">
-              <div class="wo_general_settings_page ">
-                <div class="generel_avatar-holder d-flex align-items-center position-relative">
-                  <div><img :src="`/uploads/${userData.avatar}`" :alt="`${userData.name} Profile Picture`"
-                      class="avatar rounded-circle"></div>
-                  <div class="avatar-holder_info ps-3 pt-3">
-                    <h5 class="mb-0"><a href="#" class="nav-link p-0 text-secondary fs-16">{{ userData.name }}</a></h5>
-                    <p class="fs-28 pt-2">Manage Session </p>
-                  </div>
-                </div>
-                <div class="manage_main_section  mt-5 mx-2 mx-sm-0">
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between mt-2 mx-sm-2 p-sm-3 p-2   border-bottom mange-main">
-                    <div class="d-flex gap-sm-3 g-2 ">
-                      <div class="pt-sm-2 pt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24">
-                          <path fill="#00adef"
-                            d="M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L10,11.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L10,20.09V13.1L20,13.25Z">
-                          </path>
-                        </svg></div>
-                      <div class="manage-left-side">
-                        <h4 class="fs-18 mb-1">Windows</h4>
-                        <p class="mb-1 d-flex align-items-center gap-1 fs-16"><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3M21,19H3V5H13V9H21V19Z">
-                              </path>
-                            </svg> Google Chrome</span><span class="middot fs-26 d-inline-block">·</span><span><svg
-                              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                              <path fill="currentColor"
-                                d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z">
-                              </path>
-                            </svg> Now</span></p>
-                        <p>IP Address: 139.135.53.113</p>
-                      </div>
-                    </div>
-                    <div class="manage_logout">
-                      <button class="border-0  bg-light-grey rounded-circle"><svg xmlns="http://www.w3.org/2000/svg"
-                          width="18" height="18" viewBox="0 0 24 24">
-                          <path fill="currentColor"
-                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
-                          </path>
-                        </svg></button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
             <!-- Social-tabs start -->
@@ -1284,9 +1037,6 @@
                     <button class="nav-link text-start" id="v-pills-password-tab" data-bs-toggle="pill"
                       data-bs-target="#v-pills-password" type="button" role="tab" aria-controls="v-pills-password"
                       aria-selected="false">Password</button>
-                    <button class="nav-link text-start" id="v-pills-manage-tab" data-bs-toggle="pill"
-                      data-bs-target="#v-pills-manage" type="button" role="tab" aria-controls="v-pills-manage"
-                      aria-selected="false">Manage Sessions</button>
                   </div>
                 </div>
               </div>
