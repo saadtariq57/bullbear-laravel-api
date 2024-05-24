@@ -33,9 +33,9 @@ return new class extends Migration
             $table->string('zip', 11)->nullable();
             $table->string('avatar')->default('photos/d-avatar.jpg');
             $table->string('cover')->default('photos/d-cover.jpg');
-            $table->string('website', 50)->nullable();
-            $table->string('twitter', 50)->nullable();
-            $table->string('linkedin', 32)->nullable();
+            $table->string('website', 100)->nullable();
+            $table->string('twitter', 100)->nullable();
+            $table->string('linkedin', 100)->nullable();
             $table->string('youtube', 100)->nullable();
             $table->enum('follow_privacy', ['public', 'private'])->default('public');
             $table->string('post_privacy')->default('ifollow');

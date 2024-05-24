@@ -162,16 +162,11 @@ export default {
 
             axios.get(proxyUrl + api_url)
                 .then(response => {
-                    // this.videos = response.data.items;
-                    // console.log(this.videos)
-                    // Extract the video items from the response
                     const videoItems = response.data.items;
-                    // Map the video items to create an array of simplified video objects
                     this.videos = videoItems.map(item => ({
                         id: item.id,
                         snippet: item.snippet
                     }));
-                    // Initialize the displayedVideos array with the first batch of videos
                     this.displayedVideos = this.videos.slice(0, this.videosPerPage);
                 })
                 .catch(error => {

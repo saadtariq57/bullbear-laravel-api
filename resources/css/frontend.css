@@ -1370,11 +1370,11 @@ ul.dropdown-menu li {
     min-width: max-content;
 }
 
-.mega-menu li ul li a,
+/* .mega-menu li ul li a,
 .mega-menu-dropdown li a {
     font-weight: 600 !important;
     font-size: 15px !important;
-}
+} */
 
 .mobile-nav-body,
 .mobile_nav_header,
