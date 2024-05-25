@@ -161,9 +161,10 @@
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
                     <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
                       id="my_posts_privacy" name="my_posts_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Followers Only</option>
-                      <option value="4">Only Me</option>
+                      <option value="Everyone" selected>Everyone</option>
+                      <option value="Followers">Followers</option>
+                      <option value="IFollow">I Follow</option>
+                      <option value="OnlyMe">Only Me</option>
                     </select>
                   </div>
                 </div>
@@ -237,49 +238,38 @@
                     <p class="fs-28 pt-2">Change Password</p>
                   </div>
                 </div>
-                <form action="" class="mt-5 pt-3">
+                <form @submit.prevent="updatePassword" class="mt-5 pt-3">
                   <div class="row g-3 px-3 pt-3">
                     <input type="text" name="username" hidden aria-hidden="true" autocomplete="username">
                     <div class="col">
                       <label for="current-password" class="form-label col-form-label-lg pb-0">Current Password</label>
-                      <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter current password" aria-label="currentPassword" name="currentPassword"
-                        autocomplete="current-password">
+                      <input v-model="updatePasswordData.currentPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword">
                     </div>
                   </div>
                   <div class="row g-3 px-3 pt-3">
                     <div class="col-md-6">
-                      <label for="New-password" class="form-label col-form-label-lg">New
-                        password</label>
-                      <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter new password" aria-label="New password" name="NewPassword"
-                        autocomplete="new-password">
+                      <label for="New-password" class="form-label col-form-label-lg">New password</label>
+                      <input v-model="updatePasswordData.newPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
                     </div>
                     <div class="col-md-6">
-                      <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat
-                        password</label>
-                      <input type="password" class="form-control form-control-lg text-secondary"
-                        placeholder="Enter new password" aria-label="New password" name="NewPassword"
-                        autocomplete="new-password">
+                      <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat password</label>
+                      <input v-model="updatePasswordData.newPassword_confirmation" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
                     </div>
                   </div>
                   <div class="px-3 pt-4">
                     <hr class="text-secondary">
                   </div>
-                  <div class="row g-3 px-3 pt-3">
+                  <!-- <div class="row g-3 px-3 pt-3">
                     <div class="col">
-                      <label for="authentication" class="form-label col-form-label-lg">Two-factor
-                        authentication</label>
-                      <select class="form-select form-select-lg mb-3 authentication text-secondary"
-                        aria-label="factor authentication" name="factor-authentication">
-                        <option value="1" selected>Enable</option>
+                      <label for="authentication" class="form-label col-form-label-lg">Two-factor authentication</label>
+                      <select v-model="updatePasswordData.twoFactor" class="form-select form-select-lg mb-3 authentication text-secondary" aria-label="factor authentication" name="factor-authentication">
+                        <option value="1">Enable</option>
                         <option value="2">Disable</option>
                       </select>
                     </div>
-
-                  </div>
+                  </div> -->
                   <div class="mt-4 text-center">
-                    <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Save</a>
+                    <button type="submit" class="btn btn-primary rounded-2 fs-18 fw-6" aria-label="share-btn">Save</button>
                   </div>
                 </form>
               </div>
@@ -1111,6 +1101,12 @@ export default {
         payment_method: '',
       },
       countries: getNames(),
+      updatePasswordData: {
+        currentPassword: '',
+        newPassword: '',
+        newPassword_confirmation: '',
+        // twoFactor: '1',
+      },
     };
   },
   mounted() {
@@ -1143,8 +1139,6 @@ export default {
         this.upcomingInvoices = response.data.Invoices.upcomingInvoice;
         this.upcomingLineData = response.data.Invoices.upcomingInvoice.lines.data;
         this.userPaymentMethod = response.data.Invoices.paymentMethods;
-        console.log(response.data.Invoices);
-        console.log(this.userPaymentMethod);
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle error appropriately
@@ -1207,18 +1201,25 @@ export default {
       } else {
         axios.post(`/api/updatePaymentMethod/`, this.formData)
           .then(response => {
-            // Handle response
             console.log('Response:', response.data);
           })
           .catch(error => {
-            // Handle error
             console.error('Error:', error);
           });
       }
     },
-    // handleSubmit() {
-    //     // Handle form submission (if needed)
-    // }
+    async updatePassword() {
+      try {
+        const response = await axios.post('/api/update-password', this.updatePasswordData);
+        alert(response.data.message);
+      } catch (error) {
+        if (error.response && error.response.data.errors) {
+          alert(Object.values(error.response.data.errors).join('\n'));
+        } else {
+          alert('An error occurred. Please try again.');
+        }
+      }
+    },
   },
 };
 </script>
