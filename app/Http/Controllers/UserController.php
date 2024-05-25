@@ -7,7 +7,11 @@ use App\Models\Follower;
 use App\Models\AlbumMedia;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+
+
 class UserController extends Controller
 {
 
@@ -272,5 +276,26 @@ class UserController extends Controller
             'message' => 'User updated successfully.',
             'user' => $user
         ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'currentPassword' => 'required',
+            'newPassword' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->currentPassword, $user->password)) {
+            throw ValidationException::withMessages([
+                'currentPassword' => ['The provided password does not match your current password.'],
+            ]);
+        }
+
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully.'], 200);
     }
 }
