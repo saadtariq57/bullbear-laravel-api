@@ -12,6 +12,7 @@ use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\MauticController;
+use App\Http\Controllers\MenuController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -87,7 +88,7 @@ Route::get('/markets/indices/major-indices', function () {
 })->name('major-indices');
 Route::get('/markets/indices/indices-realtime', function () {
     return view('markets.market');
-})->name('major-indices');
+})->name('indices-realtime');
 Route::get('/markets/indices/world-indices', function () {
     return view('markets.market');
 })->name('world-indices');
@@ -222,7 +223,7 @@ Route::get('/markets/currencies/exchange-rates-table', function () {
 })->name('exchange-rates-table');
 Route::get('/markets/currencies/forward-rates', function () {
     return view('markets.market');
-})->name('forward-rates');
+})->name('currencies-forward-rates');
 Route::get('/markets/currencies/currency-futures', function () {
     return view('markets.market');
 })->name('currency-futures');
@@ -349,7 +350,7 @@ Route::middleware(['auth'])->group(function () {
     // RichTv Pro
     Route::get('/watchlist-ideas', function () {
         return view('markets.market');
-    })->name('watchlistpro');
+    })->name('watchlistpro-ideas');
     Route::get('/pro-picks', function () {
         return view('markets.market');
     })->name('propicks');
@@ -445,6 +446,14 @@ Route::middleware(['auth'])->group(function () {
         //     Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
         //     Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
         // });
+
+        // Menusroutes
+        Route::prefix('admin/menus')->name('admin.menus.')->group(function () {
+            Route::get('/', [MenuController::class, 'index'])->name('index');
+            Route::post('/', [MenuController::class, 'store'])->name('store');
+            Route::get('/{menu}', [MenuController::class, 'edit'])->name('edit');
+            Route::post('/{menu}', [MenuController::class, 'update'])->name('update');
+        });
 
         // mass emails routes
         Route::prefix('admin/emails')->name('admin.emails.')->group(function () {

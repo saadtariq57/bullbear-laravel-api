@@ -40,3 +40,13 @@ p.embeded_code{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.btn-border {
+  background-color: transparent;
+  border: 1px solid #183b56 !important;
+  color: #183b56 !important;
+
+  &:hover {
+    background-color: #003566 !important;
+  color: white !important;
+  }
+}

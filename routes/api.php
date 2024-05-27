@@ -17,6 +17,9 @@ use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
 use App\Http\Controllers\LiveController;
+use App\Http\Controllers\MenuController;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,6 +46,7 @@ Route::post('/check-username-availability', [RegisterController::class, 'checkUs
 Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 
+Route::get('/menus', [MenuController::class, 'fetchMenu']);
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
@@ -175,6 +179,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/cancelSubscription/{subscriptionName}', [SubscriptionStatusController::class, 'cancelSubscription'])->name('cancelSubscription');
     Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
     // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
+    Route::post('/update-password', [UserController::class, 'updatePassword'])->name('update-password');
+    Route::post('/privacy-settings', [UserController::class, 'privacySetting'])->name('privacy-settings');
 
     //User Feed Routes
     Route::prefix('userposts')->name('post.')->group(function () {
