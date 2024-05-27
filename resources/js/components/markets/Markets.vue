@@ -1,8 +1,9 @@
 <template>
   <div class="container my-4" v-if="widget">
     <div class="text-center">
-      <p class="mb-0 fw-bold text-black">Markets</p>
-      <h1 class="fw-bold border-bottom pb-3">{{ widget[0].widget_title }}</h1>
+      <p class="mb-0 fw-bold text-black text-capitalize" v-if="subCetagory"> {{ cetagory }}</p>
+      <p class="mb-0 fw-bold text-black" v-else>Markets</p>
+      <h1 class="fw-bold border-bottom pb-3 text-capitalize">{{ widget[0].widget_title }}</h1>
     </div>
     <div class="row">
       <div class="col-lg-8">
@@ -203,12 +204,14 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex';
+import axios from "axios";
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import TopMovers from '../widgets/TopMovers.vue';
 import TopTen from '../widgets/TopTen.vue';
 import LatestArticles from '../widgets/LatestArticles.vue';
 import RecentQuotes from '../widgets/RecentQuotes.vue';
+
 export default {
   components: {
     Skeletor,
@@ -220,6 +223,10 @@ export default {
   computed: {
     ...mapState(['userData']),
     ...mapState('userWidgtes', ['widget']),
+  },
+  props: {
+    cetagory: String,
+    subCetagory: String,
   },
   data() {
     return {

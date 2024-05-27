@@ -6,7 +6,7 @@
                 <form class="d-flex nav-search-main nav-link popup-form position-relative" action="https://richtv.io/"
                     method="get" id="search_form_large">
                     <button type="button" class="btn-close btn-search-close btn-close-white" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
+                        aria-label="Close"></button>
                     <span class="header-serch-icon position-absolute">
                         <i class="bi bi-search nav-clr fs-4"></i></span>
                     <div class="navbar-search w-100">
@@ -14,39 +14,39 @@
                             placeholder="Search Markets and Groups" @input="searchTags" />
 
                         <div id="top-search-data-container2"
-                            class="rpd-search-data bg-white rounded-2 mt-2 pb-4 nav-searchbar-show-data" v-show="search">
+                            class="rpd-search-data bg-white rounded-2 mt-2 pb-4 nav-searchbar-show-data"
+                            v-show="search">
                             <div id="search-search-tab" class="tabs-search">
                                 <ul class="nav  mb-3 nav-serach-bg py-2 px-sm-3 px-1 rounded-top-2 nav-search-symbol-categorys "
                                     id="nav-search-symbol-categorys-tab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" 
-                                            :class="{ active: activeTab === 'symbols' }" 
-                                            @click="setActiveTab('symbols')" 
-                                            id="nav-search-symbol-tab" data-bs-toggle="pill"
-                                            data-bs-target="#nav-search-symbol" type="button" role="tab"
-                                            aria-controls="nav-search-symbol" aria-selected="true">Symbols</button>
+                                        <button class="nav-link" :class="{ active: activeTab === 'symbols' }"
+                                            @click="setActiveTab('symbols')" id="nav-search-symbol-tab"
+                                            data-bs-toggle="pill" data-bs-target="#nav-search-symbol" type="button"
+                                            role="tab" aria-controls="nav-search-symbol"
+                                            aria-selected="true">Symbols</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" 
-                                            :class="{ active: activeTab === 'groups' }" 
-                                            @click="setActiveTab('groups')"
-                                            id="nav-search-group-tab" data-bs-toggle="pill"
-                                            data-bs-target="#nav-search-group" type="button" role="tab"
-                                            aria-controls="nav-search-group" aria-selected="false">Groups</button>
+                                        <button class="nav-link" :class="{ active: activeTab === 'groups' }"
+                                            @click="setActiveTab('groups')" id="nav-search-group-tab"
+                                            data-bs-toggle="pill" data-bs-target="#nav-search-group" type="button"
+                                            role="tab" aria-controls="nav-search-group"
+                                            aria-selected="false">Groups</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" 
-                                            :class="{ active: activeTab === 'people' }" 
-                                            @click="setActiveTab('people')"
-                                            id="nav-search-people-tab" data-bs-toggle="pill" 
-                                            data-bs-target="#nav-search-people" type="button" role="tab"
-                                            aria-controls="nav-search-people" aria-selected="false">Traders</button>
+                                        <button class="nav-link" :class="{ active: activeTab === 'people' }"
+                                            @click="setActiveTab('people')" id="nav-search-people-tab"
+                                            data-bs-toggle="pill" data-bs-target="#nav-search-people" type="button"
+                                            role="tab" aria-controls="nav-search-people"
+                                            aria-selected="false">Traders</button>
                                     </li>
 
                                 </ul>
                                 <div class="tab-content" id="nav-search-symbol-categorys-tabContent">
-                                    <div class="tab-pane fade" :class="{ show: activeTab === 'symbols', active: activeTab === 'symbols' }" id="nav-search-symbol" role="tabpanel"
-                                        aria-labelledby="nav-search-symbol-tab" tabindex="0">
+                                    <div class="tab-pane fade"
+                                        :class="{ show: activeTab === 'symbols', active: activeTab === 'symbols' }"
+                                        id="nav-search-symbol" role="tabpanel" aria-labelledby="nav-search-symbol-tab"
+                                        tabindex="0">
                                         <ul class="nav mb-3 nav-search-sub-symbol-categorys d-flex gap-2  px-sm-3 px-1"
                                             id="nav-search-sub-symbol-categorys-tab" role="tablist">
                                             <li class="nav-item" role="presentation">
@@ -77,7 +77,8 @@
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="sub-symbol-categorys-indices-tab"
                                                     data-bs-toggle="pill" data-bs-target="#sub-symbol-categorys-indices"
-                                                    type="button" role="tab" aria-controls="sub-symbol-categorys-indices"
+                                                    type="button" role="tab"
+                                                    aria-controls="sub-symbol-categorys-indices"
                                                     aria-selected="false">Indices</button>
                                             </li>
                                         </ul>
@@ -87,8 +88,9 @@
                                                 <div class="tab-pane fade active show" id="sub-symbol-categorys-all"
                                                     role="tabpanel" aria-labelledby="sub-symbol-categorys-all-tab"
                                                     tabindex="0">
-                                                    <ul class="nav d-flex flex-column pt-3" v-show="search" v-if="symbolResults">
-                                                        <li class="nav-item mb-3 ">
+                                                    <ul class="nav d-flex flex-column pt-3" v-show="search"
+                                                        v-if="symbolResults">
+                                                        <li class="nav-item py-0">
                                                             <span
                                                                 class="d-flex justify-content-between w-100 symbol-search-header">
                                                                 <span class="col-3">Symbol</span>
@@ -98,151 +100,229 @@
 
                                                             </span>
                                                         </li>
-                                                        <li class="nav-item  search-nav-symbol-data d-flex flex-column justify-content-center"
-                                                         v-for="symbol in symbolResults">
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in symbolResults">
                                                             <a href=""
-                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center">
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
-                                                                <span class="col-lg-3 col-4 px-1">{{ symbol.name }}</span>
+                                                                <span class="col-lg-3 col-4 px-1">{{ symbol.name
+                                                                    }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
-                                                                <span class="col-lg-4 col-3 text-end">{{ symbol.exchange }}</span>
+                                                                <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
+                                                                    }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
                                                                     <a href="" class="text-white">See overview</a>
                                                                 </div>
                                                             </a>
                                                         </li>
-                                                        <li class="search-symbol-not-show"><span v-if="symbolResults.length == 0">No Results found</span></li>
+                                                        <li class="search-symbol-not-show py-3"><span
+                                                                v-if="symbolResults.length == 0">No Results found</span>
+                                                        </li>
                                                     </ul>
 
                                                 </div>
-                                                <div class="tab-pane fade" id="sub-symbol-categorys-stock" role="tabpanel"
-                                                    aria-labelledby="sub-symbol-categorys-stock-tab" tabindex="0">
+                                                <div class="tab-pane fade" id="sub-symbol-categorys-stock"
+                                                    role="tabpanel" aria-labelledby="sub-symbol-categorys-stock-tab"
+                                                    tabindex="0">
                                                     <ul class="nav d-flex flex-column pt-3" v-if="filteredStockSymbols">
-                                                        <li class="nav-item  search-nav-symbol-data d-flex flex-column justify-content-center"
-                                                           v-for="symbol in filteredStockSymbols">
+                                                        <li class="nav-item py-0">
+                                                            <span
+                                                                class="d-flex justify-content-between w-100 symbol-search-header">
+                                                                <span class="col-3">Symbol</span>
+                                                                <span class="col-3">Company</span>
+                                                                <span class="col-2">Country</span>
+                                                                <span class="col-4 text-end">Exchange</span>
+
+                                                            </span>
+                                                        </li>
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in filteredStockSymbols">
                                                             <a href=""
-                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center">
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
                                                                 <span class="col-lg-3 col-4 px-1">{{ symbol.name
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
                                                                 <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
                                                                     <a href="" class="text-white">See overview</a>
                                                                 </div>
                                                             </a>
                                                         </li>
-                                                        <li class="search-symbol-not-show"><span v-if="filteredStockSymbols.length === 0">No Stocks To Show</span></li>
+                                                        <li class="search-symbol-not-show py-3"><span
+                                                                v-if="filteredStockSymbols.length === 0">No Stocks To
+                                                                Show</span></li>
                                                     </ul>
                                                 </div>
-                                                <div class="tab-pane fade" id="sub-symbol-categorys-crypto" role="tabpanel"
-                                                    aria-labelledby="sub-symbol-categorys-crypto-tab" tabindex="0">
-                                                    <ul id="top-crypto_lookup" class="nav" v-if="filteredCryptoSymbols">
-                                                        <li class="nav-item  search-nav-symbol-data d-flex flex-column justify-content-center"
-                                                        v-for="symbol in filteredCryptoSymbols">
+                                                <div class="tab-pane fade" id="sub-symbol-categorys-crypto"
+                                                    role="tabpanel" aria-labelledby="sub-symbol-categorys-crypto-tab"
+                                                    tabindex="0">
+                                                    <ul id="top-crypto_lookup" class="nav d-flex flex-column pt-3"
+                                                        v-if="filteredCryptoSymbols">
+                                                        <li class="nav-item py-0">
+                                                            <span
+                                                                class="d-flex justify-content-between w-100 symbol-search-header">
+                                                                <span class="col-3">Symbol</span>
+                                                                <span class="col-3">Company</span>
+                                                                <span class="col-2">Country</span>
+                                                                <span class="col-4 text-end">Exchange</span>
+
+                                                            </span>
+                                                        </li>
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in filteredCryptoSymbols">
                                                             <a href=""
-                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center">
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
                                                                 <span class="col-lg-3 col-4 px-1">{{ symbol.name
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
                                                                 <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
                                                                     <a href="" class="text-white">See overview</a>
                                                                 </div>
                                                             </a>
                                                         </li>
-                                                        <li class="search-symbol-not-show"><span v-if="filteredCryptoSymbols.length === 0">No Cryptos To Show</span></li>
+                                                        <li class="search-symbol-not-show py-3"><span
+                                                                v-if="filteredCryptoSymbols.length === 0">No Cryptos To
+                                                                Show</span></li>
                                                     </ul>
                                                 </div>
                                                 <div class="tab-pane fade" id="sub-symbol-categorys-etf" role="tabpanel"
                                                     aria-labelledby="sub-symbol-categorys-etf-tab" tabindex="0">
-                                                    <ul id="top-ETF_lookup" class="nav" v-if="filteredEtfSymbols">
-                                                        <li class="nav-item  search-nav-symbol-data d-flex flex-column justify-content-center"
-                                                          v-for="symbol in filteredEtfSymbols">
+                                                    <ul id="top-ETF_lookup" class="nav d-flex flex-column pt-3"
+                                                        v-if="filteredEtfSymbols">
+                                                        <li class="nav-item py-0">
+                                                            <span
+                                                                class="d-flex justify-content-between w-100 symbol-search-header">
+                                                                <span class="col-3">Symbol</span>
+                                                                <span class="col-3">Company</span>
+                                                                <span class="col-2">Country</span>
+                                                                <span class="col-4 text-end">Exchange</span>
+
+                                                            </span>
+                                                        </li>
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in filteredEtfSymbols">
                                                             <a href=""
-                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center">
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
                                                                 <span class="col-lg-3 col-4 px-1">{{ symbol.name
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
                                                                 <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
                                                                     <a href="" class="text-white">See overview</a>
                                                                 </div>
                                                             </a>
                                                         </li>
-                                                        <li class="search-symbol-not-show"><span v-if="filteredEtfSymbols.length === 0">No ETF To Show</span></li>
+                                                        <li class="search-symbol-not-show py-3"><span
+                                                                v-if="filteredEtfSymbols.length === 0">No ETF To
+                                                                Show</span></li>
                                                     </ul>
                                                 </div>
-                                                <div class="tab-pane fade" id="sub-symbol-categorys-indices" role="tabpanel"
-                                                    aria-labelledby="sub-symbol-categorys-indices-tab" tabindex="0">
-                                                    <ul id="top-Indices_lookup" class="nav" v-if="filteredIndicesSymbols">
-                                                        <li class="nav-item  search-nav-symbol-data d-flex flex-column justify-content-center"
-                                                         v-for="symbol in filteredIndicesSymbols">
+                                                <div class="tab-pane fade" id="sub-symbol-categorys-indices"
+                                                    role="tabpanel" aria-labelledby="sub-symbol-categorys-indices-tab"
+                                                    tabindex="0">
+                                                    <ul id="top-Indices_lookup" class="nav d-flex flex-column pt-3"
+                                                        v-if="filteredIndicesSymbols">
+                                                        <li class="nav-item py-0">
+                                                            <span
+                                                                class="d-flex justify-content-between w-100 symbol-search-header">
+                                                                <span class="col-3">Symbol</span>
+                                                                <span class="col-3">Company</span>
+                                                                <span class="col-2">Country</span>
+                                                                <span class="col-4 text-end">Exchange</span>
+
+                                                            </span>
+                                                        </li>
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in filteredIndicesSymbols">
                                                             <a href=""
-                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center">
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
                                                                 <span class="col-lg-3 col-4 px-1">{{ symbol.name
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
                                                                 <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
-                                                                }}</span>
+                                                                    }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
                                                                     <a href="" class="text-white">See overview</a>
                                                                 </div>
                                                             </a>
                                                         </li>
-                                                        <li class="search-symbol-not-show"><span v-if="filteredIndicesSymbols.length === 0">No Indices To Show</span></li>
+                                                        <li class="search-symbol-not-show py-3"><span
+                                                                v-if="filteredIndicesSymbols.length === 0">No Indices To
+                                                                Show</span></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
 
                                     </div>
-                                    <div class="tab-pane fade" :class="{ show: activeTab === 'groups', active: activeTab === 'groups' }" id="nav-search-group" role="tabpanel"
-                                        aria-labelledby="nav-search-group-tab" tabindex="0">
-                                        <ul class="nav d-flex flex-column" v-if="groupsResults">
-                                            <li class="nav-link" v-for="group in groupsResults">
-                                                <a href="" class="d-flex align-items-center search-groups-data">
-                                                    <div class="col-3 d-flex align-items-center gap-2">
-                                                        <div class="search-group-icon">
-                                                            <img :src="group.avatar"  alt="search-icon">
-                                                        </div>
-                                                        <div class="search-group-symbol-name">
-                                                            <span>{{group.group_name}}</span>
-                                                        </div>
-                                                    </div>
-                                                    <span class="search-company-name">{{group.group_title}}</span>
-                                                </a>
+                                    <div class="tab-pane fade"
+                                        :class="{ show: activeTab === 'groups', active: activeTab === 'groups' }"
+                                        id="nav-search-group" role="tabpanel" aria-labelledby="nav-search-group-tab"
+                                        tabindex="0">
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="groupsResults">
+                                            <li class="nav-item py-0 px-3 d-flex">
+                                                <span
+                                                    class="d-flex justify-content-between w-100 align-self-center symbol-search-header">
+                                                    <span class="col-3">Group Symbol</span>
+                                                    <span class="col-9">Group Title</span>
+                                                </span>
                                             </li>
-                                            <li class="search-symbol-not-show"><span v-if="groupsResults.length == 0">No Groups To Show</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="tab-pane fade" :class="{ show: activeTab === 'people', active: activeTab === 'people' }" id="nav-search-people" role="tabpanel"
-                                        aria-labelledby="nav-search-people-tab" tabindex="0">
-                                        <ul class="nav d-flex flex-column" v-if="membersResults">
-                                            <li class="nav-link" v-for="member in membersResults">
-                                                <a href="" class="d-flex align-items-center search-groups-data">
+                                            <li class="nav-link" v-for="group in groupsResults">
+                                                <a :href="`/groups/${group.id}/${formatGroupName(group.group_title)}`" class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-3">
                                                         <div class="search-group-icon">
-                                                            <img :src="'/uploads/'+member.avatar" alt="search-icon" width="50">
+                                                            <img :src="group.avatar" alt="search-icon"
+                                                                class="rounded-circle" width="50px"
+                                                                @error="handlegroupprofileError">
                                                         </div>
-                                                        <div class="search-group-symbol-name">
-                                                            <span>{{member.name}}</span>
+                                                        <div class="search-group-symbol-name fs-14 fw-4">
+                                                            <span>{{ group.group_name }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <span class="search-company-name fs-14 fw-4">{{ group.group_title
+                                                        }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="search-symbol-not-show py-3"><span
+                                                    v-if="groupsResults.length == 0">No
+                                                    Groups To Show</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade"
+                                        :class="{ show: activeTab === 'people', active: activeTab === 'people' }"
+                                        id="nav-search-people" role="tabpanel" aria-labelledby="nav-search-people-tab"
+                                        tabindex="0">
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="membersResults">
+                                            <li class="nav-link" v-for="member in membersResults">
+                                                <a :href="'/profile/' + member.name"
+                                                    class="d-flex align-items-center search-groups-data">
+                                                    <div class="col-3 d-flex align-items-center gap-3">
+                                                        <div class="search-group-icon">
+                                                            <img :src="'/uploads/' + member.avatar" alt="search-icon"
+                                                                width="50" @error="handlegroupprofileError"
+                                                                class="rounded-circle">
+                                                        </div>
+                                                        <div class="search-group-symbol-name fs-14 fw-4">
+                                                            <span>{{ member.name }}</span>
                                                         </div>
                                                     </div>
                                                 </a>
                                             </li>
-                                            <li class="search-symbol-not-show"><span v-if="membersResults.length == 0">No Traders To Show</span></li>
+                                            <li class="search-symbol-not-show py-3"><span
+                                                    v-if="membersResults.length == 0">No Traders To Show</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -298,7 +378,7 @@ export default {
                     // });
                     this.searchGroups(this.search).then(() => {
                     });
-                    
+
                 } else if (this.activeTab === 'people') {
                     // const subtabPanes = document.querySelectorAll('#nav-search-sub-symbol-categorys-tabContent .tab-pane');
                     // subtabPanes.forEach(subtabPanes => {
@@ -307,7 +387,13 @@ export default {
                     this.searchMembers(this.search).then(() => {
                     });
                 }
-            } else {}
+            } else { }
+        },
+        handlegroupprofileError(event) {
+            event.target.src = '/uploads/photos/d-avatar.jpg';
+        },
+        formatGroupName(groupTitle) {
+            return groupTitle.replace(/ /g, '-');
         },
     },
 

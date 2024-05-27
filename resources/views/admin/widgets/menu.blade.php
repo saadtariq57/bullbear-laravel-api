@@ -87,6 +87,12 @@
                                                 value="{{ $item->title }}">
                                         </div>
                                         <div class="col-lg-2">
+                                            <label for="view-{{ $item->id }}" class="form-label">Blade URL</label>
+                                            <input type="text" name="items[{{ $loop->index }}][view_name]"
+                                                class="form-control" id="view-{{ $item->id }}"
+                                                value="{{ $item->view_name }}">
+                                        </div>
+                                        <div class="col-lg-2">
                                             <label for="url-{{ $item->id }}" class="form-label">URL</label>
                                             <input type="text" name="items[{{ $loop->index }}][url]"
                                                 class="form-control" id="url-{{ $item->id }}"
@@ -143,7 +149,7 @@
                                                     {{ $item->menu_type == 'widget' ? 'selected' : '' }}>Widget</option>
                                             </select>
                                         </div>
-                                        <div class="col-lg-2 widget-name-div"
+                                        <div class="col-lg-1 widget-name-div"
                                             style="display: {{ $item->menu_type == 'widget' ? 'block' : 'none' }};">
                                             <label for="widget_name-{{ $item->id }}"
                                                 class="form-label widget-name-label">Widget Name</label>
@@ -225,35 +231,6 @@
                         }
                     });
                 });
-
-                // document.querySelectorAll('.menu-relation-select').forEach(function(select) {
-                //     select.addEventListener('change', function() {
-                //         const parentDiv = select.closest('.menu-item');
-                //         const parentSelectDiv = parentDiv.querySelector('.parent-select-div');
-
-                //         if (select.value === 'child' || select.value === 'sub-child') {
-                //             parentSelectDiv.style.display = 'block';
-                //             const parentSelect = parentSelectDiv.querySelector('.parent-select');
-                //             const parentLabel = parentSelectDiv.querySelector('.parent-label');
-
-                //             parentSelect.innerHTML = '<option value="">None</option>';
-                //             const relation = select.value === 'child' ? 'parent' : 'child';
-                //             document.querySelectorAll(
-                //                 `.menu-relation-select option[value="${relation}"]`).forEach(
-                //                 function(option) {
-                //                     const parentItem = option.closest('.menu-item');
-                //                     const parentItemId = parentItem.dataset.id;
-                //                     const parentItemTitle = parentItem.querySelector(
-                //                         '[name$="[title]"]').value;
-                //                     parentSelect.innerHTML +=
-                //                         `<option value="${parentItemId}">${parentItemTitle}</option>`;
-                //                 });
-                //             parentLabel.textContent = select.value === 'child' ? 'Parent' : 'Child';
-                //         } else {
-                //             parentSelectDiv.style.display = 'none';
-                //         }
-                //     });
-                // });
             });
 
             @if (isset($isEditing) && $isEditing)
@@ -268,6 +245,10 @@
                     <div class="col-lg-2">
                         <label for="title-new-${itemIndex}" class="form-label">Title</label>
                         <input type="text" name="items[${itemIndex}][title]" class="form-control" id="title-new-${itemIndex}">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="view-new-${itemIndex}" class="form-label">Blade URL</label>
+                        <input type="text" name="items[${itemIndex}][view_name]" class="form-control" id="view-new-${itemIndex}">
                     </div>
                     <div class="col-lg-2">
                         <label for="url-new-${itemIndex}" class="form-label">URL</label>
@@ -332,30 +313,6 @@
                             widgetNameDiv.style.display = 'none';
                         }
                     });
-                    // newItem.querySelector('.menu-relation-select').addEventListener('change', function() {
-                    //     const parentDiv = newItem;
-                    //     const parentSelectDiv = parentDiv.querySelector('.parent-select-div');
-
-                    //     if (this.value === 'child' || this.value === 'sub-child') {
-                    //         parentSelectDiv.style.display = 'block';
-                    //         const parentSelect = parentSelectDiv.querySelector('.parent-select');
-                    //         const parentLabel = parentSelectDiv.querySelector('.parent-label');
-
-                    //         parentSelect.innerHTML = '<option value="">None</option>';
-                    //         const relation = this.value === 'child' ? 'parent' : 'child';
-                    //         document.querySelectorAll(`.menu-relation-select option[value="${relation}"]`).forEach(
-                    //             function(option) {
-                    //                 const parentItem = option.closest('.menu-item');
-                    //                 const parentItemId = parentItem.dataset.id;
-                    //                 const parentItemTitle = parentItem.querySelector('[name$="[title]"]').value;
-                    //                 parentSelect.innerHTML +=
-                    //                     `<option value="${parentItemId}">${parentItemTitle}</option>`;
-                    //             });
-                    //         parentLabel.textContent = this.value === 'child' ? 'Parent' : 'Child';
-                    //     } else {
-                    //         parentSelectDiv.style.display = 'none';
-                    //     }
-                    // });
                 }
             @endif
 
