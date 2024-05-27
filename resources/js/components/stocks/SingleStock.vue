@@ -9914,7 +9914,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="aside-newsletter mt-5 text-white px-2 pt-3 pb-2">
+
+                    <div v-if="!userData" class="aside-newsletter mt-5 text-white px-2 pt-3 pb-2">
                         <h3 class="text-white fs-4 fw-6"><span>Stocks & Shares</span> Newsletter</h3>
                         <form>
                             <div class=" form-group">
@@ -9937,8 +9938,10 @@
         </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import AlsoWatch from '../widgets/AlsoWatch.vue';
 export default {
+    computed: mapState(['userData']),
   components: {
     AlsoWatch
   },

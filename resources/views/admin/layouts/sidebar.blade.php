@@ -122,6 +122,7 @@
                         <li><a href="{{ route('admin.emails.index') }}">Mass Emails</a></li>
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
+                        <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>
                     </ul>
                 </li>
 

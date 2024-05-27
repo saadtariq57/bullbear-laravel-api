@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\LiveController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\MauticController;
 use App\Http\Controllers\MenuController;
@@ -410,6 +411,14 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{widget}', [WidgetController::class, 'destroy'])->name('destroy');
             Route::match(['get', 'post'], '{widget}/symbols', [WidgetController::class, 'showSymbols'])->name('symbols');
         });
+        
+        Route::prefix('admin/live')->name('admin.live.')->group(function () {
+            Route::get('/', [LiveController::class, 'index'])->name('index');
+            Route::post('/store', [LiveController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [LiveController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [LiveController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [LiveController::class, 'destroy'])->name('destroy');
+        });        
 
         // route group for ExamController
         Route::prefix('admin/exams')->name('admin.exams.')->group(function () {

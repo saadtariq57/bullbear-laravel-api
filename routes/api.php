@@ -16,7 +16,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
+use App\Http\Controllers\LiveController;
 use App\Http\Controllers\MenuController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -197,3 +199,5 @@ Route::get('/symbol/search', [SymbolController::Class, 'search']);
 Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
+
+Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);

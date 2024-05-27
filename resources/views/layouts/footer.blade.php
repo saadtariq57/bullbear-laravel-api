@@ -32,7 +32,8 @@
                                  <li class="pb-3"><a href="/pricing">Pricing and Plans </a></li>
                                  {{-- <li class="pb-3"><a href="/affiliate-center" aria-label="Affiliate program">Affiliate
                                          Program</a></li> --}}
-                                 <li class="pb-3"><a href="https://richtv.io/contact/" aria-label="contact us">Contact us</a></li>
+                                 <li class="pb-3"><a href="https://richtv.io/contact/" aria-label="contact us">Contact
+                                         us</a></li>
                                  {{-- <li class="pb-3"><a href="/register" aria-label="Join club">Join the Club</a></li> --}}
                              </ul>
                          </div>
@@ -46,9 +47,11 @@
                          <div class="menu-footer-navigation-two-container">
                              <ul id="menu-footer-navigation-two" class="menu list-unstyled">
                                  <li class="pb-3"><a href="/rich-picks/" aria-label="Rich picks">Rich Picks</a></li>
-                                 <li class="pb-3"><a href="https://richtv.io/penny-stocks/" aria-label="penny stock">Penny Stocks</a>
+                                 <li class="pb-3"><a href="https://richtv.io/penny-stocks/"
+                                         aria-label="penny stock">Penny Stocks</a>
                                  </li>
-                                 <li class="pb-3"><a href="https://richtv.io/financial-news/" aria-label="News">News</a></li>
+                                 <li class="pb-3"><a href="https://richtv.io/financial-news/"
+                                         aria-label="News">News</a></li>
                                  <li class="pb-3"><a href="/trading-school/" aria-label="trading school">Trading
                                          School</a></li>
                              </ul>
@@ -56,27 +59,32 @@
                      </div>
                  </div>
                  <div class="col-lg-4 col-md-6 mt-mobile">
+                    @guest
                      <div class="footer-contact-us footer-heading">
                          <h2 class="mb-3">Get Latest Stock Pick Alerts</h2>
                      </div>
+                     
                      <div class="footer-searchbar mb-3 position-relative">
-                         <form id="f_contactform" method="post" action="" class="footeremlcollector">
-                             <input type="email" placeholder="Enter your email" class="footer-serch" name="f_email"
-                                 id="f_email" fdprocessedid="31it58">
-                             <input type="text" id="hiddenspm-footer1" class="mauticform-input"
-                                 style="display:none;">
-                             <button class="position-absolute btn-primary" type="submit" id="sub_footer"
-                                 aria-label="Newsletter Button" fdprocessedid="d97vyg">
-                                 <div class=" d-inline-block">
-                                     <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
-                                 </div>
-                             </button>
-                         </form>
+                         
+                             <form id="f_contactform" method="post" action="" class="footeremlcollector">
+                                 <input type="email" placeholder="Enter your email" class="footer-serch" name="f_email"
+                                     id="f_email" fdprocessedid="31it58">
+                                 <input type="text" id="hiddenspm-footer1" class="mauticform-input"
+                                     style="display:none;">
+                                 <button class="position-absolute btn-primary" type="submit" id="sub_footer"
+                                     aria-label="Newsletter Button" fdprocessedid="d97vyg">
+                                     <div class="d-inline-block">
+                                         <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
+                                     </div>
+                                 </button>
+                             </form>
+                        
                          <div class="err" id="err-f_email" style="display: none;"></div>
                          <div class="formsubmission" id="f_formsubmission">
                              <p class="formsubmission-text"></p>
                          </div>
                      </div>
+                     @endguest
                      <div class="email mb-2">
                          <a href="mailto:support@richtv.io" class="d-flex gap-3 align-items-center" aria-label="email"
                              target="_blank" rel="nofollow">
