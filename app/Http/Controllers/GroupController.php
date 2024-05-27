@@ -42,9 +42,32 @@ public function index(Request $request)
                        ->paginate(15);
     }
 
-    return view('admin.groups.index', compact('groups'));
+    // return view('admin.groups.index', compact('groups'));
+    if ($request->route()->named('admin.groups.*')) {
+        return view('admin.groups.index', compact('groups'));
+    } else {
+        return response()->json($groups);
+    }
 }
 
+    public function siteGroupSearch(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $groups = Group::select(['id', 'group_name', 'group_title', 'avatar'])
+                                ->where('group_name', 'LIKE', "%{$search}%")
+                                ->orWhere('group_title', 'LIKE', "%{$search}%")
+                                ->orWhere('group_name', 'LIKE', "%{$search}%")
+                                ->orderByRaw("CASE WHEN group_name LIKE '{$search}%' THEN 1 ELSE 2 END, group_name")
+                                ->limit(10)
+                                ->get();
+        } else {
+            $groups = [];
+        }
+
+        return response()->json($groups);
+    }
 
 
     public function showMembers($groupId)

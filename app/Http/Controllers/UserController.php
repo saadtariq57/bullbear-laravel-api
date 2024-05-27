@@ -27,8 +27,32 @@ class UserController extends Controller
         } else {
             $users = User::paginate(15);
         }
+        if ($request->route()->named('admin.groups.*')) {
+            return view('admin.users.index', compact('users'));
+        } else {
+            return response()->json($users);
+        }
+        
+    }
 
-        return view('admin.users.index', compact('users'));
+    public function siteUserSearch(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $users = User::select(['id', 'name', 'email', 'first_name', 'avatar'])
+                                ->where('name', 'LIKE', "%{$search}%")
+                                ->orWhere('first_name', 'LIKE', "%{$search}%")
+                                ->orWhere('email', 'LIKE', "%{$search}%")
+                                ->orWhere('name', 'LIKE', "%{$search}%")
+                                ->orderByRaw("CASE WHEN name LIKE '{$search}%' THEN 1 ELSE 2 END, name")
+                                ->limit(10)
+                                ->get();
+        } else {
+            $users = [];
+        }
+
+        return response()->json($users);
     }
 
     public function search(Request $request)
@@ -274,6 +298,40 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+    public function updatePrivacySettings(Request $request)
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Validate the request
+        $request->validate([
+            'status_privacy' => 'required|string',
+            'search_index_privacy' => 'required|string',
+            'my_posts_privacy' => 'required|string',
+            'groups_privacy' => 'required|string',
+            'watchlist_privacy' => 'required|string',
+            'photos_privacy' => 'required|string',
+            'follow_privacy' => 'required|string',
+        ]);
+
+        // Update the user's privacy settings
+        $user->update([
+            'status_privacy' => $request->input('status_privacy'),
+            'search_index_privacy' => $request->input('search_index_privacy'),
+            'post_privacy' => $request->input('my_posts_privacy'),
+            'groups_privacy' => $request->input('groups_privacy'),
+            'watchlists_privacy' => $request->input('watchlist_privacy'),
+            'photos_privacy' => $request->input('photos_privacy'),
+            'follow_privacy' => $request->input('follow_privacy'),
+        ]);
+
+        // Redirect back with a success message
+        return response()->json([
+            'message' => 'Privacy setting updated successfully.',
             'user' => $user
         ]);
     }
