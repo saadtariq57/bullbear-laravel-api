@@ -9,8 +9,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\LiveController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\MauticController;
+use App\Http\Controllers\MenuController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -86,7 +88,7 @@ Route::get('/markets/indices/major-indices', function () {
 })->name('major-indices');
 Route::get('/markets/indices/indices-realtime', function () {
     return view('markets.market');
-})->name('major-indices');
+})->name('indices-realtime');
 Route::get('/markets/indices/world-indices', function () {
     return view('markets.market');
 })->name('world-indices');
@@ -221,7 +223,7 @@ Route::get('/markets/currencies/exchange-rates-table', function () {
 })->name('exchange-rates-table');
 Route::get('/markets/currencies/forward-rates', function () {
     return view('markets.market');
-})->name('forward-rates');
+})->name('currencies-forward-rates');
 Route::get('/markets/currencies/currency-futures', function () {
     return view('markets.market');
 })->name('currency-futures');
@@ -349,7 +351,7 @@ Route::middleware(['auth'])->group(function () {
     // RichTv Pro
     Route::get('/watchlist-ideas', function () {
         return view('markets.market');
-    })->name('watchlistpro');
+    })->name('watchlistpro-ideas');
     Route::get('/pro-picks', function () {
         return view('markets.market');
     })->name('propicks');
@@ -410,6 +412,14 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{widget}', [WidgetController::class, 'destroy'])->name('destroy');
             Route::match(['get', 'post'], '{widget}/symbols', [WidgetController::class, 'showSymbols'])->name('symbols');
         });
+        
+        Route::prefix('admin/live')->name('admin.live.')->group(function () {
+            Route::get('/', [LiveController::class, 'index'])->name('index');
+            Route::post('/store', [LiveController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [LiveController::class, 'edit'])->name('edit');
+            Route::post('/update/{id}', [LiveController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [LiveController::class, 'destroy'])->name('destroy');
+        });        
 
         // route group for ExamController
         Route::prefix('admin/exams')->name('admin.exams.')->group(function () {
@@ -432,10 +442,18 @@ Route::middleware(['auth'])->group(function () {
             Route::put('categories/{examCategory}', [ExamController::class, 'categoriesUpdate'])->name('categories.update');
             Route::delete('categories/{examCategory}', [ExamController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
-        Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
-            Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
-            Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
-            Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
+        // Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
+        //     Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
+        //     Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
+        //     Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
+        // });
+
+        // Menusroutes
+        Route::prefix('admin/menus')->name('admin.menus.')->group(function () {
+            Route::get('/', [MenuController::class, 'index'])->name('index');
+            Route::post('/', [MenuController::class, 'store'])->name('store');
+            Route::get('/{menu}', [MenuController::class, 'edit'])->name('edit');
+            Route::post('/{menu}', [MenuController::class, 'update'])->name('update');
         });
 
         // mass emails routes

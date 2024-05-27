@@ -1,5 +1,5 @@
 <template>
-     <section class="container-fluid my-4">
+    <section class="container-fluid my-4">
         <div class="container">
             <div class="trading-books-wrapper bg-white px-5 py-3 mt-4 border-1 border rounded-2 shadow-sm">
                 <div class="text-center">
@@ -17,7 +17,7 @@
             <TradingBooks />
         </div>
     </section>
-    <section class="container-fluid">
+    <section class="container-fluid position-relative">
         <div class="container">
             <div class="tradind-videos-wrapper bg-white px-sm-4 py-4 border-1 border rounded-2 shadow-sm">
                 <div class="text-center">
@@ -26,237 +26,46 @@
                     <div class="border-heading d-inline-block mt-4 mb-5"></div>
                 </div>
                 <div class="row gy-5">
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
+                    <div class="col-lg-4 col-md-6" v-for="(video, index) in displayedVideos" :key="video.id">
+                        <div class="video-card h-100 cursor-pointer" @click="openVideo(video)">
+                            <div class="featured-video-1 m-auto bg-white card-hover pb-2 h-100">
                                 <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
+                                    <div class="video-play-icon-small position-absolute">
+                                        <span class="d-flex justify-content-center align-items-center"><img
+                                                src="/build/images/play-icon.png" alt="circle_button"></span>
+                                    </div>
+                                    <img :src="video.snippet.thumbnails.maxres.url" alt="thumbnail_card_img"
                                         class="thumbnail-card w-100">
                                 </div>
                                 <div class="video-bio px-2 pt-2">
                                     <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
+                                        <div class="by-name"><i><span>{{ video.snippet.channelTitle }}</span></i></div>
                                         <div class="d-flex">
-                                            <span>Oct 18 2023</span>
+                                            <span>{{ formatDate(video.snippet.publishedAt) }}</span>
                                         </div>
                                     </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
+                                    <h3 class="fs-18 fw-bolder ">{{ video.snippet.title }}
                                     </h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
+                    <!-- Iframe section -->
+                    <div v-if="showIframe"
+                        class="d-flex justify-content-center align-items-center ceo-interview-iframe-wrapper mt-0">
+                        <div data-bs-theme="dark" class="ceo-interview-iframe-btn-close" @click="closeVideo">
+                            <button type="button" class="btn-close fs-3" aria-label="Close"></button>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="video-card">
-                            <div class="featured-video-1 m-auto bg-white card-hover pb-2">
-                                <div class="video-featured position-relative">
-                                    <form action="">
-                                        <input type="hidden" name="video_id" value="SSxX2QLiqzM" tabindex="-1">
-                                        <div class="video-play-icon-small position-absolute">
-                      <a href=""><img src="build/images/play-icon.png" alt="" width="50"></a>
-                    </div>
-                                    </form>
-                                    <img src="https://i.ytimg.com/vi/SSxX2QLiqzM/mqdefault.jpg" alt="thumbnail_card_img"
-                                        class="thumbnail-card w-100">
-                                </div>
-                                <div class="video-bio px-2 pt-2">
-                                    <div class="artical-au d-flex justify-content-between pb-3">
-                                        <div class="by-name"><i><span>RICH TV LIVE</span></i></div>
-                                        <div class="d-flex">
-                                            <span>Oct 18 2023</span>
-                                        </div>
-                                    </div>
-                                    <h3 class="fs-18 fw-bolder ">Russia Putin and China XI meet while Biden sits down
-                                        with
-                                        Netanya ...
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
+                        <iframe :src="'https://www.youtube.com/embed/' + iframeData.snippet.resourceId.videoId"
+                            class="ceo-interview-iframe" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
                     </div>
                 </div>
             </div>
 
 
-            <div class="text-center my-5">
-                <button class="btn btn-primary">VIEW MORE</button>
-            </div>
+            <div class="text-center my-5" v-if="displayedVideos.length < videos.length">
+            <button class="btn-primary" @click="loadMore">VIEW MORE</button>
+        </div>
         </div>
     </section>
     <section class="pre-footer container-fluid py-80 bg-smoke">
@@ -290,10 +99,10 @@
                                         may
                                         buy and sell shares of securities or options of the issuers mentioned on this
                                         website at any time.
-                                         <!-- {{-- <a class="arrow-down show-more cursor-pointer"
+                                        <!-- {{-- <a class="arrow-down show-more cursor-pointer"
                                             rel="nofollow" aria-label="See All"> See
                                             more</a> --}} -->
-                                        </p>
+                                    </p>
                                 </div>
                                 <div class="slide-up-down">
                                     <!-- style="display: none;" -->
@@ -306,7 +115,7 @@
                                         We strongly encourage all investors to conduct their own research before making
                                         any
                                         investment decision. For more information on stock market investing, visit the
-                                        Securities and Exchange Commission ("SEC") at www.sec.gov. 
+                                        Securities and Exchange Commission ("SEC") at www.sec.gov.
                                         <!-- <a
                                             class="arrow-down show-less cursor-pointer" rel="nofollow"
                                             aria-label="See less"> See less</a> -->
@@ -322,9 +131,93 @@
 </template>
 <script>
 import TradingBooks from '../widgets/TradingBooks.vue'
+import axios from 'axios';
+
 export default {
-    components : {
+    components: {
         TradingBooks
+    },
+    data() {
+        return {
+            videos: [],
+            displayedVideos: [],
+            showIframe: false,
+            iframeData: null,
+            videosPerPage: 9, // Number of videos to display per page
+            currentPage: 2 // Current page number
+        };
+    },
+    mounted() {
+        this.fetchVideos();
+    },
+    methods: {
+        fetchVideos() {
+            // Define API endpoint and parameters
+            const api_key = 'AIzaSyA1i9la4IF4dQhmUTGSMT6aPkUekVd6D3w';
+            const playlist_id = 'PLSr6qDstKBtkEd9zsFFxWPDUlkjU1KR3H';
+            const api_url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=24&playlistId=${playlist_id}&key=${api_key}`;
+
+            // Make API call to fetch videos
+            const proxyUrl = 'http://localhost:8000/';
+
+            axios.get(proxyUrl + api_url)
+                .then(response => {
+                    const videoItems = response.data.items;
+                    this.videos = videoItems.map(item => ({
+                        id: item.id,
+                        snippet: item.snippet
+                    }));
+                    this.displayedVideos = this.videos.slice(0, this.videosPerPage);
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                });
+        },
+        formatDate(isoDate) {
+            const date = new Date(isoDate);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = months[date.getMonth()];
+            const day = date.getDate();
+            const year = date.getFullYear();
+            return `${month} ${day} ${year}`;
+        },
+        openVideo(video) {
+            this.iframeData = video;
+            this.showIframe = true;
+        },
+        closeVideo() {
+            this.iframeData = null;
+            this.showIframe = false;
+        },
+        loadMore() {
+            const startIndex = (this.currentPage - 1) * this.videosPerPage;
+            const endIndex = startIndex + this.videosPerPage;
+            this.displayedVideos = this.videos.slice(0, endIndex);
+            this.currentPage++;
+            console.log(this.displayedVideos)
+        }
     }
-}
+};
 </script>
+<style>
+.ceo-interview-iframe-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.664);
+    z-index: 11;
+}
+
+.ceo-interview-iframe {
+    width: 75%;
+    height: 75%;
+}
+
+.ceo-interview-iframe-btn-close {
+    position: absolute;
+    right: 5%;
+    top: 5%;
+}
+</style>

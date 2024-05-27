@@ -42,12 +42,12 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('admin.watchlist.index') }}" class="waves-effect">
+                <!-- <li>
+                    <a href="--{ -{ route -('admin.watchlist.index') } -} --" class="waves-effect">
                         <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">1</span>
                         <span>Watchlist Management </span>
                     </a>
-                </li>
+                </li> -->
 
                 <li>
                     <a href="{{ route('admin.symbols.index') }}" class="waves-effect">
@@ -64,6 +64,7 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.widgets.index') }}">All Widgets</a></li>
                         <li><a href="{{ route('admin.widgets.create') }}">Add New Widget</a></li>
+                        <li><a href="{{ route('admin.menus.index') }}">Menus</a></li>
                     </ul>
                 </li>
 
@@ -121,6 +122,7 @@
                         <li><a href="{{ route('admin.emails.index') }}">Mass Emails</a></li>
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
+                        <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>
                     </ul>
                 </li>
 

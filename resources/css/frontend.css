@@ -367,6 +367,7 @@ ul {
 .small-para {
     color: #747474;
     font-size: 11px;
+    line-height: 1.3
 }
 
 th {
@@ -662,7 +663,7 @@ section.featured-video {
     max-width: 455px;
 }
 
-.video-featured .video-play-icon-small button {
+.video-featured .video-play-icon-small span {
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -833,7 +834,9 @@ section.featured-video {
 .symbol-name {
     width: 95px;
 }
-
+.watchlist-new-table{
+    min-width: 1200px;
+}
 /* Table section CSS End */
 /* Carousel Multiple Items CSS */
 
@@ -1367,11 +1370,11 @@ ul.dropdown-menu li {
     min-width: max-content;
 }
 
-.mega-menu li ul li a,
+/* .mega-menu li ul li a,
 .mega-menu-dropdown li a {
     font-weight: 600 !important;
     font-size: 15px !important;
-}
+} */
 
 .mobile-nav-body,
 .mobile_nav_header,
@@ -2313,10 +2316,6 @@ p.user-message {
     height: 50px;
 }
 
-.profile-progress-bar {
-    background-color: var(--cta-btn);
-    width: 40%;
-}
 .profile-completion-overlay{
     background-color: rgb(255 255 255 / 80%);
     position: absolute;
@@ -2702,7 +2701,7 @@ p.user-message {
 }
 
 .generel_setting_section .form-check-input:checked {
-    background: var(--cta-btn);
+    /* background: var(--cta-btn); */
     border-color: var(--cta-btn);
 }
 .generel_setting_section .form-check-input {
@@ -2819,12 +2818,12 @@ p.user-message {
     height: 35px;
 }
 
-.switch-button .form-check-input:checked {
+/* .switch-button .form-check-input:checked {
     background-color: #367F2E;
     outline: none;
     border: 1px solid #367F2E;
 
-}
+} */
 
 .form-check-input:focus {
     border: 1px solid #367F2E;

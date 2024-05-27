@@ -1,9 +1,9 @@
 @extends('admin.layouts.master')
 @section('title')
-    Users List
+    Widgets List
 @endsection
 @section('page-title')
-    Users List
+    Widgets List
 @endsection
 @section('css')
     <!-- Sweet Alert-->

@@ -36,10 +36,12 @@ class SymbolController extends Controller
         $search = $request->input('query');
 
         if ($search) {
-            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange'])
+            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange', 'type', 'mic_code'])
                              ->where('symbol', 'LIKE', "%{$search}%")
                              ->orWhere('exchange', 'LIKE', "%{$search}%")
                              ->orWhere('name', 'LIKE', "%{$search}%")
+                             ->orWhere('mic_code', 'LIKE', "%{$search}%")
+                             ->orderByRaw("CASE WHEN name LIKE '{$search}%' THEN 1 ELSE 2 END, name")
                              ->limit(10)
                              ->get();
         } else {
@@ -145,40 +147,40 @@ class SymbolController extends Controller
 
     // Grops data
 
-    public function group_data(Request $request)
-    {
-        $search = $request->query('search');
+    // public function group_data(Request $request)
+    // {
+    //     $search = $request->query('search');
 
-        if($search) {
-            $Groups = Groups::where('group_name', 'LIKE', "%{$search}%")
-                             ->orWhere('group_title', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->paginate(15);
-        } else {
-            $Groups = Groups::paginate(15);
-        }
+    //     if($search) {
+    //         $Groups = Groups::where('group_name', 'LIKE', "%{$search}%")
+    //                          ->orWhere('group_title', 'LIKE', "%{$search}%")
+    //                          // ... add other fields if needed
+    //                          ->paginate(15);
+    //     } else {
+    //         $Groups = Groups::paginate(15);
+    //     }
 
-        return view('admin.groups.group_data', compact('groups'));
-        //return view('admin.symbols.index', ['symbols' => $symbols]);
-    }
+    //     return view('admin.groups.group_data', compact('groups'));
+    //     //return view('admin.symbols.index', ['symbols' => $symbols]);
+    // }
 
     //   Search for symbols based on the query.
 
-    public function groups(Request $request)
-    {
-        $search = $request->input('query');
+    // public function groups(Request $request)
+    // {
+    //     $search = $request->input('query');
 
-        if ($search) {
-            $Groups = Groups::select(['id', 'group_name', 'group_title', 'avatar', 'cover'])
-                             ->where('group_name', 'LIKE', "%{$search}%")
-                             ->orWhere('group_title', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->limit(10)  // Limiting to 10 results for dropdown purpose
-                             ->get();
-        } else {
-            $Groups = [];  // Return empty array if there's no search query
-        }
+    //     if ($search) {
+    //         $Groups = Groups::select(['id', 'group_name', 'group_title', 'avatar', 'cover'])
+    //                          ->where('group_name', 'LIKE', "%{$search}%")
+    //                          ->orWhere('group_title', 'LIKE', "%{$search}%")
+    //                          // ... add other fields if needed
+    //                          ->limit(10)  // Limiting to 10 results for dropdown purpose
+    //                          ->get();
+    //     } else {
+    //         $Groups = [];  // Return empty array if there's no search query
+    //     }
 
-        return response()->json($Groups);
-    }
+    //     return response()->json($Groups);
+    // }
 }

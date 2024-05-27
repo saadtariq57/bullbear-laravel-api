@@ -40,4 +40,8 @@ return [
     'wordpress' => [
         'api_url' => env('WORDPRESS_API_URL'),
     ],
+
+    'wordpresstags' => [
+        'api_url' => env('WORDPRESS_API_URL2'),
+    ],
 ];

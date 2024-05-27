@@ -73,14 +73,14 @@
             aria-expanded="false">
             <div class="img">
                 <img :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" class="rounded-circle" width="40" height="40"
-                    :alt="`${userData.name} profile picture`">
+                    :alt="`${userData.name} profile picture`" @error="handlegroupprofileError">
             </div>
         </button>
         <ul class="dropdown-menu bg-light dropdown-menu-end m-0 p-0">
             <li class="px-4 py-4">
                 <div class="bg-white rounded-3 px-3 py-3 w180"><a href="/feed" class="d-flex align-items-center gap-2">
                         <img :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" class="rounded-circle" width="40" height="40"
-                        :alt="`${userData.name} profile picture`">
+                        :alt="`${userData.name} profile picture`" @error="handlegroupprofileError">
                         <b class="text-uppercase text-black">{{ userData.name }}</b></a>
                 </div>
             </li>
@@ -134,13 +134,16 @@ export default {
 
         logout() {
             axios.post('/logout')
-                .then(response => {
-                    window.location.href = '/';
-                })
-                .catch(error => {
-                    console.error('Logout failed:', error);
-                });
-        }
+            .then(response => {
+                window.location.href = '/';
+            })
+            .catch(error => {
+                console.error('Logout failed:', error);
+            });
+        },
+        handlegroupprofileError(event) {
+            event.target.src = '/uploads/photos/d-avatar.jpg';
+        },
     },
     created() {
         if (this.userData) {

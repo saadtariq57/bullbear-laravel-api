@@ -216,11 +216,6 @@
             </div>
             <!-- end profile Modal -->
         </div>
-
-        <div class="user-profile-btn align-self-end" v-if="isOwnProfile && context === 'profileHeader'">
-            <a href="/profile/setting" class="btn btn-primary fs-6 fw-5 px-3"><i
-                    class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</a>
-        </div>
     </div>
 </template>
 <script>

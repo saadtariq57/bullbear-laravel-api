@@ -325,3 +325,31 @@
     </div>
   </div>
 </template>
+<script>
+import { mapState, mapActions } from 'vuex';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
+
+export default {
+  components: {
+    
+  },
+  computed: {
+    ...mapState(['userData']),
+    ...mapState('userWidgtes', ['widget']),
+  },
+  data() {
+    return {};
+  },
+  created() {
+    // const widgetId = 4;
+    // this.getWidgetData(widgetId).then(() => {
+    //   console.log('single widget data: ', this.widget);
+    // });
+  },
+  methods: {
+    ...mapActions('userWidgtes', ['getWidgetData']),
+  },
+  mounted() { },
+}
+</script>

@@ -425,8 +425,7 @@ const routes = [
     {
         path: "/watchlist/edit/:id",
         name: "watchlist.edit",
-        component: () =>
-            import("./components/watchlist/searchsymbols/Searchsymbols.vue"),
+        component: () => import("./components/watchlist/searchsymbols/Searchsymbols.vue"),
     },
     {
         path: "/watchlist/manage",
@@ -554,7 +553,11 @@ const routes = [
         name: 'email-alerts',
         component: () => import('./components/richtvpro/EmailAlerts.vue'),
     },
-
+    {
+        path: '/richtv-live',
+        name: 'richtv-live',
+        component: () => import('./components/academy/RichtvLive.vue'),
+    }
 ];
 
 // Create router instance

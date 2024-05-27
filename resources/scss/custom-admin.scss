@@ -33,3 +33,20 @@ body[data-sidebar=colored] {
   background-color: #183b56;
   font-style: italic;
 }
+p.embeded_code{
+  margin: 0;
+  max-width: 800px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn-border {
+  background-color: transparent;
+  border: 1px solid #183b56 !important;
+  color: #183b56 !important;
+
+  &:hover {
+    background-color: #003566 !important;
+  color: white !important;
+  }
+}

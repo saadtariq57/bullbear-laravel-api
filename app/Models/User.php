@@ -48,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'referrer_id',
         'last_data_update',
         'user_id',
+        'status_privacy',
+        'search_index_privacy',
+        'groups_privacy',
+        'watchlists_privacy',
+        'photos_privacy',
         // Cashier related fields
         'stripe_id',
         'pm_type',

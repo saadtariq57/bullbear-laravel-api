@@ -7,7 +7,11 @@ use App\Models\Follower;
 use App\Models\AlbumMedia;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+
+
 class UserController extends Controller
 {
 
@@ -23,8 +27,32 @@ class UserController extends Controller
         } else {
             $users = User::paginate(15);
         }
+        if ($request->route()->named('admin.groups.*')) {
+            return view('admin.users.index', compact('users'));
+        } else {
+            return response()->json($users);
+        }
+        
+    }
 
-        return view('admin.users.index', compact('users'));
+    public function siteUserSearch(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $users = User::select(['id', 'name', 'email', 'first_name', 'avatar'])
+                                ->where('name', 'LIKE', "%{$search}%")
+                                ->orWhere('first_name', 'LIKE', "%{$search}%")
+                                ->orWhere('email', 'LIKE', "%{$search}%")
+                                ->orWhere('name', 'LIKE', "%{$search}%")
+                                ->orderByRaw("CASE WHEN name LIKE '{$search}%' THEN 1 ELSE 2 END, name")
+                                ->limit(10)
+                                ->get();
+        } else {
+            $users = [];
+        }
+
+        return response()->json($users);
     }
 
     public function search(Request $request)
@@ -101,7 +129,9 @@ class UserController extends Controller
 
     public function getUserProfileData($userName)
     {
-        $user = User::where('name', $userName)->firstOrFail();
+        $user = User::where('name', $userName)
+        ->withCount(['watchlists', 'posts', 'followers' , 'followings'])
+        ->firstOrFail();
         $loggedInUser = Auth::user();
         $userId = null;
         $isFollowing = false;
@@ -123,8 +153,11 @@ class UserController extends Controller
         $followingsCount = Follower::where('follower_id', $user->id)->count();
         $followers = $user->followings()->with('follower:id,name,email,avatar,first_name')->get();
         $followings = $user->followers()->with('following:id,name,email,avatar,first_name')->get();
+        // $loggedInFollowers = $loggedInUser->followings()->with('follower:id,name,email,avatar,first_name')->get();
+        // $loggedInFollowings = $loggedInUser->followers()->with('following:id,name,email,avatar,first_name')->get();
         $currentFollowers = $loggedInUser->followings()->with('follower:id,name,email,avatar,first_name')->get();
         $currentFollowings = $loggedInUser->followers()->with('following:id,name,email,avatar,first_name')->get();
+
         // 'following:id,name,email,avatar,first_name'
         // if ($photos->isEmpty()) {
         //     $photos = 'No Media Found';
@@ -138,6 +171,8 @@ class UserController extends Controller
             'followingsCount' => $followingsCount,
             'followerUserData' => $followers,
             'followingsUserData' => $followings,
+            // 'loggedInFollowers' => $loggedInFollowers,
+            // 'loggedInFollowings' => $loggedInFollowings,
             'currentFollowerUserData' => $currentFollowers,
             'currentFollowingsUserData' => $currentFollowings,
         ]);
@@ -221,5 +256,104 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Cover position updated successfully'], 200);
     }
+    public function updateUserData(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the request data except for name, email, and subscription_plan
+        // $validatedData = $request->validate([
+        //     'phone_number' => 'required|string|max:255',
+        //     'first_name' => 'nullable|string|max:255',
+        //     'last_name' => 'nullable|string|max:255',
+        //     'about' => 'nullable|string',
+        //     'gender' => 'nullable|string|in:male,female,other',
+        //     'birthday' => 'nullable|date',
+        //     'country' => 'nullable|string|max:255',
+        //     'city' => 'nullable|string|max:255',
+        //     'zip' => 'nullable|string|max:255',
+        //     'website' => 'nullable|string|max:255'
+        // ]);
+
+        // Update user with validated data
+        // $user->update($validatedData);
+
+        $dataToUpdate = $request->only([
+            'phone_number', 
+            'first_name', 
+            'last_name', 
+            'about', 
+            'gender', 
+            'birthday', 
+            'country', 
+            'city', 
+            'zip', 
+            'website',
+            'twitter',
+            'linkedin',
+            'youtube'
+        ]);
     
+        // Update the user with the data
+        $user->update($dataToUpdate);
+
+        return response()->json([
+            'message' => 'User updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+    public function updatePrivacySettings(Request $request)
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Validate the request
+        $request->validate([
+            'status_privacy' => 'required|string',
+            'search_index_privacy' => 'required|string',
+            'my_posts_privacy' => 'required|string',
+            'groups_privacy' => 'required|string',
+            'watchlist_privacy' => 'required|string',
+            'photos_privacy' => 'required|string',
+            'follow_privacy' => 'required|string',
+        ]);
+
+        // Update the user's privacy settings
+        $user->update([
+            'status_privacy' => $request->input('status_privacy'),
+            'search_index_privacy' => $request->input('search_index_privacy'),
+            'post_privacy' => $request->input('my_posts_privacy'),
+            'groups_privacy' => $request->input('groups_privacy'),
+            'watchlists_privacy' => $request->input('watchlist_privacy'),
+            'photos_privacy' => $request->input('photos_privacy'),
+            'follow_privacy' => $request->input('follow_privacy'),
+        ]);
+
+        // Redirect back with a success message
+        return response()->json([
+            'message' => 'Privacy setting updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'currentPassword' => 'required',
+            'newPassword' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->currentPassword, $user->password)) {
+            throw ValidationException::withMessages([
+                'currentPassword' => ['The provided password does not match your current password.'],
+            ]);
+        }
+
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully.'], 200);
+    }
 }

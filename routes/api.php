@@ -18,6 +18,9 @@ use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\LiveController;
+use App\Http\Controllers\MenuController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +48,7 @@ Route::post('/check-username-availability', [RegisterController::class, 'checkUs
 Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 
+Route::get('/menus', [MenuController::class, 'fetchMenu']);
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
@@ -86,12 +90,20 @@ Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
+    Route::get('/editWatchlistData/{watchlistId}', [WatchlistController::class, 'getWatchListAllData']);
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
-    Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
+    Route::post('copyWatchlist', [WatchlistController::Class, 'copyWatchlist']);
     Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
+    Route::put('update-privacy', [WatchlistController::class, 'updatePrivacy'])->name('update-privacy');
+    Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
+    
 });
+
+// user widgets
+Route::get('/getWidget', [WidgetController::class, 'getWidgetData']);
+Route::get('/widgetsymbols/{widgetId}', [WidgetController::class, 'getSymbols']);
 
 //Exam Routes
 
@@ -149,7 +161,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
-
+    Route::post('/user/update', [UserController::class, 'updateUserData']);
+    // Route::post('/user/update', 'UserController@update')->middleware('auth:api');
     Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
     Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
@@ -176,6 +189,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/cancelSubscription/{subscriptionName}', [SubscriptionStatusController::class, 'cancelSubscription'])->name('cancelSubscription');
     Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
     // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
+    Route::post('/update-password', [UserController::class, 'updatePassword'])->name('update-password');
+    Route::post('/privacy-settings', [UserController::class, 'updatePrivacySettings'])->name('privacy-settings');
 
     //User Feed Routes
     Route::prefix('userposts')->name('post.')->group(function () {
@@ -191,6 +206,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
-Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
+Route::get('/searchGroups', [GroupController::Class, 'siteGroupSearch']);
+Route::get('/searchMembers', [UserController::Class, 'siteUserSearch']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
+
+Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);

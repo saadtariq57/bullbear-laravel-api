@@ -41,6 +41,7 @@ export default defineConfig({
                 'resources/css/slick.css',
                 'resources/css/slick-theme.css',
                 'resources/js/main.js',
+                'resources/js/admin.js',
             ],
             refresh: true,
         }),

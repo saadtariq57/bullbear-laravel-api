@@ -6,6 +6,9 @@ import userSubscriptionModule from './pricingStore';
 import userProfileModule from './profileStore';
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
 import userNotificationModule from './notificationStore';
+import userWatchlistModule from './watchlistStore';
+import userWidgetsModule from './widgetsStore';
+import searchModule from './searchStore';
 import axios from 'axios';
 
 export default createStore({
@@ -54,6 +57,21 @@ export default createStore({
                 commit('SET_LOGOUT');
             }
         },
+        updateUserData({ commit }, userData) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            axios.post('/api/user/update', userData, {
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+                withCredentials: true
+            })
+            .then(response => {
+                commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
+                alert('User data updated successfully!');
+            })
+            .catch(error => {
+                console.error('Error updating user data:', error.response.data);
+                alert('Failed to update data.');
+            });
+        }
     },
     modules:{
         userNotification: userNotificationModule,
@@ -62,6 +80,9 @@ export default createStore({
         UserGroups: userGroupModule,
         userSubscriptionModule: userSubscriptionModule,
         userProfile: userProfileModule,
-        profileGroupHeader: ProfileGroupHeaderModule
+        profileGroupHeader: ProfileGroupHeaderModule,
+        userWatchlists: userWatchlistModule,
+        userWidgtes: userWidgetsModule,
+        searchResults: searchModule
     }
 });
