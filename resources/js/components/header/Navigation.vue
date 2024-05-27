@@ -993,35 +993,6 @@ export default {
 };
 </script>
 
-<script>
-import { mapState } from 'vuex';
-import Login from './Login.vue';
-import Search from './Search.vue';
-import Profile from './Profile.vue'
-export default {
-    computed: mapState(['userData']),
-    components: {
-        Login,
-        Search,
-        Profile
-    },
-    data() {
-        return {
-            Nav_link_obj: {
-                Exams: '/exams',
-                Watchlist: '/watchlist',
-                Chat_room: '/groups',
-                economic_calender: '/economic-calendar',
-                earning_calender: '/earning-calendar',
-                ceo_interviews: '/ceo-interviews',
-
-            },
-        };
-    },
-};
-
-</script>
-
 <style>
 .mobile-nav-body,
 .mobile_nav_header,
