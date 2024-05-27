@@ -47,6 +47,7 @@ Route::get('/ably/authenticate', [AblyController::class, 'authenticate'])->middl
 Route::post('/ably/authenticate', [AblyController::class, 'authenticate'])->middleware('auth:sanctum');
 
 Route::get('/menus', [MenuController::class, 'fetchMenu']);
+Route::get('/menu_items', [MenuController::class, 'fetchMenuItems']);
 
 Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);

@@ -30,21 +30,21 @@ class MenuController extends Controller
         // Store a new menu item
         $menu = Menu::create($request->only('name'));
 
-        if ($request->items) {
-            foreach ($request->items as $item) {
-                MenuItem::create([
-                    'menu_id' => $menu->id,
-                    'title' => $item['title'],
-                    'url' => $item['url'] ?? null,
-                    'menu_relation' => $item['menu_relation'],
-                    'parent_id' => $item['parent_id'] ?? null,
-                    'menu_type' => $item['menu_type'],
-                    'widget_id' => $item['widget_id'] ?? null,
-                    // 'widget_name' => $item['widget_name'] ?? null,
-                    'order' => $item['order'],
-                ]);
-            }
-        }
+        // if ($request->items) {
+        //     foreach ($request->items as $item) {
+        //         MenuItem::create([
+        //             'menu_id' => $menu->id,
+        //             'title' => $item['title'],
+        //             'url' => $item['url'] ?? null,
+        //             'menu_relation' => $item['menu_relation'],
+        //             'parent_id' => $item['parent_id'] ?? null,
+        //             'menu_type' => $item['menu_type'],
+        //             'widget_id' => $item['widget_id'] ?? null,
+        //             // 'widget_name' => $item['widget_name'] ?? null,
+        //             'order' => $item['order'],
+        //         ]);
+        //     }
+        // }
 
         return redirect()->route('admin.menus.index')->with('success', 'Menu created successfully!');
     }
@@ -85,6 +85,7 @@ class MenuController extends Controller
                     MenuItem::create([
                         'menu_id' => $menu->id,
                         'title' => $item['title'],
+                        'view_name' => $item['view_name'] ?? null,
                         'url' => $item['url'] ?? null,
                         'menu_relation' => $item['menu_relation'],
                         'parent_id' => $item['parent_id'] ?? null,
@@ -116,5 +117,32 @@ class MenuController extends Controller
             return response()->json(['error' => 'Failed to fetch menu items'], 500);
         }
     }
+    public function fetchMenuItems(Request $request)
+{
+    try {
+        $category = $request->category;
+        $subCategory = $request->subCategory;
+
+        // Fetch menu items from the database based on category and subCategory
+        $query = MenuItem::query();
+
+        if ($category) {
+            $query->where('title', 'indices');
+        }
+
+        if ($subCategory) {
+            $query->where('title', $subCategory);
+        }
+
+        $menuItems = $query->get();
+
+        // Return menu items as JSON response
+        return response()->json($menuItems);
+    } catch (\Exception $e) {
+        // Handle any errors
+        return response()->json(['error' => 'Failed to fetch menu items'], 500);
+    }
+}
+
 
 }
