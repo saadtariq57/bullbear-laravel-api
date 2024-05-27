@@ -7,6 +7,7 @@ import userProfileModule from './profileStore';
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
 import userWatchlistModule from './watchlistStore';
 import userWidgetsModule from './widgetsStore';
+import searchModule from './searchStore';
 import axios from 'axios';
 
 export default createStore({
@@ -79,6 +80,7 @@ export default createStore({
         userProfile: userProfileModule,
         profileGroupHeader: ProfileGroupHeaderModule,
         userWatchlists: userWatchlistModule,
-        userWidgtes: userWidgetsModule
+        userWidgtes: userWidgetsModule,
+        searchResults: searchModule
     }
 });

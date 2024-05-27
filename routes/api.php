@@ -180,7 +180,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
     // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
     Route::post('/update-password', [UserController::class, 'updatePassword'])->name('update-password');
-    Route::post('/privacy-settings', [UserController::class, 'privacySetting'])->name('privacy-settings');
+    Route::post('/privacy-settings', [UserController::class, 'updatePrivacySettings'])->name('privacy-settings');
 
     //User Feed Routes
     Route::prefix('userposts')->name('post.')->group(function () {
@@ -196,7 +196,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
-Route::get('/symbol/groups', [SymbolController::Class, 'groups']);
+Route::get('/searchGroups', [GroupController::Class, 'siteGroupSearch']);
+Route::get('/searchMembers', [UserController::Class, 'siteUserSearch']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
 

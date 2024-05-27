@@ -126,42 +126,37 @@
                 </div>
 
               </div>
-              <form action="" class="mt-5 pt-3">
-
+              <form @submit.prevent="updatePrivacySettings" class="mt-5 pt-3">
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
                     <p class="fs-18 mb-2 mb-sm-4">Status</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 status_privacy" aria-label="status_privacy"
-                      id="status_privacy">
-                      <option value="1" :selected="userData.status === 'active'">Online</option>
-                      <option value="2" :selected="userData.status === 'inactive'">offline</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.status_privacy" aria-label="status_privacy">
+                      <option value="Online">Online</option>
+                      <option value="Offline">Offline</option>
                     </select>
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow search engines to index my profile and
-                      posts?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow search engines to index my profile and posts?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="search_index_privacy" name="search_index_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Friend</option>
-                      <option value="2">No body</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.search_index_privacy" aria-label="search_index_privacy">
+                      <option value="Everyone">Everyone</option>
+                      <option value="Friends">Friends</option>
+                      <option value="Nobody">Nobody</option>
                     </select>
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my posts?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my posts?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="my_posts_privacy" name="my_posts_privacy">
-                      <option value="Everyone" selected>Everyone</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.post_privacy" aria-label="post_privacy">
+                      <option value="Everyone">Everyone</option>
                       <option value="Followers">Followers</option>
                       <option value="IFollow">I Follow</option>
                       <option value="OnlyMe">Only Me</option>
@@ -170,59 +165,54 @@
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my joined groups?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my joined groups?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="groups_privacy" name="groups_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Followers Only</option>
-                      <option value="4">Only Me</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.groups_privacy" aria-label="groups_privacy">
+                      <option value="Everyone">Everyone</option>
+                      <option value="Followers">Followers Only</option>
+                      <option value="OnlyMe">Only Me</option>
                     </select>
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my watchlists?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my watchlists?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="watchlist_privacy" name="watchlist_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Followers Only</option>
-                      <option value="2">Only Me</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.watchlists_privacy" aria-label="watchlists_privacy">
+                      <option value="Everyone">Everyone</option>
+                      <option value="Followers">Followers Only</option>
+                      <option value="OnlyMe">Only Me</option>
                     </select>
-                    <p class="notice">If you want people to view your specifc watchlists please <a href="http://127.0.0.1:8000/watchlist/manage">click here to manage watchlists</a></p>
+                    <p class="notice">If you want people to view your specific watchlists please <a href="/watchlist/manage">click here to manage watchlists</a></p>
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my Photos?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my Photos?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="photos_privacy" name="photos_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Followers Only</option>
-                      <option value="4">Only Me</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.photos_privacy" aria-label="photos_privacy">
+                      <option value="Everyone">Everyone</option>
+                      <option value="Followers">Followers Only</option>
+                      <option value="OnlyMe">Only Me</option>
                     </select>
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow peoples to view my Followers and Followings?</p>
+                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my Followers and Followings?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3 post_privacy" aria-label="post_privacy"
-                      id="followers_privacy" name="followers_privacy">
-                      <option value="1" selected>Everyone</option>
-                      <option value="2">Followers Only</option>
-                      <option value="4">Only Me</option>
+                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.follow_privacy" aria-label="follow_privacy">
+                      <option value="public">Public</option>
+                      <option value="private">Private</option>
                     </select>
                   </div>
                 </div>
                 <div class="mt-4 text-center">
-                  <a href="#" class="btn btn-primary rounded-2 fs-18 fw-6 " aria-label="share-btn">Save</a>
+                  <button type="submit" class="btn btn-primary rounded-2 fs-18 fw-6">Save</button>
                 </div>
               </form>
             </div>
@@ -1101,6 +1091,15 @@ export default {
         payment_method: '',
       },
       countries: getNames(),
+      privacySettings: {
+        status_privacy: '',
+        search_index_privacy: '',
+        post_privacy: '',
+        groups_privacy: '',
+        watchlists_privacy: '',
+        photos_privacy: '',
+        follow_privacy: '',
+      },
       updatePasswordData: {
         currentPassword: '',
         newPassword: '',
@@ -1112,6 +1111,7 @@ export default {
   mounted() {
     this.getInvoices();
     this.stripePaymentMethod();
+    this.loadPrivacySettings();
     console.log(this.userData);
     this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
   },
@@ -1206,6 +1206,26 @@ export default {
           .catch(error => {
             console.error('Error:', error);
           });
+      }
+    },
+    loadPrivacySettings() {
+      this.privacySettings = {
+        status_privacy: this.userData.status_privacy || '',
+        search_index_privacy: this.userData.search_index_privacy || '',
+        post_privacy: this.userData.post_privacy || '',
+        groups_privacy: this.userData.groups_privacy || '',
+        watchlists_privacy: this.userData.watchlists_privacy || '',
+        photos_privacy: this.userData.photos_privacy || '',
+        follow_privacy: this.userData.follow_privacy || '',
+      };
+    },
+    async updatePrivacySettings() {
+      try {
+        const response = await axios.post('/api/privacy-settings', this.privacySettings);
+        alert('Privacy settings updated successfully.');
+      } catch (error) {
+        console.error('Error updating privacy settings:', error);
+        alert('An error occurred. Please try again.');
       }
     },
     async updatePassword() {
