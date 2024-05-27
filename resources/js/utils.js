@@ -1,3 +1,39 @@
+import { format, parseISO, formatDistanceToNow } from 'date-fns';
+
+export function formatNotificationTime(isoDateString) {
+    if (!isoDateString) {
+        return '';
+    }
+
+    let date;
+    try {
+        date = parseISO(isoDateString);
+    } catch (e) {
+        return '';
+    }
+
+    const now = new Date();
+
+    // If the date is today
+    if (format(date, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')) {
+        return format(date, 'hh:mm a');
+    }
+
+    // If the date is yesterday
+    if (format(date, 'yyyy-MM-dd') === format(new Date(now.setDate(now.getDate() - 1)), 'yyyy-MM-dd')) {
+        return 'Yesterday';
+    }
+
+    // If the date is within this week
+    if (now.getTime() - date.getTime() < 7 * 24 * 60 * 60 * 1000) {
+        return format(date, 'EEEE');
+    }
+
+    // Otherwise, return the date
+    return format(date, 'EEE, dd MMM');
+}
+
+
 export function formatDateTime(dateTime) {
 	const now = new Date();
 	const postedDate = new Date(dateTime);

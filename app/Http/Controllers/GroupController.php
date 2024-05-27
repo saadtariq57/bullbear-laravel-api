@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupCategory;
 use App\Models\GroupMembers;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GroupController extends Controller
 {
@@ -167,14 +166,12 @@ public function index(Request $request)
         ->get();
 
         return response()->json($recentlyActiveGroups->map(function($group) {
-            $member = $group->members->first(); // Since it's filtered by user, it should have only one entry if any
+            $member = $group->members->first();
             $group->joined = $member && $member->pivot->status === 'active';
             $group->requestPending = $member && $member->pivot->status === 'pending';
             return $group;
         }));
     }
-
-
 
     public function create()
     {

@@ -40,9 +40,7 @@ export default {
         const context = 'feed';
         this.fetchPosts({context});
         this.fetchReactionTypes();
-        this.$nextTick(() => {
-            this.initializeRealTimeUpdates({ context: 'feed' });
-        });
+        //this.initializeRealTimeUpdates({ context: 'feed' });
     },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),

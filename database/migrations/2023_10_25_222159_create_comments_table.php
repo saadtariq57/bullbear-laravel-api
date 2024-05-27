@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('post_id');
-            $table->unsignedBigInteger('parent_id')->nullable(); // For replies. If null, it's a main comment.
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->text('text')->nullable();
             $table->string('c_file', 255)->default('');
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade'); // For replies.
+            $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
 
             $table->index(['user_id', 'post_id', 'parent_id']);
         });

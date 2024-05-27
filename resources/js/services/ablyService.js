@@ -1,83 +1,149 @@
 import * as Ably from 'ably';
 
-export default {
-  async initializeAbly() {
-    try {
-      window.Ably = new Ably.Realtime.Promise({
-        authUrl: '/api/ably/authenticate',
-      });
-      console.log('Ably initialized with dynamic token via authUrl');
-    } catch (error) {
-      console.error('Error initializing Ably with authUrl:', error);
+const ablyConfig = {
+    authUrl: '/api/ably/authenticate',
+    authCallback: (tokenParams, callback) => {
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch('/api/ably/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify(tokenParams)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(tokenDetails => {
+            callback(null, tokenDetails);
+        })
+        .catch(error => {
+            console.error("Error fetching auth details:", error);
+            callback(error, null);
+        });
     }
-  },
-  //Notifications
-  subscribeToUserNotifications(userId, callback) {
-    const channelName = `user.notifications.${userId}`;
-    const notificationsChannel = window.Ably.channels.get(channelName);
-    notificationsChannel.subscribe((message) => {
-      console.log('Notification received:', message.data);
-      // Additional handling of the notification message
-    });
-  },
+};
 
-  unsubscribeFromUserNotifications(userId) {
-    const channelName = `user.notifications.${userId}`;
-    const notificationsChannel = window.Ably.channels.get(channelName);
-    notificationsChannel.unsubscribe();
-    console.log(`Unsubscribed from ${channelName}`);
-  },
-  //Feed
-subscribeToFeedPostsUpdates(userId, callback) {
-  const channelName = `private:feed.posts.updates.${userId}`;
-  const feedPostsUpdatesChannel = window.Ably.channels.get(channelName);
-  feedPostsUpdatesChannel.subscribe(callback);
-  console.log(`Subscribed to ${channelName}`);
-},
+let ablyClient = null;
 
-  unsubscribeFromFeedPostsUpdates(userId) {
-    const channelName = `private:feed.posts.updates.${userId}`;
-    const feedPostsUpdatesChannel = window.Ably.channels.get(channelName);
-    feedPostsUpdatesChannel.unsubscribe();
-    console.log(`Unsubscribed from ${channelName}`);
-  },
-  //Groups
-  subscribeToGroupPostsUpdates(groupId, callback) {
-    const channelName = `private:group.posts.updates.${groupId}`;
-    const groupPostsChannel = window.Ably.channels.get(channelName);
-    groupPostsChannel.subscribe('newGroupPost', (message) => {
-      console.log('New group post received:', message.data);
-      // Handle the new group post (e.g., add to relevant group feed)
-    });
-    console.log(`Subscribed to ${channelName}`);
-  },
+function getStoredAblyClient() {
+    const serializedClient = sessionStorage.getItem('ablyClient');
+    if (serializedClient) {
+        const clientInfo = JSON.parse(serializedClient);
+        if (clientInfo && clientInfo.tokenDetails && clientInfo.tokenDetails.expires > Date.now()) {
+            let client = new Ably.Realtime.Promise({
+                ...ablyConfig,
+                tokenDetails: clientInfo.tokenDetails
+            });
+            // Only return if the client is connected or connecting to avoid returning a suspended or failed client
+            if (client.connection.state === 'connected' || client.connection.state === 'connecting') {
+                return client;
+            }
+        }
+    }
+    return null;
+}
 
-  unsubscribeFromGroupPostsUpdates(groupId) {
-    const channelName = `private:groups.posts.updates.${groupId}`;
-    const groupPostsChannel = window.Ably.channels.get(channelName);
-    groupPostsChannel.unsubscribe();
-    console.log(`Unsubscribed from ${channelName}`);
-  },
-  subscribeToGroupChat(groupId, callback) {
-    const channelName = `private:groups.chat.${groupId}`;
-    const groupChatChannel = window.Ably.channels.get(channelName);
-    groupChatChannel.subscribe('newMessage', (message) => {
-      console.log('New group chat message received:', message.data);
-      // Handle the new message (e.g., display in chat UI)
-    });
-    groupChatChannel.presence.subscribe('enter', (member) => {
-      console.log('Member entered:', member.clientId);
-      // Handle a new member entering the chat
-    });
-    console.log(`Subscribed to ${channelName}`);
-  },
+function initializeAbly() {
+    if (!ablyClient) {
+        ablyClient = getStoredAblyClient();
+    }
+    if (!ablyClient) {
+        ablyClient = new Ably.Realtime.Promise(ablyConfig);
+        ablyClient.connection.on('connected', () => {
+            console.log('Ably is connected!');
+            const minimalClientInfo = { tokenDetails: ablyClient.auth.tokenDetails };
+            sessionStorage.setItem('ablyClient', JSON.stringify(minimalClientInfo));
+        });
+    }
+    return ablyClient;
+}
 
-  unsubscribeFromGroupChat() {
-    const channelName = `private:groups.chat.${groupId}`;
-    const groupChatChannel = window.Ably.channels.get(channelName);
-    groupChatChannel.unsubscribe();
-    groupChatChannel.presence.unsubscribe();
-    console.log(`Unsubscribed from ${channelName}`);
-  },
 
+export default {
+    async initializeAbly() {
+        return initializeAbly();
+    },
+
+    subscribeToUserNotifications(userId, callback) {
+        const channelName = `private:user.notifications.${userId}`;
+        const notificationsChannel = ablyClient.channels.get(channelName);
+        notificationsChannel.subscribe('Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', message => {
+            console.log('Notification received:', message);
+            if (callback) callback(message);
+        });
+        notificationsChannel.subscribe('MessageUpdated', message => {
+            console.log(`Message Updated:`, message);
+            if (callback) callback(message);
+        });
+    },
+    unsubscribeFromUserNotifications(userId) {
+        const channelName = `private:user.notifications.${userId}`;
+        const notificationsChannel = ablyClient.channels.get(channelName);
+        notificationsChannel.unsubscribe();
+        console.log(`Unsubscribed from ${channelName}`);
+    },
+
+    subscribeToFeedPostsUpdates(userId, callback) {
+        const channelName = `private:feed.posts.updates.${userId}`;
+        const feedPostsUpdatesChannel = ablyClient.channels.get(channelName);
+        feedPostsUpdatesChannel.subscribe('NewPost', message => {
+            console.log(`New feed post update received:`, message.data);
+            if (callback) callback(message.data);
+        });
+    },
+
+    unsubscribeFromFeedPostsUpdates(userId) {
+        const channelName = `private:feed.posts.updates.${userId}`;
+        const feedPostsUpdatesChannel = ablyClient.channels.get(channelName);
+        feedPostsUpdatesChannel.unsubscribe();
+        console.log(`Unsubscribed from ${channelName}`);
+    },
+
+    subscribeToGroupPostsUpdates(groupId, callback) {
+        const channelName = `private:group.posts.updates.${groupId}`;
+        const groupPostsChannel = ablyClient.channels.get(channelName);
+        groupPostsChannel.subscribe('NewPost', message => {
+            console.log('New group post received:', message.data);
+            if (callback) callback(message.data);
+        });
+        console.log(`Subscribed to ${channelName}`);
+    },
+
+    unsubscribeFromGroupPostsUpdates(groupId) {
+        const channelName = `private:group.posts.updates.${groupId}`;
+        const groupPostsChannel = ablyClient.channels.get(channelName);
+        groupPostsChannel.unsubscribe();
+        console.log(`Unsubscribed from ${channelName}`);
+    },
+
+    subscribeToGroupChat(groupId, callback) {
+        const channelName = `private:group.chat.${groupId}`;
+        const groupChatChannel = ablyClient.channels.get(channelName);
+        
+        groupChatChannel.subscribe('NewMessage', message => {
+            console.log('New group chat message received:', message.data);
+            if (callback) callback(message);
+        }).catch(err => console.error('Subscription error:', err));
+
+        groupChatChannel.presence.subscribe('enter', member => {
+            console.log('Member entered:', member.clientId);
+        }).catch(err => console.error('Presence subscription error:', err));
+
+        console.log(`Subscribed to ${channelName}`);
+    },
+
+
+    unsubscribeFromGroupChat(groupId) {
+        const channelName = `private:group.chat.${groupId}`;
+        const groupChatChannel = ablyClient.channels.get(channelName);
+        groupChatChannel.unsubscribe();
+        groupChatChannel.presence.unsubscribe();
+        console.log(`Unsubscribed from ${channelName}`);
+    },
 };
