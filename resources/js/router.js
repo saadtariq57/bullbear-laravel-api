@@ -466,10 +466,21 @@ const routes = [
     {
         path: '/groups/:group_id/:group_name',
         name: 'group-single',
-        component: () => import('./components/groups/UserGroupChat.vue'),
+        component: () => import('./components/groups/SingleGroup.vue'),
         props: true,
-
-    },
+        children: [
+          { path: '', name: 'group-single-default', redirect: { name: 'group-discussion' } },
+          { path: 'discussion', 
+            name: 'group-discussion', 
+            component: () => import('./components/groups/tabs/GroupDiscussionTab.vue')},
+          { path: 'live-chat', 
+            name: 'group-live-chat', 
+            component: () => import('./components/groups/tabs/LiveChatTab.vue') },
+          { path: 'members', 
+            name: 'group-members', 
+            component: () => import('./components/groups/tabs/MembersTab.vue')},
+        ],
+      },
     {
         path: '/',
         name: 'home',

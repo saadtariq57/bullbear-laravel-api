@@ -5,6 +5,7 @@ import userGroupModule from './groupStore';
 import userSubscriptionModule from './pricingStore';
 import userProfileModule from './profileStore';
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
+import userNotificationModule from './notificationStore';
 import userWatchlistModule from './watchlistStore';
 import userWidgetsModule from './widgetsStore';
 import searchModule from './searchStore';
@@ -73,6 +74,7 @@ export default createStore({
         }
     },
     modules:{
+        userNotification: userNotificationModule,
         userFeed: userFeedModule,
         userFeedComment: userFeedCommentModule,
         UserGroups: userGroupModule,

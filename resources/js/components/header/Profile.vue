@@ -1,137 +1,73 @@
 <template>
     <div class="d-flex gap-3">
+        <!-- Followers -->
+        <!-- Followers -->
         <div class="btn-group dropdown-hover">
-            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
-                data-bs-display="static" aria-expanded="false">
+            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
+                <span class="notification-count">{{ followers.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li class="py-0">
-                    <div class="dropdown-item px-3 py-3 d-flex align-items-center justify-content-between border-bottom"
-                        type="button">
+                <li v-for="follower in followers" :key="follower.id" class="py-0">
+                    <a href="#" class="dropdown-item d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                            <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                            
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">3 hrs</p>
-                        </div>
+                            <img :src="follower.avatar" alt="" class="rounded-circle" width="30" height="30">
+                            <div>
+                                <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">{{ follower.name }}</h6>
+                                <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ follower.time }}</p>
+                            </div>
                         </div>
                         <div>
                             <button class="btn btn-primary px-2 pt-1 pb-0"><i class="bi bi-check2-all fs-5"></i></button>
-                            <button type="button" class="btn-close ms-2 align-middle" aria-label="Close"></button>
                         </div>
-                    </div>
+                    </a>
                 </li>
             </ul>
         </div>
+
+        <!-- Messages -->
         <div class="btn-group dropdown-hover">
-            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
-                data-bs-display="static" aria-expanded="false">
+            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-dots fs-4"></i>
+                <span class="notification-count">{{ messages.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
-                        type="button">
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+                <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
+                    <a @click.prevent="handleNotificationClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center">
+                        <img :src="'/uploads/' + message.user.avatar" alt="" width="30" height="30">
                         <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ message.user.name }}</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ message.preview }}</p>
+                            <span class="badge bg-primary">{{ message.unread_count }}</span>
                         </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
-                        type="button">
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
-                        </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                <li class="py-0"><button class="dropdown-item px-3 py-3 d-flex align-items-center gap-3 border-bottom"
-                        type="button">
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
-                        </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                <li class="py-0"><a href="/groups" class="dropdown-item text-center py-2"><span>See All</span></a></li>
+                        <div class="fs-6 fw-5 ms-auto">{{ message.formattedTime }}</div>
+                    </a>
+                </li>
+                <li class="py-0"><a href="/messages" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
-        
-    <div class="btn-group dropdown-hover">
-        <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown"
-            data-bs-display="static" aria-expanded="false">
-            <i class="bi bi-bell-fill fs-4"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-            <li><button class="dropdown-item ps-2 pe-5 fw-6 d-flex align-items-center py-0" type="button"><i
-                        class="bi bi-volume-up pe-2 fs-3"></i><span class="fs-6">Turn off notification
-                        sound</span></button>
-            </li>
-            <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom unread-notification-wrapper position-relative"
-                        type="button">
-                        <div class="unread-nav-notification rounded-circle position-absolute"></div>
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
+
+        <!-- General Notifications -->
+        <div class="btn-group dropdown-hover">
+            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
+                <i class="bi bi-bell-fill fs-4"></i>
+                <span class="notification-count">{{ notifications.length }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
+                <li v-for="notification in notifications" :key="notification.id" class="py-0">
+                    <a :href="notification.link" class="dropdown-item d-flex align-items-center">
+                        <img :src="notification.icon" alt="" width="30" height="30">
                         <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
+                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ notification.title }}</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ notification.description }}</p>
                         </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                    <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom unread-notification-wrapper position-relative"
-                        type="button">
-                        <div class="unread-nav-notification rounded-circle position-absolute"></div>
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
-                        </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                    <li class="py-0"><button class="dropdown-item px-4 py-3 d-flex align-items-center gap-3 border-bottom position-relative"
-                        type="button">
-                        <img src="/build/images/brands/cryptocurrency_btc.png" alt="" width="30" height="30">
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">Bitcoin</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">bitcoin recently just hit 31k on
-                                bullish
-                                sentiment
-                            </p>
-                        </div>
-                        <div class="fs-6 fw-5">25 W</div>
-                    </button></li>
-                    <li class="py-0"><a href="/profile/notification" class="dropdown-item text-center py-2"><span>See All</span></a></li>
-            <li class="notifications-list p-0 d-none">
-                <div class="d-flex justify-content-center align-items-center empty-notifications mb-5">
-                    <div>
-                        <span
-                            class="bg-secondary rounded-circle empty-notifications-icon d-flex justify-content-center align-items-center mx-auto"><i
-                                class="bi bi-bell-slash-fill text-white fs-2"></i></span>
-                        <p class="m-0 text-secondary">You do not have any notifications</p>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
+                        <div class="fs-6 fw-5">{{ notification.timeAgo }}</div>
+                    </a>
+                </li>
+                <li class="py-0"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
+            </ul>
+        </div>
+    <!-- Profile Links -->
     <div class="dropdown-center dropdown-hover">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -167,14 +103,35 @@
 </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
+import { formatNotificationTime } from '../../utils.js';
 
 export default {
     computed: {
         ...mapState(['userData']),
-        ...mapState('profileGroupHeader',['UpdatedProfileImagePath']),
+        ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
+        ...mapState('userNotification', ['followers', 'messages', 'notifications']),
+        formattedMessages() {
+            return this.messages.map(message => {
+                console.log(message);
+                return {
+                    ...message,
+                    formattedTime: formatNotificationTime(message.last_message_time)
+                };
+            });
+        },
     },
+
     methods: {
+        ...mapActions('userNotification', ['fetchNotifications', 'listenToUpdates', 'markNotificationAsRead']),
+
+        handleNotificationClick(notification) {
+            if (!notification.read_at) {
+                this.markNotificationAsRead(notification.id);
+            }
+            //window.location.href = notification.url;
+        },
+
         logout() {
             axios.post('/logout')
             .then(response => {
@@ -188,6 +145,12 @@ export default {
             event.target.src = '/uploads/photos/d-avatar.jpg';
         },
     },
+    created() {
+        if (this.userData) {
+            this.fetchNotifications();
+            this.listenToUpdates();
+        }
+    }
 };
 </script>
 <style>

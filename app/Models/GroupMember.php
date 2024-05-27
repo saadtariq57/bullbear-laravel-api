@@ -14,7 +14,8 @@ class GroupMember extends Model
         'group_id',
         'role',
         'active',
-        'last_seen'
+        'last_seen',
+        'status'
     ];
 
     public function user()

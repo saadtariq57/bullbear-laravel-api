@@ -316,7 +316,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
     Route::get('/single-post', [HomeController::class, 'post'])->name('single-post');
     Route::get('/profile/{username}', [HomeController::class, 'profilePage'])->name('profile');
-    Route::get('/groups/{group_id}/{group_name}', [HomeController::class, 'singleGroupPage'])->name('groups.single');
+    Route::get('/groups/{group_id}/{group_name}/{any?}', [HomeController::class, 'singleGroupPage'])->where('any', '.*')->name('groups.single');
+    
     // Profile route
     Route::get('/profile/{username}/setting', [HomeController::class, 'profileSettings'])->name('profile.setting');
     // Route::get('/profile/{username}/setting', function () {

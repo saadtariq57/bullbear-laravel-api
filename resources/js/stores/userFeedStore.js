@@ -192,25 +192,25 @@ const userFeedModule = {
         updateFetchedCommentsVisibility({commit}, postId){
             commit('updateFetchedCommentsVisibility', postId);
         },
-      initializeRealTimeUpdates({ commit, rootState }, { context, groupId = null }) {
-        if (!rootState.loggedIn || !rootState.userData) return;
-        const userId = rootState.userData.id;
-        if (context === 'group' && groupId) {
-          ablyService.subscribeToGroupPostsUpdates(groupId, (message) => {
-            // Handle group posts message For example: commit('someMutation', message.data);
-          });
-          ablyService.subscribeToGroupChat(groupId, (message) => {
-            // Handle group chat message
-          });
-        } else {
-          ablyService.subscribeToFeedPostsUpdates(rootState.userData.id, (message) => {
-                if (message.name === "NewPost") {
-                    let trasnformedPost = UserFeedService.transfromPost([message.data.post], userId);
-                    commit('addNewPost', trasnformedPost[0]);
+        initializeRealTimeUpdates({ commit, rootState }, { context, groupId = null }) {
+            if (rootState.loggedIn && rootState.userData) {
+              const userId = rootState.userData.id;
+              ablyService.initializeAbly().then(() => {
+                if (context === 'group' && groupId) {
+                  ablyService.subscribeToGroupPostsUpdates(groupId, message => {
+                      let transformedPost = UserFeedService.transfromPost([message.post], userId);
+                      console.log(`Hello From callBack ${transformedPost}`);
+                      commit('addNewPost', transformedPost[0]);
+                  });
+                } else {
+                  ablyService.subscribeToFeedPostsUpdates(userId, message => {
+                      let transformedPost = UserFeedService.transfromPost([message.post], userId);
+                      commit('addNewPost', transformedPost[0]);
+                  });
                 }
-          });
+              });
+            }
         }
-      },
     },
     getters: {
         allPosts(state) {

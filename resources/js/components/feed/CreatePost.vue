@@ -339,6 +339,10 @@ export default {
       type: String,
       default: 'feed'
     },
+    groupId: {
+      type: [String, Number],
+      default: null
+    },
   },
   data() {
     return {
@@ -630,7 +634,9 @@ export default {
       formData.append('post_privacy', this.post_privacy);
       formData.append('comments_status', this.comment_status);
       formData.append('post_text', this.textContent);
-      console.log(this.currentPostType);
+      if (this.context === 'group' && this.groupId) {
+        formData.append('group_id', this.groupId);
+      }
       switch (this.currentPostType) {
         case 'color':
           formData.append('colored_post_id', this.selectedColorId);

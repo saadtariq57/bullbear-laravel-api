@@ -7,6 +7,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AblyController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ExamResultController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\MenuController;
 
@@ -151,6 +153,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/groups/{groupId}/update-member', [GroupController::class, 'updateGroupMember']);
     Route::post('/groups/{groupId}/remove-member', [GroupController::class, 'removeGroupMember']);
     
+    Route::get('/{groupId}/messages', [MessageController::class, 'groupMessages']);
+    Route::post('/groups/{groupId}/send-message', [MessageController::class, 'sendMessage']);
+    Route::put('/groups/{groupId}/messages/{messageId}', [MessageController::class, 'editMessage']);
+    Route::delete('/groups/{messageId}/delete', [MessageController::class, 'deleteMessage']);
+    
 
     //User Data Route
     Route::get('/userdata', [UserController::class, 'getUserData'])->name('userdata');
@@ -159,6 +166,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
     Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
+    Route::get('/{userId}/notifications', [NotificationController::class, 'getNotifications']);
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+
 
     // user Album
     // Route::get('/userAlbumData', [UserController::class, 'getUserAlbumData'])->name('getUserAlbumData');

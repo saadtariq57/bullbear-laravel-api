@@ -30,7 +30,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Gate::define('isAdmin', [UserPolicy::class, 'isAdmin']);
         Gate::define('isSubscribed', function ($user, $planName) {
-            // \Log::debug("Gate called with planName: $planName");
             return $user->subscribed($planName);
         });
     }

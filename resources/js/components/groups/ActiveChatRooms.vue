@@ -68,7 +68,7 @@ export default {
         .then(response => {
           chat.joined = response.data.joined;
           chat.requestPending = response.data.requestPending;
-          this.$emit('chat-joined'); // Emit an event to notify the parent component
+          this.$emit('chat-joined');
           alert(response.data.message);
         })
         .catch(error => {

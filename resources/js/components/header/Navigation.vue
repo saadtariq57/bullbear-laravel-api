@@ -12,7 +12,7 @@
                                 </a>
                             </div>
 
-                            <div class="flex-fill"><!-- Search offcanvas component -->
+                            <div class="flex-fill">
                                 <Search />
                                 <div class="position-relative d-none d-xl-block" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
