@@ -209,6 +209,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
 Route::get('/searchGroups', [GroupController::Class, 'siteGroupSearch']);
 Route::get('/searchMembers', [UserController::Class, 'siteUserSearch']);
+Route::get('/searchSymbol/default', [SymbolController::Class, 'defaultSymbol']);
+Route::get('/searchGroups/default', [GroupController::Class, 'defaultGroups']);
+Route::get('/searchMembers/default', [UserController::Class, 'defaultMembers']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
 

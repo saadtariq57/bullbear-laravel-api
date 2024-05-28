@@ -543,6 +543,13 @@ public function index(Request $request)
         } else {
             return response()->json(['authorized' => false]);
         }
-        }
+    }
 
+
+    public function defaultGroups()
+    {
+        // Fetch default groups from the database or any other source
+        $defaultGroups = Group::orderBy('created_at', 'desc')->take(30)->get(); // Example: Fetching 10 latest groups
+        return response()->json($defaultGroups);
+    }
 }

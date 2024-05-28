@@ -3,16 +3,23 @@ import { createRouter, createWebHistory } from "vue-router";
 // Define routes with lazy loading
 const routes = [
     {
-        path: '/markets/:cetagory',
+        path: '/markets/:cetagory/:id',
         name: 'markets.indices',
         component: () => import('./components/markets/Markets.vue'),
-        props: true,
+        props: (route) => ({
+            category: route.params.category,
+            widget_id: route.params.id
+        }),
     },
     {
-        path: '/markets/:cetagory/:subCetagory',
+        path: '/markets/:cetagory/:subCetagory/:id',
         name: 'markets.indices.indices-futures',
         component: () => import('./components/markets/Markets.vue'),
-        props: true,
+        props: (route) => ({
+            category: route.params.category,
+            subCategory: route.params.subCategory,
+            widget_id: route.params.id
+        }),
     },
     {
         path: '/watchlist-ideas',

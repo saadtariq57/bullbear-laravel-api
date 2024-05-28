@@ -36,9 +36,9 @@ $menu_items = MenuItem::all();
 
 foreach ($menu_items as $menu_item) {
     if($menu_item->view_name != null){
-    Route::get($menu_item->url, function () use ($menu_item) {
+    Route::get($menu_item->url . '/' . urlencode(json_encode($menu_item->widget_id)), function () use ($menu_item) {
         // Dynamically load a view based on the 'view_name' field
-        return view($menu_item->view_name, ['menu_item' => $menu_item]);
+        return view('markets.market', ['menu_item' => $menu_item]);
     })->name($menu_item->title);
 }
 }

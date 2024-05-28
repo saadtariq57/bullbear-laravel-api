@@ -356,4 +356,11 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Password updated successfully.'], 200);
     }
+
+    public function defaultMembers()
+    {
+        // Fetch default members from the database or any other source
+        $defaultMembers = User::orderBy('created_at', 'desc')->take(30)->get(); // Example: Fetching 10 latest members
+        return response()->json($defaultMembers);
+    }
 }
