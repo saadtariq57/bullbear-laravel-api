@@ -60,6 +60,33 @@ const searchModule = {
                 console.error('Error searching data:', error);
             }
         },
+        async fetchDefaultSymbols({ commit }) {
+            try {
+                const data = await searchService.fetchDefaultSymbols();
+                commit('SET_SEARCH_SYMBOL_RESULTS', data);
+                console.log('default symbol results: ', data);
+            } catch (error) {
+                console.error('Error fetching default symbols:', error);
+            }
+        },
+        async fetchDefaultGroups({ commit }) {
+            try {
+                const data = await searchService.fetchDefaultGroups();
+                commit('SET_SEARCH_GROUPS_RESULTS', data);
+                console.log('default groups results: ', data);
+            } catch (error) {
+                console.error('Error fetching default groups:', error);
+            }
+        },
+        async fetchDefaultMembers({ commit }) {
+            try {
+                const data = await searchService.fetchDefaultMembers();
+                commit('SET_SEARCH_MEMBERS_RESULTS', data);
+                console.log('default members results: ', data);
+            } catch (error) {
+                console.error('Error fetching default members:', error);
+            }
+        },
     },
     getters: {
         isLoading(state) {

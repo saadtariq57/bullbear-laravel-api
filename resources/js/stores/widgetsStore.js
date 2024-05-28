@@ -41,12 +41,12 @@ const userWidgetsModule = {
                     for (const widget of data.widgetDetails) {
                         if (widget.symbols.length >= 1) {
                             const symbolData = await widgetsService.getSymbols(widgetId);
-                            console.log('symbol data: ', symbolData.symbols);
+                            console.log('symbol data: ', symbolData);
                             
-                            commit('UPDATE_WIDGET_SYMBOLS', {
-                                widgetId: widgetId,
-                                symbols: symbolData.symbols,
-                            });
+                            // commit('UPDATE_WIDGET_SYMBOLS', {
+                            //     widgetId: widgetId,
+                            //     symbols: symbolData.symbols,
+                            // });
                         }
                     }
                     commit('SET_LOADING', false);

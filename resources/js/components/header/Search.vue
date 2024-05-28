@@ -6,7 +6,7 @@
                 <form class="d-flex nav-search-main nav-link popup-form position-relative" action="https://richtv.io/"
                     method="get" id="search_form_large">
                     <button type="button" class="btn-close btn-search-close btn-close-white" data-bs-dismiss="offcanvas"
-                        aria-label="Close"></button>
+                        aria-label="Close" @click="clearSearch"></button>
                     <span class="header-serch-icon position-absolute">
                         <i class="bi bi-search nav-clr fs-4"></i></span>
                     <div class="navbar-search w-100">
@@ -14,8 +14,7 @@
                             placeholder="Search Markets and Groups" @input="searchTags" />
 
                         <div id="top-search-data-container2"
-                            class="rpd-search-data bg-white rounded-2 mt-2 pb-4 nav-searchbar-show-data"
-                            v-show="search">
+                            class="rpd-search-data bg-white rounded-2 mt-2 pb-4 nav-searchbar-show-data">
                             <div id="search-search-tab" class="tabs-search">
                                 <ul class="nav  mb-3 nav-serach-bg py-2 px-sm-3 px-1 rounded-top-2 nav-search-symbol-categorys "
                                     id="nav-search-symbol-categorys-tab" role="tablist">
@@ -96,7 +95,8 @@
                                                                 <span class="col-3">Symbol</span>
                                                                 <span class="col-3">Company</span>
                                                                 <span class="col-2">Country</span>
-                                                                <span class="col-4 text-end">Exchange</span>
+                                                                <span class="col-2 text-end">Exchange</span>
+                                                                <span class="col-2 text-end">Type</span>
 
                                                             </span>
                                                         </li>
@@ -105,10 +105,12 @@
                                                             <a href=""
                                                                 class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
                                                                 <span class="col-3">{{ symbol.symbol }}</span>
-                                                                <span class="col-lg-3 col-4 px-1">{{ symbol.name
+                                                                <span class="col-lg-3 col-4 px-1">{{ symbol.company_name
                                                                     }}</span>
                                                                 <span class="col-2">{{ symbol.country }}</span>
-                                                                <span class="col-lg-4 col-3 text-end">{{ symbol.exchange
+                                                                <span class="col-lg-2 col-3 text-end">{{ symbol.exchange
+                                                                    }}</span>
+                                                                    <span class="col-lg-2 col-3 text-end">{{ symbol.type
                                                                     }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
@@ -268,7 +270,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="tab-pane fade"
+                                    <div class="tab-pane fade groups-tab-wrapper"
                                         :class="{ show: activeTab === 'groups', active: activeTab === 'groups' }"
                                         id="nav-search-group" role="tabpanel" aria-labelledby="nav-search-group-tab"
                                         tabindex="0">
@@ -281,7 +283,8 @@
                                                 </span>
                                             </li>
                                             <li class="nav-link" v-for="group in groupsResults">
-                                                <a :href="`/groups/${group.id}/${formatGroupName(group.group_title)}`" class="d-flex align-items-center search-groups-data">
+                                                <a :href="`/groups/${group.id}/${formatGroupName(group.group_title)}`"
+                                                    class="d-flex align-items-center search-groups-data">
                                                     <div class="col-3 d-flex align-items-center gap-3">
                                                         <div class="search-group-icon">
                                                             <img :src="group.avatar" alt="search-icon"
@@ -301,7 +304,7 @@
                                                     Groups To Show</span></li>
                                         </ul>
                                     </div>
-                                    <div class="tab-pane fade"
+                                    <div class="tab-pane fade members-tab-wrapper"
                                         :class="{ show: activeTab === 'people', active: activeTab === 'people' }"
                                         id="nav-search-people" role="tabpanel" aria-labelledby="nav-search-people-tab"
                                         tabindex="0">
@@ -360,7 +363,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('searchResults', ['searchSymbols', 'searchGroups', 'searchMembers']),
+        ...mapActions('searchResults', ['searchSymbols', 'searchGroups', 'searchMembers', 'fetchDefaultSymbols', 'fetchDefaultGroups', 'fetchDefaultMembers']),
         setActiveTab(tab) {
             this.activeTab = tab;
             this.searchTags();
@@ -387,7 +390,11 @@ export default {
                     this.searchMembers(this.search).then(() => {
                     });
                 }
-            } else { }
+            } else {
+                this.fetchDefaultSymbols();
+                this.fetchDefaultGroups();
+                this.fetchDefaultMembers();
+            }
         },
         handlegroupprofileError(event) {
             event.target.src = '/uploads/photos/d-avatar.jpg';
@@ -395,7 +402,18 @@ export default {
         formatGroupName(groupTitle) {
             return groupTitle.replace(/ /g, '-');
         },
+        clearSearch() {
+            this.search = '';
+            this.fetchDefaultSymbols();
+            this.fetchDefaultGroups();
+            this.fetchDefaultMembers();
+        }
     },
+    mounted() {
+        this.fetchDefaultSymbols();
+        this.fetchDefaultGroups();
+        this.fetchDefaultMembers();
+    }
 
 }
 </script>
@@ -507,6 +525,10 @@ export default {
 
 .nav-search-sub-symbol-categorys-tabContent-scroll::-webkit-scrollbar {
     height: 6px;
+}
+.groups-tab-wrapper , .members-tab-wrapper{
+    overflow-y: auto;
+    max-height: 70vh;
 }
 
 @media(max-width:768px) {

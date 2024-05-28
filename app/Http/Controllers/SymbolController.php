@@ -183,4 +183,14 @@ class SymbolController extends Controller
 
     //     return response()->json($Groups);
     // }
+
+
+
+
+    public function defaultSymbol()
+    {
+        // Fetch default symbols from the database or any other source
+        $defaultSymbols = Symbol::orderBy('created_at', 'desc')->take(30)->get(); // Example: Fetching 10 latest symbols
+        return response()->json($defaultSymbols);
+    }
 }
