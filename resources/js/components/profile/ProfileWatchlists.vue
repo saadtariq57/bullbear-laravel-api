@@ -331,21 +331,9 @@ export default {
                 symbol_id: symbolIds
             }
             this.copyWatchlist(postData).then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Watchlist Copied successfully',
-                    timer: 1000,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                });
             })
             .catch((error) => {
                 console.error('Error copying watchlist:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error copying watchlist',
-                    text: 'An error occurred while copying watchlist. Please try again.',
-                });
             });
         }
     },

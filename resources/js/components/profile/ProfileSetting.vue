@@ -1075,6 +1075,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { mapState } from 'vuex';
 import { Modal, Collapse } from 'bootstrap';
 import { getNames } from 'country-list';
+import Swal from 'sweetalert2';
 export default {
   computed: {
     ...mapState(['userData']),
@@ -1155,9 +1156,41 @@ export default {
         this.getInvoices();
         this.confirmModalInstance.hide();
         console.log(response.data);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Card remove successfully"
+        });
       } catch (error) {
         console.error('Error removing card:', error);
         // Handle error appropriately
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Error removing card"
+        });
       }
     },
     formatDate(timestamp) {
@@ -1222,21 +1255,77 @@ export default {
     async updatePrivacySettings() {
       try {
         const response = await axios.post('/api/privacy-settings', this.privacySettings);
-        alert('Privacy settings updated successfully.');
+        // alert('Privacy settings updated successfully.');
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Privacy settings updated successfully"
+        });
       } catch (error) {
-        console.error('Error updating privacy settings:', error);
-        alert('An error occurred. Please try again.');
+        // console.error('Error updating privacy settings:', error);
+        // alert('An error occurred. Please try again.');
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Error updating privacy settings"
+        });
       }
     },
     async updatePassword() {
       try {
         const response = await axios.post('/api/update-password', this.updatePasswordData);
-        alert(response.data.message);
+        // alert(response.data.message);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Password updated successfully"
+        });
       } catch (error) {
         if (error.response && error.response.data.errors) {
-          alert(Object.values(error.response.data.errors).join('\n'));
+          // alert(Object.values(error.response.data.errors).join('\n'));
+          Toast.fire({
+          icon: "error",
+          title: "Error updating password"
+        });
         } else {
-          alert('An error occurred. Please try again.');
+          // alert('An error occurred. Please try again.');
+          Toast.fire({
+          icon: "error",
+          title: "Error updating password"
+        });
         }
       }
     },

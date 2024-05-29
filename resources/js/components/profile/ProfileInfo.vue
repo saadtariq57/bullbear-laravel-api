@@ -14,7 +14,7 @@
         <button v-if="!isOwnProfile && !isFollowing" type="button" class="btn btn-primary fs-6 fw-5 px-3" @click="handleFollowUser(userProfileData.id, followersCount)">
             Follow
         </button>
-        <button v-if="!isOwnProfile && isFollowing" type="button" class="btn btn-primary fs-6 fw-5 px-3" @click="HandleUnfollowUser(userProfileData.id, followersCount)">
+        <button v-if="!isOwnProfile && isFollowing" type="button" class="btn btn-border fs-6 fw-5 px-3" @click="HandleUnfollowUser(userProfileData.id, followersCount)">
             UnFollow
         </button>
             <a :href="'/profile/' + userData.name + '/setting'" class="btn btn-primary fs-6 fw-5 px-3" v-if="isOwnProfile"><i

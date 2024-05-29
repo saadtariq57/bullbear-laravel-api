@@ -7,7 +7,8 @@
     <hr class="mt-4 mb-0 divider">
     <ul ref="sortableList" class="px-0">
       <li v-for="watchlist in watchlists" :key="watchlist.id"
-        class="d-flex align-items-center watchlist-table border-bottom py-3 pe-3 justify-content-between bg-white" :id="watchlist.id">
+        class="d-flex align-items-center watchlist-table border-bottom py-3 pe-3 justify-content-between bg-white"
+        :id="watchlist.id">
         <div class="d-flex align-items-center">
           <div class="px-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list"
@@ -109,45 +110,60 @@ export default {
     async ConfirmDelete(watchlistId) {
       this.deleteWatchlist(watchlistId).then(() => {
         // Show SweetAlert on success
-        Swal.fire({
-          icon: 'success',
-          title: 'Watchlist deleted Successfully',
-          timer: 1000,
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Watchlist deleted Successfully"
         });
       })
         .catch((error) => {
           console.error('Error deleting watchlist:', error);
 
           // Show SweetAlert on error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error deleting Watchlist',
-            text: 'An error occurred while deleting Watchlist. Please try again.',
-          });
+          Toast.fire({
+          icon: "error",
+          title: "Error deleting Watchlist"
+        });
         });
     },
     watchlistView(watchlistId, selectedPrivacy) {
       this.watchlistPrivacy({ watchlistId, selectedPrivacy }).then(() => {
         // Show SweetAlert on success
-        Swal.fire({
-          icon: 'success',
-          title: 'Privacy Updated Successfully',
-          timer: 1000,
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Privacy updated successfully"
         });
       })
         .catch((error) => {
           console.error('Error updating privacy:', error);
 
-          // Show SweetAlert on error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error updating privacy',
-            text: 'An error occurred while updating privacy. Please try again.',
-          });
+          Toast.fire({
+          icon: "error",
+          title: "Error updating privacy"
+        });
         });
     },
     initSortable() {
@@ -156,7 +172,7 @@ export default {
       }
 
       this.sortableInstance = new Sortable(this.$refs.sortableList, {
-        animation: 150, 
+        animation: 150,
         forceFallback: true,
         onUpdate: (event) => {
           this.handleItemReordering(event);
@@ -177,24 +193,30 @@ export default {
       });
 
       this.updateWatchlistPositions({ updatedPositions }).then(() => {
-        // Show SweetAlert on success
-        Swal.fire({
-          icon: 'success',
-          title: 'Positions updated successfully',
-          timer: 1000,
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Positions updated successfully"
         });
       })
         .catch((error) => {
           console.error('Error updating positions:', error);
 
-          // Show SweetAlert on error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error updating positions',
-            text: 'An error occurred while updating positions. Please try again.',
-          });
+          Toast.fire({
+          icon: "error",
+          title: "Error updating positions"
+        });
         });
     },
   },

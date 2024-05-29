@@ -150,23 +150,31 @@ export default {
         this.addSymbolToWatchlist(postData).then(() => {
           this.search = '';
           // Show SweetAlert on success
-          Swal.fire({
-            icon: 'success',
-            title: 'New Symbol added successfully',
-            timer: 1000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-          });
+          const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "New Symbol added successfully"
+        });
         })
           .catch((error) => {
             console.error('Error adding new symbol:', error);
 
             // Show SweetAlert on error
-            Swal.fire({
-              icon: 'error',
-              title: 'Error adding new symbol',
-              text: 'An error occurred while adding new symbol. Please try again.',
-            });
+            Toast.fire({
+          icon: "error",
+          title: "Error adding new symbol"
+        });
           });
       }
       this.toggleSearch();
@@ -182,23 +190,31 @@ export default {
           const watchlistId = this.$route.params.id;
           this.editWatchlistName({ watchlistId, newWatchlistName }).then(() => {
             // Show SweetAlert on success
-            Swal.fire({
-              icon: 'success',
-              title: 'Watchlist Name Updated',
-              timer: 1000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-            });
+            const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Watchlist Name Updated"
+        });
           })
             .catch((error) => {
               console.error('Error updating watchlist name:', error);
 
               // Show SweetAlert on error
-              Swal.fire({
-                icon: 'error',
-                title: 'Error updating watchlist name',
-                text: 'An error occurred while updating watchlist name. Please try again.',
-              });
+              Toast.fire({
+          icon: "error",
+          title: "Error updating watchlist name"
+        });
             });
         }
       }, 2000);
@@ -211,23 +227,31 @@ export default {
       const watchlistId = this.$route.params.id;
       this.deleteSymbolFromWatchlist({ watchlistId, symbolId }).then(() => {
         // Show SweetAlert on success
-        Swal.fire({
-          icon: 'success',
-          title: 'Symbol deleted Successfully',
-          timer: 1000,
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Symbol deleted Successfully"
         });
       })
         .catch((error) => {
           console.error('Error deleting symbol:', error);
 
           // Show SweetAlert on error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error deleting symbol',
-            text: 'An error occurred while deleting symbol. Please try again.',
-          });
+          Toast.fire({
+          icon: "error",
+          title: "Error deleting symbol"
+        });
         });
     },
     initSortable() {
@@ -265,23 +289,31 @@ export default {
       const watchlistId = this.editWatchlistData.id;
       this.updateSymbolPosition({ watchlistId, updatedPositions }).then(() => {
         // Show SweetAlert on success
-        Swal.fire({
-          icon: 'success',
-          title: 'Positions updated successfully',
-          timer: 1000,
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Positions updated successfully"
         });
       })
         .catch((error) => {
           console.error('Error updating positions:', error);
 
           // Show SweetAlert on error
-          Swal.fire({
-            icon: 'error',
-            title: 'Error updating positions',
-            text: 'An error occurred while updating positions. Please try again.',
-          });
+          Toast.fire({
+          icon: "error",
+          title: "Error updating positions"
+        });
         });
     }
   },

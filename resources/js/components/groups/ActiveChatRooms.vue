@@ -41,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   props: {
@@ -69,10 +70,42 @@ export default {
           chat.joined = response.data.joined;
           chat.requestPending = response.data.requestPending;
           this.$emit('chat-joined');
-          alert(response.data.message);
+          // alert(response.data.message);
+          const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Joined chat successfully!"
+                  });
         })
         .catch(error => {
-          console.error('Error joining chat:', error);
+          // console.error('Error joining chat:', error);
+          const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error joining chat"
+                  });
         });
     },
     formatGroupName(groupTitle) {
