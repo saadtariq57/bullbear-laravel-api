@@ -10,6 +10,7 @@ import userWatchlistModule from './watchlistStore';
 import userWidgetsModule from './widgetsStore';
 import searchModule from './searchStore';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default createStore({
     state: {
@@ -65,11 +66,43 @@ export default createStore({
             })
             .then(response => {
                 commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
-                alert('User data updated successfully!');
+                // alert('User data updated successfully!');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "User data updated successfully!"
+                  });
             })
             .catch(error => {
                 console.error('Error updating user data:', error.response.data);
-                alert('Failed to update data.');
+                // alert('Failed to update data.');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error updating user data"
+                  });
             });
         }
     },

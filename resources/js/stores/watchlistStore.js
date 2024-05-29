@@ -1,4 +1,5 @@
 import watchlistService from '../services/watchlistService';
+import Swal from 'sweetalert2';
 
 const userWatchlistModule = {
     namespaced: true,
@@ -161,6 +162,22 @@ const userWatchlistModule = {
                 const data = await watchlistService.copyWatchlist(postData);
                 if(data){
                     commit('SET_LOADING', false);
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "450px",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                          toast.onmouseenter = Swal.stopTimer;
+                          toast.onmouseleave = Swal.resumeTimer;
+                        }
+                      });
+                      Toast.fire({
+                        icon: "success",
+                        title: "Watchlist copied successfully!"
+                      });
                 }
                 // const updatedData = await watchlistService.getUserWatchlistData(data.original.user_id);
                 // commit('SET_HAS_WATCHLIST', updatedData.hasUserWatchlist);
@@ -177,6 +194,22 @@ const userWatchlistModule = {
                 // }
             } catch (error) {
                 console.error('Error copying watchlist:', error);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error copying watchlist"
+                  });
             }
         } 
     },

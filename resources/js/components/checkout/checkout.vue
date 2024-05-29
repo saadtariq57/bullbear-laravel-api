@@ -46,6 +46,8 @@
 <script>
 import { loadStripe } from '@stripe/stripe-js';
 import { mapState, mapActions } from 'vuex';
+import Swal from 'sweetalert2';
+
 export default {
     name: 'PricingComponent',
     computed: {
@@ -151,6 +153,22 @@ export default {
             } else {
                 axios.post('/api/createUserSubscription', this.formData)
                     .then(response => {
+                        const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Plan subscribed successfully!"
+                  });
                         // Handle response
                         // console.log('Response:', response.data);
                         this.$router.push('/checkout/thank-you');
@@ -158,6 +176,22 @@ export default {
                     })
                     .catch(error => {
                         // Handle error
+                        const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error while plan subscription"
+                  });
                         console.error('Error:', error);
                         this.submitform = false;
 

@@ -2491,7 +2491,10 @@ p.user-message {
     border: 2px solid var(--primary-color);
 
 }
-
+/* sweat alert  */
+.swal2-container{
+    top: 115px !important;
+  }
 @keyframes checked-radio {
     0% {
         transform: rotate(0) translateY(-3px) scale(0.5);

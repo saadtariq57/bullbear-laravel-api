@@ -1,4 +1,5 @@
 import ProfileGroupHeaderService from '../services/profileGroupHeaderService';
+import Swal from 'sweetalert2';
 
 const ProfileGroupHeaderModule = {
     namespaced: true,
@@ -38,10 +39,42 @@ const ProfileGroupHeaderModule = {
                 const data = await ProfileGroupHeaderService.uploadCoverImage({file, context , groupId});
                 commit('SET_COVER_IMAGE_PATH', data.cover_photo);
                 commit('SET_MESSAGE', data.message);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "450px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "cover photo updated successfully!"
+                  });
                 // return ;
             } catch (error) {
                 console.error('Error uploading cover photo:', error);
                 commit('SET_ERROR', error.response ? error.response.data.error : 'Unknown error occurred');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error uploading cover photo"
+                  });
             } finally {
                 commit('SET_LOADING', false);
                 commit('SET_SUCCESS', null);
@@ -53,9 +86,41 @@ const ProfileGroupHeaderModule = {
                 
                 commit('SET_COVER_IMAGE_PATH', 'photos/d-cover.jpg');
                 commit('SET_MESSAGE', data.message);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "450px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Cover Photo deleted successfully!"
+                  });
             } catch (error) {
                 console.error('Error removing cover photo:', error);
                 commit('SET_ERROR', error.response ? error.response.data.error : 'Unknown error occurred');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error deleting cover photo"
+                  });
             } finally {
                 commit('SET_LOADING', false);
             }
@@ -67,10 +132,41 @@ const ProfileGroupHeaderModule = {
                 const data = await ProfileGroupHeaderService.uploadProfileImage({file, context, group_Id});
                 commit('SET_PROFILE_IMAGE_PATH', data.profile_photo);
                 commit('SET_MESSAGE', data.message);
-                
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "450px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Profile Photo updated successfully!"
+                  });
             } catch (error) {
                 console.error('Error uploading cover photo:', error);
                 commit('SET_ERROR', error.response ? error.response.data.error : 'Unknown error occurred');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error updating profile photo"
+                  });
             } finally {
                 commit('SET_LOADING', false);
             }
