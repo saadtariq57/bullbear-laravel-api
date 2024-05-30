@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use App\Models\Widget;
+use App\Models\WidgetCategory;
 use App\Models\WidgetSymbol;
 use App\Models\Symbol;
+use Illuminate\Support\Facades\Log;
 
 class WidgetController extends Controller
 {
@@ -77,68 +79,75 @@ class WidgetController extends Controller
     /**
      * Show the form for creating a new widget.
      */
-        public function create()
-        {
-            return view('admin.widgets.create');
-        }
+    public function create()
+    {
+        $categories = WidgetCategory::all();
+        return view('admin.widgets.create', compact('categories'));
+    }
+
 
     /**
      * Store a newly created widget in storage.
      */
-        public function store(Request $request)
-        {
-            $request->validate([
-                'widget_type' => 'required|string|max:255',
-                'date_posted' => 'nullable|date',
-                'layout' => 'nullable|string|max:255',
-                'widget_title' => 'nullable|string|max:255',
-                'widget_width' => 'nullable|string|max:255',
-                'widget_height' => 'nullable|string|max:255',
-                'symbols_length' => 'nullable|integer'
-            ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'widget_type' => 'required|string|max:255',
+            'date_posted' => 'nullable|date',
+            'layout' => 'nullable|string|max:255',
+            'widget_title' => 'nullable|string|max:255',
+            'widget_width' => 'nullable|string|max:255',
+            'widget_height' => 'nullable|string|max:255',
+            'symbols_length' => 'nullable|integer',
+            'category_id' => 'nullable|exists:widget_categories,id',
+            'display_order' => 'required|integer'
+        ]);
 
-            $widget = Widget::create($request->all());
+        $widget = Widget::create($request->all());
 
-            return redirect('/admin/widgets')->with('success', 'Widget saved!');
-        }
+        return redirect('/admin/widgets')->with('success', 'Widget saved!');
+    }
 
     /**
      * Show the form for editing the specified widget.
      */
-        public function edit(Widget $widget)
-        {
-            return view('admin.widgets.edit', compact('widget'));
-        }
+    public function edit(Widget $widget)
+    {
+        $categories = WidgetCategory::all();
+        return view('admin.widgets.edit', compact('widget', 'categories'));
+    }
 
     /**
      * Update the specified widget in storage.
      */
-        public function update(Request $request, Widget $widget)
-        {
-            $request->validate([
-                'widget_type' => 'required|string|max:255',
-                'date_posted' => 'nullable|date',
-                'layout' => 'nullable|string|max:255',
-                'widget_title' => 'nullable|string|max:255',
-                'widget_width' => 'nullable|string|max:255',
-                'widget_height' => 'nullable|string|max:255',
-                'symbols_length' => 'nullable|integer'
-            ]);
+    public function update(Request $request, Widget $widget)
+    {
+        $request->validate([
+            'widget_type' => 'required|string|max:255',
+            'date_posted' => 'nullable|date',
+            'layout' => 'nullable|string|max:255',
+            'widget_title' => 'nullable|string|max:255',
+            'widget_width' => 'nullable|string|max:255',
+            'widget_height' => 'nullable|string|max:255',
+            'symbols_length' => 'nullable|integer',
+            'category_id' => 'nullable|exists:widget_categories,id',
+            'display_order' => 'required|integer'
+        ]);
 
-            $widget->update($request->all());
-            return redirect('/admin/widgets')->with('success', 'Widget updated!');
-        }
+        $widget->update($request->all());
+        return redirect('/admin/widgets')->with('success', 'Widget updated!');
+    }
 
     /**
      * Remove the specified widget from storage.
      */
-        public function destroy(Widget $widget)
-        {
-            $widget->symbols()->delete();
-            $widget->delete();
+    public function destroy(Widget $widget)
+    {
+        $widget->symbols()->delete();
+        $widget->delete();
 
-            return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
-        }
+        return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
+    }
     
         public function fetchPostWordpress(Request $request, $categoryIds)
         {
@@ -154,6 +163,64 @@ class WidgetController extends Controller
                 return [];
             }
         }
+    //Widget Categories
+    public function categoriesIndex(Request $request)
+    {
+
+        $search = $request->query('search');
+
+        if ($search) {
+            $categories = WidgetCategory::where('name', 'LIKE', "%{$search}%")
+                ->paginate(10);
+        } else {
+            $categories = WidgetCategory::paginate(10);
+        }
+
+        return view('admin.widgets.categories.index', compact('categories'));
+    }
+
+    /**
+     * Show the form for creating a new group category.
+     */
+    public function categoriesCreate()
+    {
+        $categories = WidgetCategory::all();
+        return view('admin.widgets.categories.create', compact('categories'));
+    }
+
+    public function categoriesStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string|max:255',
+            // other validation rules
+        ]);
+        
+        WidgetCategory::create($validatedData);
+        return redirect()->route('admin.widgets.categories.index')->with('success', 'Category created successfully');
+    }
+
+    public function categoriesEdit(WidgetCategory $category)
+    {
+        return view('admin.widgets.categories.edit', compact('category'));
+    }
+
+    public function categoriesUpdate(Request $request, WidgetCategory $category)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string|max:255',
+        ]);
+        
+        $category->update($validatedData);
+        return redirect()->route('admin.widgets.categories.index')->with('success', 'Category updated successfully');
+    }
+
+    public function categoriesDestroy(WidgetCategory $category)
+    {
+        $category->delete();
+        return redirect()->route('admin.widgets.categories.index')->with('success', 'Category deleted successfully');
+    }
 
         // user widgets
         public function getWidgetData(Request $request){
