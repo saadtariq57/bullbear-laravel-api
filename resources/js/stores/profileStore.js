@@ -1,4 +1,6 @@
 import ProfileService from '../services/profileService';
+import Swal from 'sweetalert2';
+
 
 const userProfileModule = {
     namespaced: true,
@@ -98,8 +100,40 @@ const userProfileModule = {
                 commit('SET_IS_FOLLOWERS_COUNT', followersCount + 1);
                 console.log(data);
                 // Handle UI update or other actions upon successful follow/unfollow
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Follow user successfully!"
+                  });
             } catch (error) {
-                console.error('Error while following user:', error);
+                // console.error('Error while following user:', error);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error while following user"
+                  });
                 throw error;
             }
         },
@@ -110,8 +144,40 @@ const userProfileModule = {
                 commit('SET_IS_FOLLOWERS_COUNT', followersCount - 1);
                 console.log(data);
                 // Handle UI update or other actions upon successful follow/unfollow
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "unfollow user successfully!"
+                  });
             } catch (error) {
-                console.error('Error while unfollowing user:', error);
+                // console.error('Error while unfollowing user:', error);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error while unfollowing user"
+                  });
                 throw error;
             }
         },
