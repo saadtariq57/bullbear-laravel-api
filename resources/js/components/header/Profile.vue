@@ -31,16 +31,16 @@
                 <i class="bi bi-chat-dots fs-4"></i>
                 <span class="notification-count">{{ messages.length }}</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
+            <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
                 <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
-                    <a @click.prevent="handleNotificationClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center">
-                        <img :src="'/uploads/' + message.user.avatar" alt="" width="30" height="30">
+                    <a @click.prevent="handleNotificationClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
+                        <img :src="'/uploads/' + message.user.avatar" alt="" width="50" height="50" class="rounded-circle">
                         <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ message.user.name }}</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ message.preview }}</p>
-                            <span class="badge bg-primary">{{ message.unread_count }}</span>
-                        </div>
+                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ message.user.name }}</h6>
+                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap text-oneline">{{ message.preview }}</p>
+                            <!-- <span class="badge bg-primary ">{{ message.unread_count }}</span> -->
                         <div class="fs-6 fw-5 ms-auto">{{ message.formattedTime }}</div>
+                        </div>
                     </a>
                 </li>
                 <li class="py-0"><a href="/messages" class="dropdown-item text-center py-2">See All</a></li>
@@ -176,5 +176,27 @@ export default {
   width: 40px;
   height: 40px;
   overflow: hidden;
+}
+.notification-count {
+    position: absolute;
+    top: -3px;
+    left: 10px;
+    background: red;
+    color: #fff;
+    display: flex;
+    min-width: 15px;
+    min-height: 15px;
+    border-radius: 50px;
+    padding: 0.5px 5px;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+}
+.profile-dropdown-toggle {
+  position: relative;
+}
+.message_dropdown p.text-oneline{
+    width: 250px;
 }
 </style>
