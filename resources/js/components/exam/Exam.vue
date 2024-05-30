@@ -3,7 +3,7 @@
   <div v-if="showAllExams" >
 
     <div v-for="(category, index) in categories" :key="index" class="my-3 exam-cards mt-5 pb-4">
-      <div class="mb-4">
+      <div class="mb-4" v-if="category.exams.length > 0">
         <h2 class="fw-6 text-uppercase m-0">{{ category.name }}</h2>
         <div class="border border-bottom border-primary d-inline-block mb-2" style="width: 74px;"></div>
       </div>

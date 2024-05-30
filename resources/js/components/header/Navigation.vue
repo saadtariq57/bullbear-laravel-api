@@ -102,7 +102,7 @@
                                                     <template v-for="child in menuItem.children" :key="child.id">
                                                         <li v-if="child.children && child.children.length > 0">
                                                             <div
-                                                                class="dropdown nested-dropdown-wrapper pe-2 position-relative">
+                                                                class="dropdown nested-dropdown-wrapper position-relative">
                                                                 <a :href="`/${child.url}`"
                                                                     class="nav-link nested-nav-dropdown fw-4">{{
                                 child.title }}</a>
@@ -1040,7 +1040,16 @@ export default {
 .nested-dropdown-wrapper:hover ul.nested-mega-menu {
     display: block;
 }
-
+.mega-menu-dropdown li{
+    position: relative;
+}
+.nested-dropdown-wrapper::after{
+    content: '';
+    position: absolute;
+    padding: 15px;
+    right: -15px;
+    top: -6px;
+}
 .nested-nav-dropdown {
     width: 100%;
     text-align: left;

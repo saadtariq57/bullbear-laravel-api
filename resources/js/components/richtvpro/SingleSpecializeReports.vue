@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container my-4">
         <div class="row">
             <div class="col-lg-8">
                 <h1 class="fs-3 fw-6 border-bottom border-2 border-dark pb-2">Trade Desk, Inc. (NASDAQ: TTD)</h1>

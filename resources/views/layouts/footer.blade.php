@@ -5,7 +5,7 @@
              <div class="row">
                  <div class="col-lg-4 col-md-6 ">
                      <div class="footer-logo">
-                         <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo.png" alt="Footer logo">
+                         <img src="{{ URL::asset('build/images/logo.svg') }}" alt="Footer logo">
                      </div>
                      <div class="footer-para">
                          <p class="mt-3">

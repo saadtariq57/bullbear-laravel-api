@@ -216,3 +216,4 @@ Route::get('/searchMembers/default', [UserController::Class, 'defaultMembers']);
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
 
 Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);
+Route::get('/webinars', [LiveController::class, 'getWebinars']);
