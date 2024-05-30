@@ -44,6 +44,21 @@
                         <label for="widget_title">Widget Title</label>
                         <input type="text" class="form-control" name="widget_title" id="widget_title">
                     </div>
+
+                    <div class="form-group">
+                        <label for="category_id">Category</label>
+                        <select name="category_id" class="form-control">
+                            <option value="" selected>Select a Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display_order">Display Order</label>
+                        <input type="number" class="form-control" name="display_order" id="display_order" value="0">
+                    </div>
                 </div>
 
                 <div class="col-md-6">

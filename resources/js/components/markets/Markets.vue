@@ -65,7 +65,6 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex';
-import axios from "axios";
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import TopMovers from '../widgets/TopMovers.vue';

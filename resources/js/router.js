@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // Define routes with lazy loading
+//Add Categories of widget and then add each widget in a category
+//Menu Module can be simplified
+//One of the category could be sidebar-{pagetype}
 const routes = [
     {
         path: '/markets/:cetagory/:id',

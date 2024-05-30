@@ -19,35 +19,34 @@ class GroupController extends Controller
     }
 
 
-public function index(Request $request)
-{
-    $search = $request->query('search');
+    public function index(Request $request)
+    {
+        $search = $request->query('search');
 
-    if ($search) {
-        $groups = Group::with('category')
-                       ->withCount('members')  // Add count of members
-                       ->where(function ($query) use ($search) {
-                           $query->where('group_name', 'LIKE', "%{$search}%")
-                                 ->orWhere('symbol', 'LIKE', "%{$search}%")
-                                 ->orWhere('group_title', 'LIKE', "%{$search}%")
-                                 ->orWhereHas('category', function ($query) use ($search) {
-                                     $query->where('name', 'LIKE', "%{$search}%");
-                                 });
-                       })
-                       ->paginate(15);
-    } else {
-        $groups = Group::with('category')
-                       ->withCount('members')
-                       ->paginate(15);
+        if ($search) {
+            $groups = Group::with('category')
+                        ->withCount('members')
+                        ->where(function ($query) use ($search) {
+                            $query->where('group_name', 'LIKE', "%{$search}%")
+                                    ->orWhere('symbol', 'LIKE', "%{$search}%")
+                                    ->orWhere('group_title', 'LIKE', "%{$search}%")
+                                    ->orWhereHas('category', function ($query) use ($search) {
+                                        $query->where('name', 'LIKE', "%{$search}%");
+                                    });
+                        })
+                        ->paginate(15);
+        } else {
+            $groups = Group::with('category')
+                        ->withCount('members')
+                        ->paginate(15);
+        }
+        
+        if ($request->route()->named('admin.groups.*')) {
+            return view('admin.groups.index', compact('groups'));
+        } else {
+            return response()->json($groups);
+        }
     }
-
-    // return view('admin.groups.index', compact('groups'));
-    if ($request->route()->named('admin.groups.*')) {
-        return view('admin.groups.index', compact('groups'));
-    } else {
-        return response()->json($groups);
-    }
-}
 
     public function siteGroupSearch(Request $request)
     {

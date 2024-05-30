@@ -13,7 +13,7 @@
     <body data-sidebar="colored">
 @endsection
 @section('content')
-    <!--  Start your content -->
+    <!-- Start your content -->
     <div class="row">
         <form action="{{ route('admin.widgets.update', $widget->id) }}" method="POST">
             @csrf
@@ -44,6 +44,21 @@
                     <div class="form-group">
                         <label for="widget_title">Widget Title</label>
                         <input type="text" class="form-control" name="widget_title" id="widget_title" value="{{ old('widget_title', $widget->widget_title) }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category_id">Category</label>
+                        <select name="category_id" class="form-control">
+                            <option value="" selected>Select a Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $widget->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display_order">Display Order</label>
+                        <input type="number" class="form-control" name="display_order" id="display_order" value="{{ old('display_order', $widget->display_order) }}">
                     </div>
                 </div>
 
