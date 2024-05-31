@@ -233,6 +233,11 @@ const routes = [
         path: '/richtv-live',
         name: 'richtv-live',
         component: () => import('./components/academy/RichtvLive.vue'),
+    },
+    {
+        path: '/messages',
+        name: 'messages',
+        component: () => import('./components/groups/ChatRoom.vue'),
     }
 ];
 
