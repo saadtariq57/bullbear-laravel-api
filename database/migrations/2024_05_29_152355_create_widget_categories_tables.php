@@ -1,7 +1,5 @@
 <?php
 
-// database/migrations/2024_05_21_160745_create_menus_table.php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('widget_categories', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('parent_id')->unsigned()->nullable();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->timestamps();
+            $table->foreign('parent_id')->references('id')->on('widget_categories')->onDelete('cascade');
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('widget_categories');
     }
 };

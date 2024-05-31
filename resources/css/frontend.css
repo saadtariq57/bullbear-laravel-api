@@ -395,9 +395,8 @@ td {
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 3px var(--Cinder);
-    background-color: var(--primary-color) !important;
+    background-color: var(--primary-color);
 }
-
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 3px #23262f;
     background-color: transparent;
@@ -823,7 +822,7 @@ section.featured-video {
 
 .text-oneline {
     overflow: hidden;
-    white-space: nowrap;
+    white-space: nowrap !important;
     text-overflow: ellipsis;
 }
 
@@ -2390,12 +2389,6 @@ p.user-message {
 .receive-smg-text {
     max-width: 480px;
 }
-
-.chat-emoji-icon {
-    right: 15px;
-    top: 10px;
-}
-
 .receive-msg-action {
     right: -30px;
     bottom: 40%;

@@ -64,7 +64,8 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.widgets.index') }}">All Widgets</a></li>
                         <li><a href="{{ route('admin.widgets.create') }}">Add New Widget</a></li>
-                        <li><a href="{{ route('admin.menus.index') }}">Menus</a></li>
+                       <li><a href="{{ route('admin.widgets.categories.index') }}">Categories</a></li>
+                       <li><a href="{{ route('admin.widgets.categories.create') }}">Add New Category</a></li>
                     </ul>
                 </li>
 

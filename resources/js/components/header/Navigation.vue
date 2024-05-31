@@ -38,8 +38,8 @@
                             <template v-else>
                                 <Login />
                                 <button class="bg-transparent border-0 fs-3 nav-clr d-block d-xl-none"
-                                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
-                                    aria-controls="offcanvasTop" type="button">
+                                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                                    type="button">
                                     <i class="bi bi-search"></i>
                                 </button>
                             </template>
@@ -67,8 +67,7 @@
                                 <li class="text-center nav-bottom-link" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                                     <button class="navbar-toggler border-0" type="button">
-                                        <svg width="23" height="25" viewBox="0 0 30 23"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                        <svg width="23" height="25" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
                                                 d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z"
                                                 fill="#000000"></path>
@@ -83,54 +82,632 @@
                         <div class="dextop-nav d-none d-xl-block flex-fill">
                             <div class="main-menu-container d-flex gap-4 align-items-center justify-content-center">
                                 <ul class="main-list mb-0 gap-4 align-items-center p-0">
-                                    <!-- <MenuItem v-for="menuItem in menuHierarchy" :key="menuItem.id"
-                                        :menuItem="menuItem" /> -->
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">Markets</button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu py-3 mega-menu rounded-3 flex-column">
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/indices"
+                                                            class="nav-link nested-nav-dropdown fw-4">Indices</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/indices-futures">Indices
+                                                                    Futures</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/major-indices">Major
+                                                                    Indices</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/indices-realtime">Indices
+                                                                    Real-Time
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/world-indices">World Indices</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/global-indices">Global
+                                                                    Indices</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/dow-jones-futures">Dow Jones
+                                                                    Futures</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/s&p-500-futures">S&P
+                                                                    500
+                                                                    Futures</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/indices/nasdaq-futures">Nasdaq
+                                                                    Futures</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-realtive">
+                                                        <a href="/markets/stocks"
+                                                            class="nav-link nested-nav-dropdown fw-4">Stocks</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/trading-stocks">
+                                                                    Trending Stocks</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/united-states">United States</a>
+                                                            </li>
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/pre-market">Pre-Market</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/americas">Americas</a>
+                                                            </li> -->
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/europe">Europe</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/most-active">Most Active</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/top-gainers">Top Gainers</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/top-losers">Top Losers</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/world-adrs">World ADRs</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/marijuana-stocks">Marijuana
+                                                                    Stocks</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/stocks/top-bank-stocks">Top Bank
+                                                                    Stocks</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/commodities"
+                                                            class="nav-link nested-nav-dropdown fw-4">Commodities</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/real-time-commodities">Real
+                                                                    Time Commodities</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/metals">Metals</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/energy">Energy</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/grains">Grains</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/softs">Softs</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/meats">Meats</a>
+                                                            </li>
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/commodities/commodity-indices">Commodity
+                                                                    Indices</a>
+                                                            </li> -->
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/cryptocurrency"
+                                                            class="nav-link nested-nav-dropdown fw-4">Cryptocurrency</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/all-cryptocurrencies">All
+                                                                    Cryptocurrencies</a>
+                                                            </li> -->
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/cryptocurrency-pairs">Cryptocurrency
+                                                                    Pairs</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin
+                                                                    ETFs</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/bitcoin">Bitcoin</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/ethereum">Ethereum</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/cardano">Cardano</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/solana">Solana</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/dogecoin">Dogecoin</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/cryptocurrency/shiba-inu">SHIBA INU</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/currencies"
+                                                            class="nav-link nested-nav-dropdown fw-4">Currencies</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/currency-rates">Currency
+                                                                    Rates</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/single-currency-crosses">Single
+                                                                    Currency Crosses</a>
+                                                            </li>
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/live-currency-cross-rates">Live
+                                                                    Currency Cross
+                                                                    Rates</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/exchange-rates-table">Exchange
+                                                                    Rates Table</a>
+                                                            </li> -->
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/forward-rates">Forward
+                                                                    Rates</a>
+                                                            </li> -->
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/currency-futures">Currency
+                                                                    Futures</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/currencies/currency-options">Currency
+                                                                    Options</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/etfs"
+                                                            class="nav-link nested-nav-dropdown fw-4">ETFs</a>
+                                                        <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/etfs/world-etfs">World ETFs</a>
+                                                            </li>
+                                                            <!-- <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/etfs/major-etfs">Major
+                                                                    ETFs</a>
+                                                            </li> -->
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/etfs/usa-etfs">USA ETFs</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/etfs/marijuana-etfs">Marijuana ETFs</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/funds" class="nav-link fw-4">Funds</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/funds/world-funds">World
+                                                                    Funds</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/funds/major-funds">Major
+                                                                    Funds</a>
+                                                            </li>
+                                                        </ul> -->
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/bonds" class="nav-link fw-4">Bonds</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/us-treasury-yield-curve">US
+                                                                    Treasury
+                                                                    Yield Curve</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/world-government-bonds">World
+                                                                    Government Bonds</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/financial-futures">Financial
+                                                                    Futures</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/government-bond-spreads">Government
+                                                                    Bond Spreads</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/bond-indices">Bond
+                                                                    Indices</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/forward-rates">Forward
+                                                                    Rates</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/bonds/world-cds">World Credit
+                                                                    Default Swap Rates
+                                                                    (CDS)</a>
+                                                            </li>
+                                                        </ul> -->
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
+                                                        <a href="/markets/certificates"
+                                                            class="nav-link fw-4">Certificates</a>
+                                                        <!-- <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/certificates/major-certificates">Major
+                                                                    Certificates</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/markets/certificates/world-certificates">World
+                                                                    Certificates</a>
+                                                            </li>
+                                                        </ul> -->
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Finance
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/personal-finance/">Personal
+                                                        Finance</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/investing101/">Investing101</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/understanding-insurance/">Understanding
+                                                        Insurance
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-planning/">Financial
+                                                        Planning
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/specific-investment-types/">Specific
+                                                        Investment Types
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/capital-budgeting/">Capital
+                                                        Budgeting
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/mergers-and-acquisitions/">Mergers
+                                                        and Acquisitions</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/risk-management/">Risk
+                                                        Management
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Analysis
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/market-overview/">Market
+                                                        Overview
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/currencies/">Currencies</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/stock-markets/">Stock
+                                                        Markets
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/commodities/">Commodities
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/bonds/">Bonds
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/cryptocurrency-analysis/">Cryptocurrency
 
-                                    <!-- Dynamic Menu Items -->
-                                    <template v-for="menuItem in menuHierarchy" :key="menuItem.id">
-                                        <li v-if="menuItem.children && menuItem.children.length > 0">
-                                            <div class="dropdown d-flex gap-2 align-items-center">
-                                                <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span
-                                                        :class="menuItem.title == 'RichTv Pro' ? 'clr-primary' : ''">{{
-                                menuItem.title }}</span>
-                                                </button>
-                                                <img src="/build/images/bxs_up-arrow.png" alt="" width="15px"
-                                                    height="15px" class="dropdown-img">
-                                                <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
-                                                    <template v-for="child in menuItem.children" :key="child.id">
-                                                        <li v-if="child.children && child.children.length > 0">
-                                                            <div
-                                                                class="dropdown nested-dropdown-wrapper position-relative">
-                                                                <a :href="`/${child.url}`"
-                                                                    class="nav-link nested-nav-dropdown fw-4">{{
-                                child.title }}</a>
-                                                                <ul
-                                                                    class="dropdown-menu px-4 py-3 nested-mega-menu dynamic-nested-mega-menu rounded-3" :class="child.title == 'Trading School' ? 'trading-school-menu' : ''">
-                                                                    <li v-for="subChild in child.children"
-                                                                        :key="subChild.id">
-                                                                        <a class="dropdown-item nav-link"
-                                                                            :href="`/${subChild.url}`">{{ subChild.title
-                                                                            }}</a>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </li>
-                                                        <li v-else>
-                                                            <a class="dropdown-item nav-link" :href="`/${child.url}`">{{
-                                child.title }}</a>
-                                                        </li>
-                                                    </template>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li v-else>
-                                            <a :href="`/${menuItem.url}`" class="nav-link nav-clr fw-bolder">{{
-                                                menuItem.title
-                                                }}</a>
-                                        </li>
-                                    </template>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/analysis/etfs/">ETFs
+
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Academy
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/richtv-live">RichTv Live
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/glossary/">Glossary
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/trading-strategies/">Trading
+                                                        Strategies
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                News
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/cryptocurrency/">Cryptocurrency
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/stocks/">Stocks
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/investing/">Investing
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/press-release/">Press
+                                                        Release
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Resources
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/economic-calendar">Economic
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/holiday-calendar">Holiday
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/earning-calendar">Earnings
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/dividend-calendar">Dividend
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/splits-calendar">Splits
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/ipo-calendar">IPO
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="/futures-expiry-calendar">Futures Expiry
+                                                        Calendar</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/watchlist">Watchlist</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown d-flex gap-2 align-items-center">
+                                            <button class="nav-link dropdown-toggle d-flex nav-clr" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="clr-primary">RichTv</span>&nbsp;<span
+                                                    class="text-cta">Pro</span>
+                                            </button>
+                                            <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px"
+                                                class="dropdown-img">
+                                            <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                                                <li>
+                                                    <div class="dropdown nested-dropdown-wrapper pe-2 position-relative">
+                                                        <a href="/trading-school"
+                                                            class="nav-link nested-nav-dropdown fw-4">Trading School</a>
+                                                        <ul
+                                                            class="dropdown-menu px-4 py-2 nested-mega-menu rounded-3 trading-school-menu">
+                                                            <li>
+                                                                <a class="dropdown-item nav-link" href="/exams">Exams</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item nav-link"
+                                                                    href="/technical-analysis">Technical
+                                                                    Analysis</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/specialize-reports">Specialize
+                                                        Reports</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/email-alerts">Special
+                                                        Alerts</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link"
+                                                        href="https://richtv.io/category/financial-news/market-analysis/">Market
+                                                        analysis Pro
+                                                        Tips</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/personal-access">Personal
+                                                        Access</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/webinar">Webinar
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/watchlist-ideas">Watchlist
+                                                        Ideas</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/pro-picks">ProPicks</a>
+                                                </li>
+                                                <!-- <li>
+                                                    <a class="dropdown-item nav-link" href="/">Stock Ideas</a>
+                                                </li> -->
+                                                <li>
+                                                    <a class="dropdown-item nav-link" href="/stocks-screener">Stock
+                                                        Screener</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">Ceo Interviews</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -140,8 +717,8 @@
                             <div class="offcanvas-header mobile_nav_header">
                                 <div class="site-logo">
                                     <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
-                                        <img class="header-image is-logo-image" alt="Rich TV"
-                                            src="/build/images/logo.svg" title="Rich TV" />
+                                        <img class="header-image is-logo-image" alt="Rich TV" src="/build/images/logo.svg"
+                                            title="Rich TV" />
                                     </a>
                                 </div>
                                 <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
@@ -158,8 +735,7 @@
                                                         <button
                                                             class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent"
                                                             type="button" data-bs-toggle="collapse"
-                                                            data-bs-target="#collapseMarket_analysis"
-                                                            aria-expanded="false"
+                                                            data-bs-target="#collapseMarket_analysis" aria-expanded="false"
                                                             aria-controls="collapseMarket_analysis">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                                                 <img class="img-fluid" src="/build/images/market.png"
@@ -172,8 +748,7 @@
                                                         </button>
                                                     </h2>
                                                     <hr>
-                                                    <div id="collapseMarket_analysis"
-                                                        class="accordion-collapse collapse"
+                                                    <div id="collapseMarket_analysis" class="accordion-collapse collapse"
                                                         data-bs-parent="#accordionMobilenavbar">
                                                         <div class="accordion-body pt-0">
                                                             <ul class="list-unstyled mega-menu-dropdown">
@@ -183,8 +758,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketIndices"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketIndices"
@@ -246,8 +820,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketStocks"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketStocks"
@@ -311,8 +884,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketCommodities"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketCommodities"
@@ -357,8 +929,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketCryptocurrency"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketCryptocurrency"
@@ -412,8 +983,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketCurrencies"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketCurrencies"
@@ -453,8 +1023,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-collapsemarketETFs"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-collapsemarketETFs"
@@ -593,8 +1162,8 @@
                                                         <button
                                                             class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 moblie-nav-btn bg-transparent"
                                                             type="button" data-bs-toggle="collapse"
-                                                            data-bs-target="#collapseTrading_guide"
-                                                            aria-expanded="false" aria-controls="collapseTrading_guide">
+                                                            data-bs-target="#collapseTrading_guide" aria-expanded="false"
+                                                            aria-controls="collapseTrading_guide">
                                                             <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                                                 <img class="img-fluid"
                                                                     src="/build/images/anaylsis-market.png"
@@ -839,8 +1408,7 @@
                                                                         <div class="accordion-item border-0">
                                                                             <h2 class="accordion-header">
                                                                                 <a class="accordion-button collapsed dropdown-item nav-link p-0 border-0 moblie-nav-btn bg-transparent"
-                                                                                    type="button"
-                                                                                    data-bs-toggle="collapse"
+                                                                                    type="button" data-bs-toggle="collapse"
                                                                                     data-bs-target="#flush-accordion-flush"
                                                                                     aria-expanded="false"
                                                                                     aria-controls="flush-accordion-flush"
@@ -926,7 +1494,6 @@
     </header>
 </template>
 <script>
-import axios from 'axios';
 import { mapState } from 'vuex';
 import Login from './Login.vue';
 import Search from './Search.vue';
@@ -954,42 +1521,9 @@ export default {
             },
         };
     },
-    created() {
-        this.fetchMenuItems();
-    },
     computed: {
-        ...mapState(['userData']),
-        menuHierarchy() {
-            const menuMap = {};
-            this.menuItems.forEach((item) => {
-                menuMap[item.id] = { ...item, children: [] };
-            });
-
-            const menuHierarchy = [];
-            this.menuItems.forEach((item) => {
-                if (item.parent_id) {
-                    if (menuMap[item.parent_id]) {
-                        menuMap[item.parent_id].children.push(menuMap[item.id]);
-                    }
-                } else {
-                    menuHierarchy.push(menuMap[item.id]);
-                }
-            });
-
-            return menuHierarchy;
-        },
-    },
-    methods: {
-        async fetchMenuItems() {
-            try {
-                const response = await axios.get('/api/menus'); // Replace '/api/menus' with your actual API endpoint
-                this.menuItems = response.data;
-                // console.log(this.menuItems);
-            } catch (response) {
-                console.error('Error fetching menu items:', response);
-            }
-        },
-    },
+        ...mapState(['userData'])
+    }
 };
 </script>
 
