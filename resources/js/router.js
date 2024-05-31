@@ -233,6 +233,11 @@ const routes = [
         path: '/richtv-live',
         name: 'richtv-live',
         component: () => import('./components/academy/RichtvLive.vue'),
+    },
+    {
+        path: '/single-report',
+        name: 'single-report',
+        component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
     }
 ];
 

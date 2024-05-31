@@ -124,6 +124,7 @@
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
                         <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>
+                        <li><a href="{{ route('admin.webinar.index') }}">Webinars</a></li>
                     </ul>
                 </li>
 

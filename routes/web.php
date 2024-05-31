@@ -62,7 +62,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/edit/{id}', [LiveController::class, 'edit'])->name('edit');
             Route::post('/update/{id}', [LiveController::class, 'update'])->name('update');
             Route::delete('/destroy/{id}', [LiveController::class, 'destroy'])->name('destroy');
-        });        
+        });
+        
+        Route::prefix('admin/webinar')->name('admin.webinar.')->group(function () {
+            Route::get('/', [LiveController::class, 'showWebinars'])->name('index');
+            Route::post('/store', [LiveController::class, 'storeWebinars'])->name('store');
+            Route::get('/edit/{id}', [LiveController::class, 'editWebinars'])->name('edit');
+            Route::post('/update/{id}', [LiveController::class, 'updateWebinars'])->name('update');
+            Route::delete('/destroy/{id}', [LiveController::class, 'destroyWebinars'])->name('destroy');
+        });
+        
 
         // route group for ExamController
         Route::prefix('admin/exams')->name('admin.exams.')->group(function () {

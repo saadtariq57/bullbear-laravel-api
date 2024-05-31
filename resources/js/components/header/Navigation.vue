@@ -474,9 +474,7 @@
                                                 <li>
                                                     <a class="dropdown-item nav-link"
                                                         href="https://richtv.io/category/mergers-and-acquisitions/">Mergers
-                                                        and Acquisitions
-
-                                                    </a>
+                                                        and Acquisitions</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link"
@@ -1576,7 +1574,16 @@ export default {
 .nested-dropdown-wrapper:hover ul.nested-mega-menu {
     display: block;
 }
-
+.mega-menu-dropdown li{
+    position: relative;
+}
+.nested-dropdown-wrapper::after{
+    content: '';
+    position: absolute;
+    padding: 15px;
+    right: -15px;
+    top: -6px;
+}
 .nested-nav-dropdown {
     width: 100%;
     text-align: left;
