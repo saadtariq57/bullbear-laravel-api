@@ -238,6 +238,11 @@ const routes = [
         path: '/messages',
         name: 'messages',
         component: () => import('./components/groups/ChatRoom.vue'),
+    },
+    {
+        path: '/single-report',
+        name: 'single-report',
+        component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
     }
 ];
 

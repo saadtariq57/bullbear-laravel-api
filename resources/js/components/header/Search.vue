@@ -88,7 +88,7 @@
                                                     role="tabpanel" aria-labelledby="sub-symbol-categorys-all-tab"
                                                     tabindex="0">
                                                     <ul class="nav d-flex flex-column pt-3" v-show="search"
-                                                        v-if="symbolResults">
+                                                        v-if="symbolResults && search">
                                                         <li class="nav-item py-0">
                                                             <span
                                                                 class="d-flex justify-content-between w-100 symbol-search-header">
@@ -110,7 +110,7 @@
                                                                 <span class="col-2">{{ symbol.country }}</span>
                                                                 <span class="col-lg-2 col-3 text-end">{{ symbol.exchange
                                                                     }}</span>
-                                                                    <span class="col-lg-2 col-3 text-end">{{ symbol.type
+                                                                <span class="col-lg-2 col-3 text-end">{{ symbol.type
                                                                     }}</span>
                                                                 <div
                                                                     class="symbol-search-hover-overview position-absolute ">
@@ -120,6 +120,41 @@
                                                         </li>
                                                         <li class="search-symbol-not-show py-3"><span
                                                                 v-if="symbolResults.length == 0">No Results found</span>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="nav d-flex flex-column pt-3"
+                                                        v-if="defaultSymbolResults && !search">
+                                                        <li class="nav-item py-0">
+                                                            <span
+                                                                class="d-flex justify-content-between w-100 symbol-search-header">
+                                                                <span class="col-3">Symbol</span>
+                                                                <span class="col-3">Company</span>
+                                                                <span class="col-2">Country</span>
+                                                                <span class="col-2 text-end">Exchange</span>
+                                                                <span class="col-2 text-end">Type</span>
+                                                            </span>
+                                                        </li>
+                                                        <li class="nav-item search-nav-symbol-data py-0 d-flex flex-column justify-content-center"
+                                                            v-for="symbol in defaultSymbolResults" :key="symbol.symbol">
+                                                            <a href=""
+                                                                class="d-flex justify-content-between symbol-search-data position-relative align-items-center fs-14 fw-4">
+                                                                <span class="col-3">{{ symbol.symbol }}</span>
+                                                                <span class="col-lg-3 col-4 px-1">{{ symbol.company_name
+                                                                    }}</span>
+                                                                <span class="col-2">{{ symbol.country }}</span>
+                                                                <span class="col-lg-2 col-3 text-end">{{ symbol.exchange
+                                                                    }}</span>
+                                                                <span class="col-lg-2 col-3 text-end">{{ symbol.type
+                                                                    }}</span>
+                                                                <div
+                                                                    class="symbol-search-hover-overview position-absolute">
+                                                                    <a href="" class="text-white">See overview</a>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li class="search-symbol-not-show py-3">
+                                                            <span v-if="defaultSymbolResults.length == 0">No Results
+                                                                found</span>
                                                         </li>
                                                     </ul>
 
@@ -274,7 +309,7 @@
                                         :class="{ show: activeTab === 'groups', active: activeTab === 'groups' }"
                                         id="nav-search-group" role="tabpanel" aria-labelledby="nav-search-group-tab"
                                         tabindex="0">
-                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="groupsResults">
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="groupsResults && search">
                                             <li class="nav-item py-0 px-3 d-flex">
                                                 <span
                                                     class="d-flex justify-content-between w-100 align-self-center symbol-search-header">
@@ -303,12 +338,41 @@
                                                     v-if="groupsResults.length == 0">No
                                                     Groups To Show</span></li>
                                         </ul>
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="defaultGroupsResults && !search">
+                                            <li class="nav-item py-0 px-3 d-flex">
+                                                <span
+                                                    class="d-flex justify-content-between w-100 align-self-center symbol-search-header">
+                                                    <span class="col-3">Group Symbol</span>
+                                                    <span class="col-9">Group Title</span>
+                                                </span>
+                                            </li>
+                                            <li class="nav-link" v-for="group in defaultGroupsResults">
+                                                <a :href="`/groups/${group.id}/${formatGroupName(group.group_title)}`"
+                                                    class="d-flex align-items-center search-groups-data">
+                                                    <div class="col-3 d-flex align-items-center gap-3">
+                                                        <div class="search-group-icon">
+                                                            <img :src="group.avatar" alt="search-icon"
+                                                                class="rounded-circle" width="50px"
+                                                                @error="handlegroupprofileError">
+                                                        </div>
+                                                        <div class="search-group-symbol-name fs-14 fw-4">
+                                                            <span>{{ group.group_name }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <span class="search-company-name fs-14 fw-4">{{ group.group_title
+                                                        }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="search-symbol-not-show py-3"><span
+                                                    v-if="defaultGroupsResults.length == 0">No
+                                                    Groups To Show</span></li>
+                                        </ul>
                                     </div>
                                     <div class="tab-pane fade members-tab-wrapper"
                                         :class="{ show: activeTab === 'people', active: activeTab === 'people' }"
                                         id="nav-search-people" role="tabpanel" aria-labelledby="nav-search-people-tab"
                                         tabindex="0">
-                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="membersResults">
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="membersResults && search">
                                             <li class="nav-link" v-for="member in membersResults">
                                                 <a :href="'/profile/' + member.name"
                                                     class="d-flex align-items-center search-groups-data">
@@ -326,6 +390,25 @@
                                             </li>
                                             <li class="search-symbol-not-show py-3"><span
                                                     v-if="membersResults.length == 0">No Traders To Show</span></li>
+                                        </ul>
+                                        <ul class="nav d-flex flex-column px-sm-3 px-1" v-if="defaultMembersResults && !search">
+                                            <li class="nav-link" v-for="member in defaultMembersResults">
+                                                <a :href="'/profile/' + member.name"
+                                                    class="d-flex align-items-center search-groups-data">
+                                                    <div class="col-3 d-flex align-items-center gap-3">
+                                                        <div class="search-group-icon">
+                                                            <img :src="'/uploads/' + member.avatar" alt="search-icon"
+                                                                width="50" @error="handlegroupprofileError"
+                                                                class="rounded-circle">
+                                                        </div>
+                                                        <div class="search-group-symbol-name fs-14 fw-4">
+                                                            <span>{{ member.name }}</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="search-symbol-not-show py-3"><span
+                                                    v-if="defaultMembersResults.length == 0">No Traders To Show</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -347,23 +430,64 @@ export default {
             activeTab: 'symbols',
         };
     },
+    created() {
+        if (!this.defaultSymbolResults.length) {
+            this.fetchDefaultSymbols();
+        }
+        if (!this.defaultGroupsResults.length) {
+            this.fetchDefaultGroups();
+        }
+        if (!this.defaultMembersResults.length) {
+            this.fetchDefaultMembers();
+        }
+    },
     computed: {
-        ...mapState('searchResults', ['symbolResults', 'groupsResults', 'membersResults']),
+        ...mapState('searchResults', [
+            'symbolResults',
+            'groupsResults',
+            'membersResults',
+            'defaultSymbolResults',
+            'defaultGroupsResults',
+            'defaultMembersResults'
+        ]),
         filteredStockSymbols() {
-            return this.symbolResults.filter(symbol => symbol.type === 'stocks');
+            if (this.search) {
+                return this.symbolResults.filter(symbol => symbol.type === 'stocks');
+            } else {
+                return this.defaultSymbolResults.filter(symbol => symbol.type === 'stocks');
+            }
         },
         filteredCryptoSymbols() {
-            return this.symbolResults.filter(symbol => symbol.type === 'crypto');
+            if (this.search) {
+                return this.symbolResults.filter(symbol => symbol.type === 'crypto');
+            } else {
+                return this.defaultSymbolResults.filter(symbol => symbol.type === 'crypto');
+            }
         },
         filteredEtfSymbols() {
-            return this.symbolResults.filter(symbol => symbol.type === 'etf');
+            if (this.search) {
+                return this.symbolResults.filter(symbol => symbol.type === 'etf');
+            } else {
+                return this.defaultSymbolResults.filter(symbol => symbol.type === 'etf');
+            }
         },
         filteredIndicesSymbols() {
-            return this.symbolResults.filter(symbol => symbol.type === 'indices');
+            if (this.search) {
+                return this.symbolResults.filter(symbol => symbol.type === 'indices');
+            } else {
+                return this.defaultSymbolResults.filter(symbol => symbol.type === 'indices');
+            }
         },
     },
     methods: {
-        ...mapActions('searchResults', ['searchSymbols', 'searchGroups', 'searchMembers', 'fetchDefaultSymbols', 'fetchDefaultGroups', 'fetchDefaultMembers']),
+        ...mapActions('searchResults', [
+            'searchSymbols',
+            'searchGroups',
+            'searchMembers',
+            'fetchDefaultSymbols',
+            'fetchDefaultGroups',
+            'fetchDefaultMembers'
+        ]),
         setActiveTab(tab) {
             this.activeTab = tab;
             this.searchTags();
@@ -391,9 +515,15 @@ export default {
                     });
                 }
             } else {
-                this.fetchDefaultSymbols();
-                this.fetchDefaultGroups();
-                this.fetchDefaultMembers();
+                if (!this.defaultSymbolResults.length) {
+                    this.fetchDefaultSymbols();
+                }
+                if (!this.defaultGroupsResults.length) {
+                    this.fetchDefaultGroups();
+                }
+                if (!this.defaultMembersResults.length) {
+                    this.fetchDefaultMembers();
+                }
             }
         },
         handlegroupprofileError(event) {
@@ -404,15 +534,9 @@ export default {
         },
         clearSearch() {
             this.search = '';
-            this.fetchDefaultSymbols();
-            this.fetchDefaultGroups();
-            this.fetchDefaultMembers();
         }
     },
     mounted() {
-        this.fetchDefaultSymbols();
-        this.fetchDefaultGroups();
-        this.fetchDefaultMembers();
     }
 
 }
@@ -526,7 +650,9 @@ export default {
 .nav-search-sub-symbol-categorys-tabContent-scroll::-webkit-scrollbar {
     height: 6px;
 }
-.groups-tab-wrapper , .members-tab-wrapper{
+
+.groups-tab-wrapper,
+.members-tab-wrapper {
     overflow-y: auto;
     max-height: 70vh;
 }
