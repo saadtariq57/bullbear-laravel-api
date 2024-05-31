@@ -8,7 +8,10 @@ const searchModule = {
         success: null,
         symbolResults: [],
         groupsResults: [],
-        membersResults: []
+        membersResults: [],
+        defaultSymbolResults: [],
+        defaultGroupsResults: [],
+        defaultMembersResults: [],
     }),
     mutations: {
         SET_LOADING(state, isLoading) {
@@ -20,23 +23,30 @@ const searchModule = {
         SET_SUCCESS(state, success) {
             state.success = success;
         },
-        SET_SEARCH_SYMBOL_RESULTS(state, symbolResults){
+        SET_SEARCH_SYMBOL_RESULTS(state, symbolResults) {
             state.symbolResults = symbolResults;
         },
-        SET_SEARCH_GROUPS_RESULTS(state, groupsResults){
+        SET_SEARCH_GROUPS_RESULTS(state, groupsResults) {
             state.groupsResults = groupsResults;
         },
-        SET_SEARCH_MEMBERS_RESULTS(state, membersResults){
+        SET_SEARCH_MEMBERS_RESULTS(state, membersResults) {
             state.membersResults = membersResults;
+        },
+        SET_DEFAULT_SYMBOL_RESULTS(state, defaultSymbolResults) {
+            state.defaultSymbolResults = defaultSymbolResults;
+        },
+        SET_DEFAULT_GROUPS_RESULTS(state, defaultGroupsResults) {
+            state.defaultGroupsResults = defaultGroupsResults;
+        },
+        SET_DEFAULT_MEMBERS_RESULTS(state, defaultMembersResults) {
+            state.defaultMembersResults = defaultMembersResults;
         }
     },
     actions: {
         async searchSymbols({ commit }, searchQuery) {
             try {
-                
                 const data = await searchService.searchSymbols(searchQuery);
                 commit('SET_SEARCH_SYMBOL_RESULTS', data);
-                console.log('search symbol results: ', data);
             } catch (error) {
                 console.error('Error searching data:', error);
             }
@@ -45,17 +55,14 @@ const searchModule = {
             try {
                 const data = await searchService.searchGroups(searchQuery);
                 commit('SET_SEARCH_GROUPS_RESULTS', data);
-                console.log('search groups results: ', data);
             } catch (error) {
                 console.error('Error searching data:', error);
             }
         },
         async searchMembers({ commit }, searchQuery) {
             try {
-                
                 const data = await searchService.searchMembers(searchQuery);
                 commit('SET_SEARCH_MEMBERS_RESULTS', data);
-                console.log('search members results: ', data);
             } catch (error) {
                 console.error('Error searching data:', error);
             }
@@ -63,8 +70,7 @@ const searchModule = {
         async fetchDefaultSymbols({ commit }) {
             try {
                 const data = await searchService.fetchDefaultSymbols();
-                commit('SET_SEARCH_SYMBOL_RESULTS', data);
-                console.log('default symbol results: ', data);
+                commit('SET_DEFAULT_SYMBOL_RESULTS', data);
             } catch (error) {
                 console.error('Error fetching default symbols:', error);
             }
@@ -72,8 +78,7 @@ const searchModule = {
         async fetchDefaultGroups({ commit }) {
             try {
                 const data = await searchService.fetchDefaultGroups();
-                commit('SET_SEARCH_GROUPS_RESULTS', data);
-                console.log('default groups results: ', data);
+                commit('SET_DEFAULT_GROUPS_RESULTS', data);
             } catch (error) {
                 console.error('Error fetching default groups:', error);
             }
@@ -81,12 +86,11 @@ const searchModule = {
         async fetchDefaultMembers({ commit }) {
             try {
                 const data = await searchService.fetchDefaultMembers();
-                commit('SET_SEARCH_MEMBERS_RESULTS', data);
-                console.log('default members results: ', data);
+                commit('SET_DEFAULT_MEMBERS_RESULTS', data);
             } catch (error) {
                 console.error('Error fetching default members:', error);
             }
-        },
+        }
     },
     getters: {
         isLoading(state) {
@@ -94,7 +98,7 @@ const searchModule = {
         },
         getError(state) {
             return state.error;
-        },
+        }
     }
 };
 
