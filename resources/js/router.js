@@ -1,18 +1,28 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // Define routes with lazy loading
+//Add Categories of widget and then add each widget in a category
+//Menu Module can be simplified
+//One of the category could be sidebar-{pagetype}
 const routes = [
     {
-        path: '/markets/:cetagory',
+        path: '/markets/:cetagory/:id',
         name: 'markets.indices',
         component: () => import('./components/markets/Markets.vue'),
-        props: true,
+        props: (route) => ({
+            category: route.params.category,
+            widget_id: route.params.id
+        }),
     },
     {
-        path: '/markets/:cetagory/:subCetagory',
+        path: '/markets/:cetagory/:subCetagory/:id',
         name: 'markets.indices.indices-futures',
         component: () => import('./components/markets/Markets.vue'),
-        props: true,
+        props: (route) => ({
+            category: route.params.category,
+            subCategory: route.params.subCategory,
+            widget_id: route.params.id
+        }),
     },
     {
         path: '/watchlist-ideas',
@@ -223,6 +233,16 @@ const routes = [
         path: '/richtv-live',
         name: 'richtv-live',
         component: () => import('./components/academy/RichtvLive.vue'),
+    },
+    {
+        path: '/messages',
+        name: 'messages',
+        component: () => import('./components/groups/ChatRoom.vue'),
+    },
+    {
+        path: '/single-report',
+        name: 'single-report',
+        component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
     }
 ];
 

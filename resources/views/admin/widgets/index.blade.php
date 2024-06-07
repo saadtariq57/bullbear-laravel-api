@@ -46,6 +46,8 @@
                                             <th scope="col">Date Created</th>
                                             <th scope="col">Layout Placement</th>
                                             <th scope="col">Widget Title</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Display Order</th>
                                             <th scope="col">Width</th>
                                             <th scope="col">Height</th>
                                             <th scope="col" style="width: 200px;">Action</th>
@@ -64,6 +66,8 @@
                                                 <td>{{ $widget->created_at }}</td>
                                                 <td>{{ $widget->layout }}</td>
                                                 <td>{{ $widget->widget_title }}</td>
+                                                <td>{{ $widget->category->name ?? 'N/A' }}</td>
+                                                <td>{{ $widget->display_order }}</td>
                                                 <td>{{ $widget->widget_width }}</td>
                                                 <td>{{ $widget->widget_height }}</td>
                                                 <td>
@@ -79,11 +83,12 @@
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item">
-                                                            <form action="{{route('admin.widgets.destroy', $widget->id)}}" method="POST">
+                                                            <form action="{{ route('admin.widgets.destroy', $widget->id) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button class="btn btn-danger delete-widget" type="button" data-widget-id="{{ $widget->id }}">
-                                                                <i class="fas fa-trash-alt"></i>
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </form>
                                                         </li>
                                                     </ul>

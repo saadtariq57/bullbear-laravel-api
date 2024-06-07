@@ -64,7 +64,8 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.widgets.index') }}">All Widgets</a></li>
                         <li><a href="{{ route('admin.widgets.create') }}">Add New Widget</a></li>
-                        <li><a href="{{ route('admin.menus.index') }}">Menus</a></li>
+                       <li><a href="{{ route('admin.widgets.categories.index') }}">Categories</a></li>
+                       <li><a href="{{ route('admin.widgets.categories.create') }}">Add New Category</a></li>
                     </ul>
                 </li>
 
@@ -123,6 +124,7 @@
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
                         <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>
+                        <li><a href="{{ route('admin.webinar.index') }}">Webinars</a></li>
                     </ul>
                 </li>
 

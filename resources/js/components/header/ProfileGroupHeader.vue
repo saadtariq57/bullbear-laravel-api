@@ -225,6 +225,7 @@ import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
+import Swal from 'sweetalert2';
 
 export default {
     components: {
@@ -324,7 +325,23 @@ export default {
                     // Refetch user data to update the Vuex store
                     await this.$store.dispatch('fetchUserData');
 
-                    console.log('Cover position updated successfully');
+                    // console.log('Cover position updated successfully');
+                    const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "450px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Cover position updated successfully!"
+                  });
                 }
                 else {
                     this.cover_position = this.offsetY + 'px';
@@ -335,9 +352,41 @@ export default {
                         cover_position: this.cover_position,
                         group_id: this.id
                     });
+                    const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "450px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Cover position updated successfully!"
+                  });
                 }
             } catch (error) {
-                console.error('Error updating cover position:', error);
+                // console.error('Error updating cover position:', error);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "error",
+                    title: "Error updating cover position"
+                  });
             }
         },
         CancelCoverPosition() {
@@ -482,7 +531,7 @@ export default {
             axios.get(`/api/groups/join/${this.id}`)
                 .then(response => {
                     this.groupData = response.data;
-                    console.log(this.groupData);
+                    // console.log(this.groupData);
                 })
                 .catch(error => {
                     console.error('There was an error fetching the group data:', error);

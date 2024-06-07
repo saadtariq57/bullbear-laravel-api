@@ -6,35 +6,39 @@
         v-for="(message, index) in orderedMessages"
         :key="message.id"
         :ref="`message-${message.id}`"
-        class="d-flex pt-3"
-        :class="{'justify-content-end': message.is_user_message_owner}"
+        class="d-flex  pt-3"
+        :class="{'justify-content-end flex-column user_message_owner': message.is_user_message_owner}"
       >
         <!-- Display time intervals -->
-        <div v-if="shouldDisplayTimeInterval(index)" class="w-100 text-center my-2">
-          <span class="badge bg-secondary">{{ formatNotificationTime(message.created_at) }}</span>
+        <div v-if="shouldDisplayTimeInterval(index)" class="w-100 text-center my-2 message_created_at">
+          <hr>
+          <span class="badge">{{ formatNotificationTime(message.created_at) }}</span>
+          <hr>
         </div>
         <div v-if="!message.is_user_message_owner">
           <img :src="message.user.avatar" alt="" class="rounded-circle me-2" width="30" height="30">
         </div>
-        <div :class="['rounded-2 position-relative', message.is_user_message_owner ? 'bg-primary' : 'bg-light-grey']">
+        <div :class="['rounded-3 position-relative', message.is_user_message_owner ? 'message_owner' : 'bg-light-grey']">
           <div v-if="!message.is_user_message_owner" class="border-bottom px-3 py-1">
-            <a href="" class="text-uppercase clr-primary fw-6">{{ message.user.name }}</a>
+            <a href="" class="text-uppercase text-cta fw-6">{{ message.user.name }}</a>
           </div>
           <div v-if="editingMessageId === message.id">
             <textarea v-model="editingText" class="form-control"></textarea>
-            <button @click="submitEdit" class="btn btn-primary mt-2">Save</button>
-            <button @click="cancelEditing" class="btn btn-secondary mt-2">Cancel</button>
+            <div class="edit_msg_btns d-flex gap-2 py-2 justify-content-end px-1">
+              <button @click="submitEdit" class="btn btn-primary"><i class="bi bi-send text-white"></i></button>
+            <button @click="cancelEditing" class="btn btn-secondary"><i class="bi bi-x fs-4"></i></button>
+            </div>
           </div>
           <div v-else>
             <div v-if="message.reply_to_message_id" class="reply-quote" @click="scrollToMessage(message.reply_to_message_id)">
               <p class="small mb-1"><strong>{{ getReplyToMessage(message.reply_to_message_id).user.name }}</strong></p>
               <p class="small mb-1">{{ truncateText(getReplyToMessage(message.reply_to_message_id).text, 50) }}</p>
             </div>
-            <p class="receive-smg-text px-3 py-1 m-0" :class="{'text-white': message.is_user_message_owner}">{{ message.text }}</p>
+            <p class="receive-smg-text px-3 py-1 m-0" :class="{'text-black': message.is_user_message_owner}">{{ message.text }}</p>
           </div>
-          <p class="m-0 float-end px-2 pb-1 fs-13">{{ formatDateTime(message.created_at) }}</p>
+          <p class="m-0 created_at_msg px-2 pb-1 fs-13">{{ formatDateTime(message.created_at) }}</p>
           <div class="position-absolute" :class="message.is_user_message_owner ? 'sent-msg-action' : 'receive-msg-action'">
-            <i class="bi bi-reply-fill fs-6 text-secondary" @click="startReply(message)"></i>
+            <i class="bi bi-reply-fill fs-6 text-secondary cursor-pointer" @click="startReply(message)"></i>
             <i v-if="message.is_user_message_owner" class="bi bi-pencil fs-6 text-secondary" @click="startEditing(message)"></i>
             <i v-if="message.is_user_message_owner" class="bi bi-trash-fill fs-6 text-secondary" @click="handleDeleteMessage(message)"></i>
           </div>
@@ -43,17 +47,19 @@
     </div>
     <!-- Message input area -->
     <form @submit.prevent="submitMessage" class="chat-form d-flex align-items-center">
-      <div class="d-flex align-items-center chat-sec-input flex-fill gap-3">
+      <div class="d-flex align-items-end chat-sec-input flex-fill gap-3">
         <div class="form-group position-relative flex-fill">
-          <div v-if="replyToMessage" class="bg-light p-2 rounded mb-2">
-            <p class="m-0"><strong>Replying to {{ replyToMessage.user.name }}:</strong> {{ truncateText(replyToMessage.text, 50) }}</p>
-            <button @click="cancelReply" class="btn btn-sm btn-link text-danger p-0">Cancel</button>
+          <div v-if="replyToMessage" class="bg-light p-2 rounded replyToMessage align-items-center">
+            <p class="m-0"><div><strong>Replying to {{ replyToMessage.user.name }}:</strong> {{ truncateText(replyToMessage.text, 50) }}</div>
+              <button @click="cancelReply" class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-x fs-2"></i></button>
+            </p>
+            
           </div>
-          <textarea ref="textarea" v-model="newMessage" class="form-control-lg border-0 bg-light-grey resize-none w-100 fw-5 fs-6 py-3 pe-5 align-bottom" id="exampleFormControlInput1" placeholder="Write Something .." rows="1"></textarea>
-          <i class="bi bi-emoji-smile chat-emoji-icon clr-primary fs-4 position-absolute"></i>
+          <input ref="textarea" v-model="newMessage" class="form-control-lg border-0 bg-light-grey resize-none w-100 fw-5 fs-6 py-3 pe-5 align-bottom" id="exampleFormControlInput1" placeholder="Write Something .." >
+          <i class="bi bi-emoji-smile chat-emoji-icon text-cta fs-4 position-absolute"></i>
         </div>
-        <button class="bg-primary border-0 rounded-3 chat-btn" type="submit">
-          <i class="bi bi-send fs-5"></i>
+        <button class="bg-cta border-0 rounded-3 chat-btn" type="submit">
+          <i class="bi bi-send fs-5 text-white"></i>
         </button>
       </div>
     </form>
@@ -200,11 +206,99 @@ export default {
 
 <style>
 .chat-form {
-    height: 80px;
+    padding-bottom: 10px;
 }
 
 .chat-btn {
     width: 50px;
     height: 50px;
 }
+.sent-msg-action{
+  display: none;
+    gap: 10px;
+    left: -90px;
+}
+.sent-msg-action i{
+  font-size: 16px !important;
+  cursor: pointer;
+}
+.created_at_msg{
+  min-width: max-content;
+  border-top: 1px solid #ababab;
+}
+.message_owner {
+    background-color: #e1e1e1;
+    border-bottom-right-radius: 0px !important;
+    max-width: 480px;
+    min-width: 150px;
+    margin-left: auto;
+}
+.reply-quote{
+  margin: 10px;
+  border-left: 2px solid;
+  padding-left: 8px;
+  background-color: #f3f3f3;
+}
+.message_created_at{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.message_created_at hr {
+    margin: 0;
+    width: 40%;
+    border-color: #9b9b9b;
+}
+.message_created_at span.badge{
+  color: #ababab;
+}
+.receive-smg-text {
+    max-width: 480px;
+    min-width: 150px;
+}
+.message_created_at:has(span:empty){
+  display: none;
+}
+.replyToMessage{
+  display: flex;
+  justify-content: space-between;
+}
+.chat-emoji-icon {
+    bottom: 10px;
+    right: 15px;
+}
+.replyToMessage  p{
+  display: flex;
+  border-left: 2px solid;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  align-items: baseline;
+  box-shadow: 0px 0px 6px #ccc;
+  width: 100%;
+}
+.replyToMessage  p div{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.user_message_owner:hover .sent-msg-action{
+  display: flex;
+}
+
+.chat-text-sec::-webkit-scrollbar-thumb{
+    background-color: var(--cta-btn) !important;
+  }
+  .message_owner:has(textarea.form-control){
+    min-width: 70%;
+  }
+  .message_owner textarea.form-control{
+    border: 1px solid #c1bfbf;
+    box-shadow: 0px 0px 4px #0000007a;
+    background-color: #fff;
+  }
+  .edit_msg_btns button{
+    padding: 5px 15px;
+  }
 </style>

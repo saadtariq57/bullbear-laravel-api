@@ -16,11 +16,18 @@ class Widget extends Model
         'widget_title',
         'widget_width',
         'widget_height',
-        'symbols_length'
+        'symbols_length',
+        'category_id',
+        'display_order'
     ];
 
     public function symbols()
 	{
 	    return $this->hasMany(WidgetSymbol::class);
 	}
+
+    public function category()
+    {
+        return $this->belongsTo(WidgetCategory::class, 'category_id');
+    }
 }
