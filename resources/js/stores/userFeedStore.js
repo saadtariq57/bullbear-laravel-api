@@ -171,6 +171,7 @@ const userFeedModule = {
         async addOrUpdateReaction({ commit }, { post_id, reactionTypeId }) {
             try {
                 const reaction = await UserFeedService.addOrUpdateReaction(post_id, reactionTypeId);
+                console.log('response reaction:', reaction);
                 commit('updateReactionInPost', { post_id, reaction});
             } catch (error) {
                 // Handle the error appropriately

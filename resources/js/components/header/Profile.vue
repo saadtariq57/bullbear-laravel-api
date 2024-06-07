@@ -9,16 +9,13 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="follower in followers" :key="follower.id" class="py-0">
-                    <a href="#" class="dropdown-item d-flex align-items-center justify-content-between">
+                    <a :href="'/profile/' + follower.user.name" class="dropdown-item d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                            <img :src="follower.avatar" alt="" class="rounded-circle" width="30" height="30">
+                            <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="30" height="30">
                             <div>
-                                <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">{{ follower.name }}</h6>
-                                <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ follower.time }}</p>
+                                <!-- <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">{{ follower.user.name }}</h6> -->
+                                <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ follower.user.name }} has started following you</p>
                             </div>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary px-2 pt-1 pb-0"><i class="bi bi-check2-all fs-5"></i></button>
                         </div>
                     </a>
                 </li>
@@ -54,14 +51,14 @@
                 <span class="notification-count">{{ notifications.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li v-for="notification in notifications" :key="notification.id" class="py-0">
+                <li v-for="notification in formattedNotifications" :key="notification.id" class="py-0">
                     <a :href="notification.link" class="dropdown-item d-flex align-items-center">
-                        <img :src="notification.icon" alt="" width="30" height="30">
+                        <img :src="'/uploads/' + notification.user.avatar" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ notification.title }}</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ notification.description }}</p>
                         </div>
-                        <div class="fs-6 fw-5">{{ notification.timeAgo }}</div>
+                        <div class="fs-6 fw-5">{{ notification.formattedTime }}</div>
                     </a>
                 </li>
                 <li class="py-0"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
@@ -117,6 +114,15 @@ export default {
                 return {
                     ...message,
                     formattedTime: formatNotificationTime(message.last_message_time)
+                };
+            });
+        },
+        formattedNotifications() {
+            return this.notifications.map(notification => {
+                console.log('test',notification);
+                return {
+                    ...notification,
+                    formattedTime: formatNotificationTime(notification.last_notification_time)
                 };
             });
         },

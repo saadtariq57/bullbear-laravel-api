@@ -15,6 +15,10 @@ use App\Models\Reaction;
 use App\Models\ReactionType;
 use Illuminate\Http\Request;
 use App\Events\NewPost;
+use App\Events\NewPostReaction;
+use App\Events\NewPostComment;
+use App\Notifications\NewPostReactionNotification;
+use App\Notifications\PostCommentNotification;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -378,6 +382,51 @@ class PostController extends Controller
             'text' => $request->text,
         ]);
 
+        $postOwner = Post::find($request->post_id)->user;
+
+        $notificationData = [
+            'id' => $comment->id,
+            'commented_by' => $request->user()->id,
+            'commented_to' => null,
+            'post_id' => $request->post_id ?? null,
+            'parent_id' => $request->parent_id ?? null,
+            'title' => '',
+            'description' => '',
+            'type' => 'comment',
+            'last_comment_time' => now(),
+            'url' => url("/"),
+            'user' => [
+                'id' => $request->user()->id,
+                'name' => $request->user()->name,
+                'avatar' => $request->user()->avatar,
+            ],
+        ];
+
+        if ($request->parent_id !== null) {
+            $parentComment = Comment::findOrFail($request->parent_id);
+            
+            if ($parentComment->user_id === $request->user()->id) {
+                $notificationData['commented_to'] = $postOwner->id;
+                $notificationData['title'] = $request->user()->name . ' has replied to his own comment on your post';
+            } else {
+                $notificationData['commented_to'] = $parentComment->user_id;
+                $notificationData['title'] = $request->user()->name . ' has replied to your comment';
+            }
+        } else {
+            if ($postOwner->id !== $request->user()->id) {
+                $notificationData['commented_to'] = $postOwner->id;
+                $notificationData['title'] = $request->user()->name . ' has commented on your post';
+            }
+        }
+    
+        if ($notificationData['commented_to']) {
+            // Find the user to notify
+            $userToNotify = User::findOrFail($notificationData['commented_to']);
+
+            broadcast(new NewPostComment($notificationData));
+            $postOwner->notify(new PostCommentNotification($notificationData));
+        }
+
         // Fetch the newly created comment in the same format as fetchPostComments
         $comment = Comment::with([
                             'user:id,name,avatar,about', // Include 'about'
@@ -507,19 +556,35 @@ class PostController extends Controller
         ]);
 
         $reactionTypeId = $request->reaction_type_id;
+        $reactionTypeName = ReactionType::find($reactionTypeId)->name;
 
         $reactionData = [
             'user_id' => $userId,
             'reaction_type_id' => $reactionTypeId,
         ];
 
+        $ownerId = null;
+        $notificationTitle = null;
+        $notificationDesc = null;
+
         // Determine which ID is provided and use it
         if ($request->has('post_id')) {
             $reactionData['post_id'] = $request->post_id;
+            $ownerId = Post::find($request->post_id)->user_id ?? null;
+            $notificationTitle = ' has reacted to your post';
+            $notificationDesc = ' has '.$reactionTypeName.' your post';
+
         } elseif ($request->has('comment_id')) {
             $reactionData['comment_id'] = $request->comment_id;
+            $ownerId = Comment::find($request->comment_id)->user_id ?? null;
+            $notificationTitle = ' has reacted to your comment';
+            $notificationDesc = ' has '.$reactionTypeName.' your comment';
+
         } elseif ($request->has('message_id')) {
             $reactionData['message_id'] = $request->message_id;
+            $ownerId = Message::find($request->message_id)->user_id ?? null;
+            $notificationTitle = ' has reacted to your message';
+            $notificationDesc = ' has '.$reactionTypeName.' your message';
         }
 
         // Additional validation based on the missing IDs
@@ -539,6 +604,29 @@ class PostController extends Controller
 
         // Load reaction type and user data to align with the initial structure
         $reaction->load(['reactionType', 'user:id,name,avatar,about']);
+
+    
+        $notificationData = [
+            'reacted_by' => $userId,
+            'reacted_to' => $ownerId,
+            'post_id' => $reaction->post_id ?? null,
+            'comment_id' => $reaction->comment_id ?? null,
+            'message_id' => $reaction->message_id ?? null,
+            'title' => $reaction->user->name. $notificationTitle,
+            'description' => $reaction->user->name. $notificationDesc,
+            'type' => 'reaction',
+            'last_reaction_time' => now(),
+            'url' => url("/"),
+            'user' => [
+                'id' => $reaction->user->id,
+                'name' => $reaction->user->name,
+                'avatar' => $reaction->user->avatar,
+            ],
+        ];
+        $postOwner = User::findOrFail($ownerId);
+
+        broadcast(new NewPostReaction($notificationData));
+        $postOwner->notify(new NewPostReactionNotification($notificationData));
 
         return response()->json([
             'message' => 'Reaction added/updated successfully', 

@@ -81,6 +81,18 @@ export default {
             console.log(`Message Updated:`, message);
             if (callback) callback(message);
         });
+        notificationsChannel.subscribe('NewFollower', message => {
+            console.log(`NewFollower:`, message);
+            if (callback) callback(message);
+        });
+        notificationsChannel.subscribe('NewReaction', message => {
+            console.log(`NewReaction:`, message);
+            if (callback) callback(message);
+        });
+        notificationsChannel.subscribe('NewComment', message => {
+            console.log(`NewComment:`, message);
+            if (callback) callback(message);
+        });
     },
     unsubscribeFromUserNotifications(userId) {
         const channelName = `private:user.notifications.${userId}`;

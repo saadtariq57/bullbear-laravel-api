@@ -18,37 +18,77 @@ class NotificationController extends Controller
     {
         $user = User::findOrFail($userId);
         $notifications = $user->notifications()->latest()->get();
-
+    
         // Transform each notification to match the broadcast data structure
         $transformedNotifications = $notifications->map(function ($notification) {
-            return [
-                'message_id' => $notification->data['message_id'],
+            $baseData = [
                 'type' => $notification->data['type'],
-                'group_id' => $notification->data['group_id'],
-                'group_title' => $notification->data['group_title'],
-                'group_avatar' => $notification->data['group_avatar'],
-                'unread_count' => $notification->data['unread_count'],
-                'last_message' => $notification->data['last_message'],
-                'last_message_time' => $notification->data['last_message_time'],
-                'preview' => $notification->data['preview'],
                 'url' => $notification->data['url'],
-                'user' => [
+                'read_at' => $notification->read_at,
+            ];
+    
+            // Add user data if available
+            if (isset($notification->data['user'])) {
+                $baseData['user'] = [
                     'id' => $notification->data['user']['id'],
                     'name' => $notification->data['user']['name'],
                     'avatar' => $notification->data['user']['avatar'],
-                ],
-                'read_at' => $notification->read_at,
-            ];
+                ];
+            }
+    
+            // Add additional fields based on type
+            switch ($notification->data['type']) {
+                case 'message':
+                    $baseData = array_merge($baseData, [
+                        'message_id' => $notification->data['message_id'],
+                        'group_id' => $notification->data['group_id'],
+                        'group_title' => $notification->data['group_title'],
+                        'group_avatar' => $notification->data['group_avatar'],
+                        'unread_count' => $notification->data['unread_count'],
+                        'last_message' => $notification->data['last_message'],
+                        'last_message_time' => $notification->data['last_message_time'],
+                        'preview' => $notification->data['preview'],
+                    ]);
+                    break;
+                case 'follower':
+                    $baseData = array_merge($baseData, [
+                        'following_id' => $notification->data['following_id'],
+                        'follower_id' => $notification->data['follower_id'],
+                        'last_follow_time' => $notification->data['last_follow_time'],
+                    ]);
+                    break;
+                case 'reaction':
+                        $baseData = array_merge($baseData, [
+                            'reacted_by' => $notification->data['reacted_by'],
+                            'reacted_to' => $notification->data['reacted_to'],
+                            'last_notification_time' => $notification->data['last_reaction_time'],
+                            'title' => $notification->data['title'],
+                            'description' => $notification->data['description'],
+                        ]);
+                        break;
+                case 'comment':
+                        $baseData = array_merge($baseData, [
+                            'commented_by' => $notification->data['commented_by'],
+                            'commented_to' => $notification->data['commented_to'],
+                            'last_notification_time' => $notification->data['last_comment_time'],
+                            'title' => $notification->data['title'],
+                            'description' => $notification->data['description'],
+                        ]);
+                        break;
+                // Add other types as needed
+            }
+    
+            return $baseData;
         });
-
+    
         // Group notifications by type or any other criteria as needed
         $categorized = $transformedNotifications->groupBy('type')->map(function ($items) {
             return $items->toArray();
         });
-
+    
         // Return the categorized notifications as JSON
         return response()->json($categorized);
-    }
+    }    
 
     public function markAsRead($id)
     {
