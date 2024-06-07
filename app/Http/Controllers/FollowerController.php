@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Follower;
+use App\Events\NewFollower;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use App\Notifications\NewFollowerNotification;
 
 class FollowerController extends Controller
 {
@@ -33,7 +36,7 @@ class FollowerController extends Controller
     {
         // Get the authenticated user
         $follower = Auth::user();
-
+        $following = User::findOrFail($userId);
         // Check if the user is already following
         $existingFollower = Follower::where('following_id', $userId)
                                     ->where('follower_id', $follower->id)
@@ -46,6 +49,23 @@ class FollowerController extends Controller
                 'follower_id' => $follower->id,
                 'time' => now(),
             ]);
+
+            $notificationData = [
+                'following_id' => $userId,
+                'follower_id' => $follower->id,
+                'type' => 'follower',
+                'last_follow_time' => now(),
+                'url' => url("/profile/{$following->name}/"),
+                'user' => [
+                    'id' => $follower->id,
+                    'name' => $follower->name,
+                    'avatar' => $follower->avatar,
+                ],
+            ];
+
+            broadcast(new NewFollower($notificationData));
+            $following->notify(new NewFollowerNotification($notificationData));
+
             return response()->json(['message' => 'User followed successfully']);
         } else {
             return response()->json(['message' => 'User is already followed']);
@@ -88,6 +108,15 @@ class FollowerController extends Controller
         Follower::where('following_id', $userId)
                 ->where('follower_id', $followerId)
                 ->delete();
-        return response()->json(['message' => 'User unfollowed successfully']);
+
+        DB::table('notifications')
+                ->where('type', 'App\Notifications\NewFollowerNotification')
+                ->whereJsonContains('data->following_id', $userId)
+                ->whereJsonContains('data->follower_id', $followerId)
+                ->delete();
+
+        
+        
+        return response()->json(['message' => 'User unfollowed successfully', 'deletedFollowerNotification' => $followerId]);
     }
 }

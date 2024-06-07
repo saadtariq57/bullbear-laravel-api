@@ -40,7 +40,7 @@ const userFeedCommentService = {
             };
 
             const response = await axios.post('/api/add-or-update-reaction', payload);
-
+            console.log('response comment reaction:', response);
             // Return the reaction data from the API response
             return response.data.reaction;
         } catch (error) {

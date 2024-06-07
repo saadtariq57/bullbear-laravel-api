@@ -34,12 +34,26 @@ const userNotificationModule = {
         ADD_NOTIFICATION(state, notification) {
             state.notifications.unshift(notification);
         },
+        ADD_FOLLOWER(state, follower) {
+            state.followers.unshift(follower);
+        },
         MARK_AS_READ(state, notificationId) {
             const notification = state.notifications.find(n => n.id === notificationId);
             if (notification) {
                 notification.read_at = new Date().toISOString();
             }
         },
+        // REMOVE_FOLLOWER_NOTIFICATION(state, followerId) {
+        //     console.log('Removing follower with ID:', followerId);
+        //     const index = state.followers.findIndex(follower => follower.user.id === followerId);
+        //     console.log('Found index:', index);
+        //     if (index !== -1) {
+        //         state.followers.splice(index, 1);
+        //         console.log('Follower removed successfully');
+        //     } else {
+        //         console.log('Follower ID not found in state');
+        //     }
+        // },
     },
     actions: {
         markNotificationAsRead({ commit }, notificationId) {
@@ -62,10 +76,18 @@ const userNotificationModule = {
                     } else if (notification.name === 'MessageUpdated') {
                         commit('UPDATE_MESSAGE', notification.data.notification);
                     } 
-                    else if (notification.type === 'notification') {
+                    else if (notification.name === 'notification') {
                         commit('ADD_NOTIFICATION', notification);
-                    } else if (notification.type === 'follower') {
-                        commit('SET_FOLLOWERS', notification);
+                    } else if (notification.name === 'NewReaction') {
+                        commit('ADD_NOTIFICATION', notification.data);
+                        
+                    } else if (notification.name === 'NewComment') {
+                        console.log('Hello Call BACK');
+                        commit('ADD_NOTIFICATION', notification.data);
+                    } 
+                    else if (notification.name === 'NewFollower') {
+                        console.log('Hello Call BACK');
+                        commit('ADD_FOLLOWER', notification.data);
                     }
                   });
             });
@@ -75,20 +97,32 @@ const userNotificationModule = {
             try {
                 const notifications = await NotificationService.fetchNotifications(userId);
                 console.log('Notifications:', notifications);
+                console.log('Notification Keys:', Object.keys(notifications));
                 if (notifications.message) {
                     commit('SET_MESSAGES', notifications.message);
                 }
-                if (notifications.followers) {
-                    commit('SET_FOLLOWERS', notifications.followers);
+                if (notifications.follower) {
+                    console.log('Follower', notifications.follower);
+                    commit('SET_FOLLOWERS', notifications.follower);
                 }
                 if (notifications.notifications) {
                     commit('SET_NOTIFICATIONS', notifications.notifications);
+                }
+                if (notifications.reaction) {
+                    commit('SET_NOTIFICATIONS', notifications.reaction);
+                }
+                if (notifications.comment) {
+                    commit('SET_NOTIFICATIONS', notifications.comment);
                 }
         
             } catch (error) {
                 console.error('Failed to fetch notifications:', error);
             }
-        }        
+        },
+        // removeFollowerNotification({ commit }, followerId) {
+        //     console.log('unfollowed', followerId);
+        //     commit('REMOVE_FOLLOWER_NOTIFICATION', Number(followerId));
+        // }        
     }
 };
 

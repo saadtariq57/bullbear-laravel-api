@@ -64,7 +64,7 @@ const userProfileModule = {
         },
         SET_SUCCESS(state, success) {
             state.success = success;
-        }
+        },
     },
     actions: {
         async getUserProfileData({ commit }, { userName = null }) {
@@ -103,11 +103,12 @@ const userProfileModule = {
                 throw error;
             }
         },
-        async unfollowUser({ commit }, { userId, followersCount }) {
+        async unfollowUser({ commit, dispatch }, { userId, followersCount }) {
             try {
                 const data = await ProfileService.unfollowUser(userId);
                 commit('SET_IS_FOLLOWING', false);
                 commit('SET_IS_FOLLOWERS_COUNT', followersCount - 1);
+                dispatch('userNotification/removeFollowerNotification', data.deletedFollowerNotification, { root: true });
                 console.log(data);
                 // Handle UI update or other actions upon successful follow/unfollow
             } catch (error) {
