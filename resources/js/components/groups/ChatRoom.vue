@@ -182,9 +182,6 @@
   .chat_header{
     border-bottom: 1px solid #ccc;
   }
- .chat_body .chat-text-sec {
-    height: calc(100vh - 181px) !important;
-}
 @keyframes un_read {
   from{
     box-shadow: 0px 0px 4px red;

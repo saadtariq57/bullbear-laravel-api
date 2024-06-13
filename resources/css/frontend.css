@@ -2972,7 +2972,82 @@ p.user-message {
     border-bottom: none !important;
     border-color: #dee2e6 #dee2e6 #fff !important;
 }
-
+/* calender pages  */
+.card:not(.trading-books-slider .card) {
+    margin: 1.5em .5em;
+    box-shadow: 1px 2px 8px #16161a1c;
+    border: 2px solid #ddd;
+}
+ul.filterList{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    list-style: none;
+    gap: 15px 10px;
+}
+.category_filter{
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+ul.filterList li{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+ul.filterList li label{
+    margin: 0;
+    cursor: pointer;
+}
+.crunt_date td{
+    background: #ddd;
+}
+.filterList_label a {
+    padding: 2px;
+    width: 100%;
+    display: inline-block;
+    font-weight: 500;
+}
+.day_filters .nav-tabs .nav-link {
+    border: 1px solid var(--cta-btn);
+    color: var(--cta-btn)!important;
+    background-color: transparent !important;
+    border-radius: 2px;
+    padding: 7px 15px;
+    font-size: 13px;
+}
+.day_filters .nav-tabs .nav-link.active{
+    background-color: var(--cta-btn) !important;
+    color: #fff !important;
+}
+#ecoCalTabsTop{
+    border-bottom: 1px solid #ddd;
+}
+#ecoCalTabsTop li{
+    border: 1px solid #ddd;
+    padding: 6px 15px;
+    background: #fff;
+    border-top: 0;
+    transform: translateY(1px);
+}
+#ecoCalTabsTop li a{
+    color: var(--cta-btn);
+}
+.economic #ecoCalTabsTop li:nth-child(1),.holiday #ecoCalTabsTop li:nth-child(2),.earning #ecoCalTabsTop li:nth-child(3),.dividend #ecoCalTabsTop li:nth-child(4),.splits #ecoCalTabsTop li:nth-child(5),.ipo #ecoCalTabsTop li:nth-child(6),.expiry #ecoCalTabsTop li:nth-child(7){
+    border-top: 2px solid var(--cta-btn);
+    border-bottom: 0;
+}
+#ecoCalTabsTop li:last-child{
+    border-right: 0;
+}
+#ecoCalTabsTop li:first-child{
+    border-left: 0;
+}
+.expiry #ecoCalTabsTop li:nth-child(7){
+    border-right: 1px solid #ddd;
+}
+.economic #ecoCalTabsTop li:nth-child(1){
+    border-left: 1px solid #ddd;
+}
 @media (max-width: 1550px) {
     .main-heading h1 {
         font-size: 65px;
@@ -3004,6 +3079,9 @@ p.user-message {
 }
 
 @media (max-width: 1199.98px) {
+    #ecoCalTabsTop li a,.day_filters .nav-tabs .nav-link {
+        font-size: 12px;
+    }
     .main-menu-container .nav-link:not(.dropdown-menu .nav-link) {
         justify-content: space-between;
         width: 100%;
@@ -3099,6 +3177,9 @@ p.user-message {
 @media (max-width: 767.98px) {
     .card .img-wrapper {
         height: 17em;
+    }
+    #ecoCalTabsTop li ,.day_filters .nav-tabs .nav-link{
+        padding: 6px 8px;
     }
 
     .profile-info-content {
@@ -3213,6 +3294,10 @@ p.user-message {
 }
 
 @media (max-width: 760px) {
+    .other_filters a{
+        display: inline-block;
+        min-width: max-content;
+    }
     .stocks-nav-tabs {
         display: none;
     }
@@ -3232,6 +3317,49 @@ p.user-message {
 }
 
 @media (max-width: 575.98px) {
+    #ecoCalTabsTop{
+        flex-wrap: wrap;
+    }
+    #ecoCalTabsTop li {
+        flex-basis: 50%;
+    }
+    .economic #ecoCalTabsTop li:nth-child(1), .holiday #ecoCalTabsTop li:nth-child(2), .earning #ecoCalTabsTop li:nth-child(3), .dividend #ecoCalTabsTop li:nth-child(4), .splits #ecoCalTabsTop li:nth-child(5), .ipo #ecoCalTabsTop li:nth-child(6), .expiry #ecoCalTabsTop li:nth-child(7) {
+        border-bottom: 1px solid #ddd;
+    }
+    #ecoCalTabsTop li:last-child {
+        flex-basis: 100%;
+        text-align: center;
+    }
+    #ecoCalTabsTop li {
+        border: 1px solid #ddd;
+    }
+    .filter_tabs{
+        align-items: baseline !important;
+    }
+    .day_filters ul li{
+        flex-basis: 48%;
+    }
+    .filterList_label{
+        display: flex;
+        width: 100%;
+        gap: 12px;
+        justify-content: center;
+    }
+    .card:not(.trading-books-slider .card) {
+        margin: 1.5em 0em;
+        padding: 20px 10px;
+    }
+    .filterList_label br{
+        display: none;
+    }
+    .filterList_label a{
+        width: unset;
+    }
+    .category_filter {
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
     .footer-bootem {
         flex-direction: column;
     }
