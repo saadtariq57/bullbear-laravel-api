@@ -609,10 +609,6 @@
                                                         Calendar</a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item nav-link" href="/holiday-calendar">Holiday
-                                                        Calendar</a>
-                                                </li>
-                                                <li>
                                                     <a class="dropdown-item nav-link" href="/earning-calendar">Earnings
                                                         Calendar</a>
                                                 </li>
@@ -626,11 +622,6 @@
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item nav-link" href="/ipo-calendar">IPO
-                                                        Calendar</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item nav-link"
-                                                        href="/futures-expiry-calendar">Futures Expiry
                                                         Calendar</a>
                                                 </li>
                                                 <li>
@@ -1340,11 +1331,6 @@
                                                                 </li>
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1"
-                                                                        href="/holiday-calendar">Holiday
-                                                                        Calendar</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item nav-link py-1"
                                                                         href="/earning-calendar">Earnings
                                                                         Calendar</a>
                                                                 </li>
@@ -1361,12 +1347,6 @@
                                                                 <li>
                                                                     <a class="dropdown-item nav-link py-1"
                                                                         href="/ipo-calendar">IPO
-                                                                        Calendar</a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item nav-link py-1"
-                                                                        href="/futures-expiry-calendar">Futures
-                                                                        Expiry
                                                                         Calendar</a>
                                                                 </li>
                                                                 <li>

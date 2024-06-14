@@ -9,28 +9,22 @@
                     <div class="calendar_tabels_wrapper">
                         <div class="all_calenders mb-5">
                             <ul class="list-unstyled d-flex" id="ecoCalTabsTop">
-                                <li class="first">
-                                    <a href="/economic-calendar/">Economic Calendar</a>
-                                </li>
-                                <li>
-                                    <a href="/holiday-calendar/">Holidays</a>
-                                </li>
-                                <li class="selected">
-                                    <a href="/earning-calendar">Earnings</a>
-                                </li>
-                                <li>
-                                    <a href="/dividend-calendar">Dividends</a>
-                                </li>
-                                <li>
-                                    <a href="/splits-calendar">Splits</a>
-                                </li>
-                                <li>
-                                    <a href="/ipo-calendar">IPO</a>
-                                </li>
-                                <li class="last">
-                                    <a href="/futures-expiry-calendar">Expiration</a>
-                                </li>
-                            </ul>
+                                    <li class="economic_list">
+                                        <a href="/economic-calendar/">Economic Calendar</a>
+                                    </li>
+                                    <li class="earnings_list">
+                                        <a href="/earning-calendar">Earnings</a>
+                                    </li>
+                                    <li class="dividends_list">
+                                        <a href="/dividend-calendar">Dividends</a>
+                                    </li>
+                                    <li class="splits_list">
+                                        <a href="/splits-calendar">Splits</a>
+                                    </li>
+                                    <li class="ipo_list">
+                                        <a href="/ipo-calendar">IPO</a>
+                                    </li>
+                                </ul>
                         </div>
                         <div class="calender_tabs">
                             <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">

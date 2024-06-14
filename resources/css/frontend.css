@@ -3032,7 +3032,7 @@ ul.filterList li label{
 #ecoCalTabsTop li a{
     color: var(--cta-btn);
 }
-.economic #ecoCalTabsTop li:nth-child(1),.holiday #ecoCalTabsTop li:nth-child(2),.earning #ecoCalTabsTop li:nth-child(3),.dividend #ecoCalTabsTop li:nth-child(4),.splits #ecoCalTabsTop li:nth-child(5),.ipo #ecoCalTabsTop li:nth-child(6),.expiry #ecoCalTabsTop li:nth-child(7){
+.economic #ecoCalTabsTop li.economic_list,.earning #ecoCalTabsTop li.earnings_list,.dividend #ecoCalTabsTop li.dividends_list,.splits #ecoCalTabsTop li.splits_list,.ipo #ecoCalTabsTop li.ipo_list{
     border-top: 2px solid var(--cta-btn);
     border-bottom: 0;
 }
@@ -3042,7 +3042,7 @@ ul.filterList li label{
 #ecoCalTabsTop li:first-child{
     border-left: 0;
 }
-.expiry #ecoCalTabsTop li:nth-child(7){
+.ipo #ecoCalTabsTop li.ipo_list{
     border-right: 1px solid #ddd;
 }
 .economic #ecoCalTabsTop li:nth-child(1){
