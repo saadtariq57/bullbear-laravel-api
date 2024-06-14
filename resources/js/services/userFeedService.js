@@ -1,6 +1,6 @@
 import { organizeReactions } from '../utils';
 const UserFeedService = {
-    async fetchUserPosts(userId, context, groupId = null, userName= null, lastPostId = null) {
+    async fetchUserPosts(userId, context, groupId = null, userName= null, lastPostId = null, singlePostID = null) {
         try {
 
             let url = '';
@@ -10,16 +10,18 @@ const UserFeedService = {
                 url += `/api/user-profile/${userName}`;
             } else if (context === 'group'){
                 url += `/api/user-group/${groupId}`;
+            } else if(context === 'singlePost'){
+                url += `/api/singlePost/${singlePostID}`;
             }
-            
-            if (lastPostId) {
-
+            if(context !== 'singlePost' && lastPostId){
                 url += `?lastPostId=${lastPostId}`;
             }
+            
             // console.log(userName);
             const response = await axios.get(url);
             const data = response.data.data;
-
+            
+        
             const transformedPosts = data.map(post => {
                 // Mapping reactions
                 const { organizedReactions: organizedReactions, userReaction: userReaction } = organizeReactions(post.reactions, userId);

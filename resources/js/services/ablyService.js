@@ -93,6 +93,10 @@ export default {
             console.log(`NewComment:`, message);
             if (callback) callback(message);
         });
+        notificationsChannel.subscribe('NewPollVote', message => {
+            console.log(`NewPollVote:`, message);
+            if (callback) callback(message);
+        });
     },
     unsubscribeFromUserNotifications(userId) {
         const channelName = `private:user.notifications.${userId}`;

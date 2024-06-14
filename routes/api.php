@@ -55,6 +55,7 @@ Route::get('/color-options', [HomeController::class, 'colorOptions']);
 Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
 Route::post('/create-post', [PostController::class, 'createPost']);
 Route::get('/user-feed', [PostController::class, 'getUserFeed']);
+Route::get('/singlePost/{singlePostID}', [PostController::class, 'getSinglePost']);
 Route::get('/user-profile/{userName?}', [PostController::class, 'getUserProfileFeed']);
 Route::get('/user-group/{groupId}', [PostController::class, 'getUserGroupFeed']);
 Route::post('/submit-comment', [PostController::class, 'submitComment']);
