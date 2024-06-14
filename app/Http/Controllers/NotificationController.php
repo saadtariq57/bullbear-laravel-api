@@ -61,7 +61,7 @@ class NotificationController extends Controller
                         $baseData = array_merge($baseData, [
                             'reacted_by' => $notification->data['reacted_by'],
                             'reacted_to' => $notification->data['reacted_to'],
-                            'last_notification_time' => $notification->data['last_reaction_time'],
+                            'last_notification_time' => $notification->data['last_notification_time'],
                             'title' => $notification->data['title'],
                             'description' => $notification->data['description'],
                         ]);
@@ -70,7 +70,16 @@ class NotificationController extends Controller
                         $baseData = array_merge($baseData, [
                             'commented_by' => $notification->data['commented_by'],
                             'commented_to' => $notification->data['commented_to'],
-                            'last_notification_time' => $notification->data['last_comment_time'],
+                            'last_notification_time' => $notification->data['last_notification_time'],
+                            'title' => $notification->data['title'],
+                            'description' => $notification->data['description'],
+                        ]);
+                        break;
+                case 'pollVote':
+                        $baseData = array_merge($baseData, [
+                            'voted_by' => $notification->data['voted_by'],
+                            'voted_to' => $notification->data['voted_to'],
+                            'last_notification_time' => $notification->data['last_notification_time'],
                             'title' => $notification->data['title'],
                             'description' => $notification->data['description'],
                         ]);

@@ -37,6 +37,7 @@ const userNotificationModule = {
         ADD_FOLLOWER(state, follower) {
             state.followers.unshift(follower);
         },
+        
         MARK_AS_READ(state, notificationId) {
             const notification = state.notifications.find(n => n.id === notificationId);
             if (notification) {
@@ -82,13 +83,16 @@ const userNotificationModule = {
                         commit('ADD_NOTIFICATION', notification.data);
                         
                     } else if (notification.name === 'NewComment') {
+                        commit('ADD_NOTIFICATION', notification.data);
+                    } else if (notification.name === 'NewPollVote') {
                         console.log('Hello Call BACK');
                         commit('ADD_NOTIFICATION', notification.data);
-                    } 
+                    }
                     else if (notification.name === 'NewFollower') {
                         console.log('Hello Call BACK');
                         commit('ADD_FOLLOWER', notification.data);
                     }
+                   
                   });
             });
         },
@@ -97,7 +101,7 @@ const userNotificationModule = {
             try {
                 const notifications = await NotificationService.fetchNotifications(userId);
                 console.log('Notifications:', notifications);
-                console.log('Notification Keys:', Object.keys(notifications));
+                let allNotifications = [];
                 if (notifications.message) {
                     commit('SET_MESSAGES', notifications.message);
                 }
@@ -105,15 +109,19 @@ const userNotificationModule = {
                     console.log('Follower', notifications.follower);
                     commit('SET_FOLLOWERS', notifications.follower);
                 }
-                if (notifications.notifications) {
-                    commit('SET_NOTIFICATIONS', notifications.notifications);
-                }
+                // if (notifications) {
+                //     commit('SET_NOTIFICATIONS', notifications);
+                // }
                 if (notifications.reaction) {
-                    commit('SET_NOTIFICATIONS', notifications.reaction);
+                    allNotifications = allNotifications.concat(notifications.reaction);
                 }
                 if (notifications.comment) {
-                    commit('SET_NOTIFICATIONS', notifications.comment);
+                    allNotifications = allNotifications.concat(notifications.comment);
                 }
+                if (notifications.pollVote) {
+                    allNotifications = allNotifications.concat(notifications.pollVote);
+                }
+                commit('SET_NOTIFICATIONS', allNotifications);
         
             } catch (error) {
                 console.error('Failed to fetch notifications:', error);

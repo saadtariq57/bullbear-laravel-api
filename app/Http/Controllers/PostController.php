@@ -17,8 +17,11 @@ use Illuminate\Http\Request;
 use App\Events\NewPost;
 use App\Events\NewPostReaction;
 use App\Events\NewPostComment;
+use App\Events\NewPollVote;
 use App\Notifications\NewPostReactionNotification;
 use App\Notifications\PostCommentNotification;
+use App\Notifications\NewPollVoteNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -230,6 +233,27 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    public function getSinglePost($singlePostID)
+    {
+        $post = Post::with([
+                            'user:id,name,avatar',
+                            'photos',
+                            'poll.options',
+                            'poll.userVotes',
+                            'coloredPost',
+                            'reactions' => function($query) {
+                                $query->with('reactionType:id,name,icon')
+                                    ->with('user:id,name,avatar,about');
+                            }
+                        ])
+                        ->withCount(['comments', 'reactions'])
+                        ->findOrFail($singlePostID);              
+        return response()->json(['data' => [$post]]);
+    }
+
+
+
+
     public function getUserProfileFeed(Request $request, $userName){
         $user = User::where('name', $userName)->first();
         if($user){
@@ -393,8 +417,8 @@ class PostController extends Controller
             'title' => '',
             'description' => '',
             'type' => 'comment',
-            'last_comment_time' => now(),
-            'url' => url("/"),
+            'last_notification_time' => now(),
+            'url' => url("/post/{$request->post_id}"),
             'user' => [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
@@ -530,6 +554,15 @@ class PostController extends Controller
         if ($comment && $comment->user_id === Auth::id()) {
             $comment->delete();
 
+            DB::table('notifications')
+                ->where('type', 'App\Notifications\PostCommentNotification')
+                ->whereJsonContains('data->id', $comment->id)
+                ->delete();
+            
+                DB::table('notifications')
+                ->where('type', 'App\Notifications\NewPostReactionNotification')
+                ->whereJsonContains('data->comment_id', $comment->id)
+                ->delete();
             return response()->json(['message' => 'Comment deleted successfully.']);
         }
 
@@ -566,17 +599,20 @@ class PostController extends Controller
         $ownerId = null;
         $notificationTitle = null;
         $notificationDesc = null;
-
+        $postId = null;
         // Determine which ID is provided and use it
         if ($request->has('post_id')) {
             $reactionData['post_id'] = $request->post_id;
             $ownerId = Post::find($request->post_id)->user_id ?? null;
+            $postId = $request->post_id ?? null;
             $notificationTitle = ' has reacted to your post';
             $notificationDesc = ' has '.$reactionTypeName.' your post';
 
         } elseif ($request->has('comment_id')) {
             $reactionData['comment_id'] = $request->comment_id;
-            $ownerId = Comment::find($request->comment_id)->user_id ?? null;
+            $comment = Comment::find($request->comment_id);
+            $ownerId = $comment->user_id ?? null;
+            $postId = $comment->post_id ?? null;
             $notificationTitle = ' has reacted to your comment';
             $notificationDesc = ' has '.$reactionTypeName.' your comment';
 
@@ -605,28 +641,30 @@ class PostController extends Controller
         // Load reaction type and user data to align with the initial structure
         $reaction->load(['reactionType', 'user:id,name,avatar,about']);
 
+        if($userId != $ownerId){
+            $notificationData = [
+                'reacted_by' => $userId,
+                'reacted_to' => $ownerId,
+                'post_id' => $postId,
+                'comment_id' => $reaction->comment_id ?? null,
+                'message_id' => $reaction->message_id ?? null,
+                'title' => $reaction->user->name. $notificationTitle,
+                'description' => $reaction->user->name. $notificationDesc,
+                'type' => 'reaction',
+                'last_notification_time' => now(),
+                'url' => url("/post/{$postId}"),
+                'user' => [
+                    'id' => $reaction->user->id,
+                    'name' => $reaction->user->name,
+                    'avatar' => $reaction->user->avatar,
+                ],
+            ];
+            $postOwner = User::findOrFail($ownerId);
     
-        $notificationData = [
-            'reacted_by' => $userId,
-            'reacted_to' => $ownerId,
-            'post_id' => $reaction->post_id ?? null,
-            'comment_id' => $reaction->comment_id ?? null,
-            'message_id' => $reaction->message_id ?? null,
-            'title' => $reaction->user->name. $notificationTitle,
-            'description' => $reaction->user->name. $notificationDesc,
-            'type' => 'reaction',
-            'last_reaction_time' => now(),
-            'url' => url("/"),
-            'user' => [
-                'id' => $reaction->user->id,
-                'name' => $reaction->user->name,
-                'avatar' => $reaction->user->avatar,
-            ],
-        ];
-        $postOwner = User::findOrFail($ownerId);
-
-        broadcast(new NewPostReaction($notificationData));
-        $postOwner->notify(new NewPostReactionNotification($notificationData));
+            broadcast(new NewPostReaction($notificationData));
+            $postOwner->notify(new NewPostReactionNotification($notificationData));
+        }
+        
 
         return response()->json([
             'message' => 'Reaction added/updated successfully', 
@@ -640,9 +678,10 @@ class PostController extends Controller
         $userId = Auth::id();
 
         $query = Reaction::where('user_id', $userId);
-
         // Initialize variables to store the IDs
         $postId = null;
+        $commentId = null;
+        $messageId = null;
         $reactionTypeId = null;
 
         // Check which type of ID is provided and use it
@@ -650,9 +689,11 @@ class PostController extends Controller
             $postId = $request->post_id;
             $query->where('post_id', $postId);
         } elseif ($request->has('comment_id')) {
-            $query->where('comment_id', $request->comment_id);
+            $commentId = $request->comment_id;
+            $query->where('comment_id', $commentId);
         } elseif ($request->has('message_id')) {
-            $query->where('message_id', $request->message_id);
+            $messageId = $request->message_id;
+            $query->where('message_id', $messageId);
         }
 
         // Retrieve the reaction to get its type before deleting
@@ -660,18 +701,38 @@ class PostController extends Controller
         if ($reaction) {
             $reactionTypeId = $reaction->reaction_type_id;
             $reaction->delete();
-        }
 
-        return response()->json([
-            'message' => 'Reaction removed successfully',
-            'post_id' => $postId,
-            'reaction_type_id' => $reactionTypeId
-        ]);
+            $notificationQuery = DB::table('notifications')
+            ->where('type', 'App\Notifications\NewPostReactionNotification')
+            ->where('data->reacted_by', $userId);
+
+            if ($postId) {
+                $notificationQuery->whereJsonContains('data->post_id', $postId);
+            }
+            if ($commentId) {
+                $notificationQuery->whereJsonContains('data->comment_id', $commentId);
+            }
+            if ($messageId) {
+                $notificationQuery->whereJsonContains('data->message_id', $messageId);
+            }
+
+            $abtNotification = $notificationQuery->delete();
+
+            return response()->json([
+                'message' => 'Reaction removed successfully',
+                'post_id' => $postId,
+                'reaction_type_id' => $reactionTypeId,
+                'removed notification' => $abtNotification,
+            ]); 
+        }else {
+            return response()->json(['message' => 'No reaction found to remove'], 404);
+        }
     }
 
     public function addVote(Request $request)
     {
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
 
         $request->validate([
             'poll_id' => 'required|integer',
@@ -683,7 +744,7 @@ class PostController extends Controller
 
         // Check if user has already voted on this poll
         $existingVote = UserPollVotes::where('user_id', $userId)->where('poll_id', $pollId)->first();
-
+        
         if ($existingVote) {
             // User has already voted, update their vote
             $existingVote->update(['option_id' => $optionId]);
@@ -694,12 +755,42 @@ class PostController extends Controller
                 'poll_id' => $pollId,
                 'option_id' => $optionId
             ]);
+
+            $postID = Poll::find($pollId)->post_id;
+            $ownerId = Post::find($postID)->user_id;
+            // trigger notification
+            if($userId != $ownerId){
+                $notificationData = [
+                    'poll_id' => $pollId,
+                    'option_id' => $optionId,
+                    'voted_by' => $userId,
+                    'voted_to' => $ownerId,
+                    'title' => $user->name.' has voted on your poll',
+                    'description' => '',
+                    'type' => 'pollVote',
+                    'last_notification_time' => now(),
+                    'url' => url("/post/{$postID}"),
+                    'user' => [
+                        'id' => $userId,
+                        'name' => $user->name,
+                        'avatar' => $user->avatar,
+                    ],
+                ];
+                $postOwner = User::findOrFail($ownerId);
+        
+                broadcast(new NewPollVote($notificationData));
+                $postOwner->notify(new NewPollVoteNotification($notificationData));
+            }
+            
         }
 
         // Update votes count on the option
         $option = PollOption::find($optionId);
         $option->increment('votes');
 
+        
+
+        // Response
         return response()->json(['message' => 'Vote added successfully', 'poll_id' => $pollId, 'option_id' => $optionId]);
     }
     public function removeVote(Request $request)
@@ -719,6 +810,11 @@ class PostController extends Controller
             $optionId = $vote->option_id;
             $vote->delete();
 
+            DB::table('notifications')
+                ->where('type', 'App\Notifications\NewPollVoteNotification')
+                ->whereJsonContains('data->poll_id', $pollId)
+                ->whereJsonContains('data->voted_by', $userId)
+                ->delete();
             // Decrement votes count on the option
             $option = PollOption::find($optionId);
             $option->decrement('votes');

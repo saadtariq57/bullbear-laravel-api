@@ -52,7 +52,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="notification in formattedNotifications" :key="notification.id" class="py-0">
-                    <a :href="notification.link" class="dropdown-item d-flex align-items-center">
+                    <a :href="notification.url" class="dropdown-item d-flex align-items-center">
                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="30" height="30">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ notification.title }}</h6>
@@ -110,7 +110,7 @@ export default {
         ...mapState('userNotification', ['followers', 'messages', 'notifications']),
         formattedMessages() {
             return this.messages.map(message => {
-                console.log(message);
+                // console.log(message);
                 return {
                     ...message,
                     formattedTime: formatNotificationTime(message.last_message_time)
@@ -119,7 +119,6 @@ export default {
         },
         formattedNotifications() {
             return this.notifications.map(notification => {
-                console.log('test',notification);
                 return {
                     ...notification,
                     formattedTime: formatNotificationTime(notification.last_notification_time)
@@ -156,6 +155,7 @@ export default {
             this.fetchNotifications();
             this.listenToUpdates();
         }
+        
     }
 };
 </script>

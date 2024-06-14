@@ -60,9 +60,14 @@ const routes = [
         name: 'feed',
         component: () => import('./components/feed/UserFeed.vue'),
     },
+    // {
+    //     path: '/single-post',
+    //     name: 'single-post',
+    //     component: () => import('./components/feed/SinglePost.vue'),
+    // },
     {
-        path: '/single-post',
-        name: 'single-post',
+        path: '/post/:id',
+        name: 'singlePost',
         component: () => import('./components/feed/SinglePost.vue'),
     },
     {
