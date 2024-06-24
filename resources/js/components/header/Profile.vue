@@ -9,9 +9,9 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="follower in followers" :key="follower.id" class="py-0">
-                    <a :href="'/profile/' + follower.user.name" class="dropdown-item d-flex align-items-center justify-content-between">
+                    <a :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                            <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="30" height="30">
+                            <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="45" height="45">
                             <div>
                                 <!-- <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">{{ follower.user.name }}</h6> -->
                                 <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ follower.user.name }} has started following you</p>
@@ -36,7 +36,7 @@
                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ message.user.name }}</h6>
                             <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap text-oneline">{{ message.preview }}</p>
                             <!-- <span class="badge bg-primary ">{{ message.unread_count }}</span> -->
-                        <div class="fs-6 fw-5 ms-auto">{{ message.formattedTime }}</div>
+                            <div class="fs-6 fw-5 ms-auto">{{ message.formattedTime }}</div>
                         </div>
                     </a>
                 </li>
@@ -51,14 +51,14 @@
                 <span class="notification-count">{{ notifications.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li v-for="notification in formattedNotifications" :key="notification.id" class="py-0">
-                    <a :href="notification.url" class="dropdown-item d-flex align-items-center">
-                        <img :src="'/uploads/' + notification.user.avatar" alt="" width="30" height="30">
+                <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
+                    <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
+                        <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
                         <div>
-                            <h6 class="text-uppercase fs-6 fw-6 clr-primary">{{ notification.title }}</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ notification.description }}</p>
+                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
+                            <p class="mb-0 fs-12 fw-5 text-wrap">{{ notification.description }}</p>
+                            <div class="fs-6 fw-5">{{ notification.formattedTime }}</div>
                         </div>
-                        <div class="fs-6 fw-5">{{ notification.formattedTime }}</div>
                     </a>
                 </li>
                 <li class="py-0"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
