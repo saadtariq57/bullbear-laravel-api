@@ -92,6 +92,12 @@ const routes = [
 
     },
     {
+        path: '/notifications',
+        name: 'notifications',
+        component: () => import('./components/profile/Notifications.vue'),
+
+    },
+    {
         path: "/watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
         children: [
