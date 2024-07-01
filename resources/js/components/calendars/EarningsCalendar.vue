@@ -255,7 +255,7 @@ export default {
 </script>
 <style>
 span.marketClosed,span.marketOpen {
-    background-image: url(https://i-invdn-com.investing.com/newSiteIconsSprite_v42j.png);
+    background-image: url(/build/images/site_icons/SiteIcons.png);
     display: inline-block;
     position: relative;
     width: 16px;
