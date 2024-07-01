@@ -19,20 +19,19 @@
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
                        
                         <ul class="list-unstyled all_notify m-0 p-0">
-                            <li v-for="notification in formattedNotifications" :key="notification.id" class="py-3 px-3">
+                            <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
                                 <div class="d-flex">
                                     <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
                                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
                                         <div>
                                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
                                             <p class="mb-0 fs-12 fw-5 text-wrap">{{ notification.description }}</p>
-                                            
                                         </div>
                                     </a>
                                     <div class="notification_setting">
-                                        <div class="fs-6 fw-5">{{ notification.formattedTime }}</div>
+                                        <div class="fs-6 fw-5 notification_time">{{ notification.formattedTime }}</div>
                                         <div class="dropdown">
-                                            <button class="btn p-0 text-center w-100 border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="btn p-0 text-end w-100 border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="bi bi-three-dots fs-4"></i>
                                             </button>
                                             <ul class="dropdown-menu">
@@ -124,6 +123,9 @@ export default {
 };
 </script>
 <style>
+.notification_setting .notification_time{
+    min-width: max-content;
+}
 .all_notifications .nav-pills .nav-link{
     border: 1px solid var(--cta-btn);
 }

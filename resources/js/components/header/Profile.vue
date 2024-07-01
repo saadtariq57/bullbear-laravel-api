@@ -50,7 +50,7 @@
                 <i class="bi bi-bell-fill fs-4"></i>
                 <span class="notification-count">{{ notifications.length }}</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
+            <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification">
                 <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
                     <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
@@ -160,6 +160,10 @@ export default {
 };
 </script>
 <style>
+.header_notification{
+    max-height: 316px;
+    overflow: auto;
+}
 .dropdown-hover:hover .dropdown-menu{
     display: block;
     right: 0;
