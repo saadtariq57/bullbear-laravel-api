@@ -17,7 +17,7 @@ class WidgetController extends Controller
          */
         public function index()
         {
-            $widgets = Widget::paginate(10); // Displays 10 widgets per page. You can adjust this number as needed.
+            $widgets = Widget::paginate(10);
             return view('admin.widgets.index', compact('widgets'));
         }
 
@@ -30,22 +30,22 @@ class WidgetController extends Controller
                 $incomingSymbols = $request->input('symbols');
                 
                 // Existing symbol IDs in the widget
-                $existingSymbolIds = $widget->symbols()->pluck('symbol_id')->toArray();
+                $existingSymbolIds = $widget->widgetSymbols()->pluck('symbol_id')->toArray();
 
                 // Process each incoming symbol
                 foreach ($incomingSymbols as $incomingSymbol) {
-                    $symbolId = $incomingSymbol['symbol_Id'];
+                    $symbolId = $incomingSymbol['symbol_id']; // Corrected the key to match incoming data
                     
                     if (in_array($symbolId, $existingSymbolIds)) {
                         // Update the existing WidgetSymbol
-                        $widgetSymbol = $widget->symbols()->where('symbol_id', $symbolId)->first();
+                        $widgetSymbol = $widget->widgetSymbols()->where('symbol_id', $symbolId)->first();
                         $widgetSymbol->update([
                             'added_date' => $incomingSymbol['added_date'],
                             'price' => $incomingSymbol['price']
                         ]);
                     } else {
                         // Create a new WidgetSymbol
-                        $widget->symbols()->create([
+                        $widget->widgetSymbols()->create([
                             'symbol_id' => $symbolId,
                             'added_date' => $incomingSymbol['added_date'],
                             'price' => $incomingSymbol['price']
@@ -54,22 +54,25 @@ class WidgetController extends Controller
                 }
 
                 // Find symbols to delete that aren't in the incoming list
-                $incomingSymbolIds = array_column($incomingSymbols, 'symbol_Id');
+                $incomingSymbolIds = array_column($incomingSymbols, 'symbol_id'); // Corrected the key to match incoming data
                 $symbolsToDelete = array_diff($existingSymbolIds, $incomingSymbolIds);
                 foreach ($symbolsToDelete as $symbolIdToDelete) {
-                    $widget->symbols()->where('symbol_id', $symbolIdToDelete)->delete();
+                    $widget->widgetSymbols()->where('symbol_id', $symbolIdToDelete)->delete();
                 }
                 
                 return response()->json(['message' => 'Symbols updated successfully.']);
-            } else { // It's a GET request
-                $symbols = $widget->symbols()->select('symbol_id', 'added_date', 'price')->get();
+            } else { 
+                $symbols = $widget->widgetSymbols()->select('symbol_id', 'added_date', 'price')->get();
                 
                 foreach ($symbols as &$symbol) {
-                    $symbolDetail = $symbol->symbol;
-                    $symbol->id = $symbolDetail->id;
-                    $symbol->name = $symbolDetail->name;
-                    $symbol->exchange = $symbolDetail->exchange;
-                    $symbol->company_name = $symbolDetail->company_name;
+                    $symbolDetail = Symbol::find($symbol->symbol_id);
+                    if ($symbolDetail) {
+                        $symbol->id = $symbolDetail->id;
+                        $symbol->symbol = $symbolDetail->symbol;
+                        $symbol->name = $symbolDetail->name;
+                        $symbol->exchange = $symbolDetail->exchange;
+                        $symbol->type = $symbolDetail->type;
+                    }
                 }
 
                 return view('admin.widgets.show_symbols', ['symbols' => $symbols, 'widget' => $widget]);
@@ -149,20 +152,20 @@ class WidgetController extends Controller
         return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
     }
     
-        public function fetchPostWordpress(Request $request, $categoryIds)
-        {
-            $wordpressApiUrl = config('services.wordpress.api_url');
-            $wordpressApiUrl .= $categoryIds . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
+    public function fetchPostWordpress(Request $request, $categoryIds)
+    {
+        $wordpressApiUrl = config('services.wordpress.api_url');
+        $wordpressApiUrl .= $categoryIds . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
 
-            try {
-                $response = file_get_contents($wordpressApiUrl);
-                $posts = json_decode($response, true);
-                return $posts;
-            } catch (\Exception $e) {
-                \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
-                return [];
-            }
+        try {
+            $response = file_get_contents($wordpressApiUrl);
+            $posts = json_decode($response, true);
+            return $posts;
+        } catch (\Exception $e) {
+            \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
+            return [];
         }
+    }
     //Widget Categories
     public function categoriesIndex(Request $request)
     {
@@ -222,64 +225,52 @@ class WidgetController extends Controller
         return redirect()->route('admin.widgets.categories.index')->with('success', 'Category deleted successfully');
     }
 
-        // user widgets
-        public function getWidgetData(Request $request){
-            $widgetId = $request->input('widgetId');
-            $widget = Widget::where('id', $widgetId)
-            ->with([
-                'symbols' => function ($query) {
-                    $query->orderBy('created_at');
-                },
-                'symbols.symbol'
-            ])->get();
-            // $existingSymbolIds = $widget->symbols()->pluck('symbol_id')->toArray();
-            return response()->json(['widgetDetails' => $widget]);
-        }
+    // API Methods
+    public function getWidgetsByCategory(Request $request)
+    {
+        $categoryName = $request->input('category');
+        $subCategoryName = $request->input('subCategory');
 
-        public function getSymbols($widgetId)
-        {
-            // $widget = $this->getWidgetData($widgetId);
-            $widget = Widget::where('id', $widgetId)
-            ->with([
-                'symbols' => function ($query) {
-                    $query->orderBy('created_at');
-                },
-                'symbols.symbol'
-            ])
-            ->first();
+        $query = Widget::query();
 
-            if ($widget) {
-                $symbolNames = $widget->symbols->pluck('symbol.symbol')->toArray();
-                $stats = $this->getSymbolsStats($symbolNames);
-                $widget->symbols->each(function ($widgetSymbol) use ($stats) {
-                    $symbol = $widgetSymbol->symbol;
-                    $symbol->stats = $stats[$symbol->symbol] ?? [];
-                });
-
-                return response()->json($widget);
-            } else {
-                return response()->json(['error' => 'Watchlist not found'], 404);
+        if ($categoryName) {
+            $category = WidgetCategory::where('name', $categoryName)->first();
+            if ($category) {
+                $query->where('category_id', $category->id);
             }
         }
-        public function getSymbolsStats($symbols)
-        {
-            $url = config('thirdparty.mboum.base_url');
-            $url .= config('thirdparty.mboum.quote_endpoint');
-            $url .= implode(',', $symbols);
-            $url .= config('thirdparty.mboum.api_key');
 
-            try {
-                $response = file_get_contents($url);
-                $data = json_decode($response, true);
-                $stats = [];
-                foreach ($data['data'] as $symbolData) {
-                    $stats[$symbolData['symbol']] = $symbolData;
+        if ($subCategoryName) {
+            $subCategory = WidgetCategory::where('name', $subCategoryName)->first();
+            if ($subCategory) {
+                $query->where('category_id', $subCategory->id);
+            }
+        }
+
+        // Load widgets with symbols including symbol details
+        $widgets = $query->with(['widgetSymbols.symbol'])->orderBy('display_order')->get();
+
+        // Transform the data to include only necessary fields
+        $widgets->each(function($widget) {
+            $widget->symbols = $widget->widgetSymbols->map(function($widgetSymbol) {
+                // Check if symbol exists
+                if ($widgetSymbol->symbol) {
+                    return [
+                        'symbol_id' => $widgetSymbol->symbol_id,
+                        'symbol' => $widgetSymbol->symbol->symbol,
+                        'name' => $widgetSymbol->symbol->name,
+                        'type' => $widgetSymbol->symbol->type,
+                        'price' => $widgetSymbol->price,
+                        'added_date' => $widgetSymbol->added_date,
+                        'peak_price' => $widgetSymbol->peak_price,
+                    ];
                 }
+                return null; // Return null if symbol does not exist
+            })->filter(); // Filter out null values
+            $widget->makeHidden('widgetSymbols'); // Hide the widgetSymbols relationship from the response
+        });
 
-                return $stats;
-            } catch (Exception $e) {
-                \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
-                return [];
-            }
-        }
+        return response()->json($widgets);
+    }
+
 }

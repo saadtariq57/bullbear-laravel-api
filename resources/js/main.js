@@ -2,7 +2,7 @@ import { createApp } from "vue";
 //import Navigation from "./components/header/Navigation.vue";
 import router from "./router";
 import store from './stores/index';
-import App from "./components/App.vue"; 
+import App from "./components/App.vue";
 
 // Set axios with common header
 import axios from 'axios';
@@ -13,10 +13,10 @@ if (token) {
   axios.interceptors.request.use((config) => {
     // Initialize headers and common if they don't exist
     config.headers = config.headers || {};
-    config.headers.common = config.headers.common || {};
 
     // Check if the URL is relative and doesn't start with http(s)://
     if (!/^(http|https):\/\//.test(config.url)) {
+      config.headers.common = config.headers.common || {};
       config.headers.common['X-CSRF-TOKEN'] = token.content;
     }
     return config;
@@ -40,7 +40,7 @@ app.use(store);
 
 // Mount the app
 router.isReady().then(() => {
-    store.dispatch('checkLoginStatus').finally(() => {
-        app.mount("#app");
-    });
+  store.dispatch('checkLoginStatus').finally(() => {
+    app.mount("#app");
+  });
 });

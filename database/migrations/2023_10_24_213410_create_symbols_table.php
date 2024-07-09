@@ -13,18 +13,16 @@ return new class extends Migration
     {
         Schema::create('symbols', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('exchange', 100)->nullable();
-            $table->string('company_name', 500)->nullable();
-            $table->string('currency', 50)->nullable();
-            $table->string('mic_code', 50)->nullable();
-            $table->string('country', 50)->nullable();
-            $table->string('type', 50)->nullable();
-            $table->json('available_exchanges')->nullable();
+            $table->string('symbol')->unique();
+            $table->string('name', 255)->nullable();
+            $table->string('currency', 255)->nullable();
+            $table->string('exchange', 255)->nullable();
+            $table->string('cik_code', 255)->nullable();
+            $table->string('country', 255)->nullable();
+            $table->enum('type', ['stocks', 'etf', 'indices', 'crypto', 'futures', 'bonds', 'trust', 'fund'])->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
-            // Additional columns from other tables if needed...
-            $table->unique(['name', 'exchange']);
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->boolean('active')->default(true);
         });
     }
 

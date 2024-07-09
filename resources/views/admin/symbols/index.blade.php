@@ -28,6 +28,27 @@
                                                 <button type="submit" style="background: none; border: none;"><i class="ri-search-line search-icon"></i></button>
                                             </div>
                                         </div>
+                                        <div class="form-group me-2">
+                                            <select name="type" class="form-control">
+                                                <option value="">Select Type</option>
+                                                <option value="stocks" {{ request()->query('type') == 'stocks' ? 'selected' : '' }}>Stocks</option>
+                                                <option value="etf" {{ request()->query('type') == 'etf' ? 'selected' : '' }}>ETF</option>
+                                                <option value="indices" {{ request()->query('type') == 'indices' ? 'selected' : '' }}>Indices</option>
+                                                <option value="crypto" {{ request()->query('type') == 'crypto' ? 'selected' : '' }}>Crypto</option>
+                                                <option value="futures" {{ request()->query('type') == 'futures' ? 'selected' : '' }}>Futures</option>
+                                                <option value="bonds" {{ request()->query('type') == 'bonds' ? 'selected' : '' }}>Bonds</option>
+                                                <option value="trust" {{ request()->query('type') == 'trust' ? 'selected' : '' }}>Trust</option>
+                                                <option value="fund" {{ request()->query('type') == 'fund' ? 'selected' : '' }}>Fund</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group me-2">
+                                            <select name="active" class="form-control">
+                                                <option value="">Select Status</option>
+                                                <option value="1" {{ request()->query('active') == '1' ? 'selected' : '' }}>Active</option>
+                                                <option value="0" {{ request()->query('active') == '0' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Filter</button>
                                     </form>
                                 </div>
                             </div>
@@ -51,11 +72,13 @@
                                             </div>
                                         </th>
                                         <th scope="col">Symbol</th>
+                                        <th scope="col">Name</th>
                                         <th scope="col">Exchange</th>
-                                        <th scope="col">Company</th>
                                         <th scope="col">Currency</th>
                                         <th scope="col">Country</th>
+                                        <th scope="col">CIK Code</th>
                                         <th scope="col">Type</th>
+                                        <th scope="col">Active</th>
                                         <th scope="col" style="width: 200px;">Action</th>
                                     </tr>
                                 </thead>
@@ -68,17 +91,14 @@
                                                     <label class="form-check-label" for="symbolcheck-{{ $symbol->id }}"></label>
                                                 </div>
                                             </th>
-                                            <td>
-                                                <!-- You might want to replace the image source with the relevant image for each symbol if available -->
-                                                <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt=""
-                                                     class="avatar-xs rounded-circle me-2">
-                                                <a href="#" class="text-body">{{ $symbol->name }}</a>
-                                            </td>
+                                            <td>{{ $symbol->symbol }}</td>
+                                            <td>{{ $symbol->name }}</td>
                                             <td>{{ $symbol->exchange }}</td>
-                                            <td>{{ $symbol->company_name }}</td>
                                             <td>{{ $symbol->currency }}</td>
                                             <td>{{ $symbol->country }}</td>
+                                            <td>{{ $symbol->cik_code }}</td>
                                             <td>{{ $symbol->type }}</td>
+                                            <td>{{ $symbol->active ? 'Yes' : 'No' }}</td>
                                             <td>
                                                 <ul class="list-inline mb-0">
                                                     <li class="list-inline-item">
@@ -92,6 +112,7 @@
                                                             @method('DELETE')
                                                             <button class="btn btn-danger delete-symbol" type="button" data-symbol-id="{{ $symbol->id }}">
                                                                 <i class="fas fa-trash-alt"></i>
+                                                            </button>
                                                         </form>
                                                     </li>
                                                 </ul>
@@ -110,7 +131,7 @@
                             <div class="col-sm-6">
                                 <div class="float-sm-end">
                                     <ul class="pagination mb-sm-0">
-                                        {{ $symbols->appends(['search' => request()->query('search')])->links() }}
+                                        {{ $symbols->appends(['search' => request()->query('search'), 'type' => request()->query('type'), 'active' => request()->query('active')])->links() }}
                                     </ul>
                                 </div>
                             </div>
@@ -130,7 +151,7 @@
             $(document).ready(function() {
                 // Intercept delete button click
                 $('.delete-symbol').on('click', function() {
-                    let widgetId = $(this).data('symbol-id');
+                    let symbolId = $(this).data('symbol-id');
                     
                     Swal.fire({
                         title: 'Are you sure?',

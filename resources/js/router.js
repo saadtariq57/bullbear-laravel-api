@@ -6,22 +6,20 @@ import { createRouter, createWebHistory } from "vue-router";
 //One of the category could be sidebar-{pagetype}
 const routes = [
     {
-        path: '/markets/:cetagory/:id',
-        name: 'markets.indices',
+        path: '/markets/:category',
+        name: route => `markets.${route.params.category}`,
         component: () => import('./components/markets/Markets.vue'),
-        props: (route) => ({
-            category: route.params.category,
-            widget_id: route.params.id
+        props: route => ({
+            category: route.params.category
         }),
     },
     {
-        path: '/markets/:cetagory/:subCetagory/:id',
-        name: 'markets.indices.indices-futures',
+        path: '/markets/:category/:subCategory',
+        name: route => `markets.${route.params.category}.${route.params.subCategory}`,
         component: () => import('./components/markets/Markets.vue'),
-        props: (route) => ({
+        props: route => ({
             category: route.params.category,
-            subCategory: route.params.subCategory,
-            widget_id: route.params.id
+            subCategory: route.params.subCategory
         }),
     },
     {
@@ -118,7 +116,7 @@ const routes = [
         path: "/previous-results",
         name: "previous-results",
         component: () => import("./components/exam/PreviousResult.vue"),
-    },    
+    },
     {
         path: "/exam/:examName/question/:questionId",
         name: "exam.question",
@@ -145,18 +143,24 @@ const routes = [
         component: () => import('./components/groups/SingleGroup.vue'),
         props: true,
         children: [
-          { path: '', name: 'group-single-default', redirect: { name: 'group-discussion' } },
-          { path: 'discussion', 
-            name: 'group-discussion', 
-            component: () => import('./components/groups/tabs/GroupDiscussionTab.vue')},
-          { path: 'live-chat', 
-            name: 'group-live-chat', 
-            component: () => import('./components/groups/tabs/LiveChatTab.vue') },
-          { path: 'members', 
-            name: 'group-members', 
-            component: () => import('./components/groups/tabs/MembersTab.vue')},
+            { path: '', name: 'group-single-default', redirect: { name: 'group-discussion' } },
+            {
+                path: 'discussion',
+                name: 'group-discussion',
+                component: () => import('./components/groups/tabs/GroupDiscussionTab.vue')
+            },
+            {
+                path: 'live-chat',
+                name: 'group-live-chat',
+                component: () => import('./components/groups/tabs/LiveChatTab.vue')
+            },
+            {
+                path: 'members',
+                name: 'group-members',
+                component: () => import('./components/groups/tabs/MembersTab.vue')
+            },
         ],
-      },
+    },
     {
         path: '/',
         name: 'home',

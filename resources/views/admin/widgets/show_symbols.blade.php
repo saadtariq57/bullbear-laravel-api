@@ -47,8 +47,9 @@
                                 <tr>
                                     <th>Symbol ID</th>
                                     <th>Symbol</th>
+                                    <th>Name</th>
                                     <th>Exchange</th>
-                                    <th>Company</th>
+                                    <th>Type</th>
                                     <th>Added Date</th>
                                     <th>Price</th>
                                     <th>Action</th>
@@ -58,9 +59,10 @@
                                 @foreach($symbols as $symbol)
                                 <tr data-id="{{ $symbol->id }}">
                                         <td data-field="id" style="width: 80px">{{ $symbol->id }}</td>
-                                        <td data-field="symbol">{{ $symbol->name }}</td>
+                                        <td data-field="symbol">{{ $symbol->symbol }}</td>
+                                        <td data-field="name">{{ $symbol->name }}</td>
                                         <td data-field="exchange">{{ $symbol->exchange }}</td>
-                                        <td data-field="company_name">{{ $symbol->company_name }}</td>
+                                        <td data-field="type">{{ $symbol->type }}</td>
                                         <td data-field="added_date">{{ $symbol->added_date ?? '' }}</td>
                                         <td data-field="price">{{ $symbol->price ?? '' }}</td>
                                         <td style="width: 100px">
@@ -149,13 +151,13 @@
                         data.forEach(symbol => {
                             results += `<tr class="WidgetSymbol-dropdownItem" 
                                         data-id="${symbol.id}" 
+                                        data-symbol="${symbol.symbol}" 
                                         data-name="${symbol.name}" 
-                                        data-company="${symbol.company_name}" 
-                                        data-country="${symbol.country}"
+                                        data-type="${symbol.type}"
                                         data-exchange="${symbol.exchange}">
+                                        <td>${symbol.symbol}</td>
                                         <td>${symbol.name}</td>
-                                        <td>${symbol.company_name}</td>
-                                        <td>${symbol.country}</td>
+                                        <td>${symbol.type}</td>
                                         <td>${symbol.exchange}</td>
                                         <td><button class="btn btn-success btn-sm addSymbolToWidget">Add</button></td>
                                     </tr>`;
@@ -170,8 +172,9 @@
                 e.stopPropagation();
                 let symbolRow = $(this).closest('tr');
                 let symbolID = symbolRow.data('id');
+                let symbol = symbolRow.data('symbol');
                 let symbolName = symbolRow.data('name');
-                let companyName = symbolRow.data('company');
+                let type = symbolRow.data('type');
                 let exchange = symbolRow.data('exchange'); // Fetching the exchange attribute
                 // Clear search bar
                 $('#symbolSearch').val('');
@@ -193,9 +196,10 @@
 
                 let newRow = `<tr data-id="${symbolID}">
                                 <td data-field="id" style="width: 80px">${symbolID}</td>
-                                <td data-field="symbol">${symbolName}</td>
+                                <td data-field="symbol">${symbol}</td>
+                                <td data-field="name">${symbolName}</td>
                                 <td data-field="exchange">${exchange}</td>
-                                <td data-field="company_name">${companyName}</td>
+                                <td data-field="type">${type}</td>
                                 <td data-field="added_date">${new Date().toISOString().split('T')[0]}</td>
                                 <td data-field="price">0</td>
                                 <td style="width: 100px">
@@ -233,55 +237,56 @@
 
             // Update Widget Symbols List
             $('#updateSymbols').click(function() {
-            let symbolsData = [];
-            $('#widgetSymbols tbody tr').each(function() {
-                let row = $(this);
-                let rowData = {
-                    widget_id: $('#widgetId').val(),
-                    symbol_Id: row.data('id'), 
-                    added_date: row.find('td[data-field="added_date"]').text(),
-                    price: parseFloat(row.find('td[data-field="price"]').text()) // Convert price to number
-                };
-                symbolsData.push(rowData);
+                let symbolsData = [];
+                $('#widgetSymbols tbody tr').each(function() {
+                    let row = $(this);
+                    let rowData = {
+                        widget_id: $('#widgetId').val(),
+                        symbol_id: row.data('id'), 
+                        added_date: row.find('td[data-field="added_date"]').text(),
+                        price: parseFloat(row.find('td[data-field="price"]').text()) // Convert price to number
+                    };
+                    symbolsData.push(rowData);
+                });
+                
+                $.ajax({
+                    url: '/admin/widgets/' + $('#widgetId').val() + '/symbols', 
+                    type: 'POST',
+                    data: { symbols: symbolsData },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Ensure CSRF token is passed for Laravel POST requests
+                    },
+                    success: function(response) {
+                        // Disable Update Symbol Button Again
+                        $('#updateSymbols').prop('disabled', true);
+                        // Use SweetAlert for a better user experience on success.
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Symbols updated successfully.",
+                            icon: "success",
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    },
+                    error: function(error) {
+                        // Use SweetAlert for a better user experience on error.
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Error updating symbols.",
+                            icon: "error",
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
             });
-            
-            $.ajax({
-                url: '/admin/widgets/' + $('#widgetId').val() + '/symbols', 
-                type: 'POST',
-                data: { symbols: symbolsData },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Ensure CSRF token is passed for Laravel POST requests
-                },
-                success: function(response) {
-                    // Disable Update Symbol Button Again
-                    $('#updateSymbols').prop('disabled', true);
-                    // Use SweetAlert for a better user experience on success.
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Symbols updated successfully.",
-                        icon: "success",
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    });
-                },
-                error: function(error) {
-                    // Use SweetAlert for a better user experience on error.
-                    Swal.fire({
-                        title: "Error!",
-                        text: "Error updating symbols.",
-                        icon: "error",
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    });
-                }
-            });
-        });
+
             // Remove Symbol From Widget
             $(document).on('click', '.removeSymbol', function() {
                 let row = $(this).closest('tr');
@@ -298,7 +303,7 @@
                 }).then(function(result) {
                     if (result.value) {
                         // Update the temporary array
-                        currentSymbols = currentSymbols.filter(symbol => symbol.id !== symbolIDToRemove);
+                        currentSymbols = currentSymbols.filter(symbol => symbol !== symbolIDToRemove);
                         
                         // Remove the table row from the DOM
                         row.remove();

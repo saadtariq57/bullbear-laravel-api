@@ -21,7 +21,7 @@ class Widget extends Model
         'display_order'
     ];
 
-    public function symbols()
+    public function widgetSymbols()
 	{
 	    return $this->hasMany(WidgetSymbol::class);
 	}
