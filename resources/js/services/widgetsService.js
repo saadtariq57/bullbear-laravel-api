@@ -1,30 +1,24 @@
 const widgetsService = {
-    async getWidgetData(widgetId) {
-        try{
-            const response = await axios.get(`/api/getWidget?widgetId=${widgetId}`);
-            return response.data;
-        } catch (error) {
-            console.error('Error getting widget data:', error);
-        }
-    },
-    async getSymbols(widgetId) {
+    async getWidgetsByCategory({ category, subCategory }) {
         try {
-
-            const response = await axios.get(`/api/widgetsymbols/${widgetId}`);
+            const response = await axios.get('/api/getWidget', {
+                params: { category, subCategory },
+            });
             return response.data;
         } catch (error) {
-            console.error('Error fetching watchlist symbols:', error);
+            console.error('Error getting widgets by category:', error);
         }
     },
-    // async copyAsWatchlist(postData) {
-    //     try{
-    //         const response = await axios.post('/api/watchlist/copyWatchlist', postData);
-    //         return response.data;
-    //     } catch (error) {
-    //         console.error('Error adding symbol to watchlist:', error);
-    //     }
-    // },
-    
+    async getQuotes(symbolIds) {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/quotes`, {
+                params: { ids: symbolIds.join(',') }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching quotes:', error);
+        }
+    },
 };
 
 export default widgetsService;

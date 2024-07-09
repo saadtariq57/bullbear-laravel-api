@@ -22,50 +22,54 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
+                        <label for="symbol">Symbol</label>
+                        <input type="text" class="form-control" name="symbol" value="{{$symbol->symbol}}">
+                    </div>
+                    <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" name="name" value="{{$symbol->name}}">
                     </div>
-
                     <div class="form-group">
                         <label for="exchange">Exchange</label>
                         <input type="text" class="form-control" name="exchange" value="{{$symbol->exchange}}">
                     </div>
-
-                    <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" name="company_name" value="{{$symbol->company_name}}">
-                    </div>
-
                     <div class="form-group">
                         <label for="currency">Currency</label>
                         <input type="text" class="form-control" name="currency" value="{{$symbol->currency}}">
                     </div>
-
                     <div class="form-group">
-                        <label for="mic_code">MIC Code</label>
-                        <input type="text" class="form-control" name="mic_code" value="{{$symbol->mic_code}}">
+                        <label for="cik_code">CIK Code</label>
+                        <input type="text" class="form-control" name="cik_code" value="{{$symbol->cik_code}}">
                     </div>
                 </div>
-
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="country">Country</label>
                         <input type="text" class="form-control" name="country" value="{{$symbol->country}}">
                     </div>
-
                     <div class="form-group">
                         <label for="type">Type</label>
-                        <input type="text" class="form-control" name="type" value="{{$symbol->type}}">
+                        <select class="form-control" name="type">
+                            <option value="stocks" {{ $symbol->type == 'stocks' ? 'selected' : '' }}>Stocks</option>
+                            <option value="etf" {{ $symbol->type == 'etf' ? 'selected' : '' }}>ETF</option>
+                            <option value="indices" {{ $symbol->type == 'indices' ? 'selected' : '' }}>Indices</option>
+                            <option value="crypto" {{ $symbol->type == 'crypto' ? 'selected' : '' }}>Crypto</option>
+                            <option value="futures" {{ $symbol->type == 'futures' ? 'selected' : '' }}>Futures</option>
+                            <option value="bonds" {{ $symbol->type == 'bonds' ? 'selected' : '' }}>Bonds</option>
+                            <option value="trust" {{ $symbol->type == 'trust' ? 'selected' : '' }}>Trust</option>
+                            <option value="fund" {{ $symbol->type == 'fund' ? 'selected' : '' }}>Fund</option>
+                        </select>
                     </div>
-
                     <div class="form-group">
-                        <label for="available_exchanges">Available Exchanges (as , seprated)</label>
-                        <textarea class="form-control" name="available_exchanges" rows="3">{{ implode(', ', $symbol->available_exchanges) }}</textarea>
+                        <label for="active">Active</label>
+                        <select class="form-control" name="active">
+                            <option value="1" {{ $symbol->active ? 'selected' : '' }}>Yes</option>
+                            <option value="0" {{ !$symbol->active ? 'selected' : '' }}>No</option>
+                        </select>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-md-12">
                     <div class="form-group">
                         <button type="submit" class="btn btn-success float-right">
@@ -92,7 +96,6 @@
                 });
             </script>
         @endif
-
         @if(session('error'))
             <script>
                 Swal.fire({

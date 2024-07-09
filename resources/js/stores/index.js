@@ -64,49 +64,49 @@ export default createStore({
                 headers: { 'X-CSRF-TOKEN': csrfToken },
                 withCredentials: true
             })
-            .then(response => {
-                commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
-                // alert('User data updated successfully!');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "400px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "success",
-                    title: "User data updated successfully!"
-                  });
-            })
-            .catch(error => {
-                console.error('Error updating user data:', error.response.data);
-                // alert('Failed to update data.');
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "400px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "error",
-                    title: "Error updating user data"
-                  });
-            });
+                .then(response => {
+                    commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
+                    // alert('User data updated successfully!');
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "400px",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "User data updated successfully!"
+                    });
+                })
+                .catch(error => {
+                    console.error('Error updating user data:', error.response.data);
+                    // alert('Failed to update data.');
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "400px",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "error",
+                        title: "Error updating user data"
+                    });
+                });
         }
     },
-    modules:{
+    modules: {
         userNotification: userNotificationModule,
         userFeed: userFeedModule,
         userFeedComment: userFeedCommentModule,
@@ -115,7 +115,7 @@ export default createStore({
         userProfile: userProfileModule,
         profileGroupHeader: ProfileGroupHeaderModule,
         userWatchlists: userWatchlistModule,
-        userWidgtes: userWidgetsModule,
+        userWidgets: userWidgetsModule,
         searchResults: searchModule
     }
 });

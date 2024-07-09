@@ -17,50 +17,54 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
+                        <label for="symbol">Symbol</label>
+                        <input type="text" class="form-control" name="symbol" id="symbol">
+                    </div>
+                    <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" name="name" id="name">
                     </div>
-
                     <div class="form-group">
                         <label for="exchange">Exchange</label>
                         <input type="text" class="form-control" name="exchange">
                     </div>
-
-                    <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" class="form-control" name="company_name">
-                    </div>
-
                     <div class="form-group">
                         <label for="currency">Currency</label>
                         <input type="text" class="form-control" name="currency">
                     </div>
-
                     <div class="form-group">
-                        <label for="mic_code">MIC Code</label>
-                        <input type="text" class="form-control" name="mic_code">
+                        <label for="cik_code">CIK Code</label>
+                        <input type="text" class="form-control" name="cik_code">
                     </div>
                 </div>
-
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="country">Country</label>
                         <input type="text" class="form-control" name="country">
                     </div>
-
                     <div class="form-group">
                         <label for="type">Type</label>
-                        <input type="text" class="form-control" name="type">
+                        <select class="form-control" name="type">
+                            <option value="stocks">Stocks</option>
+                            <option value="etf">ETF</option>
+                            <option value="indices">Indices</option>
+                            <option value="crypto">Crypto</option>
+                            <option value="futures">Futures</option>
+                            <option value="bonds">Bonds</option>
+                            <option value="trust">Trust</option>
+                            <option value="fund">Fund</option>
+                        </select>
                     </div>
-
                     <div class="form-group">
-                        <label for="available_exchanges">Available Exchanges (comma-separated)</label>
-                        <textarea class="form-control" name="available_exchanges" rows="3"></textarea>
+                        <label for="active">Active</label>
+                        <select class="form-control" name="active">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-md-12">
                     <div class="form-group">
                         <button type="submit" class="btn btn-success float-right">
@@ -87,7 +91,6 @@
                 });
             </script>
         @endif
-
         @if(session('error'))
             <script>
                 Swal.fire({

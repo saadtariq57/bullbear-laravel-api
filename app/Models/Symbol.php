@@ -15,14 +15,14 @@ class Symbol extends Model
      * @var array
      */
     protected $fillable = [
+        'symbol',
         'name',
-        'exchange',
-        'company_name',
         'currency',
-        'mic_code',
+        'exchange',
+        'cik_code',
         'country',
         'type',
-        'available_exchanges'
+        'active',
     ];
 
     /**
@@ -31,6 +31,8 @@ class Symbol extends Model
      * @var array
      */
     protected $casts = [
-        'available_exchanges' => 'array'
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'active' => 'boolean',
     ];
 }

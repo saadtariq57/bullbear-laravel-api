@@ -4,46 +4,82 @@ namespace App\Http\Controllers;
 
 use App\Models\Symbol;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SymbolController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function getUniqueSymbols()
+    {
+        $widgetSymbols = DB::table('widget_symbols')->select('symbol_id')->distinct()->get();
+        $watchlistSymbols = DB::table('watchlist_symbols')->select('symbol_id')->distinct()->get();
+        $uniqueSymbols = $widgetSymbols->merge($watchlistSymbols)->unique('symbol_id')->pluck('symbol_id');
+        $symbols = DB::table('symbols')->whereIn('id', $uniqueSymbols)->get();
+
+        return response()->json($symbols);
+    }
+
+    public function getAllExcludingUniqueSymbols()
+    {
+        $uniqueSymbols = $this->getUniqueSymbols()->original;
+
+        $uniqueSymbolIds = collect($uniqueSymbols)->pluck('id');
+
+        // Get all symbols excluding the unique ones
+        $excludedSymbols = DB::table('symbols')
+            ->whereNotIn('id', $uniqueSymbolIds)
+            ->get();
+
+        return response()->json($excludedSymbols);
+    }
 
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $type = $request->query('type');
+        $active = $request->query('active');
+
+        $symbols = Symbol::query();
 
         if($search) {
-            $symbols = Symbol::where('name', 'LIKE', "%{$search}%")
-                             ->orWhere('exchange', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->paginate(15);
-        } else {
-            $symbols = Symbol::paginate(15);
+            $symbols->where(function($query) use ($search) {
+                $query->where('symbol', 'LIKE', "%{$search}%")
+                    ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->orWhere('exchange', 'LIKE', "%{$search}%")
+                    ->orWhere('currency', 'LIKE', "%{$search}%")
+                    ->orWhere('country', 'LIKE', "%{$search}%")
+                    ->orWhere('cik_code', 'LIKE', "%{$search}%");
+            });
         }
 
+        if($type) {
+            $symbols->where('type', $type);
+        }
+
+        if(!is_null($active)) {
+            $symbols->where('active', $active);
+        }
+
+        $symbols = $symbols->paginate(15);
+
         return view('admin.symbols.index', compact('symbols'));
-        //return view('admin.symbols.index', ['symbols' => $symbols]);
     }
 
-    /**
-     * Search for symbols based on the query.
-     */
     public function search(Request $request)
     {
         $search = $request->input('query');
 
         if ($search) {
-            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange', 'type', 'mic_code'])
-                             ->where('symbol', 'LIKE', "%{$search}%")
-                             ->orWhere('exchange', 'LIKE', "%{$search}%")
-                             ->orWhere('name', 'LIKE', "%{$search}%")
-                             ->orWhere('mic_code', 'LIKE', "%{$search}%")
-                             ->orderByRaw("CASE WHEN name LIKE '{$search}%' THEN 1 ELSE 2 END, name")
-                             ->limit(10)
-                             ->get();
+            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange', 'type', 'cik_code'])
+                            ->where('active', 1)
+                            ->where(function ($query) use ($search) {
+                                $query->where('symbol', 'LIKE', "%{$search}%")
+                                    ->orWhere('exchange', 'LIKE', "%{$search}%")
+                                    ->orWhere('name', 'LIKE', "%{$search}%")
+                                    ->orWhere('cik_code', 'LIKE', "%{$search}%");
+                            })
+                            ->orderByRaw("CASE WHEN name LIKE '{$search}%' THEN 1 ELSE 2 END, name")
+                            ->limit(10)
+                            ->get();
         } else {
             $symbols = [];
         }
@@ -51,47 +87,29 @@ class SymbolController extends Controller
         return response()->json($symbols);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.symbols.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-        public function store(Request $request)
-        {
-            // Validate the incoming request data
-            $request->validate([
-                'name' => 'required',
-                'exchange' => 'required',
-                'company_name' => 'required',
-                'currency' => 'required',
-                'country' => 'required',
-                'type' => 'required'
-            ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'symbol' => 'required|unique:symbols,symbol',
+            'name' => 'required',
+            'exchange' => 'required',
+            'currency' => 'required',
+            'cik_code' => 'nullable',
+            'country' => 'required',
+            'type' => 'required',
+            'active' => 'required|boolean'
+        ]);
 
-            // Get all request data
-            $data = $request->all();
+        Symbol::create($request->all());
 
-            // Convert the comma-separated string to an array if it's set, otherwise set as an empty array
-            $data['available_exchanges'] = isset($data['available_exchanges']) ? explode(', ', $data['available_exchanges']) : [];
+        return redirect()->route('admin.symbols.index')->with('success', 'Symbol created successfully.');
+    }
 
-            // Create a new symbol using the processed data
-            Symbol::create($data);
-
-            // Redirect to the symbols index with a success message
-            return redirect()->route('admin.symbols.index')->with('success', 'Symbol created successfully.');
-        }
-
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Symbol $symbol)
     {
         return view('admin.symbols.show', ['symbol' => $symbol]);
@@ -112,26 +130,23 @@ class SymbolController extends Controller
         {
             // Validate the incoming request data
             $request->validate([
+                'symbol' => 'required|unique:symbols,symbol,' . $symbol->id,
                 'name' => 'required',
                 'exchange' => 'required',
-                'company_name' => 'required',
                 'currency' => 'required',
+                'cik_code' => 'nullable',
                 'country' => 'required',
-                'type' => 'required'
+                'type' => 'required',
+                'active' => 'required|boolean'
             ]);
 
-            // Get all request data
-            $data = $request->all();
-
-            // Convert the comma-separated string to an array if it's set, otherwise set as an empty array
-            $data['available_exchanges'] = isset($data['available_exchanges']) ? explode(', ', $data['available_exchanges']) : [];
-
             // Update the symbol with the new data
-            $symbol->update($data);
+            $symbol->update($request->all());
 
             // Redirect to the symbols index with a success message
             return redirect()->route('admin.symbols.index')->with('success', 'Symbol updated successfully.');
         }
+
 
 
     /**

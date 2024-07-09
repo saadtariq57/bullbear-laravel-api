@@ -103,10 +103,6 @@ Route::prefix('watchlist')->name('watchlist.')->group(function () {
     
 });
 
-// user widgets
-Route::get('/getWidget', [WidgetController::class, 'getWidgetData']);
-Route::get('/widgetsymbols/{widgetId}', [WidgetController::class, 'getSymbols']);
-
 //Exam Routes
 
 Route::prefix('exams')->name('exam.')->group(function () {
@@ -208,6 +204,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //Additional Routes
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
+Route::get('/unique-symbols', [SymbolController::class, 'getUniqueSymbols']);
+Route::get('/exclude-unique-symbols', [SymbolController::class, 'getAllExcludingUniqueSymbols']);
 Route::get('/searchGroups', [GroupController::Class, 'siteGroupSearch']);
 Route::get('/searchMembers', [UserController::Class, 'siteUserSearch']);
 Route::get('/searchSymbol/default', [SymbolController::Class, 'defaultSymbol']);
@@ -215,6 +213,8 @@ Route::get('/searchGroups/default', [GroupController::Class, 'defaultGroups']);
 Route::get('/searchMembers/default', [UserController::Class, 'defaultMembers']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
+// user widgets
+Route::get('/getWidget', [WidgetController::class, 'getWidgetsByCategory']);
 
 Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);
 Route::get('/webinars', [LiveController::class, 'getWebinars']);
