@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { ref, watch } from 'vue';
+import { isCheckingAuth, checkLoginStatus, isLoggedIn, showLoginPopup } from './stores';
 
-// Define routes with lazy loading
-//Add Categories of widget and then add each widget in a category
-//Menu Module can be simplified
-//One of the category could be sidebar-{pagetype}
 const routes = [
     {
         path: '/markets/:category',
@@ -58,11 +56,6 @@ const routes = [
         name: 'feed',
         component: () => import('./components/feed/UserFeed.vue'),
     },
-    // {
-    //     path: '/single-post',
-    //     name: 'single-post',
-    //     component: () => import('./components/feed/SinglePost.vue'),
-    // },
     {
         path: '/post/:id',
         name: 'singlePost',
@@ -176,7 +169,13 @@ const routes = [
         path: '/',
         name: 'home',
         component: () => import('./components/home/HomeMain.vue'),
-
+        beforeEnter: (to, from, next) => {
+            if (isLoggedIn()) {
+                next('/feed');
+            } else {
+                next();
+            }
+        }
     },
     {
         path: '/trading-school',
@@ -261,10 +260,44 @@ const routes = [
     }
 ];
 
-// Create router instance
+routes.forEach(route => {
+
+    if (!['pricing', 'checkout', 'thank-you', 'home'].includes(route.name)) {
+        route.meta = { ...route.meta, requiresAuth: true };
+    }
+});
+
 const router = createRouter({
     history: createWebHistory(),
     routes,
 });
 
+const isCheckingAuthRef = ref(true);
+const isLoggedInRef = ref(false);
+
+watch(isCheckingAuthRef, (newValue) => {
+    if (!newValue) {
+        isLoggedInRef.value = isLoggedIn();
+    }
+});
+
+router.beforeEach(async (to, from, next) => {
+    if (isCheckingAuthRef.value) {
+        await checkLoginStatus();
+        isCheckingAuthRef.value = isCheckingAuth();
+        isLoggedInRef.value = isLoggedIn();
+    }
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!isLoggedInRef.value) {
+            window.location.href = '/login?redirect=' + encodeURIComponent(to.fullPath);
+        } else {
+            next();
+        }
+    } else if (to.path === '/' && isLoggedInRef.value) {
+        next('/feed');
+    } else {
+        next();
+    }
+});
 export default router;

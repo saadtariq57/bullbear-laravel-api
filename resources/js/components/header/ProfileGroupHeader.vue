@@ -1,19 +1,18 @@
 <template>
     <div class="position-relative">
         <div class="profile_bg_img w-100 position-relative overflow-hidden">
-            <img ref="coverImage" v-if="context === 'profileHeader'"
-                :src="UpdatedCoverImagePath != null ? '/uploads/' + UpdatedCoverImagePath : '/uploads/' + coverImagePath"
-                alt="Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets" @error="handlegroupcoverError"
-                :style="{ top: userData.cover_position }" />
-            <img ref="coverGroupImage" v-else-if="groupData != null"
-                :src="groupData.cover != null ? '/uploads/' + groupData.cover : '/uploads/' + coverImagePath"
-                alt="Group Cover Image" class="img-fluid w-100 profile-cover-photo object-fit-cover"
-                @load="calculateOffsets" @error="handlegroupcoverError" :style="{ top: groupData.cover_position }" />
+            <img ref="coverImage" v-if="context === 'profileHeader'" :src="coverImageSrc" alt="Cover Image"
+                class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets"
+                @error="handleCoverImageError" :style="{ top: userData.cover_position }" />
+            <img ref="coverGroupImage" v-else-if="groupData != null" :src="groupCoverImageSrc" alt="Group Cover Image"
+                class="img-fluid w-100 profile-cover-photo object-fit-cover" @load="calculateOffsets"
+                @error="handleCoverImageError" :style="{ top: groupData.cover_position }" />
             <div class="cover-photo-overlay" v-if="isRepositioning" @wheel="repositionWithWheel"></div>
             <!-- Overlay for better visibility -->
         </div>
         <div class="btn-group position-absolute cover-photo-btn"
-            v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole" v-show="!isRepositioning">
+            v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole"
+            v-show="!isRepositioning">
             <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
                 class="btn bg-white dropdown-toggle d-flex align-items-center gap-2 shadow z-1 text-cta"
                 @click="toggleDropdown($event)">
@@ -56,10 +55,12 @@
                 class="user-avater-wappar position-relative bg-white rounded-circle d-flex justify-content-center align-items-center gap-5">
                 <img v-if="context === 'profileHeader'"
                     :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + profileImagePath"
-                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle"
+                    @error="handlegroupprofileError">
                 <img v-else-if="context === 'groupHeader' && groupData != null"
                     :src="groupData.avatar != null ? '/uploads/' + groupData.avatar : '/uploads/' + profileImagePath"
-                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle" @error="handlegroupprofileError">
+                    alt="Profile Picture" width="165px" height="165px" class="rounded-circle"
+                    @error="handlegroupprofileError">
                 <!-- Button trigger modal -->
                 <button @click="showUploadPhotoeModal"
                     v-if="isOwnProfile && context === 'profileHeader' || context === 'groupHeader' && authRole"
@@ -240,6 +241,16 @@ export default {
         ...mapState(['userData', 'success']),
         ...mapState('userProfile', ['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
         ...mapState('profileGroupHeader', ['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
+        coverImageSrc() {
+            return this.UpdatedCoverImagePath != null
+                ? `/uploads/${this.UpdatedCoverImagePath}`
+                : `/uploads/${this.coverImagePath}`;
+        },
+        groupCoverImageSrc() {
+            return this.groupData && this.groupData.cover != null
+                ? `/uploads/${this.groupData.cover}`
+                : `/uploads/${this.coverImagePath}`;
+        },
     },
     data() {
         return {
@@ -255,6 +266,11 @@ export default {
             groupData: null,
             showSkeletor: false,
             authRole: null,
+            defaultCoverImage: '/uploads/photos/d-cover.jpg',
+            defaultProfileImage: '/uploads/photos/d-avatar.jpg',
+            coverImageLoadAttempts: 0,
+            profileImageLoadAttempts: 0,
+            maxLoadAttempts: 2,
         }
     },
     created() {
@@ -327,21 +343,21 @@ export default {
 
                     // console.log('Cover position updated successfully');
                     const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "450px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "success",
-                    title: "Cover position updated successfully!"
-                  });
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "450px",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Cover position updated successfully!"
+                    });
                 }
                 else {
                     this.cover_position = this.offsetY + 'px';
@@ -353,21 +369,21 @@ export default {
                         group_id: this.id
                     });
                     const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "450px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "success",
-                    title: "Cover position updated successfully!"
-                  });
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "450px",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Cover position updated successfully!"
+                    });
                 }
             } catch (error) {
                 // console.error('Error updating cover position:', error);
@@ -379,14 +395,14 @@ export default {
                     timer: 1000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
                     }
-                  });
-                  Toast.fire({
+                });
+                Toast.fire({
                     icon: "error",
                     title: "Error updating cover position"
-                  });
+                });
             }
         },
         CancelCoverPosition() {
@@ -537,12 +553,22 @@ export default {
                     console.error('There was an error fetching the group data:', error);
                 });
         },
-        handlegroupcoverError(event) {
-            event.target.src = '/uploads/photos/d-cover.jpg'; // Set default image
+        handleCoverImageError(event) {
+            if (this.coverImageLoadAttempts < this.maxLoadAttempts) {
+                this.coverImageLoadAttempts++;
+                event.target.src = this.defaultCoverImage;
+            } else {
+                event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EImage%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
+            }
             this.calculateOffsets();
         },
         handlegroupprofileError(event) {
-            event.target.src = '/uploads/photos/d-avatar.jpg';
+            if (this.profileImageLoadAttempts < this.maxLoadAttempts) {
+                this.profileImageLoadAttempts++;
+                event.target.src = this.defaultProfileImage;
+            } else {
+                event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EProfile%20image%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
+            }
         },
         checkUserRole() {
             axios.get(`/api/groups/${this.id}/check`)
@@ -567,7 +593,7 @@ export default {
         this.cover_position = this.userData.cover_position;
         // console.log(this.id);
         if (this.id) {
-            this. checkUserRole();
+            this.checkUserRole();
             this.fetchGroupData();
             this.showSkeletor = true
         }
