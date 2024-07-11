@@ -2,7 +2,7 @@
   <!-- Hero Section Start  -->
   <Hero />
   <!-- Hero Section End  -->
-   <!-- FeaturedVideo Section Start  -->
+  <!-- FeaturedVideo Section Start  -->
   <FeaturedVideo />
   <!-- FeaturedVideo Section End  -->
   <!-- advanced-features-section Start -->
@@ -70,7 +70,7 @@
     </div>
   </section>
   <!-- advanced-features-section End -->
-  
+
   <!-- Top Tables Section -->
   <TopStocks />
   <!-- Top Tables Section End-->
@@ -263,8 +263,6 @@ export default {
     Guides,
     NewsLetter,
     StockQuote,
-  },
-  methods: {
   },
   mounted() {
     this.$root.$emit('component-loaded');

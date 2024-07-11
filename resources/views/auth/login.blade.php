@@ -18,7 +18,6 @@
                                         {{-- <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
                                             width="200" class="auth-logo logo-light mx-auto"> --}}
                                     </a>
-                                    <!-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> -->
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">
@@ -39,6 +38,7 @@
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
                                                         @csrf
+                                                        <input type="hidden" name="redirect" value="{{ $redirect ?? '' }}">
                                                         <div class="mb-2">
                                                             <label for="email" class="form-label">Email</label>
                                                             <input id="email" type="email"
@@ -77,6 +77,7 @@
                                                             </div>
                                                             <a href="{{ route('password.update') }}" class="text-end">Forget
                                                                 Password?</a>
+
                                                         </div>
 
                                                         <div class="mt-4">

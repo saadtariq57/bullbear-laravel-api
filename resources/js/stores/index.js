@@ -1,3 +1,4 @@
+// stores/index.js
 import { createStore } from 'vuex';
 import userFeedModule from './userFeedStore';
 import userFeedCommentModule from './userFeedCommentStore';
@@ -12,23 +13,33 @@ import searchModule from './searchStore';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export default createStore({
+const store = createStore({
     state: {
         userData: null,
-        loggedIn: false
+        loggedIn: false,
+        isCheckingAuth: true
     },
     mutations: {
         SET_USER_DATA(state, userData) {
             state.userData = userData;
             state.loggedIn = true;
+            state.isCheckingAuth = false;
         },
         SET_LOGOUT(state) {
             state.userData = null;
             state.loggedIn = false;
+            state.isCheckingAuth = false;
+        },
+        SET_SHOW_LOGIN_POPUP(state, show) {
+            state.showLoginPopup = show;
+        },
+        SET_CHECKING_AUTH(state, isChecking) {
+            state.isCheckingAuth = isChecking;
         }
     },
     actions: {
         async checkLoginStatus({ dispatch, commit }) {
+            commit('SET_CHECKING_AUTH', true);
             try {
                 const response = await axios.get('/api/check-login');
                 if (response.data.loggedIn) {
@@ -39,15 +50,27 @@ export default createStore({
             } catch (error) {
                 console.error('Error checking login status:', error);
                 commit('SET_LOGOUT');
+            } finally {
+                commit('SET_CHECKING_AUTH', false);
+            }
+        },
+        async login({ dispatch }, credentials) {
+            try {
+                const response = await axios.post('/login', credentials);
+                if (response.data.success) {
+                    await dispatch('fetchUserData');
+                    return { success: true };
+                } else {
+                    return { success: false, message: response.data.message };
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                return { success: false, message: 'An error occurred during login' };
             }
         },
         async fetchUserData({ commit }) {
             try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const response = await axios.get('/api/userdata', {
-                    withCredentials: true,
-                    headers: { 'X-CSRF-TOKEN': csrfToken },
-                });
+                const response = await axios.get('/api/userdata');
                 if (response.data) {
                     commit('SET_USER_DATA', response.data);
                 } else {
@@ -59,14 +82,9 @@ export default createStore({
             }
         },
         updateUserData({ commit }, userData) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            axios.post('/api/user/update', userData, {
-                headers: { 'X-CSRF-TOKEN': csrfToken },
-                withCredentials: true
-            })
+            axios.post('/api/user/update', userData)
                 .then(response => {
-                    commit('SET_USER_DATA', response.data.user);  // Update the store with the returned user data
-                    // alert('User data updated successfully!');
+                    commit('SET_USER_DATA', response.data.user);
                     const Toast = Swal.mixin({
                         toast: true,
                         position: "top-end",
@@ -86,7 +104,6 @@ export default createStore({
                 })
                 .catch(error => {
                     console.error('Error updating user data:', error.response.data);
-                    // alert('Failed to update data.');
                     const Toast = Swal.mixin({
                         toast: true,
                         position: "top-end",
@@ -119,3 +136,10 @@ export default createStore({
         searchResults: searchModule
     }
 });
+
+export default store;
+
+export const isCheckingAuth = () => store.state.isCheckingAuth;
+export const checkLoginStatus = () => store.dispatch('checkLoginStatus');
+export const isLoggedIn = () => store.state.loggedIn;
+export const showLoginPopup = () => store.commit('SET_SHOW_LOGIN_POPUP', true);

@@ -191,15 +191,6 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('feed');
-    }
-    return view('app');
-})->name('home');
-
-Route::get('/feed', [HomeController::class, 'feedPage'])->name('feed');
-
 Route::get('/{any}', function () {
     return view('app');
 })->where('any', '.*');
