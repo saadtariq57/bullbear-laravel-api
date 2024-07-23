@@ -108,82 +108,72 @@
                                 </div>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade" id="upcoming_calendar_tab" role="tabpanel" aria-labelledby="upcoming-tab" tabindex="0">
-                                        <div class=" overflow-auto market-table-wapper">
-                                            <table class="table table-width border">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="fw-6">IPO Listing</th>
-                                                        <th class="text-start fw-6">Company</th>
-                                                        <th class="text-end fw-6">Exchange</th>
-                                                        <th class="text-end fw-6">IPO Value</th>
-                                                        <th class="text-end fw-6">IPO Price</th>
-                                                        <th class="text-end fw-6">Last</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-start">Jun 20, 2024</td>
-                                                        <td class="text-start fw-5"><span class="flagCur d-flex gap-1 align-items-center"><img src="/build/images/flags/country_1.jpg" alt="flag"> Novelis Inc (<a href="">NVL</a>)</span></td>
-                                                        <td class="text-end fw-5">NYSE</td>
-                                                        <td class="text-end fw-5">945.0M</td>
-                                                        <td class="text-end fw-5">18.00-21.00</td>
-                                                        <td class="text-end fw-5">-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-start">Jun 20, 2024</td>
-                                                        <td class="text-start fw-5"><span class="flagCur d-flex gap-1 align-items-center"><img src="/build/images/flags/country_1.jpg" alt="flag">Nova Minerals Inc (<a href="">NVA</a>)</span></td>
-                                                        <td class="text-end fw-5">NYSE</td>
-                                                        <td class="text-end fw-5">8.9M</td>
-                                                        <td class="text-end fw-5">8.00-10.00</td>
-                                                        <td class="text-end fw-5">-</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="overflow-auto market-table-wapper">
+                                        <table class="table table-width border">
+                                            <thead>
+                                            <tr>
+                                                <th class="fw-6">IPO Listing</th>
+                                                <th class="text-start fw-6">Company</th>
+                                                <th class="text-end fw-6">Exchange</th>
+                                                <th class="text-end fw-6">IPO Value</th>
+                                                <th class="text-end fw-6">IPO Price</th>
+                                                <th class="text-end fw-6">Last</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="event in filteredUpcomingIpoEvents" :key="event.id">
+                                                <td class="text-start">{{ formatDate(event.effectiveness_date) }}</td>
+                                                <td class="text-start fw-5">
+                                                <span class="flagCur d-flex gap-1 align-items-center">
+                                                    <img src="/build/images/flags/country_1.jpg" alt="flag">{{ event.symbol_id }} (<a :href="event.url">{{ event.symbol_id }}</a>)
+                                                </span>
+                                                </td>
+                                                <td class="text-end fw-5">NYSE</td>
+                                                <td class="text-end fw-5">945.0M</td>
+                                                <td class="text-end fw-5">18.00-21.00</td>
+                                                <td class="text-end fw-5">125.68</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary" @click="showMoreUpcoming">Show More</button>
+                                        </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade show active" id="recent_calendar_tab" role="tabpanel" aria-labelledby="recent-tab" tabindex="0">
-                                        <div class=" overflow-auto market-table-wapper">
-                                            <table class="table table-width border">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="fw-6">IPO Listing</th>
-                                                        <th class="text-start fw-6">Company</th>
-                                                        <th class="text-end fw-6">Exchange</th>
-                                                        <th class="text-end fw-6">IPO Value</th>
-                                                        <th class="text-end fw-6">IPO Price</th>
-                                                        <th class="text-end fw-6">Last</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="text-start">Jun 20, 2024</td>
-                                                        <td class="text-start fw-5"><span class="flagCur d-flex gap-1 align-items-center"><img src="/build/images/flags/country_1.jpg" alt="flag">Nova Minerals Inc (<a href="">NVA</a>)</span></td>
-                                                        <td class="text-end fw-5">NYSE</td>
-                                                        <td class="text-end fw-5">8.9M</td>
-                                                        <td class="text-end fw-5">8.00-10.00</td>
-                                                        <td class="text-end fw-5">-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-start">Jun 20, 2024</td>
-                                                        <td class="text-start fw-5"><span class="flagCur d-flex gap-1 align-items-center"><img src="/build/images/flags/country_1.jpg" alt="flag"> Novelis Inc (<a href="">NVL</a>)</span></td>
-                                                        <td class="text-end fw-5">NYSE</td>
-                                                        <td class="text-end fw-5">945.0M</td>
-                                                        <td class="text-end fw-5">18.00-21.00</td>
-                                                        <td class="text-end fw-5">-</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-start">Jun 14, 2024</td>
-                                                        <td class="text-start fw-5"><span class="flagCur d-flex gap-1 align-items-center"><img src="/build/images/flags/country_1.jpg" alt="flag">Tempus Ai Inc (<a href="">TEM</a>)</span></td>
-                                                        <td class="text-end fw-5">NASDAQ</td>
-                                                        <td class="text-end fw-5">410.7M</td>
-                                                        <td class="text-end fw-5">35.00-37.00</td>
-                                                        <td class="text-end fw-5">-</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="overflow-auto market-table-wapper">
+                                        <table class="table table-width border">
+                                            <thead>
+                                            <tr>
+                                                <th class="fw-6">IPO Listing</th>
+                                                <th class="text-start fw-6">Company</th>
+                                                <th class="text-end fw-6">Exchange</th>
+                                                <th class="text-end fw-6">IPO Value</th>
+                                                <th class="text-end fw-6">IPO Price</th>
+                                                <th class="text-end fw-6">Last</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="event in filteredRecentIpoEvents" :key="event.id">
+                                                <td class="text-start">{{ formatDate(event.effectiveness_date) }}</td>
+                                                <td class="text-start fw-5">
+                                                <span class="flagCur d-flex gap-1 align-items-center">
+                                                    <img src="/build/images/flags/country_1.jpg" alt="flag">{{ event.symbol_id }} (<a :href="event.url">{{ event.symbol_id }}</a>)
+                                                </span>
+                                                </td>
+                                                <td class="text-end fw-5">NYSE</td>
+                                                <td class="text-end fw-5">945.0M</td>
+                                                <td class="text-end fw-5">18.00-21.00</td>
+                                                <td class="text-end fw-5">125.68</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary" @click="showMoreRecent">Show More</button>
+                                        </div>
                                         </div>
                                     </div>
-                                </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -196,14 +186,16 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import Markets from '../widgets/Markets.vue';
-import LatestArticles from '../widgets/LatestArticles.vue'
+import LatestArticles from '../widgets/LatestArticles.vue';
+
 export default {
-    components: {
-        LatestArticles,
-        Markets
-    },
-    data() {
+  components: {
+    LatestArticles,
+    Markets
+  },
+  data() {
     return {
       categories: [
         { id: 'category_employment', value: '_employment', label: 'Employment' },
@@ -215,8 +207,21 @@ export default {
         { id: 'category_balance', value: '_balance', label: 'Balance' },
         { id: 'category_Bonds', value: '_Bonds', label: 'Bonds' }
       ],
-      selectedCategories: []
+      selectedCategories: [],
+      ipoEvents: [],
+      upcomingIpoEvents: [],
+      recentIpoEvents: [],
+      upcomingDisplayCount: 50,
+      recentDisplayCount: 50
     };
+  },
+  computed: {
+    filteredUpcomingIpoEvents() {
+      return this.upcomingIpoEvents.slice(0, this.upcomingDisplayCount);
+    },
+    filteredRecentIpoEvents() {
+      return this.recentIpoEvents.slice(0, this.recentDisplayCount);
+    }
   },
   methods: {
     selectAll() {
@@ -224,7 +229,37 @@ export default {
     },
     clearAll() {
       this.selectedCategories = [];
+    },
+    async fetchIpoCalendar() {
+      try {
+        const response = await axios.get('https://dev.stocks.richtv.io/api/ipo-calendar');
+        this.ipoEvents = response.data;
+        this.filterIpoEvents();
+      } catch (error) {
+        console.error('Error fetching IPO calendar:', error);
+      }
+    },
+    filterIpoEvents() {
+      const today = new Date();
+      const past25Days = new Date(today);
+      past25Days.setDate(today.getDate() - 25);
+
+      this.upcomingIpoEvents = this.ipoEvents.filter(event => new Date(event.effectiveness_date) >= today);
+      this.recentIpoEvents = this.ipoEvents.filter(event => new Date(event.effectiveness_date) >= past25Days && new Date(event.effectiveness_date) <= today);
+    },
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    },
+    showMoreUpcoming() {
+      this.upcomingDisplayCount += 50;
+    },
+    showMoreRecent() {
+      this.recentDisplayCount += 50;
     }
+  },
+  mounted() {
+    this.fetchIpoCalendar();
   }
-}
+};
 </script>
