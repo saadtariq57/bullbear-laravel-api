@@ -293,24 +293,3 @@ export default {
   }
 };
 </script>
-<style>
-span.ceFlags {
-    background-image: url(/build/images/flags/site_flags_v1.webp);
-    display: inline-block;
-    position: relative;
-    width: 16px;
-    height: 15px;
-}
-
-.USA,.USD,.usa,.usd,.United_States,.US {
-    background-position: -17px -1751px
-}
-
-.United_Arab_Emirates, .uae, .UAE {
-    background-position: -17px -1819px
-}
-
-.UK,.United_Kingdom,.gbr,.gbp {
-    background-position: -17px -1836px
-}
-</style>

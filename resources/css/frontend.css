@@ -3048,6 +3048,50 @@ ul.filterList li label{
 .economic #ecoCalTabsTop li:nth-child(1){
     border-left: 1px solid #ddd;
 }
+.iconQuarterly,.iconAnnual,.iconMonthly {
+    width: 24px;
+    height: 15px;
+    background-image: url(/build/images/site_icons/SiteIcons.png);
+    display: inline-block;
+}
+.iconMonthly{
+    background-position: -3px -2049px;
+}
+.iconQuarterly{
+    background-position: -29px -2049px;
+}
+.iconAnnual{
+    background-position: -85px -2049px;
+}
+span.marketClosed,span.marketOpen {
+    background-image: url(/build/images/site_icons/SiteIcons.png);
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 16px;
+}
+span.ceFlags {
+    background-image: url(/build/images/flags/site_flags_v1.webp);
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 15px;
+}
+.USA, .USD, .usa, .usd, .United_States,.US {
+    background-position: -17px -1751px;
+}
+.United_Arab_Emirates, .uae, .UAE {
+    background-position: -17px -1819px
+}
+.UK,.United_Kingdom,.gbr,.gbp {
+    background-position: -17px -1836px
+}
+span.marketClosed{
+    background-position: -48px -1839px;
+}
+span.marketOpen {
+    background-position: -32px -1840px;
+}
 @media (max-width: 1550px) {
     .main-heading h1 {
         font-size: 65px;
