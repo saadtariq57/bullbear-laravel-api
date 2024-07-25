@@ -30,20 +30,18 @@
                             <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">
                                 <div class="day_filters">
                                     <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link btn btn-primary" id="yesterday-tab" data-bs-toggle="tab" data-bs-target="#yesterday_calendar_tab" type="button" role="tab" aria-controls="yesterday_calendar_tab" aria-selected="true">Yesterday</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link active btn btn-primary" id="today-tab" data-bs-toggle="tab" data-bs-target="#today_calendar_tab" type="button" role="tab" aria-controls="today_calendar_tab" aria-selected="false">Today</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link btn btn-primary" id="tomorrow-tab" data-bs-toggle="tab" data-bs-target="#tomorrow_calendar_tab" type="button" role="tab" aria-controls="tomorrow_calendar_tab" aria-selected="false">Tomorrow</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link btn btn-primary" id="this_week_tab" data-bs-toggle="tab" data-bs-target="#this_week_calendar_tab" type="button" role="tab" aria-controls="this_week_calendar_tab" aria-selected="false">This Week</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link btn btn-primary" id="next_week_tab" data-bs-toggle="tab" data-bs-target="#next_week_calendar_tab" type="button" role="tab" aria-controls="next_week_calendar_tab" aria-selected="false">Next Week</button>
+                                        <li class="nav-item" role="presentation" v-for="(events, tabName) in allEvents" :key="tabName">
+                                            <button class="nav-link nav-link btn btn-primary" :class="{ active: activeTab === tabName }" 
+                                                    :id="`${tabName}-tab`" 
+                                                    data-bs-toggle="tab" 
+                                                    :data-bs-target="`#${tabName}_calendar_tab`" 
+                                                    type="button" 
+                                                    role="tab" 
+                                                    :aria-controls="`${tabName}_calendar_tab`" 
+                                                    :aria-selected="activeTab === tabName"
+                                                    @click="setActiveTab(tabName)">
+                                            {{ tabName.charAt(0).toUpperCase() + tabName.slice(1) }}
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
@@ -119,210 +117,62 @@
                                     <p class="m-0 fs-6 text-center py-2 border-top border-bottom">All data are streaming and updated automatically.</p>
                             </div>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade " id="yesterday_calendar_tab" role="tabpanel" aria-labelledby="yesterday-tab" tabindex="0">
-                                    <div class=" overflow-auto market-table-wapper">
-                                        <table class="table table-width border">
-                                            <thead>
-                                                <tr>
-                                                    <th class="fw-6">Time</th>
-                                                    <th class="text-end fw-6">Cur.</th>
-                                                    <th class="text-end fw-6">Imp.</th>
-                                                    <th class="text-end fw-6">Event</th>
-                                                    <th class="text-end fw-6">Actual</th>
-                                                    <th class="text-end fw-6">Forecast</th>
-                                                    <th class="text-end fw-6">Previous</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="crunt_date">
-                                                    <td colspan="7" class="text-center">Wednesday, June 12, 2024</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">All Day</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_1.jpg" alt="flag"> USD</span></td>
-                                                    <td class="text-end fw-5">Holiday</td>
-                                                    <td class="text-end fw-5">Russia - National Day</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">U.K. Construction Output (YoY) (Apr)</td>
-                                                    <td class="text-end fw-5 Red">-3.3%</td>
-                                                    <td class="text-end fw-5 Red negative-arrow-icon-after">-1.8%</td>
-                                                    <td class="text-end fw-5">-2.2%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">GDP (MoM) (Apr)</td>
-                                                    <td class="text-end fw-5">0.0%</td>
-                                                    <td class="text-end fw-5">0.0%</td>
-                                                    <td class="text-end fw-5">0.4%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">	GDP (YoY) (Apr)</td>
-                                                    <td class="text-end fw-5">0.6%</td>
-                                                    <td class="text-end fw-5">0.6%</td>
-                                                    <td class="text-end fw-5">0.7%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">Index of Services</td>
-                                                    <td class="text-end fw-5 Green">0.9%</td>
-                                                    <td class="text-end fw-5">0.8%</td>
-                                                    <td class="text-end fw-5">0.7%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">Industrial Production (MoM) (Apr)</td>
-                                                    <td class="text-end fw-5 Red">-0.9%</td>
-                                                    <td class="text-end fw-5">-0.1%	</td>
-                                                    <td class="text-end fw-5">0.2%</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                <div v-for="(events, tabName) in allEvents" :key="tabName" 
+                                    :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
+                                    :id="`${tabName}_calendar_tab`" 
+                                    role="tabpanel" 
+                                    :aria-labelledby="`${tabName}-tab`" 
+                                    tabindex="0">
+                                    <div class="overflow-auto market-table-wapper">
+                                    <table class="table table-width border">
+                                        <thead>
+                                        <tr>
+                                            <th class="fw-6">Time</th>
+                                            <th class="text-end fw-6">Cur.</th>
+                                            <th class="text-end fw-6">Imp.</th>
+                                            <th class="text-end fw-6">Event</th>
+                                            <th class="text-end fw-6">Actual</th>
+                                            <th class="text-end fw-6">Forecast</th>
+                                            <th class="text-end fw-6">Previous</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <template v-for="(event, index) in events.slice(0, visibleRows[tabName])" :key="event.id">
+                                            <tr v-if="index === 0 || event.event_date !== events[index - 1].event_date" class="crunt_date">
+                                                <td colspan="7" class="text-center">{{ formatDate(event.event_date) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-5">{{ formatTime(event.event_time) }}</td>
+                                                <td class="text-end fw-5">
+                                                    <span class="flagCur d-flex gap-1 align-items-center justify-content-end">
+                                                        
+                                                    <span class="ceFlags" :class="event.country"></span>
+                                                    <span class="currency">{{ event.currency }}</span> 
+                                                    </span>
+                                                </td>
+                                                <td class="text-end fw-5">
+                                                    <span class="sentiment d-flex gap-1 justify-content-end">
+                                                    <i v-for="n in getImportanceLevel(event.importance)" :key="n" class="bi bi-star-fill"></i>
+                                                    <i v-for="n in 3 - getImportanceLevel(event.importance)" :key="n + 3" class="bi bi-star"></i>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end fw-5">{{ event.event_name }}</td>
+                                                <td class="text-end fw-5" :class="getValueClass(event.actual, event.forecast)">
+                                                    {{ event.actual }}
+                                                </td>
+                                                <td class="text-end fw-5">{{ event.forecast }}</td>
+                                                <td class="text-end fw-5">{{ event.previous }}</td>
+                                            </tr>
+                                        </template>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center">
+                                        <button v-if="events.length > visibleRows[tabName]" class="btn btn-primary" @click="toggleShowMore(tabName)">
+                                            {{ showMore[tabName] ? 'Show Less' : 'Show More' }}
+                                        </button>
+                                    </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade show active" id="today_calendar_tab" role="tabpanel" aria-labelledby="today-tab" tabindex="0">
-                                    <div class=" overflow-auto market-table-wapper">
-                                        <table class="table table-width border">
-                                            <thead>
-                                                <tr>
-                                                    <th class="fw-6">Time</th>
-                                                    <th class="text-end fw-6">Cur.</th>
-                                                    <th class="text-end fw-6">Imp.</th>
-                                                    <th class="text-end fw-6">Event</th>
-                                                    <th class="text-end fw-6">Actual</th>
-                                                    <th class="text-end fw-6">Forecast</th>
-                                                    <th class="text-end fw-6">Previous</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="crunt_date">
-                                                    <td colspan="7" class="text-center">Wednesday, June 12, 2024</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">Industrial Production (MoM) (Apr)</td>
-                                                    <td class="text-end fw-5 Red">-0.9%</td>
-                                                    <td class="text-end fw-5">-0.1%	</td>
-                                                    <td class="text-end fw-5">0.2%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">U.K. Construction Output (YoY) (Apr)</td>
-                                                    <td class="text-end fw-5 Red">-3.3%</td>
-                                                    <td class="text-end fw-5 Red negative-arrow-icon-after">-1.8%</td>
-                                                    <td class="text-end fw-5">-2.2%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star-fill"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">GDP (MoM) (Apr)</td>
-                                                    <td class="text-end fw-5">0.0%</td>
-                                                    <td class="text-end fw-5">0.0%</td>
-                                                    <td class="text-end fw-5">0.4%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">	GDP (YoY) (Apr)</td>
-                                                    <td class="text-end fw-5">0.6%</td>
-                                                    <td class="text-end fw-5">0.6%</td>
-                                                    <td class="text-end fw-5">0.7%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">01:00</td>
-                                                    <td class="text-end fw-5"><span class="flagCur d-flex gap-1 align-items-center justify-content-end"><img src="/build/images/flags/country_2.jpg" alt="flag"> GBP</span></td>
-                                                    <td class="text-end fw-5">
-                                                        <span class="sentiment d-flex gap-1 justify-content-end">
-                                                            <i class="bi bi-star-fill"></i>
-                                                            <i class="bi bi-star"></i>
-                                                            <i class="bi bi-star"></i>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end fw-5">Index of Services</td>
-                                                    <td class="text-end fw-5 Green">0.9%</td>
-                                                    <td class="text-end fw-5">0.8%</td>
-                                                    <td class="text-end fw-5">0.7%</td>
-                                                </tr>
-                                                
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tomorrow_calendar_tab" role="tabpanel" aria-labelledby="tomorrow-tab" tabindex="0">Tomorrow</div>
-                                <div class="tab-pane fade" id="this_week_calendar_tab" role="tabpanel" aria-labelledby="this_week_tab" tabindex="0">This Week</div>
-                                <div class="tab-pane fade" id="next_week_calendar_tab" role="tabpanel" aria-labelledby="next_week_tab" tabindex="0">Next Week</div>
                             </div>
                         </div>
                     </div>
@@ -336,8 +186,10 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import Markets from "../widgets/Markets.vue";
 import LatestArticles from "../widgets/LatestArticles.vue";
+
 export default {
   components: {
     LatestArticles,
@@ -345,26 +197,120 @@ export default {
   },
   data() {
     return {
-      categories: [
-        { id: 'category_employment', value: '_employment', label: 'Employment' },
-        { id: 'category_economicActivity', value: '_economicActivity', label: 'Economic Activity' },
-        { id: 'category_inflation', value: '_inflation', label: 'Inflation' },
-        { id: 'category_credit', value: '_credit', label: 'Credit' },
-        { id: 'category_centralBanks', value: '_centralBanks', label: 'Central Banks' },
-        { id: 'category_confidenceIndex', value: '_confidenceIndex', label: 'Confidence Index' },
-        { id: 'category_balance', value: '_balance', label: 'Balance' },
-        { id: 'category_Bonds', value: '_Bonds', label: 'Bonds' }
-      ],
-      selectedCategories: []
+      allEvents: {
+        yesterday: [],
+        today: [],
+        tomorrow: [],
+        thisWeek: [],
+        nextWeek: []
+      },
+      showMore: {
+        yesterday: false,
+        today: false,
+        tomorrow: false,
+        thisWeek: false,
+        nextWeek: false
+      },
+      visibleRows: {
+        yesterday: 50,
+        today: 50,
+        tomorrow: 50,
+        thisWeek: 50,
+        nextWeek: 50
+      },
+      activeTab: 'today'
     };
   },
   methods: {
-    selectAll() {
-      this.selectedCategories = this.categories.map(category => category.value);
+    async fetchEconomicCalendar(startDate, endDate, targetArray) {
+      try {
+        const response = await axios.get(`https://dev.stocks.richtv.io/api/economic-calendar?startDate=${startDate}&endDate=${endDate}`);
+        console.log(`Fetched data for ${targetArray}:`, response.data);
+        this.allEvents[targetArray] = response.data;
+      } catch (error) {
+        console.error('Error fetching economic calendar:', error);
+      }
     },
-    clearAll() {
-      this.selectedCategories = [];
+    formatDate(dateString) {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    },
+    formatTime(timeString) {
+      return new Date(`1970-01-01T${timeString}Z`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    },
+    getFlagUrl(country) {
+      return `/build/images/flags/${country.toLowerCase()}.jpg`;
+    },
+    getValueClass(actual, forecast) {
+      if (actual > forecast) return 'text-success';
+      if (actual < forecast) return 'text-danger';
+      return '';
+    },
+    toggleShowMore(tab) {
+      this.showMore[tab] = !this.showMore[tab];
+      if (this.showMore[tab]) {
+        this.visibleRows[tab] = this.allEvents[tab].length;
+      } else {
+        this.visibleRows[tab] = 50;
+      }
+    },
+    getImportanceLevel(importance) {
+      const importanceLevels = {
+        'Low': 1,
+        'Medium': 2,
+        'High': 3
+      };
+      return importanceLevels[importance] || 1;
+    },
+    setActiveTab(tabName) {
+      this.activeTab = tabName;
     }
+  },
+  mounted() {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const thisWeekStart = new Date(today);
+    thisWeekStart.setDate(today.getDate() - today.getDay());
+    const thisWeekEnd = new Date(thisWeekStart);
+    thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+    
+    const nextWeekStart = new Date(thisWeekEnd);
+    nextWeekStart.setDate(nextWeekStart.getDate() + 1);
+    const nextWeekEnd = new Date(nextWeekStart);
+    nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+
+    const formatDate = (date) => date.toISOString().split('T')[0];
+
+    this.fetchEconomicCalendar(formatDate(yesterday), formatDate(yesterday), 'yesterday');
+    this.fetchEconomicCalendar(formatDate(today), formatDate(today), 'today');
+    this.fetchEconomicCalendar(formatDate(tomorrow), formatDate(tomorrow), 'tomorrow');
+    this.fetchEconomicCalendar(formatDate(thisWeekStart), formatDate(thisWeekEnd), 'thisWeek');
+    this.fetchEconomicCalendar(formatDate(nextWeekStart), formatDate(nextWeekEnd), 'nextWeek');
   }
 };
 </script>
+<style>
+span.ceFlags {
+    background-image: url(/build/images/flags/site_flags_v1.webp);
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 15px;
+}
+
+.USA,.USD,.usa,.usd,.United_States,.US {
+    background-position: -17px -1751px
+}
+
+.United_Arab_Emirates, .uae, .UAE {
+    background-position: -17px -1819px
+}
+
+.UK,.United_Kingdom,.gbr,.gbp {
+    background-position: -17px -1836px
+}
+</style>
