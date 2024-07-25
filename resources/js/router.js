@@ -257,12 +257,17 @@ const routes = [
         path: '/single-report',
         name: 'single-report',
         component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
+    },
+    {
+        path: '/quotes/:symbol',
+        name: 'quote',
+        component: () => import('./components/stocks/SingleStock.vue'),
     }
 ];
 
 routes.forEach(route => {
 
-    if (!['pricing', 'checkout', 'thank-you', 'home'].includes(route.name)) {
+    if (!['pricing', 'checkout', 'thank-you', 'home', 'quote'].includes(route.name)) {
         route.meta = { ...route.meta, requiresAuth: true };
     }
 });
