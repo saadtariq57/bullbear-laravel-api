@@ -44,4 +44,12 @@ return [
     'wordpresstags' => [
         'api_url' => env('WORDPRESS_API_URL2'),
     ],
+    'mboum' => [
+        'base_url' => env('X_MBOUM_BASE_URL', 'https://mboum.com/api/v1'),
+        'api_key' => env('MBOUM_Key'),
+    ],
+    'fmodel' => [
+        'base_url' => env('FINANCIAL_MODEL_API_URL', 'https://financialmodelingprep.com/api/v3/'),
+        'api_key' => env('FINANCIAL_MODEL_API_KEY'),
+    ],
 ];
