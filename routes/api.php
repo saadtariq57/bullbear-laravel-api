@@ -213,8 +213,13 @@ Route::get('/searchGroups/default', [GroupController::Class, 'defaultGroups']);
 Route::get('/searchMembers/default', [UserController::Class, 'defaultMembers']);
 
 Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
+Route::get('/external-news/{symbol}', [WidgetController::class, 'fetchExternalNews']);
 // user widgets
 Route::get('/getWidget', [WidgetController::class, 'getWidgetsByCategory']);
+Route::get('/widget/{id}', [WidgetController::class, 'show']);
+Route::get('/fund-ownership/{symbol}', [WidgetController::class, 'getFundOwnership']);
+Route::get('/options/{symbol}', [WidgetController::class, 'getOptions']);
+Route::get('/ohlc-data/{symbol}', [WidgetController::class, 'fetchOHLCData']);
 
 Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);
 Route::get('/webinars', [LiveController::class, 'getWebinars']);

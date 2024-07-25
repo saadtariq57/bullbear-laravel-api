@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@ably/laravel-echo": "^1.0.4",
+        "@amcharts/amcharts5": "^5.9.13",
         "@stripe/stripe-js": "^3.0.10",
         "alertifyjs": "^1.13.1",
         "bootstrap": "^5.3.2",

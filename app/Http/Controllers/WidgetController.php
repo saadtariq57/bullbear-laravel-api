@@ -9,21 +9,301 @@ use App\Models\WidgetCategory;
 use App\Models\WidgetSymbol;
 use App\Models\Symbol;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class WidgetController extends Controller
 {
-        /**
-         * Display a listing of the widgets.
-         */
+        private function isValidTradeDate($date, $location)
+        {
+            // You'll need to implement this function to check if the date is a valid trading day
+            // This might involve checking against a list of holidays or using an API
+            // For now, we'll use a simplified version that just checks if it's a weekday
+            return !in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY]);
+        }
+        private function getValidTradeDates($period, $location)
+        {
+            $timezone = 'America/Toronto'; 
+            $now = Carbon::now($timezone);
+            $currentDate = $now->format('Y-m-d');
+
+            if (!$this->isValidTradeDate($now, $location)) {
+                $currentDate = $now->subDay()->format('Y-m-d');
+            }
+
+            $startDate = $endDate = $currentDate;
+
+            switch ($period) {
+                case '1day':
+                    if ($now->hour >= 17) {
+                        if ($this->isValidTradeDate($now, $location)) {
+                            $startDate = $endDate = $currentDate;
+                        } else {
+                            $startDate = $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+                        }
+                    } else {
+                        $previousDate = Carbon::parse($currentDate)->subDay();
+                        while (!$this->isValidTradeDate($previousDate, $location)) {
+                            $previousDate->subDay();
+                        }
+                        $startDate = $endDate = $previousDate->format('Y-m-d');
+                    }
+                    break;
+
+                case '1week':
+                    if ($now->hour >= 17) {
+                        $endDate = $this->isValidTradeDate($now, $location) ? $currentDate : Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+                    } else {
+                        $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+                    }
+
+                    $businessDaysCount = 1;
+                    $potentialStartDate = Carbon::parse($endDate);
+                    while ($businessDaysCount < 5) {
+                        $potentialStartDate->subDay();
+                        if ($this->isValidTradeDate($potentialStartDate, $location)) {
+                            $businessDaysCount++;
+                        }
+                    }
+                    $startDate = $potentialStartDate->format('Y-m-d');
+                    break;
+
+                case '1month':
+                    if ($now->hour >= 17) {
+                        $endDate = $this->isValidTradeDate($now, $location) ? $currentDate : Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+                    } else {
+                        $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+                    }
+
+                    $businessDaysCount = 1;
+                    $potentialStartDate = Carbon::parse($endDate);
+                    while ($businessDaysCount < 20) {
+                        $potentialStartDate->subDay();
+                        if ($this->isValidTradeDate($potentialStartDate, $location)) {
+                            $businessDaysCount++;
+                        }
+                    }
+                    $startDate = $potentialStartDate->format('Y-m-d');
+                    break;
+
+                default:
+                    throw new \Exception('Invalid period');
+            }
+
+            return [$startDate, $endDate];
+        }
+
+        public function fetchOHLCData($symbol)
+        {
+            $baseUrl = config('services.fmodel.base_url');
+            $apiKey = config('services.fmodel.api_key');
+
+            try {
+                [$startDate, $endDate] = $this->getValidTradeDates('1day', 'ca');
+
+                $response = Http::get("{$baseUrl}/historical-chart/1min/{$symbol}", [
+                    'from' => $startDate,
+                    'to' => $endDate,
+                    'apikey' => $apiKey
+                ]);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                return response()->json(['error' => 'Failed to fetch OHLC data'], 500);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }
+        public function getFundOwnership($symbol)
+        {
+            $baseUrl = config('services.mboum.base_url');
+            $apiKey = config('services.mboum.api_key');
+            $requestUrl = "{$baseUrl}/qu/quote/fund-ownership/?symbol={$symbol}&apikey={$apiKey}";
+
+            try {
+                $response = Http::timeout(15)->get($requestUrl);
+
+                if ($response->successful()) {
+                    return $response->json();
+                } else {
+                    $statusCode = $response->status();
+                    $errorBody = $response->body();
+                    
+                    Log::error("MBOUM API Error", [
+                        'status' => $statusCode,
+                        'response' => $errorBody,
+                        'symbol' => $symbol,
+                        'url' => $requestUrl,
+                    ]);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch fund ownership data',
+                        'details' => "API responded with status {$statusCode}",
+                        'message' => $response->json('message', 'No specific error message provided'),
+                        'requestedUrl' => $requestUrl
+                    ], $statusCode);
+                }
+            } catch (\Exception $e) {
+                Log::error("Exception in MBOUM API request", [
+                    'message' => $e->getMessage(),
+                    'symbol' => $symbol,
+                    'url' => $requestUrl,
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                return response()->json([
+                    'error' => 'Failed to fetch fund ownership data',
+                    'details' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                    'requestedUrl' => $requestUrl
+                ], 500);
+            }
+        }
+
+        public function getOptions($symbol, Request $request)
+        {
+            $baseUrl = config('services.mboum.base_url');
+            $apiKey = config('services.mboum.api_key');
+            
+            $expiration = $request->query('expiration');
+            $requestUrl = "{$baseUrl}/op/option/?symbol={$symbol}&apikey={$apiKey}";
+            
+            if ($expiration) {
+                $requestUrl .= "&expiration={$expiration}";
+            }
+
+            try {
+                $response = Http::timeout(15)->get($requestUrl);
+
+                if ($response->successful()) {
+                    return $response->json();
+                } else {
+                    $statusCode = $response->status();
+                    $errorBody = $response->body();
+                    
+                    Log::error("MBOUM API Error", [
+                        'status' => $statusCode,
+                        'response' => $errorBody,
+                        'symbol' => $symbol,
+                        'url' => $requestUrl,
+                    ]);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch options data',
+                        'details' => "API responded with status {$statusCode}",
+                        'message' => $response->json('message', 'No specific error message provided'),
+                        'requestedUrl' => $requestUrl
+                    ], $statusCode);
+                }
+            } catch (\Exception $e) {
+                Log::error("Exception in MBOUM API request", [
+                    'message' => $e->getMessage(),
+                    'symbol' => $symbol,
+                    'url' => $requestUrl,
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                return response()->json([
+                    'error' => 'Failed to fetch options data',
+                    'details' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                    'requestedUrl' => $requestUrl
+                ], 500);
+            }
+        }
+
+        public function fetchExternalNews($symbol)
+        {
+            $baseUrl = config('services.fmodel.base_url');
+            $apiKey = config('services.fmodel.api_key');
+            $response = Http::get("{$baseUrl}/stock_news?tickers={$symbol}&limit=5&apikey={$apiKey}");
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            return response()->json(['error' => 'Failed to fetch external news'], 500);
+        }
+
         public function index()
         {
             $widgets = Widget::paginate(10);
             return view('admin.widgets.index', compact('widgets'));
         }
+        
+        public function show($id)
+        {
+            try {
+                $widget = Widget::with(['widgetSymbols.symbol'])->findOrFail($id);
+                
+                $symbols = $widget->widgetSymbols->pluck('symbol.symbol')->join(',');
+                
+                if (empty($symbols)) {
+                    return response()->json(['error' => 'No symbols found for this widget'], 404);
+                }
+                
+                $apiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbols}";
+                $response = Http::timeout(15)->get($apiUrl);
+                
+                if (!$response->successful()) {
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error('API request failed', $errorDetails);
+                    return response()->json([
+                        'error' => 'Failed to fetch quotes from the API',
+                        'details' => $errorDetails
+                    ], 503);
+                }
+                
+                $quotes = $response->json();
+                
+                if (empty($quotes)) {
+                    return response()->json(['error' => 'No quotes data received from the API'], 404);
+                }
+                
+                $widgetData = $widget->toArray();
+                $widgetData['symbols'] = $widget->widgetSymbols->map(function ($widgetSymbol) use ($quotes) {
+                    $symbolData = $widgetSymbol->symbol->toArray();
+                    $quoteData = $quotes[$symbolData['symbol']] ?? null;
+                    
+                    if (!$quoteData) {
+                        Log::warning("No quote data for symbol: {$symbolData['symbol']}");
+                    }
+                    
+                    return [
+                        'id' => $symbolData['id'],
+                        'name' => $symbolData['name'] ?? 'Unknown',
+                        'symbol' => $symbolData['symbol'] ?? 'Unknown',
+                        'logo' => $quoteData['logo'] ?? null,
+                        'price' => $quoteData['regular_market_price'] ?? null,
+                        'change' => $quoteData['regular_market_change'] ?? null,
+                        'change_percent' => $quoteData['regular_market_change_percent'] ?? null,
+                    ];
+                });
+                
+                return response()->json($widgetData);
+            } catch (ModelNotFoundException $e) {
+                return response()->json(['error' => 'Widget not found'], 404);
+            } catch (\Exception $e) {
+                Log::error('Error in WidgetController@show', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ], 500);
+            }
+        }
 
-    /**
-     * Display and edit the symbols of a specific widget.
-     */
         public function showSymbols(Widget $widget, Request $request)
         {
             if ($request->isMethod('post')) {
