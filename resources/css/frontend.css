@@ -824,10 +824,11 @@ section.featured-video {
     overflow: hidden;
     white-space: nowrap !important;
     text-overflow: ellipsis;
+    display: block;
 }
 
 .company_name {
-    width: 125px;
+    width: 155px;
 }
 
 .symbol-name {
@@ -3077,8 +3078,16 @@ span.ceFlags {
     width: 16px;
     height: 15px;
 }
-.USA, .USD, .usa, .usd, .United_States,.US {
+span.ceFlags.default_country{
+    background-image: none;
+    background-color: var(--primary-color);
+    height: 12px;
+}
+.USA, .USD, .usa, .usd, .United_States,.US, .United.States {
     background-position: -17px -1751px;
+}
+.Canada, .can, .cad{
+    background-position: 0 -680px;
 }
 .United_Arab_Emirates, .uae, .UAE {
     background-position: -17px -1819px

@@ -30,8 +30,9 @@
                         <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">
                         <div class="day_filters">
                             <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation" v-for="(events, tabName) in allDividends" :key="tabName">
-                                    <button class="nav-link btn btn-primary" :class="{ active: activeTab === tabName }" 
+                                <li class="nav-item" role="presentation" v-for="tabName in tabNames" :key="tabName">
+                                    <button class="nav-link btn btn-primary" 
+                                            :class="{ active: activeTab === tabName }" 
                                             :id="`${tabName}-tab`" 
                                             data-bs-toggle="tab" 
                                             :data-bs-target="`#${tabName}_calendar_tab`" 
@@ -114,7 +115,7 @@
                         </div>
                         </div>
                         <div class="tab-content" id="myTabContent">
-                            <div v-for="(events, tabName) in allDividends" :key="tabName" 
+                            <div v-for="tabName in tabNames" :key="tabName" 
                                 :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
                                 :id="`${tabName}_calendar_tab`" 
                                 role="tabpanel" 
@@ -125,36 +126,49 @@
                                         <thead>
                                             <tr>
                                                 <th class="fw-6">Company</th>
+                                                <th class="text-end fw-6">Symbol</th>
                                                 <th class="text-end fw-6">Ex-Dividend Date</th>
                                                 <th class="text-end fw-6">Dividend</th>
                                                 <th class="text-end fw-6">Payment Date</th>
-                                                <th class="text-end fw-6">Yield</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <template v-for="(item, index) in events.slice(0, visibleRows[tabName])" :key="item.id">
-                                                <tr v-if="index === 0 || item.record_date !== events[index - 1].record_date" class="crunt_date">
-                                                    <td colspan="5" class="text-center">{{ formatDate(item.record_date) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-5">
-                                                        <span class="flagCur d-flex gap-1 align-items-center">
-                                                            <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-end">{{ item.record_date }}</td>
-                                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                                    <td class="text-end fw-5">{{ item.yield }}%</td>
-                                                </tr>
+                                            <template v-if="allDividends[tabName] && allDividends[tabName].length > 0">
+                                                <template v-for="(item, index) in allDividends[tabName].slice(0, visibleRows[tabName])" :key="item.id">
+                                                    <tr v-if="index === 0 || item.record_date !== allDividends[tabName][index - 1].record_date" class="crunt_date">
+                                                        <td colspan="5" class="text-center">{{ formatDate(item.record_date) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-5">
+                                                            <div class="d-flex gap-1 align-items-center">
+                                                                <span class="ceFlags" :class="item.country ? item.country : 'default_country'"></span>
+                                                                <div class="w-100">
+                                                                    <abbr :title="item.name"><span class="company_name text-oneline">{{ item.name }}</span></abbr>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end">{{ item.symbol }}</td>
+                                                        <td class="text-end">{{ item.record_date }}</td>
+                                                        <td class="text-end fw-5">{{ item.amount }}</td>
+                                                        <td class="text-end fw-5">{{ item.payment_date }}</td>
+                                                    </tr>
+                                                </template>
                                             </template>
+                                            <tr v-else>
+                                                <td colspan="5" class="text-center">{{ loadedTabs.has(tabName) ? 'No data available' : 'Loading...' }}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    <div class="text-center">
-                                        <button v-if="events.length > visibleRows[tabName]" 
-                                                class="btn btn-secondary" 
-                                                @click="toggleShowMore(tabName)">
+                                    <div class="d-flex align-items-center gap-3 justify-content-center mt-3">
+                                        <button v-if="allDividends[tabName] && allDividends[tabName].length > visibleRows[tabName]" 
+                                                class="btn btn-primary" 
+                                                @click="showMore(tabName)">
                                             Show More
+                                        </button>
+                                        <button v-if="visibleRows[tabName] > initialRowCount" 
+                                                class="btn btn-border" 
+                                                @click="showLess(tabName)">
+                                            Show Less
                                         </button>
                                     </div>
                                 </div>
@@ -197,62 +211,78 @@ export default {
         thisWeek: 50,
         nextWeek: 50
       },
-      activeTab: 'today'
+      activeTab: 'today',
+      tabNames: ['yesterday', 'today', 'tomorrow', 'thisWeek', 'nextWeek'],
+      loadedTabs: new Set(),
+      initialRowCount: 50
     };
   },
   methods: {
     async fetchDividendsCalendar(startDate, endDate, targetArray) {
+      if (this.loadedTabs.has(targetArray)) return;
+      
       try {
         const response = await axios.get(`https://dev.stocks.richtv.io/api/dividends-calendar?startDate=${startDate}&endDate=${endDate}`);
+        console.log(`Fetched data for ${targetArray}:`, response.data);
         this.allDividends[targetArray] = response.data;
-        console.log(`Fetched data for ${targetArray}:`, this.allDividends[targetArray]);
+        this.loadedTabs.add(targetArray);
       } catch (error) {
         console.error('Error fetching dividends calendar:', error);
+        this.allDividends[targetArray] = [];
+        this.loadedTabs.add(targetArray);
       }
     },
     formatDate(dateString) {
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('en-US', options);
     },
-    toggleShowMore(tab) {
-      this.visibleRows[tab] += 50;
+    showMore(tab) {
+      this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.allDividends[tab].length);
+    },
+    showLess(tab) {
+      this.visibleRows[tab] = Math.max(this.initialRowCount, this.visibleRows[tab] - this.initialRowCount);
     },
     setActiveTab(tabName) {
       this.activeTab = tabName;
+      this.loadTabData(tabName);
     },
-    getFlagUrl(symbolId) {
-      // Placeholder function to get flag URL based on symbol ID
-      return `/build/images/flags/country_${symbolId}.jpg`;
-    },
-    getCompanyName(symbolId) {
-      // Placeholder function to get company name based on symbol ID
-      return `Company ${symbolId}`;
+    loadTabData(tabName) {
+      const today = new Date();
+      const formatDate = (date) => date.toISOString().split('T')[0];
+
+      switch (tabName) {
+        case 'yesterday':
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+          this.fetchDividendsCalendar(formatDate(yesterday), formatDate(yesterday), 'yesterday');
+          break;
+        case 'today':
+          this.fetchDividendsCalendar(formatDate(today), formatDate(today), 'today');
+          break;
+        case 'tomorrow':
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          this.fetchDividendsCalendar(formatDate(tomorrow), formatDate(tomorrow), 'tomorrow');
+          break;
+        case 'thisWeek':
+          const thisWeekStart = new Date(today);
+          thisWeekStart.setDate(today.getDate() - today.getDay());
+          const thisWeekEnd = new Date(thisWeekStart);
+          thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+          this.fetchDividendsCalendar(formatDate(thisWeekStart), formatDate(thisWeekEnd), 'thisWeek');
+          break;
+        case 'nextWeek':
+          const nextWeekStart = new Date(today);
+          nextWeekStart.setDate(today.getDate() - today.getDay() + 7);
+          const nextWeekEnd = new Date(nextWeekStart);
+          nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+          this.fetchDividendsCalendar(formatDate(nextWeekStart), formatDate(nextWeekEnd), 'nextWeek');
+          break;
+      }
     }
   },
   mounted() {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    const thisWeekStart = new Date(today);
-    thisWeekStart.setDate(today.getDate() - today.getDay());
-    const thisWeekEnd = new Date(thisWeekStart);
-    thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
-    
-    const nextWeekStart = new Date(thisWeekEnd);
-    nextWeekStart.setDate(nextWeekStart.getDate() + 1);
-    const nextWeekEnd = new Date(nextWeekStart);
-    nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
-
-    const formatDate = (date) => date.toISOString().split('T')[0];
-
-    this.fetchDividendsCalendar(formatDate(yesterday), formatDate(yesterday), 'yesterday');
-    this.fetchDividendsCalendar(formatDate(today), formatDate(today), 'today');
-    this.fetchDividendsCalendar(formatDate(tomorrow), formatDate(tomorrow), 'tomorrow');
-    this.fetchDividendsCalendar(formatDate(thisWeekStart), formatDate(thisWeekEnd), 'thisWeek');
-    this.fetchDividendsCalendar(formatDate(nextWeekStart), formatDate(nextWeekEnd), 'nextWeek');
+    this.loadTabData(this.activeTab);
   }
 };
 </script>

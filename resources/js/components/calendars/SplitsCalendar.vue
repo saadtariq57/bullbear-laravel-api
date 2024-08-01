@@ -29,21 +29,22 @@
                             <div class="calender_tabs">
                                 <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">
                                     <div class="day_filters">
-                                        <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                                            <li class="nav-item" role="presentation" v-for="(events, tabName) in filteredEvents" :key="tabName">
-                                                <button class="nav-link btn btn-primary" :class="{ active: activeTab === tabName }" 
-                                                        :id="`${tabName}-tab`" 
-                                                        data-bs-toggle="tab" 
-                                                        :data-bs-target="`#${tabName}_calendar_tab`" 
-                                                        type="button" 
-                                                        role="tab" 
-                                                        :aria-controls="`${tabName}_calendar_tab`" 
-                                                        :aria-selected="activeTab === tabName"
-                                                        @click="setActiveTab(tabName)">
-                                                    {{ getTabLabel(tabName) }}
-                                                </button>
-                                            </li>
-                                        </ul>
+                                      <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
+                                          <li class="nav-item" role="presentation" v-for="tabName in tabNames" :key="tabName">
+                                            <button class="nav-link btn btn-primary" 
+                                                    :class="{ active: activeTab === tabName }" 
+                                                    :id="`${tabName}-tab`" 
+                                                    data-bs-toggle="tab" 
+                                                    :data-bs-target="`#${tabName}_calendar_tab`" 
+                                                    type="button" 
+                                                    role="tab" 
+                                                    :aria-controls="`${tabName}_calendar_tab`" 
+                                                    :aria-selected="activeTab === tabName"
+                                                    @click="setActiveTab(tabName)">
+                                                {{ getTabLabel(tabName) }}
+                                              </button>
+                                          </li>
+                                      </ul>
                                     </div>
                                     <div class="other_filters">
                                     <a class="" data-bs-toggle="collapse" href="#collapseFilters" role="button" aria-expanded="false" aria-controls="collapseFilters">
@@ -114,54 +115,61 @@
                                     </div>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
-                                    <div v-for="(events, tabName) in filteredEvents" :key="tabName" 
-                                        :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
-                                        :id="`${tabName}_calendar_tab`" 
-                                        role="tabpanel" 
-                                        :aria-labelledby="`${tabName}-tab`" 
-                                        tabindex="0">
-                                        <div class="overflow-auto market-table-wapper">
-                                            <table class="table table-width border">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="fw-6">Split date</th>
-                                                        <th class="text-start fw-6">Company</th>
-                                                        <th class="text-end fw-6">Split ratio</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <template v-for="(groupedEvents, date) in groupedEvents(events.slice(0, visibleRows[tabName]))" :key="date">
-                                                        <tr class="crunt_date">
-                                                            <td colspan="3" class="text-center">{{ formatDate(date) }}</td>
-                                                        </tr>
-                                                        <tr v-for="event in groupedEvents" :key="event.id">
-                                                            <td class="text-start">{{ formatDate(event.date) }}</td>
-                                                            <td class="text-start fw-5">
-                                                                <span class="flagCur d-flex gap-1 align-items-center">
-                                                                    <img :src="getFlagUrl(event.symbol_id)" alt="flag">
-                                                                    {{ getCompanyName(event.symbol_id) }} (<a :href="getCompanyLink(event.symbol_id)">{{ event.symbol_id }}</a>)
-                                                                </span>
-                                                            </td>
-                                                            <td class="text-end fw-5">{{ event.from_factor }}:{{ event.to_factor }}</td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                            <div class="gap-3 d-flex align-items-center justify-content-center">
-                                                <button v-if="events.length > visibleRows[tabName]" 
-                                                        class="btn btn-primary" 
-                                                        @click="toggleShowMore(tabName)">
-                                                    Show More
-                                                </button>
-                                                <button v-if="visibleRows[tabName] > 50" 
-                                                        class="btn btn-border" 
-                                                        @click="showLess(tabName)">
-                                                    Show Less
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                  <div v-for="tabName in tabNames" :key="tabName" 
+                                      :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
+                                      :id="`${tabName}_calendar_tab`" 
+                                      role="tabpanel" 
+                                      :aria-labelledby="`${tabName}-tab`" 
+                                      tabindex="0">
+                                      <div class="overflow-auto market-table-wapper">
+                                          <table class="table table-width border">
+                                              <thead>
+                                                  <tr>
+                                                      <th class="fw-6">Split date</th>
+                                                      <th class="text-start fw-6">Company</th>
+                                                      <th class="text-end fw-6">Split ratio</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <template v-if="splitsEvents[tabName] && splitsEvents[tabName].length > 0">
+                                                      <template v-for="(groupedEvents, date) in groupedEvents(splitsEvents[tabName].slice(0, visibleRows[tabName]))" :key="date">
+                                                          <tr class="crunt_date">
+                                                              <td colspan="3" class="text-center">{{ formatDate(date) }}</td>
+                                                          </tr>
+                                                          <tr v-for="event in groupedEvents" :key="event.id">
+                                                              <td class="text-start">{{ formatDate(event.date) }}</td>
+                                                              <td class="text-start fw-5">
+                                                                  <div class="d-flex gap-1 align-items-center">
+                                                                      <span class="ceFlags" :class="event.country ? event.country : 'default_country'"></span>
+                                                                      <div class="w-100">
+                                                                          <abbr :title="event.name"><span class="company_name text-oneline">{{ event.name }}</span></abbr> 
+                                                                      </div>
+                                                                  </div>
+                                                              </td>
+                                                              <td class="text-end fw-5">{{ event.from_factor }}:{{ event.to_factor }}</td>
+                                                          </tr>
+                                                      </template>
+                                                  </template>
+                                                  <tr v-else>
+                                                      <td colspan="3" class="text-center">{{ loadedTabs.has(tabName) ? 'No data available' : 'Loading...' }}</td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                          <div class="gap-3 d-flex align-items-center justify-content-center mt-3">
+                                              <button v-if="splitsEvents[tabName] && splitsEvents[tabName].length > visibleRows[tabName]" 
+                                                      class="btn btn-primary" 
+                                                      @click="showMore(tabName)">
+                                                  Show More
+                                              </button>
+                                              <button v-if="visibleRows[tabName] > initialRowCount" 
+                                                      class="btn btn-border" 
+                                                      @click="showLess(tabName)">
+                                                  Show Less
+                                              </button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -185,40 +193,58 @@ export default {
   },
   data() {
     return {
-      splitsEvents: [],
+      splitsEvents: {
+        last30Days: [],
+        last7Days: [],
+        yesterday: []
+      },
       visibleRows: {
         last30Days: 50,
         last7Days: 50,
         yesterday: 50
       },
       activeTab: 'last7Days',
+      tabNames: ['last30Days', 'last7Days', 'yesterday'],
+      loadedTabs: new Set(),
       initialRowCount: 50
     };
   },
-  computed: {
-    filteredEvents() {
-      const today = new Date();
-      const last30Days = new Date(today);
-      last30Days.setDate(today.getDate() - 30);
-      const last7Days = new Date(today);
-      last7Days.setDate(today.getDate() - 7);
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-
-      return {
-        last30Days: this.splitsEvents.filter(event => new Date(event.date) >= last30Days && new Date(event.date) <= today),
-        last7Days: this.splitsEvents.filter(event => new Date(event.date) >= last7Days && new Date(event.date) <= today),
-        yesterday: this.splitsEvents.filter(event => new Date(event.date).toDateString() === yesterday.toDateString())
-      };
-    }
-  },
   methods: {
-    async fetchSplitsCalendar() {
+    async fetchSplitsCalendar(tabName) {
+      if (this.loadedTabs.has(tabName)) return;
+      
+      const today = new Date();
+      let startDate, endDate;
+      
+      switch (tabName) {
+        case 'last30Days':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 30);
+          endDate = today;
+          break;
+        case 'last7Days':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 7);
+          endDate = today;
+          break;
+        case 'yesterday':
+          startDate = new Date(today);
+          startDate.setDate(today.getDate() - 1);
+          endDate = startDate;
+          break;
+      }
+
+      const formatDate = (date) => date.toISOString().split('T')[0];
+      
       try {
-        const response = await axios.get('https://dev.stocks.richtv.io/api/splits-calendar');
-        this.splitsEvents = response.data;
+        const response = await axios.get(`https://dev.stocks.richtv.io/api/splits-calendar?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
+        console.log(`Fetched data for ${tabName}:`, response.data);
+        this.splitsEvents[tabName] = response.data;
+        this.loadedTabs.add(tabName);
       } catch (error) {
-        console.error('Error fetching splits calendar:', error);
+        console.error(`Error fetching splits calendar for ${tabName}:`, error);
+        this.splitsEvents[tabName] = [];
+        this.loadedTabs.add(tabName);
       }
     },
     formatDate(dateString) {
@@ -235,26 +261,15 @@ export default {
         return acc;
       }, {});
     },
-    toggleShowMore(tab) {
-      this.visibleRows[tab] += 50;
+    showMore(tab) {
+      this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.splitsEvents[tab].length);
     },
     showLess(tab) {
       this.visibleRows[tab] = Math.max(this.initialRowCount, this.visibleRows[tab] - this.initialRowCount);
     },
     setActiveTab(tabName) {
       this.activeTab = tabName;
-    },
-    getFlagUrl(symbolId) {
-      // Placeholder function to get flag URL based on symbol ID
-      return `/build/images/flags/country_${symbolId}.jpg`;
-    },
-    getCompanyName(symbolId) {
-      // Placeholder function to get company name based on symbol ID
-      return `Company ${symbolId}`;
-    },
-    getCompanyLink(symbolId) {
-      // Placeholder function to get company link based on symbol ID
-      return `#${symbolId}`;
+      this.fetchSplitsCalendar(tabName);
     },
     getTabLabel(tabName) {
       const labels = {
@@ -266,7 +281,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchSplitsCalendar();
+    this.fetchSplitsCalendar(this.activeTab);
   }
 };
 </script>
