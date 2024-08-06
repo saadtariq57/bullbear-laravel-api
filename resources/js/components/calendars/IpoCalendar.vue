@@ -29,151 +29,72 @@
                             <div class="calender_tabs">
                                 <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">
                                     <div class="day_filters">
-                                        <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                                            <li class="nav-item" role="presentation">
-                                                <button class="nav-link btn btn-primary" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming_calendar_tab" type="button" role="tab" aria-controls="upcoming_calendar_tab" aria-selected="false">upcoming</button>
-                                            </li>
-                                            <li class="nav-item" role="presentation">
-                                                <button class="nav-link active btn btn-primary" id="recent-tab" data-bs-toggle="tab" data-bs-target="#recent_calendar_tab" type="button" role="tab" aria-controls="recent_calendar_tab" aria-selected="false">Recent</button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="other_filters">
-                                        <a class="" data-bs-toggle="collapse" href="#collapseFilters" role="button" aria-expanded="false" aria-controls="collapseFilters">
-                                            <i class="bi bi-sliders2"></i>  Filters 
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="collapseFilters">
-                                    <div class="card card-body">
-                                        <div class="category_filter mb-4">
-                                            <div class="filterList_label">
-                                                <p class="fw-bold mb-1">Category:</p>
-                                                <a href="javascript:void(0);" class="" @click="selectAll">Select All</a><br>
-                                                <a href="javascript:void(0);" @click="clearAll" class="">Clear</a>
-                                            </div>
-                                            <div class="w-100">
-                                                <ul class="filterList">
-                                                    <li v-for="category in categories" :key="category.id">
-                                                        <input :id="category.id" name="category[]" type="checkbox" :value="category.value" v-model="selectedCategories">
-                                                        <label :for="category.id">{{ category.label }}</label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="category_filter mb-4">
-                                            <div class="filterList_label">
-                                                <p class="fw-bold mb-1">Importance:</p>
-                                            </div>
-                                            <div class="w-100">
-                                                <ul class="filterList">
-                                                    <li>
-                                                        <input id="importance1" name="importance[]" type="checkbox" value="1">
-                                                        <label for="importance1">
-                                                            <span class="sentiment d-flex gap-1 justify-content-end">
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star"></i>
-                                                                <i class="bi bi-star"></i>
-                                                            </span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input id="importance2" name="importance[]" type="checkbox" value="2">
-                                                        <label for="importance2">
-                                                            <span class="sentiment d-flex gap-1 justify-content-end">
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star"></i>
-                                                            </span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input id="importance3" name="importance[]" type="checkbox" value="3">
-                                                        <label for="importance3">
-                                                            <span class="sentiment d-flex gap-1 justify-content-end">
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                            </span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="apply_filter d-flex gap-sm-3 justify-content-end">
-                                            <a href="javascript:void(0);" id="ecSubmitButton" class="btn btn-primary">Apply</a> 
-                                            <a href="javascript:void(0);" id="filterRestoreDefaults" class="restore btn"><i class="bi bi-arrow-clockwise"></i> Restore Default Settings</a>
-                                        </div>
+                                      <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
+                                          <li class="nav-item" role="presentation" v-for="tabName in tabNames" :key="tabName">
+                                              <button class="nav-link btn btn-primary" 
+                                                      :class="{ active: activeTab === tabName }" 
+                                                      :id="`${tabName}-tab`" 
+                                                      data-bs-toggle="tab" 
+                                                      :data-bs-target="`#${tabName}_calendar_tab`" 
+                                                      type="button" 
+                                                      role="tab" 
+                                                      :aria-controls="`${tabName}_calendar_tab`" 
+                                                      :aria-selected="activeTab === tabName"
+                                                      @click="setActiveTab(tabName)">
+                                                  {{ getTabLabel(tabName) }}
+                                              </button>
+                                          </li>
+                                      </ul>
                                     </div>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade" id="upcoming_calendar_tab" role="tabpanel" aria-labelledby="upcoming-tab" tabindex="0">
-                                        <div class="overflow-auto market-table-wapper">
-                                        <table class="table table-width border">
-                                            <thead>
-                                            <tr>
-                                                <th class="fw-6">IPO Listing</th>
-                                                <th class="text-start fw-6">Company</th>
-                                                <th class="text-end fw-6">Exchange</th>
-                                                <th class="text-end fw-6">IPO Value</th>
-                                                <th class="text-end fw-6">IPO Price</th>
-                                                <th class="text-end fw-6">Last</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="event in filteredUpcomingIpoEvents" :key="event.id">
-                                                <td class="text-start">{{ formatDate(event.effectiveness_date) }}</td>
-                                                <td class="text-start fw-5">
-                                                <span class="flagCur d-flex gap-1 align-items-center">
-                                                    <img src="/build/images/flags/country_1.jpg" alt="flag">{{ event.symbol_id }} (<a :href="event.url">{{ event.symbol_id }}</a>)
-                                                </span>
-                                                </td>
-                                                <td class="text-end fw-5">NYSE</td>
-                                                <td class="text-end fw-5">945.0M</td>
-                                                <td class="text-end fw-5">18.00-21.00</td>
-                                                <td class="text-end fw-5">125.68</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="text-center">
-                                            <button class="btn btn-primary" @click="showMoreUpcoming">Show More</button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade show active" id="recent_calendar_tab" role="tabpanel" aria-labelledby="recent-tab" tabindex="0">
-                                        <div class="overflow-auto market-table-wapper">
-                                        <table class="table table-width border">
-                                            <thead>
-                                            <tr>
-                                                <th class="fw-6">IPO Listing</th>
-                                                <th class="text-start fw-6">Company</th>
-                                                <th class="text-end fw-6">Exchange</th>
-                                                <th class="text-end fw-6">IPO Value</th>
-                                                <th class="text-end fw-6">IPO Price</th>
-                                                <th class="text-end fw-6">Last</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="event in filteredRecentIpoEvents" :key="event.id">
-                                                <td class="text-start">{{ formatDate(event.effectiveness_date) }}</td>
-                                                <td class="text-start fw-5">
-                                                <span class="flagCur d-flex gap-1 align-items-center">
-                                                    <img src="/build/images/flags/country_1.jpg" alt="flag">{{ event.symbol_id }} (<a :href="event.url">{{ event.symbol_id }}</a>)
-                                                </span>
-                                                </td>
-                                                <td class="text-end fw-5">NYSE</td>
-                                                <td class="text-end fw-5">945.0M</td>
-                                                <td class="text-end fw-5">18.00-21.00</td>
-                                                <td class="text-end fw-5">125.68</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="text-center">
-                                            <button class="btn btn-primary" @click="showMoreRecent">Show More</button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </div>
+                                  <div v-for="tabName in tabNames" :key="tabName" 
+                                      :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
+                                      :id="`${tabName}_calendar_tab`" 
+                                      role="tabpanel" 
+                                      :aria-labelledby="`${tabName}-tab`" 
+                                      tabindex="0">
+                                      <div class="overflow-auto market-table-wapper">
+                                          <table class="table table-width border">
+                                              <thead>
+                                                  <tr>
+                                                      <th class="fw-6">Form</th>
+                                                      <th class="text-start fw-6">Symbol</th>
+                                                      <th class="text-end fw-6">IPO Value</th>
+                                                      <th class="text-end fw-6">IPO Price</th>
+                                                      <th class="text-end fw-6">PDF</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <template v-if="ipoEvents[tabName] && ipoEvents[tabName].length > 0">
+                                                      <tr v-for="event in ipoEvents[tabName].slice(0, visibleRows[tabName])" :key="event.id">
+                                                          <td class="text-start">{{ event.form }}</td>
+                                                          <td class="text-start fw-5">{{ event.symbol }}</td>
+                                                          <td class="text-end fw-5">{{event.price_public_total}}</td>
+                                                          <td class="text-end fw-5">{{event.price_public_per_share}}</td>
+                                                          <td class="text-end fw-5"><a :href="event.url" download="download"><i class="bi bi-download"></i></a></td>
+                                                      </tr>
+                                                  </template>
+                                                  <tr v-else>
+                                                      <td colspan="5" class="text-center">{{ loadedTabs.has(tabName) ? 'No data available' : 'Loading...' }}</td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                          <div class="gap-3 d-flex align-items-center justify-content-center mt-3">
+                                              <button v-if="ipoEvents[tabName] && ipoEvents[tabName].length > visibleRows[tabName]" 
+                                                      class="btn btn-primary" 
+                                                      @click="showMore(tabName)">
+                                                  Show More
+                                              </button>
+                                              <button v-if="visibleRows[tabName] > initialRowCount" 
+                                                      class="btn btn-border" 
+                                                      @click="showLess(tabName)">
+                                                  Show Less
+                                              </button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -197,69 +118,74 @@ export default {
   },
   data() {
     return {
-      categories: [
-        { id: 'category_employment', value: '_employment', label: 'Employment' },
-        { id: 'category_economicActivity', value: '_economicActivity', label: 'Economic Activity' },
-        { id: 'category_inflation', value: '_inflation', label: 'Inflation' },
-        { id: 'category_credit', value: '_credit', label: 'Credit' },
-        { id: 'category_centralBanks', value: '_centralBanks', label: 'Central Banks' },
-        { id: 'category_confidenceIndex', value: '_confidenceIndex', label: 'Confidence Index' },
-        { id: 'category_balance', value: '_balance', label: 'Balance' },
-        { id: 'category_Bonds', value: '_Bonds', label: 'Bonds' }
-      ],
-      selectedCategories: [],
-      ipoEvents: [],
-      upcomingIpoEvents: [],
-      recentIpoEvents: [],
-      upcomingDisplayCount: 50,
-      recentDisplayCount: 50
+      ipoEvents: {
+        upcoming: [],
+        recent: []
+      },
+      visibleRows: {
+        upcoming: 50,
+        recent: 50
+      },
+      activeTab: 'recent',
+      tabNames: ['upcoming', 'recent'],
+      loadedTabs: new Set(),
+      initialRowCount: 50
     };
   },
-  computed: {
-    filteredUpcomingIpoEvents() {
-      return this.upcomingIpoEvents.slice(0, this.upcomingDisplayCount);
-    },
-    filteredRecentIpoEvents() {
-      return this.recentIpoEvents.slice(0, this.recentDisplayCount);
-    }
-  },
   methods: {
-    selectAll() {
-      this.selectedCategories = this.categories.map(category => category.value);
-    },
-    clearAll() {
-      this.selectedCategories = [];
-    },
-    async fetchIpoCalendar() {
-      try {
-        const response = await axios.get('https://dev.stocks.richtv.io/api/ipo-calendar');
-        this.ipoEvents = response.data;
-        this.filterIpoEvents();
-      } catch (error) {
-        console.error('Error fetching IPO calendar:', error);
-      }
-    },
-    filterIpoEvents() {
+    async fetchIpoCalendar(tabName) {
+      if (this.loadedTabs.has(tabName)) return;
+      
       const today = new Date();
-      const past25Days = new Date(today);
-      past25Days.setDate(today.getDate() - 25);
+      let startDate, endDate;
+      
+      if (tabName === 'upcoming') {
+        startDate = today;
+        endDate = new Date(today);
+        endDate.setDate(today.getDate() + 30); // Fetch upcoming IPOs for the next 30 days
+      } else { // recent
+        startDate = new Date(today);
+        startDate.setDate(today.getDate() - 30); // Fetch recent IPOs from the last 30 days
+        endDate = today;
+      }
 
-      this.upcomingIpoEvents = this.ipoEvents.filter(event => new Date(event.effectiveness_date) >= today);
-      this.recentIpoEvents = this.ipoEvents.filter(event => new Date(event.effectiveness_date) >= past25Days && new Date(event.effectiveness_date) <= today);
+      const formatDate = (date) => date.toISOString().split('T')[0];
+      
+      try {
+        const response = await axios.get(`https://dev.stocks.richtv.io/api/ipo-calendar?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
+        console.log(`Fetched IPO data for ${tabName}:`, response.data);
+        this.ipoEvents[tabName] = response.data;
+        this.loadedTabs.add(tabName);
+      } catch (error) {
+        console.error(`Error fetching IPO calendar for ${tabName}:`, error);
+        this.ipoEvents[tabName] = [];
+        this.loadedTabs.add(tabName);
+      }
     },
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('en-US', options);
     },
-    showMoreUpcoming() {
-      this.upcomingDisplayCount += 50;
+    showMore(tab) {
+      this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.ipoEvents[tab].length);
     },
-    showMoreRecent() {
-      this.recentDisplayCount += 50;
+    showLess(tab) {
+      this.visibleRows[tab] = Math.max(this.initialRowCount, this.visibleRows[tab] - this.initialRowCount);
+    },
+    setActiveTab(tabName) {
+      this.activeTab = tabName;
+      this.fetchIpoCalendar(tabName);
+    },
+    getTabLabel(tabName) {
+      const labels = {
+        upcoming: 'Upcoming',
+        recent: 'Recent'
+      };
+      return labels[tabName] || tabName;
     }
   },
   mounted() {
-    this.fetchIpoCalendar();
+    this.fetchIpoCalendar(this.activeTab);
   }
 };
 </script>

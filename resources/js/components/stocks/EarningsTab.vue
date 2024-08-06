@@ -12,13 +12,17 @@
       <div class="tab-pane fade show active" id="earnings-history-tab-pane" role="tabpanel" aria-labelledby="earnings-history-tab" tabindex="0">
         <div class="container">
           <form action="">
-            <h4 class="fs-6 fw-bold text-black">
+            <h4 class="fs-6 fw-bold text-black d-flex">
               Earnings Trends
-              <span class="ps-2 fs-14 fw-4">
-                <input type="radio" name="earnings-trends" id="quarterly" v-model="periodType" value="quarterly" checked>
-                <label for="quarterly">quarterly</label>
-                <input type="radio" name="earnings-trends" id="annual" v-model="periodType" value="annual">
-                <label for="annual">annual</label>
+              <span class="ps-2 fs-14 fw-4 d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <input type="radio" name="earnings-trends" id="quarterly" v-model="periodType" value="quarterly" checked>
+                  <label for="quarterly" class="m-0">quarterly</label>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <input type="radio" name="earnings-trends" id="annual" v-model="periodType" value="annual">
+                  <label for="annual" class="m-0">annual</label>
+                </div>
               </span>
             </h4>
           </form>

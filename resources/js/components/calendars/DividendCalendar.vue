@@ -30,21 +30,20 @@
                         <div class="filter_tabs d-flex justify-content-between align-items-center gap-2">
                         <div class="day_filters">
                             <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link btn btn-primary" id="yesterday-tab" data-bs-toggle="tab" data-bs-target="#yesterday_calendar_tab" type="button" role="tab" aria-controls="yesterday_calendar_tab" aria-selected="true">Yesterday</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active btn btn-primary" id="today-tab" data-bs-toggle="tab" data-bs-target="#today_calendar_tab" type="button" role="tab" aria-controls="today_calendar_tab" aria-selected="false">Today</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link btn btn-primary" id="tomorrow-tab" data-bs-toggle="tab" data-bs-target="#tomorrow_calendar_tab" type="button" role="tab" aria-controls="tomorrow_calendar_tab" aria-selected="false">Tomorrow</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link btn btn-primary" id="this_week_tab" data-bs-toggle="tab" data-bs-target="#this_week_calendar_tab" type="button" role="tab" aria-controls="this_week_calendar_tab" aria-selected="false">This Week</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link btn btn-primary" id="next_week_tab" data-bs-toggle="tab" data-bs-target="#next_week_calendar_tab" type="button" role="tab" aria-controls="next_week_calendar_tab" aria-selected="false">Next Week</button>
-                            </li>
+                                <li class="nav-item" role="presentation" v-for="tabName in tabNames" :key="tabName">
+                                    <button class="nav-link btn btn-primary" 
+                                            :class="{ active: activeTab === tabName }" 
+                                            :id="`${tabName}-tab`" 
+                                            data-bs-toggle="tab" 
+                                            :data-bs-target="`#${tabName}_calendar_tab`" 
+                                            type="button" 
+                                            role="tab" 
+                                            :aria-controls="`${tabName}_calendar_tab`" 
+                                            :aria-selected="activeTab === tabName"
+                                            @click="setActiveTab(tabName)">
+                                        {{ tabName.charAt(0).toUpperCase() + tabName.slice(1) }}
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                         <div class="other_filters">
@@ -116,176 +115,64 @@
                         </div>
                         </div>
                         <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade" id="yesterday_calendar_tab" role="tabpanel" aria-labelledby="yesterday-tab" tabindex="0">
-                            <div class="overflow-auto market-table-wapper">
-                            <table class="table table-width border">
-                                <thead>
-                                <tr>
-                                    <th class="fw-6">Company</th>
-                                    <th class="text-end fw-6">Ex-Dividend Date</th>
-                                    <th class="text-end fw-6">Dividend</th>
-                                    <th class="text-end fw-6">Payment Date</th>
-                                    <th class="text-end fw-6">Yield</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="crunt_date">
-                                    <td colspan="7" class="text-center">{{ formatDate(date) }}</td>
-                                </tr>
-                                <tr v-for="(item, index) in yesterdayDividends.slice(0, displayLimit.yesterday)" :key="item.id">
-                                    <td class="fw-5">
-                                    <span class="flagCur d-flex gap-1 align-items-center">
-                                        <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                    </span>
-                                    </td>
-                                    <td class="text-end">{{ item.record_date }}</td>
-                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                    <td class="text-end fw-5">2.95%</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center">
-                                <button v-if="yesterdayDividends.length > displayLimit.yesterday" @click="showMore('yesterday')" class="btn btn-primary mt-2">Show More</button>
+                            <div v-for="tabName in tabNames" :key="tabName" 
+                                :class="['tab-pane fade', { 'show active': activeTab === tabName }]" 
+                                :id="`${tabName}_calendar_tab`" 
+                                role="tabpanel" 
+                                :aria-labelledby="`${tabName}-tab`" 
+                                tabindex="0">
+                                <div class="overflow-auto market-table-wapper">
+                                    <table class="table table-width border">
+                                        <thead>
+                                            <tr>
+                                                <th class="fw-6">Company</th>
+                                                <th class="text-end fw-6">Symbol</th>
+                                                <th class="text-end fw-6">Ex-Dividend Date</th>
+                                                <th class="text-end fw-6">Dividend</th>
+                                                <th class="text-end fw-6">Payment Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template v-if="allDividends[tabName] && allDividends[tabName].length > 0">
+                                                <template v-for="(item, index) in allDividends[tabName].slice(0, visibleRows[tabName])" :key="item.id">
+                                                    <tr v-if="index === 0 || item.record_date !== allDividends[tabName][index - 1].record_date" class="crunt_date">
+                                                        <td colspan="5" class="text-center">{{ formatDate(item.record_date) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-5">
+                                                            <div class="d-flex gap-1 align-items-center">
+                                                                <span class="ceFlags" :class="item.country ? item.country : 'default_country'"></span>
+                                                                <div class="w-100">
+                                                                    <abbr :title="item.name"><span class="company_name text-oneline">{{ item.name }}</span></abbr>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end">{{ item.symbol }}</td>
+                                                        <td class="text-end">{{ item.record_date }}</td>
+                                                        <td class="text-end fw-5">{{ item.amount }}</td>
+                                                        <td class="text-end fw-5">{{ item.payment_date }}</td>
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                            <tr v-else>
+                                                <td colspan="5" class="text-center">{{ loadedTabs.has(tabName) ? 'No data available' : 'Loading...' }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex align-items-center gap-3 justify-content-center mt-3">
+                                        <button v-if="allDividends[tabName] && allDividends[tabName].length > visibleRows[tabName]" 
+                                                class="btn btn-primary" 
+                                                @click="showMore(tabName)">
+                                            Show More
+                                        </button>
+                                        <button v-if="visibleRows[tabName] > initialRowCount" 
+                                                class="btn btn-border" 
+                                                @click="showLess(tabName)">
+                                            Show Less
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show active" id="today_calendar_tab" role="tabpanel" aria-labelledby="today-tab" tabindex="0">
-                            <div class="overflow-auto market-table-wapper">
-                            <table class="table table-width border">
-                                <thead>
-                                <tr>
-                                    <th class="fw-6">Company</th>
-                                    <th class="text-end fw-6">Ex-Dividend Date</th>
-                                    <th class="text-end fw-6">Dividend</th>
-                                    <th class="text-end fw-6">Payment Date</th>
-                                    <th class="text-end fw-6">Yield</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="crunt_date">
-                                    <td colspan="7" class="text-center">{{ currentDate }}</td>
-                                </tr>
-                                <tr v-for="(item, index) in todayDividends.slice(0, displayLimit.today)" :key="item.id">
-                                    <td class="fw-5">
-                                    <span class="flagCur d-flex gap-1 align-items-center">
-                                        <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                    </span>
-                                    </td>
-                                    <td class="text-end">{{ item.record_date }}</td>
-                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                    <td class="text-end fw-5">2.95%</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center">
-                                <button v-if="todayDividends.length > displayLimit.today" @click="showMore('today')" class="btn btn-primary mt-2">Show More</button>
-                            </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="tomorrow_calendar_tab" role="tabpanel" aria-labelledby="tomorrow-tab" tabindex="0">
-                            <div class="overflow-auto market-table-wapper">
-                            <table class="table table-width border">
-                                <thead>
-                                <tr>
-                                    <th class="fw-6">Company</th>
-                                    <th class="text-end fw-6">Ex-Dividend Date</th>
-                                    <th class="text-end fw-6">Dividend</th>
-                                    <th class="text-end fw-6">Payment Date</th>
-                                    <th class="text-end fw-6">Yield</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="crunt_date">
-                                    <td colspan="7" class="text-center">{{ formatDate(date) }}</td>
-                                </tr>
-                                <tr v-for="(item, index) in tomorrowDividends.slice(0, displayLimit.tomorrow)" :key="item.id">
-                                    <td class="fw-5">
-                                    <span class="flagCur d-flex gap-1 align-items-center">
-                                        <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                    </span>
-                                    </td>
-                                    <td class="text-end">{{ item.record_date }}</td>
-                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                    <td class="text-end fw-5">2.95%</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center">
-                                <button v-if="tomorrowDividends.length > displayLimit.tomorrow" @click="showMore('tomorrow')" class="btn btn-primary mt-2">Show More</button>
-                            </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="this_week_calendar_tab" role="tabpanel" aria-labelledby="this_week_tab" tabindex="0">
-                            <div class="overflow-auto market-table-wapper">
-                            <table class="table table-width border">
-                                <thead>
-                                <tr>
-                                    <th class="fw-6">Company</th>
-                                    <th class="text-end fw-6">Ex-Dividend Date</th>
-                                    <th class="text-end fw-6">Dividend</th>
-                                    <th class="text-end fw-6">Payment Date</th>
-                                    <th class="text-end fw-6">Yield</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="crunt_date">
-                                    <td colspan="7" class="text-center">{{ formatDate(date) }}</td>
-                                </tr>
-                                <tr v-for="(item, index) in thisWeekDividends.slice(0, displayLimit.thisWeek)" :key="item.id">
-                                    <td class="fw-5">
-                                    <span class="flagCur d-flex gap-1 align-items-center">
-                                        <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                    </span>
-                                    </td>
-                                    <td class="text-end">{{ item.record_date }}</td>
-                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                    <td class="text-end fw-5">2.95%</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center">
-                                <button v-if="thisWeekDividends.length > displayLimit.thisWeek" @click="showMore('thisWeek')" class="btn btn-primary mt-2">Show More</button>
-                            </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="next_week_calendar_tab" role="tabpanel" aria-labelledby="next_week_tab" tabindex="0">
-                            <div class="overflow-auto market-table-wapper">
-                            <table class="table table-width border">
-                                <thead>
-                                <tr>
-                                    <th class="fw-6">Company</th>
-                                    <th class="text-end fw-6">Ex-Dividend Date</th>
-                                    <th class="text-end fw-6">Dividend</th>
-                                    <th class="text-end fw-6">Payment Date</th>
-                                    <th class="text-end fw-6">Yield</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="crunt_date">
-                                    <td colspan="7" class="text-center">{{ formatDate(date) }}</td>
-                                </tr>
-                                <tr v-for="(item, index) in nextWeekDividends.slice(0, displayLimit.nextWeek)" :key="item.id">
-                                    <td class="fw-5">
-                                    <span class="flagCur d-flex gap-1 align-items-center">
-                                        <img :src="getFlagUrl(item.symbol_id)" alt="flag"> {{ getCompanyName(item.symbol_id) }}
-                                    </span>
-                                    </td>
-                                    <td class="text-end">{{ item.record_date }}</td>
-                                    <td class="text-end fw-5">{{ item.amount }}</td>
-                                    <td class="text-end fw-5">{{ item.payment_date }}</td>
-                                    <td class="text-end fw-5">2.95%</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center">
-                                <button v-if="nextWeekDividends.length > displayLimit.nextWeek" @click="showMore('nextWeek')" class="btn btn-primary mt-2">Show More</button>
-                            </div>
-                            </div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -310,44 +197,39 @@ export default {
   },
   data() {
     return {
-      categories: [
-        { id: 'category_employment', value: '_employment', label: 'Employment' },
-        { id: 'category_economicActivity', value: '_economicActivity', label: 'Economic Activity' },
-        { id: 'category_inflation', value: '_inflation', label: 'Inflation' },
-        { id: 'category_credit', value: '_credit', label: 'Credit' },
-        { id: 'category_centralBanks', value: '_centralBanks', label: 'Central Banks' },
-        { id: 'category_confidenceIndex', value: '_confidenceIndex', label: 'Confidence Index' },
-        { id: 'category_balance', value: '_balance', label: 'Balance' },
-        { id: 'category_Bonds', value: '_Bonds', label: 'Bonds' }
-      ],
-      selectedCategories: [],
-      yesterdayDividends: [],
-      todayDividends: [],
-      tomorrowDividends: [],
-      thisWeekDividends: [],
-      nextWeekDividends: [],
-      displayLimit: {
+      allDividends: {
+        yesterday: [],
+        today: [],
+        tomorrow: [],
+        thisWeek: [],
+        nextWeek: []
+      },
+      visibleRows: {
         yesterday: 50,
         today: 50,
         tomorrow: 50,
         thisWeek: 50,
         nextWeek: 50
-      }
+      },
+      activeTab: 'today',
+      tabNames: ['yesterday', 'today', 'tomorrow', 'thisWeek', 'nextWeek'],
+      loadedTabs: new Set(),
+      initialRowCount: 50
     };
   },
   methods: {
-    selectAll() {
-      this.selectedCategories = this.categories.map(category => category.value);
-    },
-    clearAll() {
-      this.selectedCategories = [];
-    },
     async fetchDividendsCalendar(startDate, endDate, targetArray) {
+      if (this.loadedTabs.has(targetArray)) return;
+      
       try {
         const response = await axios.get(`https://dev.stocks.richtv.io/api/dividends-calendar?startDate=${startDate}&endDate=${endDate}`);
-        this[targetArray] = response.data;
+        console.log(`Fetched data for ${targetArray}:`, response.data);
+        this.allDividends[targetArray] = response.data;
+        this.loadedTabs.add(targetArray);
       } catch (error) {
         console.error('Error fetching dividends calendar:', error);
+        this.allDividends[targetArray] = [];
+        this.loadedTabs.add(targetArray);
       }
     },
     formatDate(dateString) {
@@ -355,49 +237,52 @@ export default {
       return new Date(dateString).toLocaleDateString('en-US', options);
     },
     showMore(tab) {
-      this.displayLimit[tab] += 50;
+      this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.allDividends[tab].length);
     },
-    getFlagUrl(symbolId) {
-      // Placeholder function to get flag URL based on symbol ID
-      return `/build/images/flags/country_${symbolId}.jpg`;
+    showLess(tab) {
+      this.visibleRows[tab] = Math.max(this.initialRowCount, this.visibleRows[tab] - this.initialRowCount);
     },
-    getCompanyName(symbolId) {
-      // Placeholder function to get company name based on symbol ID
-      return `Company ${symbolId}`;
+    setActiveTab(tabName) {
+      this.activeTab = tabName;
+      this.loadTabData(tabName);
+    },
+    loadTabData(tabName) {
+      const today = new Date();
+      const formatDate = (date) => date.toISOString().split('T')[0];
+
+      switch (tabName) {
+        case 'yesterday':
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+          this.fetchDividendsCalendar(formatDate(yesterday), formatDate(yesterday), 'yesterday');
+          break;
+        case 'today':
+          this.fetchDividendsCalendar(formatDate(today), formatDate(today), 'today');
+          break;
+        case 'tomorrow':
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          this.fetchDividendsCalendar(formatDate(tomorrow), formatDate(tomorrow), 'tomorrow');
+          break;
+        case 'thisWeek':
+          const thisWeekStart = new Date(today);
+          thisWeekStart.setDate(today.getDate() - today.getDay());
+          const thisWeekEnd = new Date(thisWeekStart);
+          thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+          this.fetchDividendsCalendar(formatDate(thisWeekStart), formatDate(thisWeekEnd), 'thisWeek');
+          break;
+        case 'nextWeek':
+          const nextWeekStart = new Date(today);
+          nextWeekStart.setDate(today.getDate() - today.getDay() + 7);
+          const nextWeekEnd = new Date(nextWeekStart);
+          nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+          this.fetchDividendsCalendar(formatDate(nextWeekStart), formatDate(nextWeekEnd), 'nextWeek');
+          break;
+      }
     }
   },
   mounted() {
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    const thisWeekStart = new Date(Date.now() - (new Date().getDay() * 86400000)).toISOString().split('T')[0];
-    const thisWeekEnd = new Date(Date.now() + ((6 - new Date().getDay()) * 86400000)).toISOString().split('T')[0];
-    const nextWeekStart = new Date(Date.now() + ((7 - new Date().getDay()) * 86400000)).toISOString().split('T')[0];
-    const nextWeekEnd = new Date(Date.now() + ((13 - new Date().getDay()) * 86400000)).toISOString().split('T')[0];
-
-    this.fetchDividendsCalendar(yesterday, yesterday, 'yesterdayDividends');
-    this.fetchDividendsCalendar(today, today, 'todayDividends');
-    this.fetchDividendsCalendar(tomorrow, tomorrow, 'tomorrowDividends');
-    this.fetchDividendsCalendar(thisWeekStart, thisWeekEnd, 'thisWeekDividends');
-    this.fetchDividendsCalendar(nextWeekStart, nextWeekEnd, 'nextWeekDividends');
-    this.currentDate = this.formatDate(today);
+    this.loadTabData(this.activeTab);
   }
 };
 </script>
-<style>
-.iconQuarterly,.iconAnnual,.iconMonthly {
-    width: 24px;
-    height: 15px;
-    background-image: url(/build/images/site_icons/SiteIcons.png);
-    display: inline-block;
-}
-.iconMonthly{
-    background-position: -3px -2049px;
-}
-.iconQuarterly{
-    background-position: -29px -2049px;
-}
-.iconAnnual{
-    background-position: -85px -2049px;
-}
-</style>

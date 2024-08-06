@@ -30,13 +30,18 @@
         tabindex="0"
       >
         <div class="container">
-          <h4 class="fs-6 fw-bold text-black">
+          <h4 class="fs-6 fw-bold text-black d-flex">
             {{ tab.name }}
-            <span class="ps-2 fs-14 fw-4">
-              <input type="radio" :id="`quarterly-${tab.id}`" value="quarter" v-model="selectedPeriod" @change="handlePeriodChange">
-              <label :for="`quarterly-${tab.id}`">Quarterly</label>
-              <input type="radio" :id="`annual-${tab.id}`" value="annual" v-model="selectedPeriod" @change="handlePeriodChange">
-              <label :for="`annual-${tab.id}`">Annual</label>
+            <span class="ps-2 fs-14 fw-4 d-flex gap-2 align-items-center">
+              <div class="d-flex gap-2 align-items-center">
+                <input type="radio" :id="`quarterly-${tab.id}`" value="quarter" v-model="selectedPeriod" @change="handlePeriodChange">
+                <label :for="`quarterly-${tab.id}`" class="m-0">Quarterly</label>
+              </div>
+              <div class="d-flex gap-2 align-items-center">
+                <input type="radio" :id="`annual-${tab.id}`" value="annual" v-model="selectedPeriod" @change="handlePeriodChange">
+                <label :for="`annual-${tab.id}`" class="m-0">Annual</label>
+              </div>
+              
             </span>
           </h4>
           <div class="header-divider mt-1 pt-2"></div>

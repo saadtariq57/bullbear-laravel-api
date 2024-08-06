@@ -1,5 +1,5 @@
 <template>
-  <div class="container-xxl">
+  <div class="container-xxl pt-4">
     <div v-show="!isLoading && stockData" class="row">
       <div class="col-lg-8 col-md-12">
         <div class="d-flex justify-content-between flex-wrap">
@@ -34,31 +34,32 @@
               </span>
             </div>
           </div>
-          <div class="d-none d-md-block d-lg-block d-xl-block fw-6 pt-4">
+          <div class=" fw-6 pt-4">
             <div class="text-secondary pb-1">Volume</div>
             <div>{{ stockData.volume }}</div>
           </div>
-          <div class="d-none d-md-block d-lg-block d-xl-block fw-6 pt-4 px-0">
+          <div class=" fw-6 pt-4 px-0">
             <div class="text-secondary pb-1">52 week range</div>
             <div>{{ stockData.fifty_two_week_low }} - {{ stockData.fifty_two_week_high }}</div>
           </div>
         </div>
         
         <div class="stocks-nav-tabs mt-4">
-          <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist" v-once>
-            <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in tabs" :key="tab.id">
-              <button 
-                class="stock-navbtn nav-link border-0 fs-6 fw-6 text-secondary m-auto" 
-                :id="`${tab.id}-tab`" 
-                @click="setActiveTab(tab.id)"
-                type="button" 
-                role="tab" 
-                :aria-controls="`${tab.id}-tab-pane`"
-              >
-                {{ tab.name }}
-              </button>
-            </li>
-          </ul>
+          <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
+              <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in tabs" :key="tab.id">
+                <button 
+                  class="stock-navbtn nav-link border-0 fs-6 fw-6 text-secondary m-auto" 
+                  :class="{ 'active': activeTab === tab.id }"
+                  :id="`${tab.id}-tab`" 
+                  @click="setActiveTab(tab.id)"
+                  type="button" 
+                  role="tab" 
+                  :aria-controls="`${tab.id}-tab-pane`"
+                >
+                  {{ tab.name }}
+                </button>
+              </li>
+            </ul>
           <div class="tab-content" id="myTabContent">
             <div 
               v-for="tab in tabs" 
@@ -145,9 +146,11 @@ export default defineComponent({
     const setActiveTab = (tabId) => {
       activeTab.value = tabId;
     };
+
     const roundToTwoDecimals = (value) => {
-        return Number(value).toFixed(2);
+      return Number(value).toFixed(2);
     };
+
     const formatTime = (timestamp) => {
       return new Date(timestamp * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
     };
@@ -186,3 +189,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.stocks-nav-tabs .stock-li-navbtn .active{
+  padding-bottom:10px;
+}
+</style>

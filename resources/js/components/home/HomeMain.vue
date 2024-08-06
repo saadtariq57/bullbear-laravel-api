@@ -72,7 +72,7 @@
   <!-- advanced-features-section End -->
 
   <!-- Top Tables Section -->
-  <TopStocks />
+  <TopWidgets />
   <!-- Top Tables Section End-->
   <!-- stock html start  -->
   <StockQuote />
@@ -251,7 +251,7 @@
 
 import Hero from "./Hero.vue";
 import FeaturedVideo from "./FeaturedVideo.vue";
-import TopStocks from "./TopStocks.vue";
+import TopWidgets from "./TopWidgets.vue";
 import Guides from "./Guides.vue";
 import NewsLetter from "./NewsLetter.vue";
 import StockQuote from "./StockQuote.vue";
@@ -259,7 +259,7 @@ export default {
   components: {
     Hero,
     FeaturedVideo,
-    TopStocks,
+    TopWidgets,
     Guides,
     NewsLetter,
     StockQuote,
