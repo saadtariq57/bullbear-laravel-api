@@ -3351,9 +3351,6 @@ span.marketOpen {
         display: inline-block;
         min-width: max-content;
     }
-    .stocks-nav-tabs {
-        display: none;
-    }
 
     .stocks-mobile-display {
         display: block !important;

@@ -34,11 +34,11 @@
               </span>
             </div>
           </div>
-          <div class="d-none d-md-block d-lg-block d-xl-block fw-6 pt-4">
+          <div class=" fw-6 pt-4">
             <div class="text-secondary pb-1">Volume</div>
             <div>{{ stockData.volume }}</div>
           </div>
-          <div class="d-none d-md-block d-lg-block d-xl-block fw-6 pt-4 px-0">
+          <div class=" fw-6 pt-4 px-0">
             <div class="text-secondary pb-1">52 week range</div>
             <div>{{ stockData.fifty_two_week_low }} - {{ stockData.fifty_two_week_high }}</div>
           </div>
