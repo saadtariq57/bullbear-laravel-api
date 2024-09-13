@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use App\Models\User;
 use App\Models\UserWatchlist;
 use App\Models\WatchlistSymbol;
+use App\Models\Symbol;
 use App\Services\featureService;
 use Illuminate\Http\Request;
 
@@ -230,33 +231,47 @@ class WatchlistController extends Controller
     public function storeWatchListSymbol(Request $request)
     {
         $user = Auth::user();
-        $response = false;
+        if (!$user) {
+            return response()->json('unauthorized request', 401);
+        }
 
         $data = $request->all();
-        if($user){
-            if (!empty($data['symbol_id'])) {
-                $symbolIds = is_array($data['symbol_id']) ? $data['symbol_id'] : [$data['symbol_id']];
-                $symbolCount = count($symbolIds);
-                foreach ($symbolIds as $symbolId) {
-                    WatchlistSymbol::create([
-                        'user_id' => $user->id,
-                        'watchlist_id' => $data['watchlist_id'],
-                        'symbol_id' => $symbolId,
-                    ]);
-                }
-                // WatchlistSymbol::create($data);
-    
-                $userWatchlist = UserWatchlist::find($data['watchlist_id']);
-                if ($userWatchlist) {
-                    $userWatchlist->increment('symbol_count', $symbolCount);
-                    $userWatchlist->save();
-                }
-    
-                $response = $this->getWatchListAllData($data['watchlist_id']);
-                return response()->json($response);
-            }else{
-                return response()->json('unauthorized request');
-            }   
+        $symbolId = null;
+
+        if (!empty($data['symbol_id'])) {
+            $symbolId = $data['symbol_id'];
+        } elseif (!empty($data['symbol'])) {
+            $symbol = Symbol::where('symbol', $data['symbol'])->first();
+            if ($symbol) {
+                $symbolId = $symbol->id;
+            }
+        }
+
+        if (!$symbolId) {
+            return response()->json('Invalid symbol', 400);
+        }
+
+        if (empty($data['watchlist_id'])) {
+            return response()->json('Watchlist ID is required', 400);
+        }
+
+        try {
+            WatchlistSymbol::create([
+                'user_id' => $user->id,
+                'watchlist_id' => $data['watchlist_id'],
+                'symbol_id' => $symbolId,
+            ]);
+
+            $userWatchlist = UserWatchlist::find($data['watchlist_id']);
+            if ($userWatchlist) {
+                $userWatchlist->increment('symbol_count');
+                $userWatchlist->save();
+            }
+
+            $response = $this->getWatchListAllData($data['watchlist_id']);
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json('Error adding symbol to watchlist: ' . $e->getMessage(), 500);
         }
     }
 

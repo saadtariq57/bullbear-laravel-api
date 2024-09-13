@@ -3,228 +3,128 @@
         <h4 class="fs-5 fw-6 px-2 mb-2 icon-short-heading">Market Movers</h4>
         <nav>
             <div class="nav nav-tabs px-2" id="nav-tab" role="tablist">
-                <button class="nav-link topmovers-nav-btn active" id="nav-gainers-tab" data-bs-toggle="tab"
-                    data-bs-target="#nav-gainers" type="button" role="tab" aria-controls="nav-gainers"
+                <button class="nav-link topmovers-nav-btn" :class="{ active: activeTab === 'gainers' }" id="nav-gainers-tab" @click="setActiveTab('gainers')"
+                    type="button" role="tab" aria-controls="nav-gainers"
                     aria-selected="true">Gainers</button>
-                <button class="nav-link topmovers-nav-btn" id="nav-losers-tab" data-bs-toggle="tab"
-                    data-bs-target="#nav-losers" type="button" role="tab" aria-controls="nav-losers"
+                <button class="nav-link topmovers-nav-btn" :class="{ active: activeTab === 'losers' }" id="nav-losers-tab" @click="setActiveTab('losers')"
+                    type="button" role="tab" aria-controls="nav-losers"
                     aria-selected="false">Losers</button>
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-gainers" role="tabpanel" aria-labelledby="nav-gainers-tab">
-                <div class="stock-table-data position-relative overflow-auto">
-                    <table class="table stock-market-table1 mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="bg-white text-black">Name</th>
-                                    <th scope="col" class="text-black text-end">Last</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/koito.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">KOTMY</span><br>
-                                                <span class="fw-5 text-color text-color">Koito Manufacturing Co., Ltd.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">15.68
-                                        <div class="d-flex Green gap-3 justify-content-end">
-                                            <span>+2.48</span><span>+18.79%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/koito.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">RH</span><br>
-                                                <span class="fw-5 text-color text-color">RH</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">348.26
-                                        <div class="d-flex Green gap-3 justify-content-end">
-                                            <span>+51.27</span><span>+17.26%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/galaxy-digital.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">BRPHF</span><br>
-                                                <span class="fw-5 text-color text-color">Galaxy Digital Holdings Ltd.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">10.76
-                                        <div class="d-flex Green gap-3 justify-content-end">
-                                            <span>+1.43</span><span>+15.33%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/guardant-blood.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">GH</span><br>
-                                                <span class="fw-5 text-color text-color">Guardant Health, Inc.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">20.63
-                                        <div class="d-flex Green gap-3 justify-content-end">
-                                            <span>+2.67</span><span>+14.87%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/xiaomi.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">XIACY</span><br>
-                                                <span class="fw-5 text-color text-color">Xiaomi Corporation</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">10.62
-                                        <div class="d-flex Green gap-3 justify-content-end">
-                                            <span>+1.15</span><span>+12.13%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="tab-pane fade show active" id="nav-movers" role="tabpanel" aria-labelledby="nav-movers-tab">
+                <div v-if="isLoading" class="loading-message p-3">
+                    Loading market data...
                 </div>
-            </div>
-            <div class="tab-pane fade" id="nav-losers" role="tabpanel" aria-labelledby="nav-losers-tab">
-                <div class="stock-table-data position-relative overflow-auto">
-                    <div class="table-responsive">
-                        <table class="table stock-market-table1 mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="bg-white text-black">Name</th>
-                                    <th scope="col" class="text-black text-end">Last</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/miller-knoll.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">MLKN</span><br>
-                                                <span class="fw-5 text-color text-color">MillerKnoll, Inc.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">24.76
-                                        <div class="d-flex Red gap-3  justify-content-end">
-                                            <span>-5.77</span><span>-18.9%</span>
+                <div v-else-if="error" class="error-message p-3">
+                    {{ error }}
+                </div>
+                <div v-else class="stock-table-data position-relative overflow-auto">
+                    <table class="table stock-market-table1 mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="bg-white text-black">Name</th>
+                                <th scope="col" class="text-black text-end">Last</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="stock in stocks.slice(0, 5)" :key="stock.symbol">
+                                <td class="bg-white">
+                                    <a :href="'/quotes/' + stock.symbol" class="gray d-flex align-items-center gap-2"
+                                        aria-label="Stock Quote">
+                                        <div class="lh-sm">
+                                            <span class="text-color fw-bolder">{{ stock.symbol }}</span><br>
+                                            <span class="fw-5 text-color text-color">{{ stock.long_name || 'N/A' }}</span>
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/braze.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">BRZE</span><br>
-                                                <span class="fw-5 text-color text-color">Braze, Inc.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">44.3
-                                        <div class="d-flex Red gap-3  justify-content-end">
-                                            <span>-6.28</span><span>-12.42%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/micro-strategy.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">MSTR</span><br>
-                                                <span class="fw-5 text-color text-color">MicroStrategy Incorporated</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">1704.56
-                                        <div class="d-flex Red gap-3  justify-content-end">
-                                            <span>-214.6</span><span>-11.18%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/chemours.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">CC</span><br>
-                                                <span class="fw-5 text-color text-color">The Chemours Company</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">26.26
-                                        <div class="d-flex Red gap-3  justify-content-end">
-                                            <span>-2.62</span><span>-9.07%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="bg-white">
-                                        <a href="" class="gray d-flex align-items-center gap-2"
-                                            aria-label="Stock Quote">
-                                            <!-- <img src="/build/images/brands/clean-spark.png" alt="" width="20"
-                                                height="20"> -->
-                                            <div class="lh-sm">
-                                                <span class="text-color fw-bolder">CLSK</span><br>
-                                                <span class="fw-5 text-color text-color">CleanSpark, Inc.</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td class="gray lh-sm text-end" id="symbol-price">21.21
-                                        <div class="d-flex Red gap-3  justify-content-end">
-                                            <span>-1.9</span><span>-8.22%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </a>
+                                </td>
+                                <td class="gray lh-sm text-end" id="symbol-price">
+                                    {{ formatPrice(stock.regular_market_price) }}
+                                    <div :class="['d-flex', 'gap-3', 'justify-content-end', { 'Green': isPositive(stock.regular_market_change), 'Red': isNegative(stock.regular_market_change) }]">
+                                        <span>{{ formatChange(stock.regular_market_change) }}</span>
+                                        <span>{{ formatChangePercent(stock.regular_market_change_percent) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+
+export default {
+    setup() {
+        const stocks = ref([]);
+        const error = ref(null);
+        const isLoading = ref(true);
+        const activeTab = ref('gainers');
+
+        const fetchStockData = async (type) => {
+            isLoading.value = true;
+            try {
+                const response = await axios.get(`https://dev.stocks.richtv.io/api/market-collections/${type}`);
+                stocks.value = response.data;
+                isLoading.value = false;
+            } catch (err) {
+                console.error(`Error fetching ${type} data:`, err);
+                error.value = 'An error occurred while fetching data';
+                isLoading.value = false;
+            }
+        };
+
+        const setActiveTab = (tab) => {
+            activeTab.value = tab;
+        };
+
+        const formatPrice = (price) => {
+            return price !== null && price !== undefined ? parseFloat(price).toFixed(2) : 'N/A';
+        };
+
+        const formatChange = (change) => {
+            return change !== null && change !== undefined ? parseFloat(change).toFixed(2) : 'N/A';
+        };
+
+        const formatChangePercent = (changePercent) => {
+            return changePercent !== null && changePercent !== undefined ? `${parseFloat(changePercent).toFixed(2)}%` : 'N/A';
+        };
+
+        const isPositive = (value) => {
+            return value !== null && value !== undefined && parseFloat(value) > 0;
+        };
+
+        const isNegative = (value) => {
+            return value !== null && value !== undefined && parseFloat(value) < 0;
+        };
+
+        onMounted(() => {
+            fetchStockData('day_gainers');
+        });
+
+        watch(activeTab, (newTab) => {
+            fetchStockData(newTab === 'gainers' ? 'day_gainers' : 'day_losers');
+        });
+
+        return {
+            stocks,
+            error,
+            isLoading,
+            activeTab,
+            setActiveTab,
+            formatPrice,
+            formatChange,
+            formatChangePercent,
+            isPositive,
+            isNegative
+        };
+    }
+}
+</script>
 <style>
 .nav-tabs .nav-link.topmovers-nav-btn {
     width: auto;

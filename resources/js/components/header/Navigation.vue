@@ -16,8 +16,7 @@
                                 <Search />
                                 <div class="position-relative d-none d-xl-block" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-                                    <input type="text" class="form-control form-control-lg shadow-sm pe-5 header-search"
-                                        id="exampleFormControlInput1" placeholder="Search Markets and Groups">
+                                    <input type="text" class="form-control form-control-lg shadow-sm pe-5 header-search" placeholder="Search Markets and Groups">
                                     <button class="bg-transparent border-0 search-btn fs-3 nav-clr position-absolute"
                                         type="button">
                                         <i class="bi bi-search"></i>

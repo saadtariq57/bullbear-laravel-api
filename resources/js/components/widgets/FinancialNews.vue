@@ -6,22 +6,22 @@
       </div>
 
       <div class="border-1 border-grey">
-        <div v-if="latestFinancialNews.length > 0">
-          <div v-for="(post, index) in latestFinancialNews.slice(0, 6)" :key="index" :class="['market-news', {'border-bottom-0': index === 5}]" class="border-bottom market-news d-flex  border-1 border-grey ">
+        <div v-if="financialNewsPosts.length > 0">
+          <div v-for="(post, index) in financialNewsPosts" :key="post.id" :class="['market-news', {'border-bottom-0': index === financialNewsPosts.length - 1}]" class="d-flex align-items-center border-bottom border-1 border-grey">
             <div class="feature-img">
               <div class="stock-post-img">
-                <img :src="post.thumbnail" alt="thumbnail-img">
+                <img :src="post.featured_media_url" alt="thumbnail-img">
               </div>
             </div>
             <div class="stock-post-content ms-3">
-              <h4><a :href="`https://richtv.io${post.link}`" aria-label="title">{{ truncate(post.title) }}</a></h4>
-              <a class="stock-author-meta" :href="post.authorLink" aria-label="author_link">{{ post.author }}</a>
-              <span>{{ post.date }}</span>
+              <h4 class="lh-0 mb-0"><a :href="post.link" target="_blank" rel="noopener noreferrer" aria-label="title">{{ truncate(post.title) }}</a></h4>
+              <a class="stock-author-meta border-end border-1 border-grey" :href="post.author_info.link" target="_blank" rel="noopener noreferrer" aria-label="author_link">{{ post.author_info.name }}</a>
+              <span>{{ formatDate(post.date) }}</span>
             </div>
           </div>
         </div>
         <div v-else>
-          <div v-for="n in 6" :key="n" class="market-news d-flex border-bottom border-1 border-grey ">
+          <div v-for="n in 6" :key="n" class="market-news d-flex align-items-center border-bottom border-1 border-grey ">
             <div class="feature-img">
               <div class="stock-post-img loading-animation"></div>
             </div>
@@ -43,7 +43,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      latestFinancialNews: [],
+      financialNewsPosts: [],
     };
   },
   mounted() {
@@ -51,44 +51,33 @@ export default {
   },
   methods: {
     fetchFinancialNews() {
-      const categories = ['224', '961', '963', '962', '3591'];
-      const requests = categories.map(category => {
-        return axios.get(`/api/fetch-wordpress-posts/${category}?numPosts=1`, {
-          withCredentials: true,
-        });
+      axios.get('/api/fetch-wordpress-posts', {
+        params: {
+          categories: 961,
+          per_page: 6,
+        },
+        withCredentials: true,
+      })
+      .then(response => {
+        this.financialNewsPosts = response.data.posts;
+      })
+      .catch(error => {
+        console.error('Error fetching financial news:', error);
       });
-
-      Promise.all(requests)
-        .then(responses => {
-          const allPosts = responses.flatMap(response => response.data);
-          this.latestFinancialNews = allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        })
-        .catch(error => {
-          console.error('Error fetching financial news:', error);
-        });
     },
+
     truncate(text) {
       if (text.length > 40) {
         return text.substring(0, 40) + '...';
       } else {
         return text;
       }
+    },
+
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
     }
   }
 }
 </script>
-
-<style scoped>
-.loading-animation {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(0, 0, 0, 0.1);
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.3; }
-}
-</style>

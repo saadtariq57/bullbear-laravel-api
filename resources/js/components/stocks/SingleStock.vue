@@ -1,51 +1,89 @@
 <template>
   <div class="container-xxl pt-4">
-    <div v-show="!isLoading && stockData" class="row">
+    <div class="row">
       <div class="col-lg-8 col-md-12">
-        <div class="d-flex justify-content-between flex-wrap">
-          <h1>
-            <span class="text-black fs-2 fw-bolder">{{ stockData.long_name }}</span>
-            <span class="text-secondary d-table fs-5">{{ stockData.symbol }}:{{ stockData.exchange }}</span>
-          </h1>
-          <div class="fs-13">
-            <button class="btn-primary fw-6 me-2">EXPORT
-              <i class="bi bi-upload icon-bold ms-2"></i>
-            </button>
-            <button class="btn-primary fw-6 me-2">Watchlist
-              <i class="bi bi-plus-lg icon-bold ms-2"></i>
-            </button>
+        <div v-if="!isLoading && stockData">
+          <div class="d-flex justify-content-between flex-wrap">
+            <h1>
+              <span class="text-black fs-2 fw-bolder">{{ stockData.long_name }}</span>
+              <span class="text-secondary d-table fs-5">{{ stockData.symbol }}:{{ stockData.full_exchange_name }}</span>
+            </h1>
+            <div class="fs-13">
+              <button class="btn-primary fw-6 me-2">EXPORT
+                <i class="bi bi-upload icon-bold ms-2"></i>
+              </button>
+              <button class="btn-primary fw-6 me-2">Watchlist
+                <i class="bi bi-plus-lg icon-bold ms-2"></i>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="stock-subheader fs-14 fw-6">
-          <span>RT Quote</span>
-          <span> | Last {{ stockData.exchange }} LS, VOL From CTA</span>
-          <span> | {{ stockData.currency }}</span>
-        </div>
-        <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
-          <div>
+          <div class="stock-subheader fs-14 fw-6">
+            <span>RT Quote</span>
+            <span> | Last {{ stockData.full_exchange_name }} LS, VOL From CTA</span>
+            <span> | {{ stockData.currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
             <div>
-              <span>Last | {{ formatTime(stockData.regular_market_time) }}</span>
+              <div>
+                <span>Last | {{ formatTime(stockData.regular_market_time) }}</span>
+              </div>
+              <div class="d-flex flex-wrap fw-bold">
+                <span class="fs-1 fw-6">{{ roundToTwoDecimals(stockData.regular_market_price) }}</span>
+                <span :class="['fs-3 align-self-center ps-3', stockData.regular_market_change >= 0 ? 'Green postive-arrow-icon' : 'Red negative-arrow-icon']">
+                  <span>{{ roundToTwoDecimals(stockData.regular_market_change)}}</span>
+                  <span> ({{ roundToTwoDecimals(stockData.regular_market_change_percent)}}%)</span>
+                </span>
+              </div>
             </div>
-            <div class="d-flex flex-wrap fw-bold">
-              <span class="fs-1 fw-6">{{ roundToTwoDecimals(stockData.regular_market_price) }}</span>
-              <span :class="['fs-3 align-self-center ps-3', stockData.regular_market_change >= 0 ? 'Green postive-arrow-icon' : 'Red negative-arrow-icon']">
-                <span>{{ roundToTwoDecimals(stockData.regular_market_change)}}</span>
-                <span> ({{ roundToTwoDecimals(stockData.regular_market_change_percent)}}%)</span>
-              </span>
+            <div class="fw-6 pt-4">
+              <div class="text-secondary pb-1">Volume</div>
+              <div>{{ formatNumber(stockData.volume) }}</div>
+            </div>
+            <div class="fw-6 pt-4 px-0">
+              <div class="text-secondary pb-1">52 week range</div>
+              <div>{{ roundToTwoDecimals(stockData.fifty_two_week_low) }} - {{ roundToTwoDecimals(stockData.fifty_two_week_high) }}</div>
             </div>
           </div>
-          <div class=" fw-6 pt-4">
-            <div class="text-secondary pb-1">Volume</div>
-            <div>{{ stockData.volume }}</div>
+        </div>
+        
+        <div v-else>
+          <div class="d-flex justify-content-between flex-wrap">
+            <h1>
+              <span class="text-black fs-2 fw-bolder"><Skeletor width="200px" height="30px" /></span>
+              <span class="text-secondary d-table fs-5"><Skeletor width="150px" height="20px" /></span>
+            </h1>
+            <div class="fs-13">
+              <Skeletor width="100px" height="30px" class="me-2" />
+              <Skeletor width="100px" height="30px" />
+            </div>
           </div>
-          <div class=" fw-6 pt-4 px-0">
-            <div class="text-secondary pb-1">52 week range</div>
-            <div>{{ stockData.fifty_two_week_low }} - {{ stockData.fifty_two_week_high }}</div>
+          <div class="stock-subheader fs-14 fw-6 mt-2">
+            <Skeletor width="300px" height="20px" />
+          </div>
+          <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
+            <div>
+              <div>
+                <Skeletor width="150px" height="20px" />
+              </div>
+              <div class="d-flex flex-wrap fw-bold mt-2">
+                <Skeletor width="100px" height="40px" class="me-2" />
+                <Skeletor width="150px" height="40px" />
+              </div>
+            </div>
+            <div class="fw-6 pt-4">
+              <Skeletor width="80px" height="20px" class="mb-2" />
+              <Skeletor width="100px" height="20px" />
+            </div>
+            <div class="fw-6 pt-4 px-0">
+              <Skeletor width="120px" height="20px" class="mb-2" />
+              <Skeletor width="150px" height="20px" />
+            </div>
           </div>
         </div>
         
         <div class="stocks-nav-tabs mt-4">
           <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
+            <template v-if="!isLoading && stockData">
               <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in tabs" :key="tab.id">
                 <button 
                   class="stock-navbtn nav-link border-0 fs-6 fw-6 text-secondary m-auto" 
@@ -59,33 +97,25 @@
                   {{ tab.name }}
                 </button>
               </li>
-            </ul>
-          <div class="tab-content" id="myTabContent">
-            <div 
-              v-for="tab in tabs" 
-              :key="tab.id"
-              class="tab-pane fade" 
-              :class="{ 'show active': activeTab === tab.id }"
-              :id="`${tab.id}-tab-pane`" 
-              role="tabpanel" 
-              :aria-labelledby="`${tab.id}-tab`" 
-              tabindex="0"
-            >
-              <keep-alive>
-                <component 
-                  :is="tab.id === 'SUMMARY' ? SummaryTab : activeTab === tab.id ? tab.component : null" 
-                  :stock-data="stockData" 
-                  :symbol="symbol"
-                  :key="`${tab.id}-${symbol}`"
-                />
-              </keep-alive>
-            </div>
-          </div>
+            </template>
+            <template v-else>
+              <li v-for="i in 7" :key="i" class="nav-item stock-li-navbtn">
+                <Skeletor width="100px" height="30px" />
+              </li>
+            </template>
+          </ul>
+        </div>
+        
+        <div class="tab-content" id="myTabContent">
+          <component 
+            :is="activeTab === 'SUMMARY' ? SummaryTab : tabs.find(tab => tab.id === activeTab)?.component"
+            :stock-data="stockData" 
+            :symbol="symbol"
+            :is-loading="isLoading"
+            :key="`${activeTab}-${symbol}`"
+          />
         </div>
       </div>
-    </div>
-    <div v-show="isLoading || !stockData">
-      Loading...
     </div>
   </div>
 </template>
@@ -94,6 +124,7 @@
 import { defineComponent, ref, shallowRef, watchEffect, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { Skeletor } from 'vue-skeletor';
 import SummaryTab from './SummaryTab.vue';
 import NewsTab from './NewsTab.vue';
 import ProfileTab from './ProfileTab.vue';
@@ -114,6 +145,7 @@ const TABS = [
 
 export default defineComponent({
   components: {
+    Skeletor,
     SummaryTab,
     NewsTab,
     ProfileTab,
@@ -143,20 +175,20 @@ export default defineComponent({
       }
     };
 
-    const setActiveTab = (tabId) => {
-      activeTab.value = tabId;
-    };
-
     const roundToTwoDecimals = (value) => {
-      return Number(value).toFixed(2);
+      return value ? Number(value).toFixed(2) : 'N/A';
     };
 
     const formatTime = (timestamp) => {
-      return new Date(timestamp * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+      return timestamp ? new Date(timestamp * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : 'N/A';
     };
 
     const formatNumber = (num) => {
-      return num.toLocaleString();
+      return num ? num.toLocaleString() : 'N/A';
+    };
+
+    const setActiveTab = (tabId) => {
+      activeTab.value = tabId;
     };
 
     watchEffect(() => {
@@ -177,19 +209,15 @@ export default defineComponent({
       formatTime,
       formatNumber,
       fetchStockData,
-      SummaryTab,
-      NewsTab,
-      ProfileTab,
-      EarningsTab,
-      FinancialsTab,
-      OptionsTab,
-      OwnershipTab,
       roundToTwoDecimals,
+      SummaryTab,
     };
   },
 });
 </script>
+
 <style>
+  @import "vue-skeletor/dist/vue-skeletor.css";
 .stocks-nav-tabs .stock-li-navbtn .active{
   padding-bottom:10px;
 }

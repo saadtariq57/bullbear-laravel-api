@@ -24,28 +24,29 @@ export default {
       chartdata: [],
       isloading: false,
       rendercount: 0,
+      currentRange: '1D',
+      currentInterval: '1min',
     };
   },
   mounted() {
     console.log('[ohlc] component mounted');
     this.$nextTick(() => {
-      this.fetchohlcdata().then(() => {
-        if (this.chartdata.length > 0) {
-          this.initchart();
-        }
-      });
+      this.fetchohlcdata(this.currentRange, this.currentInterval);
     });
   },
   methods: {
-    async fetchohlcdata() {
-      console.log(`[ohlc] fetching ohlc data for symbol: ${this.symbol}`);
-      if (this.isloading || this.chartdata.length > 0) {
-        console.log('[ohlc] data fetch already in progress or data already loaded, skipping');
+    async fetchohlcdata(range = '1D', interval = '1min') {
+      console.log(`[ohlc] fetching ohlc data for symbol: ${this.symbol}, range: ${range}, interval: ${interval}`);
+      console.log(`[ohlc] fetchohlcdata called with range: ${range}, interval: ${interval}`);
+      if (this.isloading) {
+        console.log('[ohlc] data fetch already in progress, skipping');
         return;
       }
       this.isloading = true;
       try {
-        const response = await axios.get(`/api/ohlc-data/${this.symbol}`);
+        const response = await axios.get(`/api/ohlc-data/${this.symbol}`, {
+          params: { range, interval }
+        });
         console.log(`[ohlc] data received for ${this.symbol}:`, response.data.length, 'items');
         this.chartdata = response.data.map(item => ({
           date: new Date(item.date).getTime(),
@@ -56,6 +57,26 @@ export default {
           volume: Number(item.volume)
         })).sort((a, b) => a.date - b.date);
         console.log('[ohlc] processed chart data:', this.chartdata.length, 'items');
+        
+        if (this.root) {
+          // Update existing chart data
+          const stockChart = this.root.container.children.values[0];
+          const mainPanel = stockChart.panels.values[0];
+          const valueSeries = mainPanel.series.values[0];
+          const volumeSeries = mainPanel.series.values[1];
+          
+          valueSeries.data.setAll(this.chartdata);
+          volumeSeries.data.setAll(this.chartdata);
+          
+          // Check if scrollbarX exists before updating its data
+          if (stockChart.scrollbarX && stockChart.scrollbarX.chart && stockChart.scrollbarX.chart.series.values[0]) {
+            const scrollbarSeries = stockChart.scrollbarX.chart.series.values[0];
+            scrollbarSeries.data.setAll(this.chartdata);
+          }
+        } else {
+          // Initialize chart if it doesn't exist
+          this.initchart();
+        }
       } catch (error) {
         console.error('[ohlc] error fetching ohlc data:', error);
       } finally {
@@ -255,14 +276,6 @@ initchart() {
     fillOpacity: 0.3
   });
 
-  // Function that dynamically loads data
-  function loadData(ticker, series, granularity) {
-    // In your case, you might want to replace this with your own data loading logic
-    // For now, we'll just use the existing chartdata
-    am5.array.each(series, function(item) {
-      item.data.setAll(this.chartdata);
-    }.bind(this));
-  }
 
   // Set up series type switcher
   let seriesSwitcher = am5stock.SeriesTypeControl.new(root, {
@@ -326,15 +339,63 @@ initchart() {
   // Interval switcher
   let intervalSwitcher = am5stock.IntervalControl.new(root, {
     stockChart: stockChart,
+    currentItem: "1min",
     items: [
-      { id: "1 minute", label: "1 minute", interval: { timeUnit: "minute", count: 1 } },
-      { id: "1 day", label: "1 day", interval: { timeUnit: "day", count: 1 } },
-      { id: "1 week", label: "1 week", interval: { timeUnit: "week", count: 1 } },
-      { id: "1 month", label: "1 month", interval: { timeUnit: "month", count: 1 } }
+      { id: "1min", label: "1 min", interval: { timeUnit: "minute", count: 1 } },
+      { id: "15min", label: "15 min", interval: { timeUnit: "minute", count: 15 } },
+      { id: "30min", label: "30 min", interval: { timeUnit: "minute", count: 30 } },
+      { id: "1h", label: "1 hour", interval: { timeUnit: "hour", count: 1 } },
+      { id: "4h", label: "4 hour", interval: { timeUnit: "hour", count: 4 } }
     ]
   });
 
-  intervalSwitcher.events.on("selected", function(ev) {
+
+  const loadData = (ticker, series, granularity) => {
+    am5.array.each(series, (item) => {
+      item.data.setAll(this.chartdata);
+    });
+  };
+const logAllEvents = (component, componentName) => {
+  component.events.on("*", (ev) => {
+    console.log(`[ohlc] ${componentName} event fired:`, ev.type, ev);
+  });
+}
+  intervalSwitcher.events.on("selected", (ev) => {
+    this.currentInterval = ev.item.id;
+    this.fetchohlcdata(this.currentRange, this.currentInterval);
+  });
+
+  let periodSelector = am5stock.PeriodSelector.new(root, {
+    stockChart: stockChart,
+    periods: [
+      { timeUnit: "day", count: 1, name: "1D" },
+      { timeUnit: "day", count: 5, name: "5D" },
+      { timeUnit: "month", count: 1, name: "1M" },
+      { timeUnit: "month", count: 3, name: "3M" },
+      { timeUnit: "month", count: 6, name: "6M" },
+      { timeUnit: "ytd", name: "YTD" },
+      { timeUnit: "year", count: 1, name: "1Y" },
+      { timeUnit: "year", count: 2, name: "2Y" },
+      { timeUnit: "year", count: 5, name: "Max" }
+    ]
+  });
+  //periodSelector.selectPeriod({ timeUnit: "day", count: 1 });
+  periodSelector.events.on("change", (ev) => {
+    let period = ev.target.get("selected");
+    this.currentRange = period;
+    console.log(`[ohlc] Period changed to: ${period}`);
+    this.fetchohlcdata(this.currentRange, this.currentInterval);
+  });
+
+  valueSeries.events.once("datavalidated", function() {
+    periodSelector.selectPeriod({ timeUnit: "day", count: 1 });
+  });
+
+  intervalSwitcher.events.on("selected", (ev) => {
+    this.currentInterval = ev.item.id;
+    console.log(`[ohlc] Interval changed to: ${this.currentInterval}`);
+    this.fetchohlcdata(this.currentRange, this.currentInterval);
+
     // Determine selected granularity
     let granularity = ev.item.interval.timeUnit;
     
@@ -343,29 +404,29 @@ initchart() {
     let volumeSeries = stockChart.get("volumeSeries");
 
     // Set up zoomout
-    valueSeries.events.once("datavalidated", function() {
+    valueSeries.events.once("datavalidated", () => {
       mainPanel.zoomOut();
     });
 
     // Load data for all series (main series + comparisons)
     let promises = [];
     promises.push(loadData(this.symbol, [valueSeries, volumeSeries, sbSeries], granularity));
-    am5.array.each(stockChart.getPrivate("comparedSeries", []), function(series) {
+    am5.array.each(stockChart.getPrivate("comparedSeries", []), (series) => {
       promises.push(loadData(series.get("name"), [series], granularity));
     });
 
     // Once data loading is done, set `baseInterval` on the DateAxis
-    Promise.all(promises).then(function() {
+    Promise.all(promises).then(() => {
       dateAxis.set("baseInterval", ev.item.interval);
       sbDateAxis.set("baseInterval", ev.item.interval);
 
-      stockChart.indicators.each(function(indicator){
+      stockChart.indicators.each((indicator) => {
         if(indicator instanceof am5stock.ChartIndicator){
           indicator.xAxis.set("baseInterval", ev.item.interval);
         }
       });
     });
-  }.bind(this));
+  });
 
   // Stock toolbar
   let toolbar = am5stock.StockToolbar.new(root, {
@@ -376,12 +437,7 @@ initchart() {
         stockChart: stockChart,
         legend: valueLegend
       }),
-      am5stock.DateRangeSelector.new(root, {
-        stockChart: stockChart
-      }),
-      am5stock.PeriodSelector.new(root, {
-        stockChart: stockChart
-      }),
+      periodSelector,
       intervalSwitcher,
       seriesSwitcher,
       am5stock.DrawingControl.new(root, {

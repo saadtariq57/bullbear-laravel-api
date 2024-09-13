@@ -14,9 +14,19 @@ use App\Http\Controllers\EmailTemplateController;
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
+
+
+Route::post('/api/initiate-signup', [RegisterController::class, 'initiateSignUp'])->name('initiate.signup');
+Route::get('/complete-registration/{token}', [RegisterController::class, 'showCompleteRegistrationForm'])->name('complete.registration.form');
+Route::post('/complete-registration', [RegisterController::class, 'completeRegistration'])->name('complete.registration');
+Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 Route::middleware(['auth'])->group(function () {
     // For Admin users

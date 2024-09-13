@@ -183,27 +183,38 @@ class GroupController extends Controller
 
     public function suggestedChats(Request $request)
     {
-        $userId = $request->user()->id;
+        $userId = $request->user()->id ?? null;
 
-        $recentlyActiveGroups = Group::whereHas('messages', function($query) {
-            $query->orderBy('created_at', 'desc');
-        })
-        ->whereDoesntHave('members', function($query) use ($userId) {
-            // Specify the table name in the where clause to avoid ambiguity
-            $query->where('group_members.user_id', $userId);
-        })
-        ->with(['members' => function($query) use ($userId) {
-            // Again, be specific with table names to prevent SQL errors
-            $query->where('group_members.user_id', $userId);
-        }])
-        ->withCount('members')
-        ->take(10)
-        ->get();
+        $query = Group::query();
 
-        return response()->json($recentlyActiveGroups->map(function($group) {
-            $member = $group->members->first();
-            $group->joined = $member && $member->pivot->status === 'active';
-            $group->requestPending = $member && $member->pivot->status === 'pending';
+        if ($userId) {
+            // If user is logged in, fetch groups they're not a member of
+            $query->whereDoesntHave('members', function($q) use ($userId) {
+                $q->where('group_members.user_id', $userId);
+            })
+            ->with(['members' => function($q) use ($userId) {
+                $q->where('group_members.user_id', $userId);
+            }]);
+        }
+
+        $recentlyActiveGroups = $query->whereHas('messages', function($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->withCount('members')
+            ->withCount('messages')
+            ->orderBy('messages_count', 'desc')
+            ->take(10)
+            ->get();
+
+        return response()->json($recentlyActiveGroups->map(function($group) use ($userId) {
+            if ($userId) {
+                $member = $group->members->first();
+                $group->joined = $member && $member->pivot->status === 'active';
+                $group->requestPending = $member && $member->pivot->status === 'pending';
+            } else {
+                $group->joined = false;
+                $group->requestPending = false;
+            }
             return $group;
         }));
     }

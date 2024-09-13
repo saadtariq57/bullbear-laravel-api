@@ -74,20 +74,6 @@ Route::post('/profileImage', [UserController::class, 'updateProfilePhoto']);
 Route::post('/add-vote', [PostController::class, 'addVote']);
 Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
-// Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
-// Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
-
-//Watchlist Routes
-// Route::prefix('watchlist')->name('watchlist.')->middleware([Subscribed::class])->group(function() {
-//     Route::get('/', [WatchlistController::class, 'getWatchLists']);
-//     Route::get('/managewatchlists', [WatchlistController::class, 'getWatchLists']);
-//     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
-//     Route::post('symbol', [WatchlistController::class, 'storeWatchListSymbol']);
-//     Route::delete('symbol', [WatchlistController::class, 'deleteWatchListSymbol']);
-//     Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
-//     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
-//     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
-// });
 Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
@@ -138,7 +124,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add-vote', [PostController::class, 'addVote']);
     Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
-    Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
+    
     Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
     Route::get('/groups/join/{id}', [GroupController::class, 'getGroupById']);
@@ -206,13 +192,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/symbol/search', [SymbolController::Class, 'search']);
 Route::get('/unique-symbols', [SymbolController::class, 'getUniqueSymbols']);
 Route::get('/exclude-unique-symbols', [SymbolController::class, 'getAllExcludingUniqueSymbols']);
+Route::get('/suggested-chats', [GroupController::class, 'suggestedChats']);
 Route::get('/searchGroups', [GroupController::Class, 'siteGroupSearch']);
 Route::get('/searchMembers', [UserController::Class, 'siteUserSearch']);
 Route::get('/searchSymbol/default', [SymbolController::Class, 'defaultSymbol']);
 Route::get('/searchGroups/default', [GroupController::Class, 'defaultGroups']);
 Route::get('/searchMembers/default', [UserController::Class, 'defaultMembers']);
 
-Route::get('/fetch-wordpress-posts/{categories}', [WidgetController::class, 'fetchPostWordpress']);
+Route::get('/fetch-wordpress-posts', [WidgetController::class, 'fetchPostWordpress']);
 Route::get('/external-news/{symbol}', [WidgetController::class, 'fetchExternalNews']);
 // user widgets
 Route::get('/getWidget', [WidgetController::class, 'getWidgetsByCategory']);
@@ -220,6 +207,8 @@ Route::get('/widget/{id}', [WidgetController::class, 'show']);
 Route::get('/fund-ownership/{symbol}', [WidgetController::class, 'getFundOwnership']);
 Route::get('/options/{symbol}', [WidgetController::class, 'getOptions']);
 Route::get('/ohlc-data/{symbol}', [WidgetController::class, 'fetchOHLCData']);
+Route::get('/getGroups', [WidgetController::class, 'getActiveGroups']);
+Route::get('/searchGroups', [WidgetController::class, 'searchGroups']);
 
 Route::get('/richtv-live', [LiveController::class, 'getEmbeddedCode']);
 Route::get('/webinars', [LiveController::class, 'getWebinars']);

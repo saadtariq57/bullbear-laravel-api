@@ -8,6 +8,8 @@ use App\Models\Widget;
 use App\Models\WidgetCategory;
 use App\Models\WidgetSymbol;
 use App\Models\Symbol;
+use App\Models\Group;
+use App\Models\Message;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Http;
@@ -15,6 +17,35 @@ use Carbon\Carbon;
 
 class WidgetController extends Controller
 {
+        public function getActiveGroups()
+        {
+            $mostActiveGroups = Group::withCount(['messages' => function ($query) {
+                $query->where('created_at', '>=', now()->subDays(30));
+            }])
+            ->orderBy('messages_count', 'desc')
+            ->take(5)
+            ->with(['user', 'messages' => function ($query) {
+                $query->latest()->first();
+            }])
+            ->get();
+
+            return response()->json($mostActiveGroups);
+        }
+
+        public function searchGroups(Request $request)
+        {
+            $query = $request->input('query');
+
+            $groups = Group::where('group_name', 'like', "%{$query}%")
+                ->orWhere('group_title', 'like', "%{$query}%")
+                ->with(['user', 'messages' => function ($query) {
+                    $query->latest()->first();
+                }])
+                ->take(5)
+                ->get();
+
+            return response()->json($groups);
+        }
         private function isValidTradeDate($date, $location)
         {
             // You'll need to implement this function to check if the date is a valid trading day
@@ -94,7 +125,7 @@ class WidgetController extends Controller
             return [$startDate, $endDate];
         }
 
-        public function fetchOHLCData($symbol)
+/*        public function fetchOHLCData($symbol)
         {
             $baseUrl = config('services.fmodel.base_url');
             $apiKey = config('services.fmodel.api_key');
@@ -116,6 +147,54 @@ class WidgetController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
+        }*/
+        public function fetchOHLCData($symbol, $range = '1D', $interval = '1min')
+        {
+            $baseUrl = config('services.fmodel.base_url');
+            $apiKey = config('services.fmodel.api_key');
+
+            try {
+                [$startDate, $endDate] = $this->getDateRangeFromRange($range);
+
+                $response = Http::get("{$baseUrl}/historical-chart/{$interval}/{$symbol}", [
+                    'from' => $startDate,
+                    'to' => $endDate,
+                    'apikey' => $apiKey
+                ]);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                return response()->json(['error' => 'Failed to fetch OHLC data'], 500);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }
+
+        private function getDateRangeFromRange($range)
+        {
+            $endDate = now();
+            switch ($range) {
+                case '1D':
+                    $startDate = $endDate->copy()->subDay();
+                    break;
+                case '5D':
+                    $startDate = $endDate->copy()->subDays(5);
+                    break;
+                case '1M':
+                    $startDate = $endDate->copy()->subMonth();
+                    break;
+                case '6M':
+                    $startDate = $endDate->copy()->subMonths(6);
+                    break;
+                case '1Y':
+                    $startDate = $endDate->copy()->subYear();
+                    break;
+                default:
+                    $startDate = $endDate->copy()->subDay();
+            }
+            return [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')];
         }
         public function getFundOwnership($symbol)
         {
@@ -267,6 +346,9 @@ class WidgetController extends Controller
                     return response()->json(['error' => 'No quotes data received from the API'], 404);
                 }
                 
+                // Log the quotes data
+                //Log::info('Quotes data received from API', $quotes);
+                
                 $widgetData = $widget->toArray();
                 $widgetData['symbols'] = $widget->widgetSymbols->map(function ($widgetSymbol) use ($quotes) {
                     $symbolData = $widgetSymbol->symbol->toArray();
@@ -274,6 +356,9 @@ class WidgetController extends Controller
                     
                     if (!$quoteData) {
                         Log::warning("No quote data for symbol: {$symbolData['symbol']}");
+                    } else {
+                        // Log individual quote data
+                        Log::info("Quote data for {$symbolData['symbol']}", $quoteData);
                     }
                     
                     return [
@@ -432,18 +517,62 @@ class WidgetController extends Controller
         return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
     }
     
-    public function fetchPostWordpress(Request $request, $categoryIds)
+    public function fetchPostWordpress(Request $request)
     {
-        $wordpressApiUrl = config('services.wordpress.api_url');
-        $wordpressApiUrl .= $categoryIds . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
+        $wordpressApiUrl = 'https://richtv.io/wp-json/wp/v2/posts';
+
+        $params = [
+            'categories' => $request->input('categories', 962),
+            'per_page' => $request->input('per_page', 10),
+            'page' => $request->input('page', 1),
+            'orderby' => $request->input('orderby', 'date'),
+            'order' => $request->input('order', 'desc'),
+            '_embed' => true, // This should include author and media information
+        ];
 
         try {
-            $response = file_get_contents($wordpressApiUrl);
-            $posts = json_decode($response, true);
-            return $posts;
+            $response = Http::get($wordpressApiUrl, $params);
+
+            if ($response->successful()) {
+                $posts = $response->json();
+                
+                // Process the posts to extract the required information
+                $processedPosts = array_map(function($post) {
+                    $authorInfo = isset($post['_embedded']['author'][0]) ? $post['_embedded']['author'][0] : null;
+                    $featuredMedia = isset($post['_embedded']['wp:featuredmedia'][0]) ? $post['_embedded']['wp:featuredmedia'][0] : null;
+
+                    return [
+                        'id' => $post['id'],
+                        'title' => $post['title']['rendered'] ?? '',
+                        'link' => $post['link'] ?? '',
+                        'date' => $post['date'] ?? '',
+                        'author_info' => [
+                            'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',
+                            'link' => $authorInfo ? ($authorInfo['link'] ?? '#') : '#',
+                        ],
+                        'featured_media_url' => $featuredMedia ? ($featuredMedia['source_url'] ?? null) : null,
+                    ];
+                }, $posts);
+
+                return [
+                    'posts' => $processedPosts,
+                    'total_posts' => $response->header('X-WP-Total'),
+                    'total_pages' => $response->header('X-WP-TotalPages'),
+                ];
+            } else {
+                \Log::error('Error fetching WordPress posts: ' . $response->body());
+                return [
+                    'error' => 'Failed to fetch posts',
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ];
+            }
         } catch (\Exception $e) {
-            \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
-            return [];
+            \Log::error('Exception while fetching WordPress posts: ' . $e->getMessage());
+            return [
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ];
         }
     }
     //Widget Categories
