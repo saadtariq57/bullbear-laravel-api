@@ -14,6 +14,11 @@ const searchModule = {
         defaultMembersResults: [],
     }),
     mutations: {
+      resetSearchResults(state) {
+        state.symbolResults = [];
+        state.groupsResults = [];
+        state.membersResults = [];
+      },
         SET_LOADING(state, isLoading) {
             state.isLoading = isLoading;
         },

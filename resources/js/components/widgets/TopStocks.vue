@@ -1,11 +1,17 @@
 <template>
-    <div class="stock-table-wrapper border-top border-2 border-warning widgets-border">
+    <div v-if="isLoading" class="loading-message">
+        Loading widget data...
+    </div>
+    <div v-else-if="error" class="error-message">
+        {{ error }}
+    </div>
+    <div v-else-if="widget && widget.symbols" class="stock-table-wrapper border-top border-2 border-warning widgets-border">
             <div class="top-cryptocurrency-heading">
               <div class="">
                 <h3 class="fs-6 fw-bolder mb-0 icon-short-heading">Top 10 Soaring Stocks </h3>
               </div>
             </div>
-            <div class="stock-table-data position-relative ">
+            <div class="position-relative ">
               <div class="table-responsive">
                 <div class="overlay-home-ajax" style="display: none;"></div>
                 <table class="table stock-market-table1 m-0">
@@ -27,15 +33,18 @@
                             <img v-if="symbol.logo" :src="symbol.logo" :alt="symbol.name">
                             <span v-else>{{ symbol.symbol }}</span>
                           <div class="lh-sm">
-                            <span class="fw-bolder fs-16">{{ symbol.name }}</span><br><br>
-                            <span class="fw-5 text-color text-color">Roku, Inc.</span>
+                            <span class="text-color fw-bolder">{{ symbol.symbol }}</span><br>
+                            <span class="fw-5 text-color text-color">{{ symbol.name }}</span>
                           </div>
                         </a>
                       </td>
                       <td :class="[{ 'Green': isPositive(symbol.change), 'Red': isNegative(symbol.change) },
-                                'fs-14', 'fw-bolder', 'text-start']">
-                                <span>{{ formatChange(symbol.change) }}</span>
-                                <span>({{ formatChangePercent(symbol.change_percent) }})</span>
+                                'gray', 'lh-sm', 'text-end']" id="symbol-price">
+                                {{formatChange(symbol.price)}}
+                                <div class="d-flex Green gap-3 justify-content-end">
+                                    <span>{{ formatChange(symbol.change) }}</span>
+                                    <span>({{ formatChangePercent(symbol.change_percent) }})</span>
+                                </div>
                             </td>
                     </tr>
                   </tbody>
@@ -50,6 +59,9 @@
               </div>
             </div>
           </div>
+    <div v-else class="no-data-message">
+        No data available
+    </div>
 </template>
 <script>
 
@@ -66,12 +78,14 @@ export default {
     setup(props) {
         const widget = ref(null);
         const error = ref(null);
+        const isLoading = ref(true);
 
         const fetchWidgetData = async () => {
+            isLoading.value = true;
             try {
                 const response = await axios.get(`/api/widget/${props.widgetId}`);
                 widget.value = response.data;
-                await nextTick();
+                isLoading.value = false;
             } catch (err) {
                 console.error('Error fetching widget data:', err);
                 if (err.response) {
@@ -81,6 +95,7 @@ export default {
                 } else {
                     error.value = 'An error occurred while setting up the request';
                 }
+                isLoading.value = false;
             }
         };
 
@@ -111,6 +126,7 @@ export default {
         return {
             widget,
             error,
+            isLoading,
             formatPrice,
             formatChange,
             formatChangePercent,

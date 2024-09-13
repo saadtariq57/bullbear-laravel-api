@@ -90,15 +90,8 @@ const routes = [
     },
     {
         path: "/watchlist",
+        name: "watchlist",
         component: () => import("./components/watchlist/tabs/Tabs.vue"),
-        children: [
-            {
-                path: "",
-                name: "watchlist",
-                component: () =>
-                    import("./components/watchlist/tabs/Tabs.vue"),
-            },
-        ],
     },
     {
         path: "/watchlist/edit/:id",
@@ -267,7 +260,8 @@ const routes = [
 
 routes.forEach(route => {
 
-    if (!['pricing', 'checkout', 'thank-you', 'home', 'quote'].includes(route.name)) {
+    if (!['pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live', 
+        'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar'].includes(route.name)) {
         route.meta = { ...route.meta, requiresAuth: true };
     }
 });
@@ -295,7 +289,8 @@ router.beforeEach(async (to, from, next) => {
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!isLoggedInRef.value) {
-            window.location.href = '/login?redirect=' + encodeURIComponent(to.fullPath);
+            // Redirect to Laravel login route
+            window.location.href = `/login?redirect=${encodeURIComponent(to.fullPath)}`;
         } else {
             next();
         }

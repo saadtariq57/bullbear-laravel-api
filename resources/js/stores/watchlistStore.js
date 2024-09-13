@@ -106,12 +106,17 @@ const userWatchlistModule = {
             }
         },
         async addSymbolToWatchlist({ commit }, postData) {
-            try{
-                const data = await watchlistService.addWatchlistSymbol(postData);
-                commit('SET_EDIT_WATCHLIST_DATA', data);
-            } catch (error) {
-                console.error('Error adding symbol to watchlist:', error);
+          try {
+            const response = await watchlistService.addWatchlistSymbol(postData);
+            if (response.status && response.status !== 200) {
+              throw new Error(response.data || 'Error adding symbol to watchlist');
             }
+            commit('SET_EDIT_WATCHLIST_DATA', response.data);
+            return response;
+          } catch (error) {
+            console.error('Error adding symbol to watchlist:', error);
+            throw error;
+          }
         },
         async deleteSymbolFromWatchlist({ commit }, {watchlistId, symbolId}) {
             try{

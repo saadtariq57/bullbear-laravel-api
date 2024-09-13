@@ -38,7 +38,7 @@
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
                                                         @csrf
-                                                        <input type="hidden" name="redirect" value="{{ $redirect ?? '' }}">
+                                                        <input type="hidden" name="redirect" value="{{ $redirect ?? '/feed' }}">
                                                         <div class="mb-2">
                                                             <label for="email" class="form-label">Email</label>
                                                             <input id="email" type="email"

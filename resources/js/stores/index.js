@@ -17,7 +17,10 @@ const store = createStore({
     state: {
         userData: null,
         loggedIn: false,
-        isCheckingAuth: true
+        isCheckingAuth: true,
+        selectedMetric: null,
+        redirectAfterLogin: null,
+        showLoginPopup: false,
     },
     mutations: {
         SET_USER_DATA(state, userData) {
@@ -35,9 +38,24 @@ const store = createStore({
         },
         SET_CHECKING_AUTH(state, isChecking) {
             state.isCheckingAuth = isChecking;
-        }
+        },
+        setSelectedMetric(state, metric) {
+          state.selectedMetric = metric;
+        },
+        SET_REDIRECT(state, path) {
+            state.redirectAfterLogin = path;
+        },
     },
     actions: {
+        showLoginPopup({ commit }) {
+            commit('SET_SHOW_LOGIN_POPUP', true);
+        },
+        hideLoginPopup({ commit }) { 
+            commit('SET_SHOW_LOGIN_POPUP', false);
+        },
+        setRedirectPath({ commit }, path) {
+            commit('SET_REDIRECT', path);
+        },
         async checkLoginStatus({ dispatch, commit }) {
             commit('SET_CHECKING_AUTH', true);
             try {
@@ -54,18 +72,28 @@ const store = createStore({
                 commit('SET_CHECKING_AUTH', false);
             }
         },
-        async login({ dispatch }, credentials) {
+        async login({ dispatch, state }, credentials) {
+            console.log('Login action started', { redirectAfterLogin: state.redirectAfterLogin });
             try {
-                const response = await axios.post('/login', credentials);
+                const response = await axios.post('/login', {
+                    ...credentials,
+                    redirect: state.redirectAfterLogin
+                });
+                console.log('Login response:', response.data);
+                
                 if (response.data.success) {
                     await dispatch('fetchUserData');
-                    return { success: true };
+                    console.log('User data fetched');
+                    return { 
+                        success: true, 
+                        redirect: response.data.redirect
+                    };
                 } else {
-                    return { success: false, message: response.data.message };
+                    return { success: false, message: response.data.message || 'Login failed' };
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                return { success: false, message: 'An error occurred during login' };
+                return { success: false, message: error.response?.data?.message || 'An error occurred during login' };
             }
         },
         async fetchUserData({ commit }) {
@@ -142,4 +170,4 @@ export default store;
 export const isCheckingAuth = () => store.state.isCheckingAuth;
 export const checkLoginStatus = () => store.dispatch('checkLoginStatus');
 export const isLoggedIn = () => store.state.loggedIn;
-export const showLoginPopup = () => store.commit('SET_SHOW_LOGIN_POPUP', true);
+export const showLoginPopup = () => store.dispatch('showLoginPopup');

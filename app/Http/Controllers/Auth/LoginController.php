@@ -6,42 +6,71 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
 
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        $user = User::where($this->username(), $request->{$this->username()})->first();
+
+        if ($user && !$user->hasVerifiedEmail()) {
+            Auth::login($user);
+            return $this->unverifiedUser($request, $user);
+        }
+
+        if ($this->attemptLogin($request)) {
+            if ($request->hasSession()) {
+                $request->session()->put('auth.password_confirmed_at', time());
+            }
+
+            return $this->sendLoginResponse($request);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    protected function unverifiedUser(Request $request, $user)
+    {
+        Auth::logout();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Your email address is not verified.'),
+                'verification_required' => true
+            ], 403);
+        }
+
+        return redirect()->route('verification.notice')->with([
+            'email' => $user->email,
+            'message' => __('Your email address is not verified. Please check your email for a verification link or click below to resend.')
+        ]);
+    }
+
     protected function authenticated(Request $request, $user)
     {
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'redirect' => $request->input('redirect', $this->redirectPath())
+            ]);
+        }
+
         if ($request->has('redirect')) {
             return redirect($request->input('redirect'));
         }
@@ -49,9 +78,36 @@ class LoginController extends Controller
         return redirect()->intended($this->redirectPath());
     }
 
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => trans('auth.failed')
+            ], 422);
+        }
+
+        throw ValidationException::withMessages([
+            $this->username() => [trans('auth.failed')],
+        ]);
+    }
+
     protected function showLoginForm(Request $request)
     {
         $redirect = $request->input('redirect');
         return view('auth.login', compact('redirect'));
+    }
+
+    public function resendVerificationEmail(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && !$user->hasVerifiedEmail()) {
+            event(new Registered($user));
+
+            return back()->with('resent', true);
+        }
+
+        return back()->with('error', 'Unable to resend verification email.');
     }
 }

@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="mb-5 border-bottom">
-                <h1 class="fs-1 fw-bold icon-heading">Dividend Calendar</h1>
+                <h1 class="fs-1 fw-bold icon-heading">Upcoming Dividend Payments</h1>
             </div>
             <div class="dividend">
                 <div class="calendar_tabels_wrapper">
@@ -46,73 +46,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="other_filters">
-                            <a class="" data-bs-toggle="collapse" href="#collapseFilters" role="button" aria-expanded="false" aria-controls="collapseFilters">
-                            <i class="bi bi-sliders2"></i> Filters 
-                            </a>
-                        </div>
-                        </div>
-                        <div class="collapse" id="collapseFilters">
-                        <div class="card card-body">
-                            <div class="category_filter mb-4">
-                            <div class="filterList_label">
-                                <p class="fw-bold mb-1">Category:</p>
-                                <a href="javascript:void(0);" class="" @click="selectAll">Select All</a><br>
-                                <a href="javascript:void(0);" @click="clearAll" class="">Clear</a>
-                            </div>
-                            <div class="w-100">
-                                <ul class="filterList">
-                                <li v-for="category in categories" :key="category.id">
-                                    <input :id="category.id" name="category[]" type="checkbox" :value="category.value" v-model="selectedCategories">
-                                    <label :for="category.id">{{ category.label }}</label>
-                                </li>
-                                </ul>
-                            </div>
-                            </div>
-                            <div class="category_filter mb-4">
-                            <div class="filterList_label">
-                                <p class="fw-bold mb-1">Importance:</p>
-                            </div>
-                            <div class="w-100">
-                                <ul class="filterList">
-                                <li>
-                                    <input id="importance1" name="importance[]" type="checkbox" value="1">
-                                    <label for="importance1">
-                                    <span class="sentiment d-flex gap-1 justify-content-end">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star"></i>
-                                        <i class="bi bi-star"></i>
-                                    </span>
-                                    </label>
-                                </li>
-                                <li>
-                                    <input id="importance2" name="importance[]" type="checkbox" value="2">
-                                    <label for="importance2">
-                                    <span class="sentiment d-flex gap-1 justify-content-end">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star"></i>
-                                    </span>
-                                    </label>
-                                </li>
-                                <li>
-                                    <input id="importance3" name="importance[]" type="checkbox" value="3">
-                                    <label for="importance3">
-                                    <span class="sentiment d-flex gap-1 justify-content-end">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </span>
-                                    </label>
-                                </li>
-                                </ul>
-                            </div>
-                            </div>
-                            <div class="apply_filter d-flex gap-sm-3 justify-content-end">
-                            <a href="javascript:void(0);" id="ecSubmitButton" class="btn btn-primary">Apply</a> 
-                            <a href="javascript:void(0);" id="filterRestoreDefaults" class="restore btn"><i class="bi bi-arrow-clockwise"></i> Restore Default Settings</a>
-                            </div>
-                        </div>
                         </div>
                         <div class="tab-content" id="myTabContent">
                             <div v-for="tabName in tabNames" :key="tabName" 
@@ -143,14 +76,16 @@
                                                             <div class="d-flex gap-1 align-items-center">
                                                                 <span class="ceFlags" :class="item.country ? item.country : 'default_country'"></span>
                                                                 <div class="w-100">
-                                                                    <abbr :title="item.name"><span class="company_name text-oneline">{{ item.name }}</span></abbr>
+                                                                    <a :href="`/quotes/${item.symbol}`" class="text-decoration-none">
+                                                                        <abbr :title="item.name"><span class="company_name text-oneline">{{ truncateName(item.name) }}</span></abbr>
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="text-end">{{ item.symbol }}</td>
-                                                        <td class="text-end">{{ item.record_date }}</td>
-                                                        <td class="text-end fw-5">{{ item.amount }}</td>
-                                                        <td class="text-end fw-5">{{ item.payment_date }}</td>
+                                                        <td class="text-end">{{ formatDate(item.record_date) }}</td>
+                                                        <td class="text-end fw-5">{{ formatDividend(item.amount) }}</td>
+                                                        <td class="text-end fw-5">{{ formatDate(item.payment_date) }}</td>
                                                     </tr>
                                                 </template>
                                             </template>
@@ -179,12 +114,13 @@
             </div>
         </div>
         <div class="col-lg-4">
-                <Markets />
-                <LatestArticles />
-            </div>
+            <Markets />
+            <LatestArticles />
         </div>
     </div>
+</div>
 </template>
+
 <script>
 import axios from 'axios';
 import Markets from '../widgets/Markets.vue';
@@ -223,7 +159,6 @@ export default {
       
       try {
         const response = await axios.get(`https://dev.stocks.richtv.io/api/dividends-calendar?startDate=${startDate}&endDate=${endDate}`);
-        console.log(`Fetched data for ${targetArray}:`, response.data);
         this.allDividends[targetArray] = response.data;
         this.loadedTabs.add(targetArray);
       } catch (error) {
@@ -233,8 +168,11 @@ export default {
       }
     },
     formatDate(dateString) {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('en-US', options);
+    },
+    formatDividend(amount) {
+      return parseFloat(amount).toFixed(2);
     },
     showMore(tab) {
       this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.allDividends[tab].length);
@@ -279,6 +217,9 @@ export default {
           this.fetchDividendsCalendar(formatDate(nextWeekStart), formatDate(nextWeekEnd), 'nextWeek');
           break;
       }
+    },
+    truncateName(name) {
+      return name.length > 20 ? name.substring(0, 17) + '...' : name;
     }
   },
   mounted() {
@@ -286,3 +227,6 @@ export default {
   }
 };
 </script>
+<style type="text/css">
+  abbr{cursor: pointer !important;}
+</style>

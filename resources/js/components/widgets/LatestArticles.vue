@@ -4,23 +4,24 @@
       <h4 class="icon-heading fw-6 fs-5">LATEST ARTICLES</h4>
     </div>
     <div v-if="wordpressPosts.length > 0">
-      <div v-for="(post, index) in wordpressPosts.slice(0, 6)" :key="post.id" class="border-bottom border-2 pt-3 px-3">
-        <h3 class="fs-13 fw-4 mb-1"><a :href="`https://richtv.io${post.link}`" class="text-black">{{ truncate(post.title) }}</a></h3>
+      <div v-for="post in wordpressPosts" :key="post.id" class="border-bottom border-2 pt-3 px-3">
+        <h3 class="fs-13 fw-4 mb-1">
+          <a :href="post.link" class="text-black">{{ truncate(post.title) }}</a>
+        </h3>
         <div class="d-flex mb-2">
-          <a :href="post.authorLink" class="me-1 widgets-sm-heading">{{ post.author }}</a>
-          <span class="border-start px-2 widgets-sm-heading">{{ post.date }}</span>
+          <a :href="post.author_info.link" class="me-1 widgets-sm-heading">{{ post.author_info.name }}</a>
+          <span class="border-start px-2 widgets-sm-heading">{{ formatDate(post.date) }}</span>
         </div>
       </div>
     </div>
     <div v-else>
-      <div  v-for="n in 6" :key="n" class="border-bottom border-2 pt-3 px-3 loading-div">
-          <div class="loading-animation"></div>
-          <h3 class="fs-13 fw-4 mb-1"><a href="#" class="text-black">Loading Title...</a></h3>
-          <div class="d-flex mb-2">
-              <a href="#" class="me-1 widgets-sm-heading">Loading Author...</a>
-              <span class="border-start px-2 widgets-sm-heading">Loading Date...</span>
-          </div>
-      </div>             
+      <div v-for="n in 6" :key="n" class="border-bottom border-2 pt-3 px-3 loading-div">
+        <Skeletor width="100%" height="20px" />
+        <div class="d-flex mb-2 mt-2">
+          <Skeletor width="100px" height="15px" class="me-1" />
+          <Skeletor width="100px" height="15px" class="ms-2" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -43,30 +44,22 @@ export default {
   },
   methods: {
     fetchLatestArticles() {
-    const categories = ['11439', '11438', '11441', '11445', '4341', '11442'];
-    const requests = categories.map(category => {
-      return axios.get(`/api/fetch-wordpress-posts/${category}?numPosts=1`, {
+      const categories = ['11439', '11438', '11441', '11445', '4341', '11442'];
+      
+      axios.get('/api/fetch-wordpress-posts', {
+        params: {
+          categories: categories.join(','),
+          per_page: 6,
+        },
         withCredentials: true,
-      });
-    });
-
-    Promise.all(requests)
-      .then(responses => {
-        const uniquePosts = [];
-        responses.forEach(response => {
-          const post = response.data[0]; 
-          if (post && !uniquePosts.some(p => p.id === post.id)) {
-            uniquePosts.push(post); 
-          }
-        });
-        // Sort posts by date in descending order
-        uniquePosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        this.wordpressPosts = uniquePosts;
+      })
+      .then(response => {
+        this.wordpressPosts = response.data.posts;
       })
       .catch(error => {
         console.error('Error fetching WordPress posts:', error);
       });
-  },
+    },
 
     truncate(text) {
       if (text.length > 102) {
@@ -74,12 +67,18 @@ export default {
       } else {
         return text;
       }
+    },
+
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
     }
   }
 }
 </script>
 
 <style scoped>
+  @import "vue-skeletor/dist/vue-skeletor.css";
 .loading-div {
     position: relative;
 }
