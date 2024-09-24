@@ -79,28 +79,45 @@
 import { mapState, mapActions } from 'vuex';
 import ActiveChatRooms from './ActiveChatRooms.vue';
 import SidebarGroup from '../utils/SidebarGroup.vue';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userGroupsModule from '@/stores/groupStore';
 
 export default {
-    name: 'UserGroups',
-    components: {
-        ActiveChatRooms,
-        SidebarGroup,
-    },
-    computed: {
-        ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
-    },
-    created() {
-        this.fetchSuggestedChats();
-        this.fetchJoinedChats();
-    },
-    methods: {
-        ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
-        onChatJoined() {
-            this.fetchJoinedChats();
-        }
-    },
+  name: 'UserGroups',
+  components: {
+    ActiveChatRooms,
+    SidebarGroup,
+  },
+  data() {
+    return {
+      moduleRegistered: false
+    };
+  },
+  computed: {
+    ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+  },
+  created() {
+    if (!this.$store.hasModule('UserGroups')) {
+      registerVuexModule('UserGroups', userGroupsModule);
+      this.moduleRegistered = true;
+    }
+    this.fetchSuggestedChats();
+    this.fetchJoinedChats();
+  },
+  methods: {
+    ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
+    onChatJoined() {
+      this.fetchJoinedChats();
+    }
+  },
+  beforeDestroy() {
+    if (this.moduleRegistered) {
+      unregisterVuexModule('UserGroups');
+    }
+  }
 };
 </script>
+
 <style>
 .no-chat-wrapper {
     width: 55px;

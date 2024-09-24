@@ -2,9 +2,6 @@
     <div class="mb-3 p-3  bg-white shadow rounded" v-if="userProfileData">
         <div>
             <div class="d-flex align-items-center justify-content-between gap-1 flex-wrap">
-
-                <!-- <div><span class="bg-primary rounded-circle user-top-bar d-inline-block text-center"><i
-                                class="bi bi-person-plus-fill fs-12"></i></span></div> -->
                 <div class="fs-18 fw-6">
                     <h3 class="mb-0"><span v-if="!isOwnProfile">{{ userProfileData.name }}</span><span v-else>My</span>
                         Watchlists</h3>
@@ -69,17 +66,16 @@
                                                 <a href="/stock-quote/{{ symbolData.symbol.name }}"
                                                     class="gray d-flex align-items-center gap-2"
                                                     aria-label="Stock Quote">
-                                                    <!-- <img :src="btcImage" alt="" width="30" height="30"> -->
+                                                    <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30"> 
                                                     <div class="lh-sm">
-                                                        <span class="text-color fw-bolder">{{ symbolData.symbol.name
+                                                        <span class="text-color fw-bolder">{{ symbolData.symbol.symbol
                                                             }}</span><br>
-                                                        <span class="fw-5 text-color text-color">{{
-        symbolData.symbol.company_name }}</span>
+                                                        <span class="fw-5 text-color text-color">{{ symbolData.symbol.name }}</span>
                                                     </div>
                                                 </a>
                                             </td>
                                             <td class="gray lh-sm text-end" id="symbol-price">
-                                                <div v-if="!symbolData.symbol.stats">
+                                                <div v-if="!symbolData.symbol.quote">
                                                     <span
                                                         style="margin-bottom:4px;display:block;width: 50px;text-align:right;">
                                                         <Skeletor height="15" />
@@ -89,10 +85,10 @@
                                                     </span>
                                                 </div>
                                                 <div v-else>
-                                                    {{ symbolData.symbol.stats.regularMarketPrice }}
+                                                    {{ symbolData.symbol.quote.price }}
                                                     <div :class="textChangeClasses(symbolData)">
-                                                        <span>{{ formatNumber(symbolData.symbol.stats.regularMarketChange) }}</span>
-                                                        <span>{{ formatNumber(symbolData.symbol.stats.regularMarketChangePercent)
+                                                        <span>{{ formatNumber(symbolData.symbol.quote.change) }}</span>
+                                                        <span>{{ formatNumber(symbolData.symbol.quote.change_percent)
                                                             }}</span>
                                                     </div>
                                                 </div>
@@ -130,50 +126,50 @@
                             </thead>
                             <tbody>
                                 <tr :key="symbolData.id" v-for="symbolData in watchlistModal.watchlist_symbols" class="position-relative" :class="symbolData.symbol.news.title != null ? 'table-news-row' : ''">
-                                    <td :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">{{ symbolData.symbol.name }} <p class="small-para fw-bold mb-0">{{
-                symbolData.symbol.company_name }}</p>
+                                    <td :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">{{ symbolData.symbol.symbol }} <p class="small-para fw-bold mb-0">{{
+                symbolData.symbol.name }}</p>
                                     </td>
-                                    <td class="text-end" :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
-                                        <span v-if="!symbolData.symbol.stats">
+                                    <td class="text-end" :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">
+                                        <span v-if="!symbolData.symbol.quote">
                                             <Skeletor height="15" />
                                         </span>
                                         <span v-else>
-                                            {{ symbolData.symbol.stats.regularMarketPrice }} {{
-                symbolData.symbol.stats.currency }}
-                                            <p class="small-para fw-bold mb-0">{{ symbolData.symbol.stats.updated_at
+                                            {{ symbolData.symbol.quote.price }} {{
+                symbolData.symbol.quote.currency }}
+                                            <p class="small-para fw-bold mb-0">{{ symbolData.symbol.quote.updated_at
                                                 }}</p>
                                         </span>
                                     </td>
-                                    <td :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
+                                    <td :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">
                                         <div :class="backgroundChangeClasses(symbolData)"
-                                            v-if="symbolData.symbol.stats">
-                                            {{ formatNumber(symbolData.symbol.stats.regularMarketChange) }}
+                                            v-if="symbolData.symbol.quote">
+                                            {{ formatNumber(symbolData.symbol.quote.change) }}
                                             <p class="mb-0 mt-1 text-white">{{
-                formatNumber(symbolData.symbol.stats.regularMarketChangePercent) }}%</p>
+                formatNumber(symbolData.symbol.quote.change_percent) }}%</p>
                                         </div>
                                     </td>
-                                    <td class="text-end" :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
-                                        <span v-if="symbolData.symbol.stats">{{
-                symbolData.symbol.stats.regularMarketVolume }}</span>
+                                    <td class="text-end" :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">
+                                        <span v-if="symbolData.symbol.quote">{{
+                symbolData.symbol.quote.volume }}</span>
                                     </td>
-                                    <td class="text-end" :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
+                                    <td class="text-end" :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">
                                         <div class="d-flex justify-content-between fs-14"
-                                            v-if="symbolData.symbol.stats">
-                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekHigh }}</span>
-                                            <span>{{ symbolData.symbol.stats.fiftyTwoWeekLow }}</span>
+                                            v-if="symbolData.symbol.quote">
+                                            <span>{{ symbolData.symbol.quote.fiftyTwoWeekHigh }}</span>
+                                            <span>{{ symbolData.symbol.quote.fiftyTwoWeekLow }}</span>
                                         </div>
                                         <meter class="w-100 position-relative" id="table-meter"
-                                            :value="symbolData.symbol.stats.regularMarketPrice"
-                                            :min="symbolData.symbol.stats.fiftyTwoWeekLow"
-                                            :max="symbolData.symbol.stats.fiftyTwoWeekHigh"
+                                            :value="symbolData.symbol.quote.regularMarketPrice"
+                                            :min="symbolData.symbol.quote.fiftyTwoWeekLow"
+                                            :max="symbolData.symbol.quote.fiftyTwoWeekHigh"
                                             :style="{ '--caret-position': calculateCaretPosition(symbolData) }"
-                                            v-if="symbolData.symbol.stats">
+                                            v-if="symbolData.symbol.quote">
                                             2 out of 10
                                         </meter>
                                     </td>
-                                    <td class="text-end" :class="symbolData.symbol.stats ? 'table-news-watchlist-row' : 'align-middle'">
-                                        <span v-if="symbolData.symbol.stats">{{
-                                            symbolData.symbol.stats.regularMarketDayRange }}</span>
+                                    <td class="text-end" :class="symbolData.symbol.quote ? 'table-news-watchlist-row' : 'align-middle'">
+                                        <span v-if="symbolData.symbol.quote">{{
+                                            symbolData.symbol.quote.regularMarketDayRange }}</span>
                                     </td>
                                     <div class="fw-bold fs-16 py-0" v-if="symbolData.symbol.news.title" :class="symbolData.symbol.news.title != null ? 'watchlist-table-news' : ''">
                                             <a :href="symbolData.symbol.news.link" target="_blank" class="text-black text-oneline watchlist-new">
@@ -190,6 +186,145 @@
         </div>
     </div>
 </template>
+<script>
+import { mapState, mapActions } from 'vuex';
+import "vue-skeletor/dist/vue-skeletor.css";
+import { Skeletor } from "vue-skeletor";
+import { Modal } from 'bootstrap';
+import DataTable from 'datatables.net-vue3';
+import DataTablesCore from 'datatables.net';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import Swal from 'sweetalert2';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWatchlistsModule from '@/stores/watchlistStore';
+import userProfileModule from '@/stores/profileStore';
+
+DataTable.use(DataTablesCore);
+
+export default {
+  components: {
+    Skeletor,
+    DataTable,
+  },
+  computed: {
+    ...mapState(['userData']),
+    ...mapState('userWatchlists', ['watchlists', 'userHasWatchlist', 'isLoading']),
+    ...mapState('userProfile', ['userProfileData', 'message', 'success', 'isOwnProfile', 'isFollowing']),
+  },
+  props: {
+    user: {
+      type: Object
+    },
+    watchlist_symbols: {
+      type: Array
+    }
+  },
+  data() {
+    return {
+      btcImage: '',
+      selectedWatchlist: null,
+      errorMessage: '',
+      watchlistModal: null,
+      modulesRegistered: []
+    };
+  },
+  created() {
+    // Register userWatchlists module
+    if (!this.$store.hasModule('userWatchlists')) {
+      registerVuexModule('userWatchlists', userWatchlistsModule);
+      this.modulesRegistered.push('userWatchlists');
+    }
+
+    // Register userProfile module
+    if (!this.$store.hasModule('userProfile')) {
+      registerVuexModule('userProfile', userProfileModule);
+      this.modulesRegistered.push('userProfile');
+    }
+  },
+  methods: {
+    ...mapActions('userWatchlists', ['getUserWatchlistData', 'copyWatchlist']),
+    backgroundChangeClasses(symbolData) {
+      const percentChange = symbolData.symbol.quote.change_percent;
+      const marketChange = symbolData.symbol.quote.change;
+      const extraClasses = 'position-relative badge rounded-0 w-100 text-end fs-14 pt-2';
+      if (percentChange > 0 && marketChange > 0) {
+        return ' positive-symbol bg-success ' + extraClasses;
+      } else {
+        return ' negative-symbol bg-danger ' + extraClasses;
+      }
+    },
+    textChangeClasses(symbolData) {
+      const percentChange = symbolData.symbol.quote.change_percent;
+      const marketChange = symbolData.symbol.quote.change;
+      const extraClasses = 'd-flex gap-3 justify-content-end';
+      if (percentChange > 0 && marketChange > 0) {
+        return ' Green ' + extraClasses;
+      } else {
+        return ' Red ' + extraClasses;
+      }
+    },
+    showWatchlistModal(watchlist) {
+      if (this.viewWatchlistModalInstance) {
+        this.viewWatchlistModalInstance.show();
+        this.watchlistModal = watchlist;
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
+    },
+    hideWatchlistModal(){
+      this.viewWatchlistModalInstance.hide();
+      this.watchlistModal = null;
+    },
+    calculateCaretPosition(symbolData) {
+      const low = parseFloat(symbolData.symbol.quote.fiftyTwoWeekLow);
+      const high = parseFloat(symbolData.symbol.quote.fiftyTwoWeekHigh);
+      const currentValue = parseFloat(symbolData.symbol.quote.price);
+      const positionPercentage = ((currentValue - low) / (high - low)) * 100;
+      return `${positionPercentage - 3}%`;
+    },
+    formatNumber(number) {
+      if (number !== undefined && number !== null) {
+        const parsedNumber = parseFloat(number);
+        return isNaN(parsedNumber) ? 'N/A' : parsedNumber.toFixed(2);
+      }
+      return 'N/A';          
+    },
+
+
+    clonewatchlist(watchlistData){
+      let postData = {
+        watchlist_id: watchlistData.id,
+        user_id: watchlistData.user_id
+      }
+      this.copyWatchlist(postData).then(() => {
+      })
+      .catch((error) => {
+        console.error('Error copying watchlist:', error);
+      });
+    }
+  },
+  mounted() {
+    this.$watch(
+      () => this.userProfileData,
+      (newValue, oldValue) => {
+        if (newValue) {
+          let userId = this.isOwnProfile ? this.userData.id : newValue.id;
+          this.getUserWatchlistData({ userId });
+        }
+      }
+    );
+    this.viewWatchlistModalInstance = new Modal(this.$refs.viewWatchlistModal, { backdrop: 'static' });
+  },
+  beforeDestroy() {
+    this.modulesRegistered.forEach(module => {
+      if (this.$store.hasModule(module)) {
+        unregisterVuexModule(module);
+      }
+    });
+  },
+};
+</script>
+
 <style>
 .featuredWathclist {
     background: #edb04317;
@@ -215,140 +350,3 @@
 }
 }
 </style>
-<script>
-import { mapState, mapActions } from 'vuex';
-import "vue-skeletor/dist/vue-skeletor.css";
-import { Skeletor } from "vue-skeletor";
-import { Modal } from 'bootstrap';
-import DataTable from 'datatables.net-vue3';
-import DataTablesCore from 'datatables.net';
-import 'datatables.net-dt/css/jquery.dataTables.css';
-import Swal from 'sweetalert2';
-
-DataTable.use(DataTablesCore);
-export default {
-    components: {
-        Skeletor,
-        DataTable,
-    },
-    computed: {
-        ...mapState(['userData']),
-        ...mapState('userWatchlists', ['watchlists', 'userHasWatchlist', 'isLoading']),
-        ...mapState('userProfile', ['userProfileData', 'message', 'success', 'isOwnProfile', 'isFollowing']),
-    },
-    props: {
-        user: {
-            type: Object
-        },
-        watchlist_symbols: {
-            type: Array
-        }
-    },
-    data() {
-        return {
-            btcImage: '',
-            selectedWatchlist: null,
-            errorMessage: '',
-            watchlistModal: null,
-        };
-    },
-    created() {
-    },
-    methods: {
-        ...mapActions('userWatchlists', ['getUserWatchlistData', 'copyWatchlist']),
-
-        backgroundChangeClasses(symbolData) {
-            const percentChange = symbolData.symbol.stats.regularMarketChangePercent;
-            const marketChange = symbolData.symbol.stats.regularMarketChange;
-            const extraClasses = 'position-relative badge rounded-0 w-100 text-end fs-14 pt-2';
-            if (percentChange > 0 && marketChange > 0) {
-                return ' positive-symbol bg-success ' + extraClasses;
-            } else {
-                return ' negative-symbol bg-danger ' + extraClasses;
-            }
-        },
-        textChangeClasses(symbolData) {
-            const percentChange = symbolData.symbol.stats.regularMarketChangePercent;
-            const marketChange = symbolData.symbol.stats.regularMarketChange;
-            const extraClasses = 'd-flex gap-3 justify-content-end';
-            if (percentChange > 0 && marketChange > 0) {
-                return ' Green ' + extraClasses;
-            } else {
-                return ' Red ' + extraClasses;
-            }
-        },
-        showWatchlistModal(watchlist) {
-            if (this.viewWatchlistModalInstance) {
-                this.viewWatchlistModalInstance.show();
-                this.watchlistModal = watchlist;
-                // console.log(this.watchlistModal);
-            } else {
-                console.error('Modal instance is not initialized.');
-            }
-        },
-        hideWatchlistModal(){
-            this.viewWatchlistModalInstance.hide();
-            this.watchlistModal = null;
-        },
-        calculateCaretPosition(symbolData) {
-            const low = parseFloat(symbolData.symbol.stats.fiftyTwoWeekLow);
-            const high = parseFloat(symbolData.symbol.stats.fiftyTwoWeekHigh);
-            const currentValue = parseFloat(symbolData.symbol.stats.regularMarketPrice);
-            const positionPercentage = ((currentValue - low) / (high - low)) * 100;
-            return `${positionPercentage - 3}%`;
-        },
-        backgroundChangeClasses(symbolData) {
-            const percentChange = symbolData.symbol.stats.regularMarketChangePercent;
-            const marketChange = symbolData.symbol.stats.regularMarketChange;
-            const extraClasses = 'position-relative badge rounded-0 w-100 text-end fs-14 pt-2';
-            if (percentChange > 0 && marketChange > 0) {
-                return ' positive-symbol bg-success ' + extraClasses;
-            } else {
-                return ' negative-symbol bg-danger ' + extraClasses;
-            }
-        },
-        textChangeClasses(symbolData) {
-            const percentChange = symbolData.symbol.stats.regularMarketChangePercent;
-            const marketChange = symbolData.symbol.stats.regularMarketChange;
-            const extraClasses = 'd-flex gap-3 justify-content-end';
-            if (percentChange > 0 && marketChange > 0) {
-                return ' Green ' + extraClasses;
-            } else {
-                return ' Red ' + extraClasses;
-            }
-        },
-        formatNumber(number) {
-            if(number != undefined){
-                return number.toFixed(2);
-            }            
-        },
-        clonewatchlist(watchlistData){
-            const symbolIds = watchlistData.watchlist_symbols.map(symbol => symbol.symbol_id);
-            let postData = {
-                userid: watchlistData.user_id,
-                watchlist_id: watchlistData.id,
-                watchlist_name: watchlistData.title,
-                symbol_id: symbolIds
-            }
-            this.copyWatchlist(postData).then(() => {
-            })
-            .catch((error) => {
-                console.error('Error copying watchlist:', error);
-            });
-        }
-    },
-    mounted() {
-        this.$watch(
-            () => this.userProfileData,
-            (newValue, oldValue) => {
-                if (newValue) {
-                    let userId = this.isOwnProfile ? this.userData.id : newValue.id;
-                    this.getUserWatchlistData({ userId });
-                }
-            }
-        );
-        this.viewWatchlistModalInstance = new Modal(this.$refs.viewWatchlistModal, { backdrop: 'static' });
-    },
-
-};
-</script>

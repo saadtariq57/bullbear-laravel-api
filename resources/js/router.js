@@ -176,7 +176,7 @@ const routes = [
         component: () => import('./components/richtvpro/TradingSchool.vue'),
     },
     {
-        path: '/checkout',
+        path: '/:period/:planId/checkout',
         name: 'checkout',
         component: () => import('./components/checkout/checkout.vue'),
         props: true,
@@ -261,7 +261,7 @@ const routes = [
 routes.forEach(route => {
 
     if (!['pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live', 
-        'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar'].includes(route.name)) {
+        'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlistpro', 'watchlist', 'personal-access'].includes(route.name)) {
         route.meta = { ...route.meta, requiresAuth: true };
     }
 });

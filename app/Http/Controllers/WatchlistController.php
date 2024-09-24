@@ -10,6 +10,8 @@ use App\Models\WatchlistSymbol;
 use App\Models\Symbol;
 use App\Services\featureService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WatchlistAlertsMailable;
 
@@ -20,105 +22,435 @@ class WatchlistController extends Controller
     {
         $this->featureService = $featureService;
     }
+
+    public function index(Request $request)
+    {
+        // Fetch watchlists with associated user
+        $watchlists = UserWatchlist::with('user')->paginate(10);
+
+        return view('admin.watchlists.index', compact('watchlists'));
+    }
+
+     public function create()
+    {
+        // Fetch all users to assign a watchlist to a user
+        $users = \App\Models\User::all();
+
+        return view('admin.watchlists.create', compact('users'));
+    }
+    
+   public function store(Request $request)
+   {
+
+       $user = Auth::user();
+       if (!$user) {
+           return redirect()->route('login')->with('error', 'You must be logged in to create a watchlist.');
+       }
+
+       // Existing authorization logic
+       if ($user->can('isAdmin')) {
+           $featured = 1;
+       } else {
+           $featured = 0;
+       }
+
+       $request->validate([
+           'user_id'       => 'required|exists:users,id',
+           'title'         => 'nullable|string|max:255',
+           'who_can_view'  => 'required|string|max:255',
+           'featured'      => 'required|boolean',
+           'symbol_count'  => 'nullable|integer',
+           'position'      => 'nullable|integer',
+       ]);
+
+       $userWatchlistCount = UserWatchlist::where('user_id', $request->user_id)->count();
+       $title = $request->input('title') ?: "My Watchlist " . ($userWatchlistCount + 1);
+
+       $watchlist = UserWatchlist::create([
+           'user_id' => $request->input('user_id'),
+           'title' => $title,
+           'who_can_view' => $request->input('who_can_view'),
+           'featured' => $request->input('featured'),
+           'symbol_count' => $request->input('symbol_count', 0),
+       ]);
+
+       return redirect()->route('admin.watchlists.edit', $watchlist)->with('success', 'Watchlist created successfully.');
+   }
+
+    public function edit(UserWatchlist $watchlist)
+    {
+        $user = Auth::user();
+
+        // Check if the user is authenticated
+        if (!$user) {
+            return redirect()->route('admin.watchlists.index')
+                             ->with('error', 'You must be logged in to edit a watchlist.');
+        }
+
+        // Authorization: Admins can edit any watchlist, users can edit their own
+        if ($user->can('isAdmin')) {
+            // Admin has access to edit any watchlist
+        }
+        elseif ($user->id !== $watchlist->user_id) {
+            // Log the unauthorized access attempt
+            Log::warning('Unauthorized edit attempt by user ID ' . $user->id . ' on watchlist ID ' . $watchlist->id);
+            
+            return redirect()->route('admin.watchlists.index')
+                             ->with('error', 'You are not authorized to edit this watchlist.');
+        }
+
+        // Fetch all users to assign a watchlist to a user (useful for admins)
+        $users = \App\Models\User::all();
+
+        return view('admin.watchlists.edit', compact('watchlist', 'users'));
+    }
+
+   public function UserUpdate(Request $request, UserWatchlist $watchlist)
+   {
+
+       try {
+           if ($request->has('symbol_positions')) {
+               $symbolPositions = $request->input('symbol_positions');
+               foreach ($symbolPositions as $symbolPosition) {
+                   $watchlistSymbol = WatchlistSymbol::find($symbolPosition['id']);
+
+                   if ($watchlistSymbol) {
+                       $watchlistSymbol->update([
+                           'position' => $symbolPosition['position'],
+                       ]);
+                   }
+               }
+               return response()->json(['position' => $watchlistSymbol->position]);
+           } else {
+               $request->validate([
+                   'title'         => 'nullable|string|max:255',
+                   'who_can_view'  => 'nullable|string|max:255',
+                   'featured'      => 'nullable|boolean',
+                   'symbol_count'  => 'nullable|integer',
+                   'position'      => 'nullable|integer',
+               ]);
+
+               $watchlist->update($request->all());
+               return response()->json(['title' => $watchlist]);
+           }
+       } catch (\Exception $e) {
+           \Log::error('Validation Errors: ' . json_encode($e->getMessage()));
+           return response()->json(['error' => $e->getMessage()], 422);
+       }
+   }
+
+    public function update(Request $request, UserWatchlist $watchlist)
+    {
+        try {
+            // Check if the request has symbol positions to update
+            if ($request->has('symbol_positions')) {
+                $symbolPositions = $request->input('symbol_positions');
+                foreach ($symbolPositions as $symbolPosition) {
+                    $watchlistSymbol = WatchlistSymbol::find($symbolPosition['id']);
+
+                    if ($watchlistSymbol) {
+                        $watchlistSymbol->update([
+                            'position' => $symbolPosition['position'],
+                        ]);
+                    }
+                }
+                // Return the last updated position for the last symbol
+                return response()->json(['position' => $watchlistSymbol->position]);
+            } else {
+                // Validate the request data
+                $request->validate([
+                    'user_id'       => 'required|exists:users,id',
+                    'title'         => 'required|string|max:255',
+                    'who_can_view'  => 'required|string|max:255',
+                    'featured'      => 'required|boolean',
+                    'symbol_count'  => 'nullable|integer',
+                    'position'      => 'nullable|integer',
+                ]);
+
+                // Update the watchlist with the request data
+                $watchlist->update($request->all());
+
+                // Return the updated watchlist details
+                return redirect()->route('admin.watchlists.index')->with('success', 'Watchlist Updated successfully.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Admin Update Error: ' . json_encode($e->getMessage()));
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
+
+    public function destroy(UserWatchlist $watchlist)
+    {
+        $watchlist->delete();
+
+        return redirect()->route('admin.watchlists.index')->with('success', 'Watchlist deleted successfully.');
+    }
+
+    public function symbols(UserWatchlist $watchlist)
+    {
+        // Fetch symbols with related symbol data
+        $symbols = $watchlist->watchlistSymbols()->with('symbol')->get();
+
+        // Pass the watchlist and symbols to the view
+        return view('admin.watchlists.symbols', compact('watchlist', 'symbols'));
+    }
+
+    public function updateSymbols(Request $request, UserWatchlist $watchlist)
+    {
+        // Validate incoming request
+        $request->validate([
+            'symbols' => 'required|array',
+            'symbols.*' => 'exists:symbols,id',
+        ]);
+
+        // Fetch current symbols associated with the watchlist
+        $currentSymbolIds = WatchlistSymbol::where('watchlist_id', $watchlist->id)
+                            ->pluck('symbol_id')
+                            ->toArray();
+
+        // Merge existing symbols with new symbols, ensuring uniqueness
+        $newSymbolIds = array_unique(array_merge($currentSymbolIds, $request->symbols));
+
+        // Enforce a maximum limit of 10 symbols
+        if (count($newSymbolIds) > 10) {
+            return redirect()
+                    ->route('admin.watchlists.symbols', $watchlist)
+                    ->with('error', 'You can only have a maximum of 10 symbols in a watchlist.');
+        }
+
+        // Determine symbols to add (excluding already existing ones)
+        $symbolsToAdd = array_diff($newSymbolIds, $currentSymbolIds);
+
+        // Attach new symbols
+        foreach ($symbolsToAdd as $symbol_id) {
+            WatchlistSymbol::create([
+                'user_id'      => $watchlist->user_id,
+                'watchlist_id' => $watchlist->id,
+                'symbol_id'    => $symbol_id,
+                'position'     => 0,
+            ]);
+        }
+
+        $watchlist->update([
+            'symbol_count' => count($newSymbolIds),
+        ]);
+
+        return redirect()
+                ->route('admin.watchlists.symbols', $watchlist)
+                ->with('success', 'Symbols updated successfully.');
+    }
+    public function UserStore(Request $request)
+    {
+        $user = Auth::user();
+
+        if (Gate::denies('access-feature', ['real_time_watchlists'])) {
+            return response()->json(['message' => 'Access denied. Upgrade your plan to create more watchlists.'], 403);
+        }
+        if ($user) {
+            $user_id = $user->id;
+            $userWatchlistCount = UserWatchlist::where('user_id', $user_id)->count();
+            $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
+            
+            $data = [
+                'user_id' => $user_id,
+                'title' => $newWatchlistName,
+                'who_can_view' => 'Everyone',
+                'featured' => 0,
+                'symbol_count' => 0
+            ];
+            
+            $watchlist = UserWatchlist::create($data);
+            return response()->json([
+                'watchlistId' => $watchlist->id
+            ]);
+        }
+
+        return response()->json(['error' => 'User not authenticated'], 401);
+    }
+
+/*    public function edit(UserWatchlist $watchlist)
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user_id = $user->id;
+            $userWatchlist = UserWatchlist::where('user_id', $user_id)->where('id', $watchlist->id)->first();
+            if ($userWatchlist) {
+                // $watchlist = $this->getWatchListAllData($watchlist->id);
+                return view('watchlist.edit');
+            } else {
+                return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+            }
+        } else {
+            return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+        }
+    }*/
+
     public function getWatchLists(Request $request)
     {
-        
+        // Check if the user is authenticated
         if (Auth::check()) {
-            $user_id = null;
-            $loggedInUser = Auth::user();
+            $user = Auth::user();
+            // Ensure the user_id from the request matches the authenticated user
             $user_id = $request->input('user_id');
-            $records = UserWatchlist::where('user_id', $user_id);
-            $RequestedFeature = 'Watchlist Limit';
-            $watchlists = [];
 
-            // if ($user->can('isFeaturePermission', [User::class, $RequestedFeature])) {
-            //     $featureDetails = $this->featureService->getFeatures($user, $RequestedFeature);
-            //     $watchlists['featureDetails'] = $featureDetails;
-            // } else {
-            //     $watchlists['featureLimit'] = 'this feature is disabled for this plan';
-            // }
-
-            if ($records->exists()) {
-                $records = UserWatchlist::where('user_id', $user_id)
-                    ->orderBy('position')
-                    ->with([
-                        'watchlistSymbols' => function ($query) {
-                            $query->orderBy('position');
-                        },
-                        'watchlistSymbols.symbol'
-                    ])->get();
-                $watchlists['watchlistDetails'] = $records;
-                $watchlists['hasUserWatchlist'] = true;
-            } else {
-                $records = UserWatchlist::where('featured', 1)
-                    ->orderBy('position')
-                    ->with([
-                        'watchlistSymbols' => function ($query) {
-                            $query->orderBy('position');
-                        },
-                        'watchlistSymbols.symbol'
-                    ])->get();
-                $watchlists['watchlistDetails'] = $records;
-                $watchlists['hasUserWatchlist'] = false;
+            if ($user_id != $user->id) {
+                return response()->json([
+                    'error' => 'Unauthorized access.'
+                ], 403);
             }
-            
-            return response()->json($watchlists);
-        } else {
-            $records = UserWatchlist::where('featured', 1)
+
+            // Fetch user-specific watchlists with related symbols, ordered by position
+            $userWatchlists = UserWatchlist::where('user_id', $user_id)
                 ->orderBy('position')
                 ->with([
                     'watchlistSymbols' => function ($query) {
                         $query->orderBy('position');
                     },
                     'watchlistSymbols.symbol'
-                ])->get();
-            $watchlists['watchlistDetails'] = $records;
-            return response()->json($watchlists);
+                ])
+                ->get();
+
+            if ($userWatchlists->isNotEmpty()) {
+                return response()->json([
+                    'watchlistDetails' => $userWatchlists,
+                    'hasUserWatchlist' => true
+                ]);
+            }
         }
 
+        // If user is not authenticated or has no watchlists, return featured watchlists
+        $featuredWatchlists = UserWatchlist::where('featured', true)
+            ->orderBy('position')
+            ->with([
+                'watchlistSymbols' => function ($query) {
+                    $query->orderBy('position');
+                },
+                'watchlistSymbols.symbol'
+            ])
+            ->get();
+
+        $response = [
+            'watchlistDetails' => $featuredWatchlists
+        ];
+
+        // If the user is authenticated but has no watchlists
+        if (Auth::check()) {
+            $response['hasUserWatchlist'] = false;
+        }
+
+        return response()->json($response);
     }
+
+    public function getFeaturedWatchlists()
+    {
+        $featuredWatchlists = UserWatchlist::where('featured', true)
+            ->orderBy('position')
+            ->with([
+                'watchlistSymbols' => function ($query) {
+                    $query->orderBy('position');
+                },
+                'watchlistSymbols.symbol'
+            ])
+            ->get();
+
+        return response()->json([
+            'watchlistDetails' => $featuredWatchlists
+        ]);
+    }
+
     public function getSymbols($watchlistId)
     {
-        $watchlist = $this->getWatchListAllData($watchlistId);
-
-        if ($watchlist) {
-            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.symbol')->toArray();
-            $symbolExchanges = $watchlist->watchlistSymbols->pluck('symbol.exchange')->toArray();
-            $stats = $this->getSymbolsStats($symbolNames);
-            $news = $this->getSymbolNews($symbolNames, $symbolExchanges);
-            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($stats, $news) {
-                $symbol = $watchlistSymbol->symbol;
-                $symbol->stats = $stats[$symbol->symbol] ?? [];
-                $symbol->news = $news[$symbol->symbol] ?? [];
-            });
-
-            return response()->json($watchlist);
-        } else {
-            return response()->json(['error' => 'Watchlist not found'], 404);
-        }
-    }
-
-    public function getSymbolsStats($symbols)
-    {
-        $url = config('thirdparty.mboum.base_url');
-        $url .= config('thirdparty.mboum.quote_endpoint');
-        $url .= implode(',', $symbols);
-        $url .= config('thirdparty.mboum.api_key');
-
         try {
-            $response = file_get_contents($url);
-            $data = json_decode($response, true);
-            $stats = [];
-            foreach ($data['data'] as $symbolData) {
-                $stats[$symbolData['symbol']] = $symbolData;
+            // Fetch the watchlist with its symbols
+            $watchlist = $this->getWatchListAllData($watchlistId);
+
+            if (!$watchlist) {
+                return response()->json(['error' => 'Watchlist not found'], 404);
             }
 
-            return $stats;
-        } catch (Exception $e) {
-            \Log::error('Error in getSymbolsStats: ' . $e->getMessage());
-            return [];
+            // Get symbol names (ticker symbols) and exchanges from the watchlist
+            $symbolNames = $watchlist->watchlistSymbols->pluck('symbol.symbol')->toArray();
+            $symbolExchanges = $watchlist->watchlistSymbols->pluck('symbol.exchange')->toArray();
+
+            if (empty($symbolNames)) {
+                return response()->json(['error' => 'No symbols found in the watchlist'], 404);
+            }
+
+            // Fetch quotes for the symbols
+            $symbolString = implode(',', $symbolNames); // Convert array to a string
+            $apiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbolString}";
+            $response = Http::timeout(15)->get($apiUrl);
+
+            if (!$response->successful()) {
+                $errorDetails = [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'url' => $apiUrl,
+                ];
+                Log::error('API request failed', $errorDetails);
+                return response()->json([
+                    'error' => 'Failed to fetch quotes from the API',
+                    'details' => $errorDetails
+                ], 503);
+            }
+
+            $quotes = $response->json();
+
+            if (empty($quotes)) {
+                return response()->json(['error' => 'No quotes data received from the API'], 404);
+            }
+
+            // Fetch news for the symbols
+            $news = $this->getSymbolNews($symbolNames, $symbolExchanges);
+
+            // Map the quotes and news to the watchlist symbols
+            $watchlist->watchlistSymbols->each(function ($watchlistSymbol) use ($quotes, $news) {
+                $symbolData = $watchlistSymbol->symbol->toArray();
+                $quoteData = $quotes[$symbolData['symbol']] ?? null;
+                $newsData = $news[$symbolData['symbol']] ?? null;
+
+                if (!$quoteData) {
+                    Log::warning("No quote data for symbol: {$symbolData['symbol']}");
+                } else {
+                    // Attach the quote and news data to the symbol object
+                    $watchlistSymbol->symbol->quote = [
+                        'logo' => $quoteData['logo'] ?? null,
+                        'price' => $quoteData['regular_market_price'] ?? null,
+                        'change' => $quoteData['regular_market_change'] ?? null,
+                        'change_percent' => $quoteData['regular_market_change_percent'] ?? null,
+                        'regularMarketDayRange' => $quoteData['regular_market_day_range'] ?? null,
+                        'fiftyTwoWeekHigh' => $quoteData['fifty_two_week_high'] ?? null,
+                        'fiftyTwoWeekLow' => $quoteData['fifty_two_week_low'] ?? null,
+                        'updated_at' => $quoteData['updated_at'] ?? null,
+                        'currency' => $quoteData['currency'] ?? null,
+                        'volume' => $quoteData['volume'] ?? null,
+                    ];
+
+                    // Attach news to the symbol object
+                    $watchlistSymbol->symbol->news = $newsData ?? [];
+                }
+            });
+
+            // Return the watchlist with its symbols, quotes, and news
+            return response()->json($watchlist);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Watchlist not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('Error in WatchlistController@getSymbols', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
         }
     }
+
+
+
 
     public function getSymbolNews($symbols, $exchanges)
     {
@@ -158,14 +490,6 @@ class WatchlistController extends Controller
             ->first();
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $user = Auth::user();
-        return view('watchlist.index', compact('user'));
-    }
 
     public function manage()
     {
@@ -179,57 +503,6 @@ class WatchlistController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-        if ($user) {
-            $user_id = $user->id;
-            $userWatchlistCount = UserWatchlist::where('user_id', $user_id)->count();
-            // if ($this->authorize('isAdmin', $user)) {
-            if ($user->can('isAdmin')) {
-                $featured = 1;
-            } else {
-                $featured = 0;
-            }
-            // $userWatchlistCount = UserWatchlist::where('user_id', 2)->count();
-            // if ($user->can('isFeaturePermission', [User::class, 'Watchlist Limit'])) {
-            //     $featureDetails = $this->featureService->getFeatures($user, 'Watchlist Limit');
-            //     $watchlistLimit = $featureDetails['limit'];
-            //     if ($userWatchlistCount < $watchlistLimit) {
-                    $newWatchlistName = "My Watchlist " . ($userWatchlistCount + 1);
-                    
-                    $data = [
-                        'user_id' => $user_id,
-                        'title' => $newWatchlistName,
-                        'who_can_view' => 'Everyone',
-                        'featured' => $featured,
-                        'symbol_count' => 0
-                    ];
-                    
-                    $watchlist = UserWatchlist::create($data);
-                    return redirect()->route('watchlist.edit', $watchlist);
-                // } else {
-                //     $message = 'you have exceeded the limit to create watchlist';
-                //     return redirect()->route('watchlist.index')->withErrors($message);
-                // }
-            // } else {
-            //     $message = 'this feature is disabled for this plan';
-            //     return redirect()->route('watchlist.index')->withErrors($message);
-            // }
-        }
-    }
-
     public function storeWatchListSymbol(Request $request)
     {
         $user = Auth::user();
@@ -280,11 +553,19 @@ class WatchlistController extends Controller
 
     public function copyWatchlist(Request $request)
     {
-        $data = $request->all();
-        $requestedUserId = $data['userid'];
+        $watchlistId = $request->input('watchlist_id');
+        $requestedUserId = $request->input('user_id');
         $user = Auth::user();
-        if ($user && $requestedUserId != $user->id) {
-            $newWatchlistName = "Copy " . ($data['watchlist_name']);
+
+        if ($user && $requestedUserId) {
+            // Find the original watchlist
+            $originalWatchlist = UserWatchlist::find($watchlistId);
+            if (!$originalWatchlist) {
+                return response()->json('Watchlist not found', 404);
+            }
+
+            // Create a new watchlist for the user
+            $newWatchlistName = "Copy " . $originalWatchlist->title;
             $newWatchlistData = [
                 'user_id' => $user->id,
                 'title' => $newWatchlistName,
@@ -292,83 +573,32 @@ class WatchlistController extends Controller
                 'featured' => 0,
                 'symbol_count' => 0
             ];
-            
-            $newWatchlist = UserWatchlist::create($newWatchlistData);
-            if($newWatchlist){
-                $watchlistData = [
-                    'watchlist_id' => $newWatchlist->id,
-                    'symbol_id' => $data['symbol_id'] ?? []
-                ];
-                $storeSymbols = $this->storeWatchListSymbol((new Request())->merge((array)$watchlistData));
-                return response()->json($storeSymbols);
-            }
-        }else{
-            return response()->json('not allowed');
-        }
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(Watchlist $watchlist)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserWatchlist $watchlist)
-    {
-        $user = Auth::user();
-        if ($user) {
-            $user_id = $user->id;
-            $userWatchlist = UserWatchlist::where('user_id', $user_id)->where('id', $watchlist->id)->first();
-            if ($userWatchlist) {
-                // $watchlist = $this->getWatchListAllData($watchlist->id);
-                return view('watchlist.edit');
-            } else {
-                return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+            $newWatchlist = UserWatchlist::create($newWatchlistData);
+
+            if ($newWatchlist) {
+                // Get the symbols from the original watchlist
+                $symbols = WatchlistSymbol::where('watchlist_id', $watchlistId)->get();
+
+                // Copy the symbols to the new watchlist
+                foreach ($symbols as $symbol) {
+                    WatchlistSymbol::create([
+                        'user_id' => $user->id,
+                        'watchlist_id' => $newWatchlist->id,
+                        'symbol_id' => $symbol->symbol_id,
+                        'position' => $symbol->position
+                    ]);
+                }
+
+                return response()->json('Watchlist copied successfully');
             }
         } else {
-            return redirect()->route('watchlist.index')->with('error', 'You are not authorized to edit this watchlist.');
+            return response()->json([
+                'status' => 'Not allowed',
+            ], 403);
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, UserWatchlist $watchlist)
-    {
-        try {
-            if ($request->has('symbol_positions')) {
-                $symbolPositions = $request->input('symbol_positions');
-                foreach ($symbolPositions as $symbolPosition) {
-                    $watchlistSymbol = WatchlistSymbol::find($symbolPosition['id']);
-
-                    if ($watchlistSymbol) {
-                        $watchlistSymbol->update([
-                            'position' => $symbolPosition['position'],
-                        ]);
-                    }
-                }
-                return response()->json(['position' => $watchlistSymbol->position]);
-            } else {
-                $request->validate([
-                    'title' => 'required|string|max:255|regex:/\S/',
-                ]);
-
-                $watchlist->update([
-                    'title' => $request->input('title'),
-                ]);
-                return response()->json(['title' => $watchlist]);
-            }
-        } catch (\Exception $e) {
-            // Add this line to log the validation errors
-            \Log::error('Validation Errors: ' . json_encode($request->errors()->all()));
-
-            return response()->json(['error' => $e->getMessage()], 422);
-        }
-    }
 
     public function updatePositions(Request $request)
     {

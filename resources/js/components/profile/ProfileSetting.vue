@@ -819,11 +819,11 @@
                         </tr>
                       </thead>
                       <tbody v-if="userPaymentMethod">
-                        <tr :key="userPaymentMethod.id">
-                          <td>{{ userPaymentMethod.card.brand }}</td>
-                          <td>{{ userPaymentMethod.billing_details.name }}</td>
-                          <td>************{{ userPaymentMethod.card.last4 }}</td>
-                          <td>{{ userPaymentMethod.card.exp_month }} / {{ userPaymentMethod.card.exp_year }}</td>
+                        <tr v-for="(method, index) in userPaymentMethod" :key="index">
+                          <td>{{ method.card.brand }}</td>
+                          <td>{{ method.billing_details.name }}</td>
+                          <td>************{{ method.card.last4 }}</td>
+                          <td>{{ method.card.exp_month }} / {{ method.card.exp_year }}</td>
                         </tr>
                       </tbody>
                       <tfoot v-else>
@@ -914,7 +914,7 @@
                           <th>Status</th>
                         </tr>
                       </thead>
-                      <tbody v-if="upcomingInvoices">
+                      <tbody v-if="upcomingInvoices.length > 0">
                         <tr :key="upcomingInvoices.id">
                           <td>{{ formatDate(upcomingInvoices.created) }}</td>
                           <td>
@@ -1086,7 +1086,7 @@ export default {
       pastInvoices: [],
       upcomingInvoices: [],
       upcomingLineData: [],
-      userPaymentMethod: null,
+      userPaymentMethod: [],
       formData: {
         cardHolderName: '',
         payment_method: '',
@@ -1113,7 +1113,6 @@ export default {
     this.getInvoices();
     this.stripePaymentMethod();
     this.loadPrivacySettings();
-    console.log(this.userData);
     this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
   },
   methods: {
@@ -1135,11 +1134,15 @@ export default {
     async getInvoices() {
       try {
         const response = await axios.get('/api/subscriptionInvoices');
-        this.userSubscriptions = response.data.Invoices.allUserSubscriptions;
-        this.pastInvoices = response.data.Invoices.previousInvoices;
-        this.upcomingInvoices = response.data.Invoices.upcomingInvoice;
-        this.upcomingLineData = response.data.Invoices.upcomingInvoice.lines.data;
-        this.userPaymentMethod = response.data.Invoices.paymentMethods;
+        this.userSubscriptions = response.data.Invoices.allUserSubscriptions || [];
+        this.pastInvoices = response.data.Invoices.previousInvoices || [];
+        this.upcomingInvoices = response.data.Invoices.upcomingInvoice || [];
+        if (this.upcomingInvoices && this.upcomingInvoices.lines && this.upcomingInvoices.lines.data) {
+          this.upcomingLineData = this.upcomingInvoices.lines.data;
+        } else {
+          this.upcomingLineData = [];
+        }
+        this.userPaymentMethod = response.data.Invoices.paymentMethods || [];
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle error appropriately
@@ -1155,7 +1158,6 @@ export default {
         });
         this.getInvoices();
         this.confirmModalInstance.hide();
-        console.log(response.data);
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",

@@ -61,55 +61,70 @@
     </section>
   </template>
   
-  <script>
-  import { mapState, mapActions } from 'vuex';
-  import LiveChat from './LiveChat.vue';  // Import the LiveChat component
-  
-  export default {
-    name: 'UserGroups',
-    components: {
-      LiveChat
-    },
-    data() {
-      return {
-        selectedGroup: null,  // Add a selectedGroup data property
-        searchQuery: '',  // Add a searchQuery data property
-      };
-    },
-    computed: {
-      ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
-      filteredChats() {
-        if (!this.searchQuery) {
-          return this.joinedChats;
-        }
-        const query = this.searchQuery.toLowerCase();
-        return this.joinedChats.filter(chat => chat.group_title.toLowerCase().includes(query) || chat.group_name.toLowerCase().includes(query));
+<script>
+import { mapState, mapActions } from 'vuex';
+import LiveChat from './LiveChat.vue'; 
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userGroupsModule from '@/stores/groupStore';
+
+export default {
+  name: 'UserGroups',
+  components: {
+    LiveChat
+  },
+  data() {
+    return {
+      selectedGroup: null,
+      searchQuery: '',
+      moduleRegistered: false
+    };
+  },
+  computed: {
+    ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+    filteredChats() {
+      if (!this.searchQuery) {
+        return this.joinedChats;
       }
-    },
-    created() {
+      const query = this.searchQuery.toLowerCase();
+      return this.joinedChats.filter(chat => chat.group_title.toLowerCase().includes(query) || chat.group_name.toLowerCase().includes(query));
+    }
+  },
+  created() {
+    // Register the UserGroups module if not already registered
+    if (!this.$store.hasModule('UserGroups')) {
+      registerVuexModule('UserGroups', userGroupsModule);
+      this.moduleRegistered = true;
+    }
+    this.fetchJoinedChats();
+  },
+  watch: {
+    joinedChats(newChats) {
+      if (newChats.length && !this.selectedGroup) {
+        this.selectGroup(newChats[0]);
+      }
+    }
+  },
+  methods: {
+    ...mapActions('UserGroups', [ 'fetchJoinedChats']),
+    onChatJoined() {
       this.fetchJoinedChats();
     },
-    watch: {
-      joinedChats(newChats) {
-        if (newChats.length && !this.selectedGroup) {
-          this.selectGroup(newChats[0]);
-        }
-      }
+    handleAvatarError(chat) {
+      chat.avatarFailed = true;
     },
-    methods: {
-      ...mapActions('UserGroups', [ 'fetchJoinedChats']),
-      onChatJoined() {
-        this.fetchJoinedChats();
-      },
-      handleAvatarError(chat) {
-        chat.avatarFailed = true;
-      },
-      selectGroup(chat) {
-        this.selectedGroup = chat;  // Set the selectedGroup when a group card is clicked
-      },
+    selectGroup(chat) {
+      this.selectedGroup = chat;  // Set the selectedGroup when a group card is clicked
     },
-  };
-  </script>  
+  },
+  beforeDestroy() {
+    // Unregister the UserGroups module only if it was registered by this component
+    if (this.moduleRegistered) {
+      unregisterVuexModule('UserGroups');
+    }
+  }
+};
+</script>
+
   
   <style>
   .unread_count{

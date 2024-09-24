@@ -7,7 +7,7 @@ const userWatchlistModule = {
         isLoading: false,
         error: null,
         success: null,
-        watchlists: undefined,
+        watchlists: [],
         searchedSymbols: [],
         editWatchlistData: [],
         selectedPrivacy: undefined,
@@ -24,7 +24,7 @@ const userWatchlistModule = {
             state.success = success;
         },
         SET_WATCHLISTS(state, watchlists){
-            state.watchlists = watchlists;
+            state.watchlists = Array.isArray(watchlists) ? watchlists : [];
         },
         SET_HAS_WATCHLIST(state, userHasWatchlist){
             state.userHasWatchlist = userHasWatchlist;
@@ -49,28 +49,45 @@ const userWatchlistModule = {
         },
     },
     actions: {
-        async getUserWatchlistData({ commit }, {userId, watchlistType}) {
+        async getUserWatchlistData({ commit }, { userId, watchlistType }) {
             try {
+                commit('SET_LOADING', true);
                 
-                const data = await watchlistService.getUserWatchlistData(userId);
-                commit('SET_HAS_WATCHLIST', data.hasUserWatchlist);
-                commit('SET_WATCHLISTS', data.watchlistDetails);
-                console.log('watchlist data: ', data);
-                if(watchlistType !== 'manage'){
+                let data;
+                if (userId) {
+                    // Fetch user-specific watchlists
+                    data = await watchlistService.getUserWatchlistData(userId);
+                } else {
+                    // Fetch only featured watchlists for guests
+                    data = await watchlistService.getFeaturedWatchlists();
+                    console.log(data);
+                }
+                
+                if (userId) {
+                    commit('SET_HAS_WATCHLIST', data.hasUserWatchlist);
+                    commit('SET_WATCHLISTS', Array.isArray(data.watchlistDetails) ? data.watchlistDetails : []);
+                } else {
+                    // For guests, set watchlists to featured
+                    commit('SET_WATCHLISTS', Array.isArray(data.watchlistDetails) ? data.watchlistDetails : []);
+                }
+
+                if (watchlistType !== 'manage' || !userId) {
                     for (const watchlist of data.watchlistDetails) {
-                        if (watchlist.watchlist_symbols.length >= 1) {
+                        if (Array.isArray(watchlist.watchlist_symbols) && watchlist.watchlist_symbols.length >= 1) {
                             const symbolData = await watchlistService.getSymbols(watchlist.id);
-                            console.log('symbol data: ', symbolData.watchlist_symbols);
-                            
                             commit('UPDATE_WATCHLIST_SYMBOLS', {
                                 watchlistId: watchlist.id,
-                                symbols: symbolData.watchlist_symbols,
+                                symbols: Array.isArray(symbolData.watchlist_symbols) ? symbolData.watchlist_symbols : [],
                             });
                         }
                     }
                 }
+
+                commit('SET_LOADING', false);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                commit('SET_ERROR', 'Failed to fetch watchlists.');
+                commit('SET_LOADING', false);
             }
         },
         async editWatchlist({ commit }, watchlistId){
@@ -111,8 +128,7 @@ const userWatchlistModule = {
             if (response.status && response.status !== 200) {
               throw new Error(response.data || 'Error adding symbol to watchlist');
             }
-            commit('SET_EDIT_WATCHLIST_DATA', response.data);
-            return response;
+            commit('SET_EDIT_WATCHLIST_DATA', response);
           } catch (error) {
             console.error('Error adding symbol to watchlist:', error);
             throw error;
@@ -184,19 +200,6 @@ const userWatchlistModule = {
                         title: "Watchlist copied successfully!"
                       });
                 }
-                // const updatedData = await watchlistService.getUserWatchlistData(data.original.user_id);
-                // commit('SET_HAS_WATCHLIST', updatedData.hasUserWatchlist);
-                // commit('SET_WATCHLISTS', updatedData.watchlistDetails);
-
-                // const copiedWatchlist = updatedData.watchlistDetails.find(watchlist => watchlist.title === data.title);
-                // if (copiedWatchlist) {
-                //     commit('SET_LOADING', false);
-                //     const symbolData = await watchlistService.getSymbols(copiedWatchlist.id);
-                //     commit('UPDATE_WATCHLIST_SYMBOLS', {
-                //         watchlistId: copiedWatchlist.id,
-                //         symbols: symbolData.watchlist_symbols,
-                //     });
-                // }
             } catch (error) {
                 console.error('Error copying watchlist:', error);
                 const Toast = Swal.mixin({

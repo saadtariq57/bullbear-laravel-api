@@ -22,6 +22,7 @@ class PlanFeatures extends Model
     /**
      * Get the subscription plan that this feature belongs to.
      */
+
     public function subscriptionPlan()
     {
         return $this->belongsTo(SubscriptionPlan::class, 'plan_id');

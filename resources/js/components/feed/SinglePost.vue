@@ -19,14 +19,19 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-// import CreatePost from './CreatePost.vue';
 import PostItems from './PostItems.vue';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userFeedModule from '@/stores/userFeedStore';
 
 export default {
     name: 'UserFeed',
     components: {
-        // CreatePost,
         PostItems,
+    },
+    data() {
+        return {
+            moduleRegistered: false
+        };
     },
     computed: {
         ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
@@ -34,28 +39,32 @@ export default {
             return this.posts.length > 0 ? [this.posts[0]] : [];
         }
     },
-    created() {
-        const singlePostID = this.$route.params.id;
-        const context = 'singlePost';
-        this.fetchPosts({context, singlePostID});
-        this.fetchReactionTypes();
-        this.$nextTick(() => {
-            this.initializeRealTimeUpdates({context});
-        });
-    },
     methods: {
         ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
         handleShowPostModal(post) {
-            this.$refs.createPost.sharePostModal(post); // Call the method in the child component
-            //   console.log('Received post data:', post);
+            this.$refs.createPost.sharePostModal(post);
+        },
+        isModuleRegistered() {
+            return this.$store.hasModule('userFeed');
         }
     },
-    mounted() { }
+    created() {
+        // Register the module
+        registerVuexModule('userFeed', userFeedModule);
+        this.moduleRegistered = true;
+
+        // Fetch post and initialize
+        const singlePostID = this.$route.params.id;
+        const context = 'singlePost';
+        this.fetchPosts({ context, singlePostID });
+        this.fetchReactionTypes();
+        this.$nextTick(() => {
+            this.initializeRealTimeUpdates({ context });
+        });
+    },
+    beforeDestroy() {
+        // Unregister the module
+        unregisterVuexModule('userFeed');
+    }
 };
 </script>
-<!-- <style>
-.CreatePost{
-    position: absolute;
-    top: -100vh;
-}
-</style> -->

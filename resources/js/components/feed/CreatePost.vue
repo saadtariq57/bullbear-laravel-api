@@ -384,7 +384,6 @@ export default {
   },
   computed: {
     ...mapState(['userData']),
-    ...mapState('userProfile', ['profileImagePath']),
     ...mapState('profileGroupHeader',['UpdatedProfileImagePath']),
     postClass() {
       return this.selectedColor ? 'colored-post' : '';

@@ -3,9 +3,16 @@ const watchlistService = {
         try {
             const response = await axios.get(`/api/watchlist/?user_id=${userId}`);
             return response.data;
-            
         } catch (error) {
             console.error('Error fetching watchlist data:', error);
+        }
+    },
+    async getFeaturedWatchlists() {
+        try {
+            const response = await axios.get('/api/watchlist/featured');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching featured watchlists:', error);
         }
     },
     async getSymbols(watchlistId) {

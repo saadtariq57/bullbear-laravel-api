@@ -22,7 +22,6 @@
                                         {{-- <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
                                             width="200" class="auth-logo logo-light mx-auto"> --}}
                                     </a>
-                                    <!-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> -->
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">
@@ -46,6 +45,10 @@
                                                     <form method="POST" action="{{ route('register') }}"
                                                         class="auth-input">
                                                         @csrf
+                                                        @if(request()->has('plan_id'))
+                                                            <input type="hidden" name="plan_id" value="{{ request()->get('plan_id') }}">
+                                                            <input type="hidden" name="period" value="{{ request()->get('period') }}" />
+                                                        @endif
                                                         <div class="mb-2">
                                                             <label for="name" class="form-label">User Name</label>
                                                             <input id="name" type="text"

@@ -31,4 +31,8 @@ class UserWatchlist extends Model
     public function watchlistSymbols(){
         return $this->hasMany(WatchlistSymbol::class, 'watchlist_id');
     }
+    public function getSymbolCountAttribute()
+    {
+        return $this->watchlistSymbols()->count();
+    }
 }

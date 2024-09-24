@@ -20,6 +20,7 @@ use App\Http\Controllers\ExamResultController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PersonalSessionController;
 
 
 /*
@@ -76,12 +77,14 @@ Route::post('/remove-vote', [PostController::class, 'removeVote']);
 
 Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::get('/', [WatchlistController::Class, 'getWatchLists']);
+    Route::get('/featured', [WatchlistController::class, 'getFeaturedWatchlists'])->name('featured');
     Route::get('/managewatchlists', [WatchlistController::Class, 'getWatchLists']);
     Route::get('/symbols/{watchlistId}', [WatchlistController::class, 'getSymbols']);
     Route::get('/editWatchlistData/{watchlistId}', [WatchlistController::class, 'getWatchListAllData']);
     Route::post('symbol', [WatchlistController::Class, 'storeWatchListSymbol']);
     Route::post('copyWatchlist', [WatchlistController::Class, 'copyWatchlist']);
-    Route::put('update/{watchlist}', [WatchlistController::class, 'update'])->name('update');
+    Route::put('update/{watchlist}', [WatchlistController::class, 'UserUpdate'])->name('UserUpdate');
+    Route::get('/store', [WatchlistController::class, 'UserStore'])->name('UserStore');
     Route::put('update-positions', [WatchlistController::class, 'updatePositions'])->name('update-positions');
     Route::put('update-privacy', [WatchlistController::class, 'updatePrivacy'])->name('update-privacy');
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
@@ -164,14 +167,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/exam/submit/{examId}', [ExamController::class, 'submitExam'])->name('exam.submit');
     // Route to retrieve and show exam result
     Route::get('/exam/result/{examResultId}', [ExamController::class, 'getExamResult'])->name('exam.result');
-    Route::get('/pricingPlans', [SubscriptionPlanController::class, 'userIndex'])->name('userIndex');
-    Route::post('/createUserSubscription', [SubscriptionPlanController::class, 'createUserSubscription'])->name('createUserSubscription');
-    // Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->middleware(Subscribed::class);
-    Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->name('getStatus');
-    Route::get('/subscriptionInvoices', [SubscriptionStatusController::class, 'getInvoices'])->name('getInvoices');
-    Route::post('/cancelSubscription/{subscriptionName}', [SubscriptionStatusController::class, 'cancelSubscription'])->name('cancelSubscription');
-    Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
-    // Route::delete('/removePaymentMethod/{id}', [SubscriptionStatusController::class, 'destroyPaymentMethod'])->name('destroyPaymentMethod');
     Route::post('/update-password', [UserController::class, 'updatePassword'])->name('update-password');
     Route::post('/privacy-settings', [UserController::class, 'updatePrivacySettings'])->name('privacy-settings');
 
@@ -185,6 +180,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/bookmarks', [PostController::class, 'getBookmarkedPosts'])->name('bookmarks');
         Route::post('/create', [PostController::class, 'createPost'])->name('create');
     });
+});
+//Subscription Routes
+Route::get('/pricingPlans', [SubscriptionPlanController::class, 'userIndex'])->name('userIndex');
+Route::get('/subscription-plans/{id}', [SubscriptionPlanController::class, 'showSubscriptionPlan']);
+Route::post('/check-username-availability', [RegisterController::class, 'checkUsernameAvailability'])->name('checkUsernameAvailability');
+
+// Protected Routes (Requires Authentication)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/createUserSubscription', [SubscriptionPlanController::class, 'createUserSubscription'])->name('createUserSubscription');
+    Route::get('/subscriptionStatus', [SubscriptionStatusController::class, 'getStatus'])->name('getStatus');
+    Route::get('/subscriptionInvoices', [SubscriptionStatusController::class, 'getInvoices'])->name('getInvoices');
+    Route::post('/cancelSubscription/{subscriptionName}', [SubscriptionStatusController::class, 'cancelSubscription'])->name('cancelSubscription');
+    Route::post('/updatePaymentMethod', [SubscriptionStatusController::class, 'updatePaymentMethod'])->name('updatePaymentMethod');
+    Route::get('/personal_sessions', [PersonalSessionController::class, 'userIndex'])->name('personal_sessions.userIndex');
+    Route::post('/personal_sessions', [PersonalSessionController::class, 'userStore'])->name('personal_sessions.userStore');
+    Route::put('/personal_sessions/{id}', [PersonalSessionController::class, 'userUpdate'])->name('personal_sessions.userUpdate');
+
 });
 
 //Additional Routes

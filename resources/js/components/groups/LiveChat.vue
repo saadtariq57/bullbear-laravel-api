@@ -69,6 +69,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { formatDateTime, formatNotificationTime } from '../../utils';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userGroupsModule from '@/stores/groupStore';
 
 export default {
   props: ['groupId'],
@@ -80,6 +82,7 @@ export default {
       replyToMessage: null,
       currentPage: 1,
       isLoadingMore: false,
+      moduleRegistered: false
     };
   },
   computed: {
@@ -183,6 +186,12 @@ export default {
       return index === 0 || new Date(this.orderedMessages[index - 1].created_at).toDateString() !== new Date(this.orderedMessages[index].created_at).toDateString();
     },
   },
+  beforeCreate() {
+    if (!this.$store.hasModule('UserGroups')) {
+      registerVuexModule('UserGroups', userGroupsModule);
+      this.moduleRegistered = true;
+    }
+  },
   created() {
     this.$nextTick(() => {
       this.fetchMessages(this.groupId).then(() => {
@@ -199,10 +208,14 @@ export default {
     },
   },
   beforeDestroy() {
-    this.$store.dispatch('userGroup/unsubscribeFromGroupChat', this.groupId);
+    if (this.moduleRegistered) {
+      unregisterVuexModule('UserGroups');
+    }
+    this.$store.dispatch('UserGroups/unsubscribeFromGroupChat', this.groupId);
   },
 };
 </script>
+
 
 <style>
 .chat-form {

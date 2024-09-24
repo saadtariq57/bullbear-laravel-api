@@ -29,25 +29,8 @@ class SubscriptionPlan extends Model
         'features' => 'array',
     ];
 
-    /**
-     * Get the features attribute.
-     *
-     * @param  string  $value
-     * @return array
-     */
-    public function getFeaturesAttribute($value)
+    public function planFeatures()
     {
-        return json_decode($value, true);
-    }
-
-    /**
-     * Set the features attribute.
-     *
-     * @param  array  $value
-     * @return void
-     */
-    public function setFeaturesAttribute($value)
-    {
-        $this->attributes['features'] = json_encode($value);
+        return $this->hasMany(PlanFeatures::class, 'plan_id');
     }
 }

@@ -11,6 +11,8 @@
 import { mapState, mapActions } from 'vuex';
 import CreatePost from '../../feed/CreatePost.vue';
 import PostItems from '../../feed/PostItems.vue';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userFeedModule from '@/stores/userFeedStore';
 
 export default {
   name: 'GroupDiscussionTab',
@@ -20,7 +22,8 @@ export default {
   },
   data() {
     return {
-      group_id: this.$route.params.group_id
+      group_id: this.$route.params.group_id,
+      moduleRegistered: false
     };
   },
   computed: {
@@ -35,14 +38,27 @@ export default {
   watch: {
     '$route.params.group_id'(newVal) {
       this.group_id = newVal;
+      // Fetch posts again with the new group_id
+      const context = 'group';
+      this.fetchPosts({ context, groupId: this.group_id });
+      this.initializeRealTimeUpdates({ context, groupId: this.group_id });
     }
   },
   created() {
+    // Register the userFeed module if not already registered
+    if (!this.$store.hasModule('userFeed')) {
+      registerVuexModule('userFeed', userFeedModule);
+      this.moduleRegistered = true;
+    }
     const context = 'group';
     this.fetchPosts({ context, groupId: this.group_id });
     this.fetchReactionTypes();
     this.initializeRealTimeUpdates({ context, groupId: this.group_id });
-    console.log(this.posts);
+  },
+  beforeDestroy() {
+    if (this.moduleRegistered) {
+      unregisterVuexModule('userFeed');
+    }
   }
 };
 </script>
