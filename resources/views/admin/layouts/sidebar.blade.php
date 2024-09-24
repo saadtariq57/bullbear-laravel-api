@@ -133,7 +133,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.settings.subscription_plans.index') }}">Subscription Plans</a></li>
-                        <li><a href="{{ route('admin.emails.index') }}">Mass Emails</a></li>
+                        <li><a href="{{ route('admin.emails.index') }}">Manage Emails</a></li>
                         <li><a href="ui-buttons">Mass Notification</a></li>
                         <li><a href="ui-carousel">User Invitations</a></li>
                         <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>

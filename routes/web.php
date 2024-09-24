@@ -140,8 +140,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [EmailTemplateController::class, 'index'])->name('index');  // View all templates
             Route::get('/editors/{id}', [EmailTemplateController::class, 'editor'])->name('editor');  // Edit template in TinyMCE
             Route::post('/{id}', [EmailTemplateController::class, 'update'])->name('update');  // Update existing template
-            Route::post('/', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('saveAsNew');  // Save as a new template
-            Route::post('/', [EmailTemplateController::class, 'sendEmails'])->name('send');
+            Route::post('/savetemplate/{id}', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('saveAsNew');  // Save as a new template
+            //Route::post('/saveTemplate', [EmailTemplateController::class, 'saveAsNewTemplate'])->name('admin.emails.saveTemplate');
+            Route::post('/sendEmail/{id}', [EmailTemplateController::class, 'sendEmails'])->name('send');
         });
         
         // route group for GroupController

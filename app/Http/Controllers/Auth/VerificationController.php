@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Auth;
 
 class VerificationController extends Controller
@@ -47,6 +49,20 @@ class VerificationController extends Controller
 
         if ($user->markEmailAsVerified()) {
             event(new Verified($user));
+
+            // Sending the welcome email after verification
+            try {
+                // Log before sending the email to track its progress
+                // \Log::info("Sending welcome email to {$user->email}");
+        
+                Mail::to($user->email)->send(new \App\Mail\WelcomeEmail($user));
+        
+                // Log after the email is sent
+                // \Log::info("Welcome email sent to {$user->email}");
+            } catch (\Exception $e) {
+                // Log error if email sending fails
+                \Log::error("Failed to send welcome email to {$user->email}: " . $e->getMessage());
+            }
         }
 
         Auth::login($user);

@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class EmailTemplate extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'body', 'default_body', 'template_img'];
+    protected $fillable = ['name', 'body', 'default_body', 'template_img', 'type'];
 }

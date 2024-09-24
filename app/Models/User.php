@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\ResetPasswordMailable;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -148,4 +150,21 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->value('limit');
     }
 
+    /**
+     * Override the default password reset notification.
+     *
+     * @param string $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $resetUrl = url(route('password.reset', ['token' => $token, 'email' => $this->email], false));
+
+        // \Log::info("Sending password reset email to {$this->email}");
+
+        // Use the custom ResetPasswordMailable
+        Mail::to($this->email)->send(new ResetPasswordMailable($this, $resetUrl));
+
+        // \Log::info("Password reset email sent to {$this->email}");
+    }
 }

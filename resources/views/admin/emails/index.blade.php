@@ -1,8 +1,8 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Mass Emails')
+@section('title', 'Manage Emails')
 
-@section('page-title', 'Mass Emails')
+@section('page-title', 'Manage Emails')
 
 @section('css')
     <!-- Sweet Alert-->
@@ -39,30 +39,31 @@
                                 <div class="mb-3 float-end">
                                     @if (session('selected_id'))
                                         <a href="{{ route('admin.emails.editor', ['id' => session('selected_id')]) }}"
-                                            class="btn btn-primary builder-link">Builder</a>
+                                            class="btn btn-primary builder-link">Edit</a>
                                     @else
                                         <a href="#" class="btn btn-primary builder-link disabled"
-                                            aria-disabled="true">Builder</a>
+                                            aria-disabled="true">Edit</a>
                                     @endif
+                                    <button type="button" class="btn btn-primary builder-link" data-bs-toggle="modal" data-bs-target="#createTemplateModal">Create New Template</button>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-9 border shadow">
-                                <h6 class="pt-2">Themes</h6>
-                                <div class="themes-card-wrapper d-flex justify-content-between gap-5 px-3 py-2">
+                                <div class="themes-card-wrapper row px-3 py-2">
                                     @foreach ($templates as $template)
-                                        <div class="card border shadow-lg">
-                                            <div class="card-body text-center px-0 pt-0">
-                                                <div
-                                                    class="theme-img-wrapper d-flex justify-content-center align-items-center mb-3 fs-4 fw-6 text-white rounded-top">
-                                                    {{ $template->name }}
+                                        <div class="col-lg-3 col-md-4 col-sm-2">
+                                            <div class="card border shadow-lg">
+                                                <div class="card-body text-center px-0 pt-0">
+                                                    <div class="theme-img-wrapper w-100 d-flex justify-content-center align-items-center mb-3 fs-4 fw-6 text-white rounded-top">
+                                                        {{ $template->name }}
+                                                    </div>
+                                                    <a href="{{ route('admin.emails.editor', ['id' => $template->id]) }}"
+                                                        class="btn btn-primary template-select px-3"
+                                                        data-id="{{ $template->id }}" id="select-button-{{ $template->id }}">
+                                                        {{ session('selected_id') == $template->id ? 'Selected' : 'Use' }}
+                                                    </a>
                                                 </div>
-                                                <a href="{{ route('admin.emails.editor', ['id' => $template->id]) }}"
-                                                    class="btn btn-primary template-select px-3"
-                                                    data-id="{{ $template->id }}" id="select-button-{{ $template->id }}">
-                                                    {{ session('selected_id') == $template->id ? 'Selected' : 'Select' }}
-                                                </a>
                                             </div>
                                         </div>
                                     @endforeach
@@ -71,7 +72,7 @@
 
                             </div>
                             <div class="col-lg-3 border shadow">
-                                <form method="POST" action="{{ route('admin.emails.send') }}" class="pt-2">
+                                <form method="POST" action="{{ route('admin.emails.send', 'sendEmail') }}" class="pt-2">
                                     @csrf
                                     <input type="hidden" name="template_id" id="selectedTemplateId"
                                         value="{{ session('selected_id') }}">
@@ -108,6 +109,30 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="createTemplateModal" tabindex="-1" aria-labelledby="createTemplateModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ route('admin.emails.saveAsNew', 'savetemplate') }}">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createTemplateModalLabel">Create New Template</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="templateName" class="form-label">Template Name</label>
+                                <input type="text" class="form-control" id="templateName" name="template_name" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Template</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
     @endsection
 
     @section('scripts')
@@ -145,7 +170,7 @@
                         e.preventDefault();
 
                         selectButtons.forEach(btn => {
-                            btn.textContent = 'Select';
+                            btn.textContent = 'Use';
                             btn.classList.remove('disabled');
                         });
 
@@ -174,7 +199,7 @@
                 selectButtons.forEach(button => {
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
-                        selectButtons.forEach(btn => btn.textContent = 'Select');
+                        selectButtons.forEach(btn => btn.textContent = 'Use');
                         this.textContent = 'Selected';
                         selectedTemplateIdInput.value = this.getAttribute(
                             'data-id'); // Update hidden input
