@@ -10,41 +10,53 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeEmail extends Mailable implements ShouldQueue
+class ResetPasswordMailable extends Mailable
 {
     use Queueable, SerializesModels;
     public $user;
+    public $url;
     public $emailBody;
     /**
      * Create a new message instance.
      */
-    public function __construct($user)
+    public function __construct($user, $url)
     {
         $this->user = $user;
-        $template = EmailTemplate::where('name', 'user_registration')->first();
-        $this->emailBody = $this->parseTemplate($template->body ?: $template->default_body, $user);
+        $this->url = $url;
+
+        $template = EmailTemplate::where('name', 'password_reset')->first();
+        
+        $this->emailBody = $this->parseTemplate($template->body ?: $template->default_body, $user, $url);
     }
 
-    protected function parseTemplate($templateBody, $user)
+
+    /**
+     * Parse the email template placeholders.
+     *
+     * @param $templateBody
+     * @param $user
+     * @param $url
+     * @return string
+     */
+    protected function parseTemplate($templateBody, $user, $url)
     {
-        // Define your custom placeholders
+        // Define placeholders and their corresponding values
         $placeholders = [
             '{{name}}' => $user->name,
             '{{email}}' => $user->email,
-            // Add more placeholders if needed
+            '{{reset_url}}' => $url,
         ];
 
-        // Replace custom placeholders with actual values
+        // Replace placeholders in the template body with actual values
         return str_replace(array_keys($placeholders), array_values($placeholders), $templateBody);
     }
-
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome To Richtv',
+            subject: 'Reset Password Notification',
         );
     }
 
@@ -54,10 +66,11 @@ class WelcomeEmail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.user.new',
+            markdown: 'emails.password_reset',
             with: [
                 'body' => $this->emailBody,
                 'user' => $this->user,
+                'url' => $this->url,
             ]
         );
     }

@@ -86,7 +86,6 @@ Route::prefix('watchlist')->name('watchlist.')->group(function () {
     Route::put('update-privacy', [WatchlistController::class, 'updatePrivacy'])->name('update-privacy');
     Route::delete('symbol', [WatchlistController::Class, 'deleteWatchListSymbol']);
     Route::delete('deletewatchlist', [WatchlistController::class, 'deleteWatchList']);
-    
 });
 
 //Exam Routes
