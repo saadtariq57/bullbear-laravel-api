@@ -73,7 +73,7 @@ class EmailTemplateController extends Controller
                 'fromName' => 'wajid',
                 'fromAddress' => 'admin@themesbrand.com',
                 // 'name' => 'Custom Email for Segment ' . implode(', ', $segments),
-                'name' => 'Custom Email for ' . $subject,
+                'name' => $subject,
                 'subject' => $subject,  // Use the subject from the form
                 'language' => 'en',
                 'template' => 'mautic_code_mode',
@@ -120,11 +120,22 @@ class EmailTemplateController extends Controller
     
     public function saveAsNewTemplate(Request $request)
     {
-        $template = new EmailTemplate();
-        $template->name = $request->input('template_name');
-        $template->body = $request->input('email_template_content');
-        $template->default_body = $request->input('email_template_content');
-        $template->save();
+        // $template = new EmailTemplate();
+        // $template->name = $request->input('template_name');
+        // $template->body = $request->input('email_template_content');
+        // $template->default_body = $request->input('email_template_content');
+        // $template->save();
+        $request->validate([
+            'template_name' => 'required|string|max:255',
+        ]);
+        
+        $template = EmailTemplate::create([
+            'name' => $request->input('template_name'),
+            'body' => '',
+            'default_body' => '',
+            'template_img' => '',
+            'type' => 'custom'
+        ]);
     
         return redirect()->route('admin.emails.index')->with('success', 'New template created successfully!')->with('selected_id', $template->id);
     }   

@@ -24,12 +24,6 @@
     <div class="row">
         <div class="col-12">
             <div class="">
-                <form method="POST" action="{{ route('admin.emails.saveAsNew') }}" class="w-75 d-flex gap-3 position-absolute">
-                    @csrf
-                    <input type="hidden" name="email_template_content" id="new_template_content">
-                    <input type="text" name="template_name" placeholder="Enter new template name" class="form-control w-25">
-                    <button type="submit" onclick="copyContent()" class="btn btn-primary">Save as New Template</button>
-                </form>
                 <form method="POST" action="{{ route('admin.emails.update', $template->id) }}">
                     @csrf
                     <button type="submit" class="btn btn-primary d-block ms-auto">Save</button>

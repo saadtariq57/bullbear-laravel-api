@@ -10,6 +10,8 @@ use App\Models\WatchlistSymbol;
 use App\Models\Symbol;
 use App\Services\featureService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WatchlistAlertsMailable;
 
 class WatchlistController extends Controller
 {
@@ -385,11 +387,13 @@ class WatchlistController extends Controller
         return response()->json(['message' => 'Positions updated successfully']);
     }
 
+    
     public function updatePrivacy(Request $request)
     {
         $selectedPrivacy = $request->input('privacy_option');
         $watchlistID = $request->input('watchlist_id');
         $userWatchlist = UserWatchlist::where('id', $watchlistID)->first();
+        
         if($userWatchlist){
             $userWatchlist->update([
                 'who_can_view' => $selectedPrivacy,
@@ -434,6 +438,44 @@ class WatchlistController extends Controller
         }
         return response()->json($response);
     }
+
+    public function sendWatchlistEmailsForTest($userId)
+    {
+        $user = User::find($userId);
+        if ($user && UserWatchlist::where('user_id', $userId)->exists()) {
+            $watchlistData = UserWatchlist::where('user_id', $userId)
+                ->orderBy('position')
+                ->with([
+                    'watchlistSymbols' => function ($query) {
+                        $query->orderBy('position');
+                    },
+                    'watchlistSymbols.symbol'
+                ])->get();
+            // return response()->json(['message' => 'email sent', 'email watchlist data' => $watchlistData]);
+            // Send the email
+             Mail::to($user->email)->send(new WatchlistAlertsMailable($user, $watchlistData));
+
+            // Log success
+            \Log::info("Watchlist email sent to user: {$user->email}");
+        } else {
+            // Log warning if no watchlist found
+            \Log::warning("No watchlist found for user ID: {$userId}");
+        }
+    }
+
+    // public function sendWatchlistEmails()
+    // {
+    //     $usersWithWatchlists = UserWatchlist::whereHas('watchlists')->get();
+
+    //     foreach ($usersWithWatchlists as $user) {
+    //         $watchlistData = $this->getUserWatchlistData($user->id);
+
+    //         // Send the email
+    //         Mail::to($user->email)->send(new WatchlistAlertsMailable($user, $watchlistData));
+    //     }
+    // }
+    
+
 
     // Admin panel Routes Below
     // public function AdminIndex(Request $request)
