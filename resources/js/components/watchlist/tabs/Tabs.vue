@@ -286,7 +286,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 import watchlist01 from '../../../../images/watchlist-preview-1.png';
@@ -297,6 +297,8 @@ import { Skeletor } from "vue-skeletor";
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import 'datatables.net-dt/css/jquery.dataTables.css';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWatchlistsModule from '@/stores/watchlistStore';
 
 DataTable.use(DataTablesCore);
 
@@ -313,11 +315,12 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const moduleRegistered = ref(false);
     const isUserLoggedIn = computed(() => store.state.userData !== null);
     const userData = computed(() => store.state.userData);
-    const watchlists = computed(() => store.state.userWatchlists.watchlists);
-    const userHasWatchlist = computed(() => store.state.userWatchlists.userHasWatchlist);
-    const selectedWatchlist = ref(null); 
+    const watchlists = ref([]);
+    const userHasWatchlist = ref(false);
+    const selectedWatchlist = ref(null);
     const dataTableKeyList = ref(null);
     const dataTableKeyNews = ref(null);
     const errorMessage = ref('');
@@ -330,10 +333,45 @@ export default {
     };
     const currentMarketingTab = ref('watchstocks');
     const currentMarketingImage = computed(() => marketingImages[currentMarketingTab.value]);
+    
+    const dataTableOptions = {
+      autoWidth: false,
+      paging: true,
+      searching: true,
+      ordering: true,
+      info: true,
+    };
+
+    const initializeModuleAndFetchData = () => {
+      if (!store.hasModule('userWatchlists')) {
+        registerVuexModule('userWatchlists', userWatchlistsModule);
+        moduleRegistered.value = true;
+      }
+      // Fetch data after module registration
+      if (isUserLoggedIn.value) {
+        isLoading.value = true;
+        store.dispatch('userWatchlists/getUserWatchlistData', { userId: userData.value.id })
+          .then(() => {
+            watchlists.value = store.state.userWatchlists.watchlists;
+            userHasWatchlist.value = store.state.userWatchlists.userHasWatchlist;
+            if (watchlists.value.length > 0) {
+              selectedWatchlist.value = watchlists.value[0];
+            }
+            isLoading.value = false;
+          })
+          .catch((error) => {
+            console.error('Error fetching user watchlists:', error);
+            isLoading.value = false;
+          });
+      } else {
+        isLoading.value = false;
+      }
+    };
+
     const listColumns = [
       {
         title: 'CUSTOM A - Z',
-        data: 'symbol.symbol', // Access nested property
+        data: 'symbol.symbol',
         render: (data, type, row) => {
           return `${data}<br><span class="small-para fw-bold mb-0">${row.symbol.name}</span>`;
         },
@@ -422,31 +460,27 @@ export default {
       },
     ];
 
-    // Define DataTable options if needed
-    const dataTableOptions = {
-      autoWidth: false,
-      paging: true,
-      searching: true,
-      ordering: true,
-      info: true,
-    };
+    watch(moduleRegistered, (newVal) => {
+      if (newVal) {
+        initializeModuleAndFetchData();
+      }
+    });
 
+    // Register module and fetch data on component mount
     onMounted(() => {
-      if (isUserLoggedIn.value) {
-        isLoading.value = true;
-        store.dispatch('userWatchlists/getUserWatchlistData', { userId: userData.value.id })
-          .then(() => {
-            if (watchlists.value.length > 0) {
-              selectedWatchlist.value = watchlists.value[0];
-            }
-            isLoading.value = false;
-          })
-          .catch((error) => {
-            console.error('Error fetching user watchlists:', error);
-            isLoading.value = false;
-          });
+      if (!store.hasModule('userWatchlists')) {
+        registerVuexModule('userWatchlists', userWatchlistsModule);
+        moduleRegistered.value = true;
       } else {
-        isLoading.value = false;
+        moduleRegistered.value = true;
+        initializeModuleAndFetchData();
+      }
+    });
+
+    // Unregister module on component unmount
+    onBeforeUnmount(() => {
+      if (moduleRegistered.value) {
+        unregisterVuexModule('userWatchlists');
       }
     });
 
