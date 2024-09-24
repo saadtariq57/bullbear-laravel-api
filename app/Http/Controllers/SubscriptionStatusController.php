@@ -104,7 +104,7 @@ class SubscriptionStatusController extends Controller
             // Cancel the subscription
             $user->subscription($subscriptionName)->cancel();
 
-            $user->update(['subscription_plan_id' => 1]);
+            //$user->update(['subscription_plan_id' => 1]);
 
             return response()->json(['message' => 'Subscription cancelled successfully.'], 200);
         } catch (\Exception $e) {

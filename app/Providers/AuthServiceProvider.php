@@ -31,11 +31,6 @@ class AuthServiceProvider extends ServiceProvider
         // Define 'isAdmin' Gate
         Gate::define('isAdmin', [UserPolicy::class, 'isAdmin']);
 
-        // Define 'isSubscribed' Gate
-        Gate::define('isSubscribed', function (User $user, $planName) {
-            return $user->subscribed('default') && $user->subscription('default')->stripe_price === SubscriptionPlan::where('name', $planName)->value('stripe_monthly_price_id');
-        });
-
         /**
          * Dynamic Gate to check feature access and enforce limits.
          * Usage: Gate::allows('access-feature', 'feature_name');
