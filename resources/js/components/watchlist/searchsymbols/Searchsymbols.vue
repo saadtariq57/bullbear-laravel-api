@@ -33,8 +33,6 @@
                   <td>
                     <p class="text-oneline company_name mb-0">{{ symbol.company_name }}</p>
                   </td>
-                  <!-- <td>{{ symbol.country }}</td> -->
-                  <td>USA</td>
                 </tr>
                 <tr v-show="error">
                   <td>{{ error }}</td>

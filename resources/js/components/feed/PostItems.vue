@@ -6,7 +6,7 @@
         Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i></button>
     </div>
     <div v-if="computedPosts.length > 0">
-      <div v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
+      <div ref="scrollContainer" v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
         <!-- Post heading section -->
         <div class="post-wrapper">
           <div class="post-heading p-3">
@@ -179,6 +179,19 @@
             @show-reactions="handleShowReactions" @comment-submitted="updateCommentsCount($event)" @comment-deleted="updateCommentsCount($event)" />
         </div>
       </div>
+      <!-- Loading Indicator for More Posts -->
+      <div v-if="isFetchingMore" class="text-center my-4">
+        <span>Loading more posts...</span>
+        <!-- Optional: Add a spinner for better UX -->
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      
+      <!-- Optional: No More Posts Message -->
+      <div v-else-if="!hasMorePosts" class="text-center my-4">
+        <span>No more posts to load.</span>
+      </div>
     </div>
     <div v-else-if="loadingComputedPosts">
       <div class="post-wrapper shadow mb-3">
@@ -310,6 +323,8 @@
 import { formatDateTime } from '../../utils';
 import { Modal } from 'bootstrap';
 import { Dropdown } from 'bootstrap';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userFeedModule from '@/stores/userFeedStore';
 import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
@@ -341,13 +356,14 @@ export default {
       activeReactionData: null,
       clickedPost: null,
       clickedPostReactionTypes: null,
-      loadingComputedPosts: true
+      loadingComputedPosts: true,
+      moduleRegistered: false,
+      debouncedHandleScroll: null,
     };
   },
   computed: {
     ...mapState(['userData']),
-    ...mapState('userProfile', ['profileImagePath']),
-    ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags']),
+    ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags', 'hasMorePosts', 'isFetchingMore']),
     computedPosts() {
       return this.posts.map(post => {
         let updatedPost = {
@@ -366,6 +382,9 @@ export default {
         return updatedPost;
       });
     },
+    userName() {
+      return this.context === 'profile' ? this.$route.params.userName : null;
+    }
   },
   watch: {
     activeReactionData(newVal) {
@@ -397,12 +416,23 @@ export default {
     ]),
     ...mapActions('userFeedComment', ['fetchCommentsForPost']),
     formatDateTime,
+    debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    },
     getReactionName(reactionTypeId) {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
     },
     triggerPostModal(post) {
-      this.$emit('show-post-modal', post); // Emit event with post data
+      this.$emit('show-post-modal', post);
     },
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
@@ -413,7 +443,6 @@ export default {
       this.loadingComputedPosts = false;
     },
     handlePreviewModalMounted(modalElement) {
-      // console.log('Modal element:', modalElement);
       if (modalElement) {
         this.previewModalInstance = new Modal(modalElement, { backdrop: 'static' });
       } else {
@@ -423,7 +452,6 @@ export default {
     openPostPreviewModal(post) {
       this.clickedPost = post;
       this.clickedPostReactionTypes = this.reactionTypes;
-      // console.log(this.reactionTypes);
       if (this.previewModalInstance) {
         this.previewModalInstance.show();
       } else {
@@ -447,9 +475,16 @@ export default {
       this.activeReactionData = { postId, reactionData };
     },
     handleScroll() {
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-      if (nearBottom) {
-        this.fetchMorePosts({ context: this.context });
+        const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+        if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
+            this.loadMorePosts();
+        }
+    },
+    async loadMorePosts() {
+      if (this.userName) {
+        await this.fetchMorePosts({ context: this.context, userName: this.userName });
+      }else{
+        await this.fetchMorePosts({ context: this.context });
       }
     },
     toggleComments(postId, userId) {
@@ -517,11 +552,21 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll);
+    this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
+    window.addEventListener('scroll', this.debouncedHandleScroll);
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
+    if (this.moduleRegistered) {
+      unregisterVuexModule('userFeed');
+    }
+    window.removeEventListener('scroll', this.debouncedHandleScroll);
   },
+  created() {
+    if (!this.$store.hasModule('userFeed')) {
+      registerVuexModule('userFeed', userFeedModule);
+      this.moduleRegistered = true;
+    }
+  }
 };
 </script>
 

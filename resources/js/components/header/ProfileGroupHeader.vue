@@ -227,379 +227,378 @@ import 'cropperjs/dist/cropper.css';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import Swal from 'sweetalert2';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userProfileModule from '@/stores/profileStore';
 
 export default {
-    components: {
-        VueCropper,
-        Skeletor
+  components: {
+    VueCropper,
+    Skeletor
+  },
+  props: {
+    context: String,
+    id: String,
+  },
+  data() {
+    return {
+      isRepositioning: false,
+      cover_position: 0,
+      offsetY: 0,
+      maxOffsetY: 0,
+      minOffsetY: 0,
+      selectedFiles: [],
+      selectedImage: null,
+      zoomLevel: 0,
+      uploadingProfilePhoto: true,
+      groupData: null,
+      showSkeletor: false,
+      authRole: null,
+      defaultCoverImage: '/uploads/photos/d-cover.jpg',
+      defaultProfileImage: '/uploads/photos/d-avatar.jpg',
+      coverImageLoadAttempts: 0,
+      profileImageLoadAttempts: 0,
+      maxLoadAttempts: 2,
+      moduleRegistered: false // Track module registration
+    };
+  },
+  computed: {
+    ...mapState(['userData', 'success']),
+    ...mapState('userProfile', ['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
+    ...mapState('profileGroupHeader', ['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
+    coverImageSrc() {
+      return this.UpdatedCoverImagePath != null
+        ? `/uploads/${this.UpdatedCoverImagePath}`
+        : `/uploads/${this.coverImagePath}`;
     },
-    props: {
-        context: String,
-        id: String,
+    groupCoverImageSrc() {
+      return this.groupData && this.groupData.cover != null
+        ? `/uploads/${this.groupData.cover}`
+        : `/uploads/${this.coverImagePath}`;
     },
-    computed: {
-        ...mapState(['userData', 'success']),
-        ...mapState('userProfile', ['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
-        ...mapState('profileGroupHeader', ['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
-        coverImageSrc() {
-            return this.UpdatedCoverImagePath != null
-                ? `/uploads/${this.UpdatedCoverImagePath}`
-                : `/uploads/${this.coverImagePath}`;
-        },
-        groupCoverImageSrc() {
-            return this.groupData && this.groupData.cover != null
-                ? `/uploads/${this.groupData.cover}`
-                : `/uploads/${this.coverImagePath}`;
-        },
-    },
-    data() {
-        return {
-            isRepositioning: false,
-            cover_position: 0,
-            offsetY: 0,
-            maxOffsetY: 0,
-            minOffsetY: 0,
-            selectedFiles: [],
-            selectedImage: null,
-            zoomLevel: 0,
-            uploadingProfilePhoto: true,
-            groupData: null,
-            showSkeletor: false,
-            authRole: null,
-            defaultCoverImage: '/uploads/photos/d-cover.jpg',
-            defaultProfileImage: '/uploads/photos/d-avatar.jpg',
-            coverImageLoadAttempts: 0,
-            profileImageLoadAttempts: 0,
-            maxLoadAttempts: 2,
-        }
-    },
-    created() {
-        console.log('the context is: ', this.context);
-    },
-    methods: {
-        ...mapActions('profileGroupHeader', ['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),
-        toggleDropdown(event) {
-            const dropdownElement = event.target.closest('.dropdown-toggle');
-            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
-            dropdownInstance.toggle();
-        },
-        showUploadPhotoeModal() {
-            this.clearMessage();
-            if (this.profilePhotoModalInstance) {
-                this.profilePhotoModalInstance.show();
-            } else {
-                console.error('Modal instance is not initialized.');
-            }
-        },
-        showUploadCoverPhotoModal() {
-            this.clearMessage();
-            if (this.coverPhotoModalInstance) {
-                this.coverPhotoModalInstance.show();
-            } else {
-                console.error('Modal instance is not initialized.');
-            }
-        },
-        closeProfileModal() {
-            this.selectedImage = null;
-            this.selectedFiles = [];
-            this.uploadingProfilePhoto = true;
-            this.clearMessage();
-        },
-        repositionCoverPhoto(event) {
-            this.isRepositioning = true;
-        },
-        repositionWithWheel(event) {
-            if (this.isRepositioning) {
-                // Adjust deltaY value as needed based on mouse wheel sensitivity
-                if (this.context == "profileHeader") {
-                    const deltaY = event.deltaY;
-                    // Update offsetY within its boundaries
-                    this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
-                    this.$refs.coverImage.style.top = this.offsetY + 'px';
-                }
-                else {
-                    const deltaY = event.deltaY;
-                    this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
-                    this.$refs.coverGroupImage.style.top = this.offsetY + 'px';
-                }
-                // Prevent default scrolling behavior
-                event.preventDefault();
-            }
-        },
-        async SetCoverPosition() {
-            this.isRepositioning = false;
-            this.uploadingProfilePhoto = false;
-            try {
-                if (this.context == "profileHeader") {
-                    this.cover_position = this.offsetY + 'px';
-                    this.userData.cover_position = this.cover_position;
-                    // Update cover position via API
-                    await axios.post('/api/update-cover-position', {
-                        cover_position: this.cover_position
-                    });
-
-                    // Refetch user data to update the Vuex store
-                    await this.$store.dispatch('fetchUserData');
-
-                    // console.log('Cover position updated successfully');
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        width: "450px",
-                        timer: 1000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal.stopTimer;
-                            toast.onmouseleave = Swal.resumeTimer;
-                        }
-                    });
-                    Toast.fire({
-                        icon: "success",
-                        title: "Cover position updated successfully!"
-                    });
-                }
-                else {
-                    this.cover_position = this.offsetY + 'px';
-                    this.groupData.cover_position = this.cover_position;
-
-                    // console.log("Header")
-                    await axios.post('/api/group-cover-position', {
-                        cover_position: this.cover_position,
-                        group_id: this.id
-                    });
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        width: "450px",
-                        timer: 1000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal.stopTimer;
-                            toast.onmouseleave = Swal.resumeTimer;
-                        }
-                    });
-                    Toast.fire({
-                        icon: "success",
-                        title: "Cover position updated successfully!"
-                    });
-                }
-            } catch (error) {
-                // console.error('Error updating cover position:', error);
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "400px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
-                Toast.fire({
-                    icon: "error",
-                    title: "Error updating cover position"
-                });
-            }
-        },
-        CancelCoverPosition() {
-            if (this.context == "profileHeader") {
-                this.isRepositioning = false;
-                this.$refs.coverImage.style.top = this.cover_position;
-            }
-            else {
-                this.isRepositioning = false;
-                this.$refs.coverGroupImage.style.top = this.cover_position;
-            }
-        },
-        calculateOffsets() {
-            // Calculate the maximum and minimum offset values based on the actual height of the cover photo
-            if (this.context == "profileHeader") {
-                this.maxOffsetY = 0;
-                this.minOffsetY = -(this.$refs.coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
-                // console.log(this.minOffsetY);
-            }
-            else {
-                this.maxOffsetY = 0;
-                this.minOffsetY = -(this.$refs.coverGroupImage.clientHeight - this.$refs.coverGroupImage.parentElement.clientHeight);
-            }
-        },
-        handleCoverPhotoChange(event) {
-            const file = event.target.files[0];
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-            if (file && validTypes.includes(file.type)) { // Change 'files' to 'file'
-                this.readFilesAndPreview([file]);
-            } else {
-                alert('Invalid file type. Please select an image file (jpeg, jpg, png).');
-            }
-        },
-        handleProfileChange(event) {
-            const files = event.target.files;
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-            if (files && files.length > 0) {
-                const filteredFiles = Array.from(files).filter(file => validTypes.includes(file.type));
-
-                if (filteredFiles.length > 0) {
-                    this.readFilesAndPreview(filteredFiles);
-                } else {
-                    alert('Invalid file type. Please select an image file (jpeg, jpg, png).');
-                }
-            }
-        },
-        readFilesAndPreview(files) {
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const fileWithPreview = {
-                        file,
-                        preview: e.target.result,
-                        alt: ""
-                    };
-                    this.selectedFiles.push(fileWithPreview);
-                    if (!this.selectedImage) {
-                        this.selectedImage = fileWithPreview;
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        },
-        zoomImage() {
-            this.$refs.cropper.zoomTo(this.zoomLevel);
-            this.$refs.covercropper.zoomTo(this.zoomLevel);
-        },
-        rotateImage(event) {
-            const degrees = parseInt(event.target.value);
-            const cropper = this.$refs.covercropper;
-            if (!cropper) {
-                console.error('Cropper instance not found');
-                return;
-            }
-            cropper.rotateTo(degrees);
-        },
-        applyProfileSetting(context) {
-            const canvas = this.$refs.cropper.getCroppedCanvas();
-            if (context === 'profileHeader') {
-                canvas.toBlob((blob) => {
-                    const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
-                    this.uploadProfileImage({ file, context });
-                    this.$store.dispatch('fetchUserData');
-                }, 'image/jpeg');
-            }
-            else {
-                canvas.toBlob((blob) => {
-                    const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
-                    const group_Id = this.id;
-                    this.uploadProfileImage({ file, context, group_Id });
-                    this.fetchGroupData();
-                }, 'image/jpeg');
-            }
-        },
-        async applyCoverImageSetting(context) {
-            const canvas = this.$refs.covercropper.getCroppedCanvas();
-
-            if (context === 'profileHeader') {
-                this.userData.cover_position = "0px";
-                canvas.toBlob((blob) => {
-                    const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
-                    this.uploadCoverImage({ file, context });
-                }, 'image/jpeg');
-                try {
-                    this.$refs.coverImage.style.top = '0px';
-                    await axios.post('/api/update-cover-position', {
-                        cover_position: this.userData.cover_position
-                    });
-                    this.calculateOffsets();
-                    await this.$store.dispatch('fetchUserData');
-                } catch (error) {
-                    this.uploadingProfilePhoto = true;
-                }
-            }
-            else {
-                this.groupData.cover_position = "0px";
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
-                    const groupId = this.id;
-                    await this.uploadCoverImage({ file, context, groupId });
-                    await this.fetchGroupData(); // Ensure this is called after the cover position update
-                    await this.calculateOffsets();
-                }, 'image/jpeg');
-            }
-        },
-        async RemoveCover(context) {
-            if (context === 'profileHeader') {
-                this.RemoveCoverImage(context);
-                this.$refs.coverImage.style.top = '0px';
-                this.$store.dispatch('fetchUserData');
-                this.calculateOffsets();
-            }
-            else {
-                const group_Id = this.id;
-                this.RemoveCoverImage({ context, group_Id });
-                this.fetchGroupData();
-                this.calculateOffsets();
-            }
-        },
-        updatePreview() { },
-        fetchGroupData() {
-            axios.get(`/api/groups/join/${this.id}`)
-                .then(response => {
-                    this.groupData = response.data;
-                    // console.log(this.groupData);
-                })
-                .catch(error => {
-                    console.error('There was an error fetching the group data:', error);
-                });
-        },
-        handleCoverImageError(event) {
-            if (this.coverImageLoadAttempts < this.maxLoadAttempts) {
-                this.coverImageLoadAttempts++;
-                event.target.src = this.defaultCoverImage;
-            } else {
-                event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EImage%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
-            }
-            this.calculateOffsets();
-        },
-        handlegroupprofileError(event) {
-            if (this.profileImageLoadAttempts < this.maxLoadAttempts) {
-                this.profileImageLoadAttempts++;
-                event.target.src = this.defaultProfileImage;
-            } else {
-                event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EProfile%20image%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
-            }
-        },
-        checkUserRole() {
-            axios.get(`/api/groups/${this.id}/check`)
-                .then(response => {
-                    // console.log('Role check:', response);
-                    if (response.data.authorized) {
-                        this.authRole = true;
-                    } else {
-                        this.authRole = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching group role:', error);
-                    this.authRole = false;
-                    // Optionally handle the error by displaying a message to the user
-                });
-        }
-    },
-    mounted() {
-        this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
-        this.coverPhotoModalInstance = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
-        this.cover_position = this.userData.cover_position;
-        // console.log(this.id);
-        if (this.id) {
-            this.checkUserRole();
-            this.fetchGroupData();
-            this.showSkeletor = true
-        }
+  },
+  created() {
+    // Register the userProfile module if not already registered
+    if (!this.$store.hasModule('userProfile')) {
+      registerVuexModule('userProfile', userProfileModule);
+      this.moduleRegistered = true; // Track that the module was registered here
     }
+    console.log('the context is: ', this.context);
+  },
+  methods: {
+    ...mapActions('profileGroupHeader', ['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),
+    toggleDropdown(event) {
+      const dropdownElement = event.target.closest('.dropdown-toggle');
+      const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+      dropdownInstance.toggle();
+    },
+    showUploadPhotoeModal() {
+      this.clearMessage();
+      if (this.profilePhotoModalInstance) {
+        this.profilePhotoModalInstance.show();
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
+    },
+    showUploadCoverPhotoModal() {
+      this.clearMessage();
+      if (this.coverPhotoModalInstance) {
+        this.coverPhotoModalInstance.show();
+      } else {
+        console.error('Modal instance is not initialized.');
+      }
+    },
+    closeProfileModal() {
+      this.selectedImage = null;
+      this.selectedFiles = [];
+      this.uploadingProfilePhoto = true;
+      this.clearMessage();
+    },
+    repositionCoverPhoto(event) {
+      this.isRepositioning = true;
+    },
+    repositionWithWheel(event) {
+      if (this.isRepositioning) {
+        // Adjust deltaY value as needed based on mouse wheel sensitivity
+        if (this.context == "profileHeader") {
+          const deltaY = event.deltaY;
+          // Update offsetY within its boundaries
+          this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
+          this.$refs.coverImage.style.top = this.offsetY + 'px';
+        } else {
+          const deltaY = event.deltaY;
+          this.offsetY = Math.max(this.minOffsetY, Math.min(this.maxOffsetY, this.offsetY + deltaY));
+          this.$refs.coverGroupImage.style.top = this.offsetY + 'px';
+        }
+        // Prevent default scrolling behavior
+        event.preventDefault();
+      }
+    },
+    async SetCoverPosition() {
+      this.isRepositioning = false;
+      this.uploadingProfilePhoto = false;
+      try {
+        if (this.context == "profileHeader") {
+          this.cover_position = this.offsetY + 'px';
+          this.userData.cover_position = this.cover_position;
+          // Update cover position via API
+          await axios.post('/api/update-cover-position', {
+            cover_position: this.cover_position
+          });
+
+          // Refetch user data to update the Vuex store
+          await this.$store.dispatch('fetchUserData');
+
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            width: "450px",
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Cover position updated successfully!"
+          });
+        } else {
+          this.cover_position = this.offsetY + 'px';
+          this.groupData.cover_position = this.cover_position;
+
+          await axios.post('/api/group-cover-position', {
+            cover_position: this.cover_position,
+            group_id: this.id
+          });
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            width: "450px",
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Cover position updated successfully!"
+          });
+        }
+      } catch (error) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          width: "400px",
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Error updating cover position"
+        });
+      }
+    },
+    CancelCoverPosition() {
+      if (this.context == "profileHeader") {
+        this.isRepositioning = false;
+        this.$refs.coverImage.style.top = this.cover_position;
+      } else {
+        this.isRepositioning = false;
+        this.$refs.coverGroupImage.style.top = this.cover_position;
+      }
+    },
+    calculateOffsets() {
+      if (this.context == "profileHeader") {
+        this.maxOffsetY = 0;
+        this.minOffsetY = -(this.$refs.coverImage.clientHeight - this.$refs.coverImage.parentElement.clientHeight);
+      } else {
+        this.maxOffsetY = 0;
+        this.minOffsetY = -(this.$refs.coverGroupImage.clientHeight - this.$refs.coverGroupImage.parentElement.clientHeight);
+      }
+    },
+    handleCoverPhotoChange(event) {
+      const file = event.target.files[0];
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (file && validTypes.includes(file.type)) { // Change 'files' to 'file'
+        this.readFilesAndPreview([file]);
+      } else {
+        alert('Invalid file type. Please select an image file (jpeg, jpg, png).');
+      }
+    },
+    handleProfileChange(event) {
+      const files = event.target.files;
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (files && files.length > 0) {
+        const filteredFiles = Array.from(files).filter(file => validTypes.includes(file.type));
+
+        if (filteredFiles.length > 0) {
+          this.readFilesAndPreview(filteredFiles);
+        } else {
+          alert('Invalid file type. Please select an image file (jpeg, jpg, png).');
+        }
+      }
+    },
+    readFilesAndPreview(files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const fileWithPreview = {
+            file,
+            preview: e.target.result,
+            alt: ""
+          };
+          this.selectedFiles.push(fileWithPreview);
+          if (!this.selectedImage) {
+            this.selectedImage = fileWithPreview;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    },
+    zoomImage() {
+      this.$refs.cropper.zoomTo(this.zoomLevel);
+      this.$refs.covercropper.zoomTo(this.zoomLevel);
+    },
+    rotateImage(event) {
+      const degrees = parseInt(event.target.value);
+      const cropper = this.$refs.covercropper;
+      if (!cropper) {
+        console.error('Cropper instance not found');
+        return;
+      }
+      cropper.rotateTo(degrees);
+    },
+    applyProfileSetting(context) {
+      const canvas = this.$refs.cropper.getCroppedCanvas();
+      if (context === 'profileHeader') {
+        canvas.toBlob((blob) => {
+          const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
+          this.uploadProfileImage({ file, context });
+          this.$store.dispatch('fetchUserData');
+        }, 'image/jpeg');
+      } else {
+        canvas.toBlob((blob) => {
+          const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
+          const group_Id = this.id;
+          this.uploadProfileImage({ file, context, group_Id });
+          this.fetchGroupData();
+        }, 'image/jpeg');
+      }
+    },
+    async applyCoverImageSetting(context) {
+      const canvas = this.$refs.covercropper.getCroppedCanvas();
+
+      if (context === 'profileHeader') {
+        this.userData.cover_position = "0px";
+        canvas.toBlob((blob) => {
+          const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
+          this.uploadCoverImage({ file, context });
+        }, 'image/jpeg');
+        try {
+          this.$refs.coverImage.style.top = '0px';
+          await axios.post('/api/update-cover-position', {
+            cover_position: this.userData.cover_position
+          });
+          this.calculateOffsets();
+          await this.$store.dispatch('fetchUserData');
+        } catch (error) {
+          this.uploadingProfilePhoto = true;
+        }
+      } else {
+        this.groupData.cover_position = "0px";
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
+          const groupId = this.id;
+          await this.uploadCoverImage({ file, context, groupId });
+          await this.fetchGroupData(); 
+          await this.calculateOffsets();
+        }, 'image/jpeg');
+      }
+    },
+    async RemoveCover(context) {
+      if (context === 'profileHeader') {
+        this.RemoveCoverImage(context);
+        this.$refs.coverImage.style.top = '0px';
+        this.$store.dispatch('fetchUserData');
+        this.calculateOffsets();
+      } else {
+        const group_Id = this.id;
+        this.RemoveCoverImage({ context, group_Id });
+        this.fetchGroupData();
+        this.calculateOffsets();
+      }
+    },
+    updatePreview() { },
+    fetchGroupData() {
+      axios.get(`/api/groups/join/${this.id}`)
+        .then(response => {
+          this.groupData = response.data;
+        })
+        .catch(error => {
+          console.error('There was an error fetching the group data:', error);
+        });
+    },
+    handleCoverImageError(event) {
+      if (this.coverImageLoadAttempts < this.maxLoadAttempts) {
+        this.coverImageLoadAttempts++;
+        event.target.src = this.defaultCoverImage;
+      } else {
+        event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EImage%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
+      }
+      this.calculateOffsets();
+    },
+    handlegroupprofileError(event) {
+      if (this.profileImageLoadAttempts < this.maxLoadAttempts) {
+        this.profileImageLoadAttempts++;
+        event.target.src = this.defaultProfileImage;
+      } else {
+        event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2Fsvg%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Crect%20fill%3D%22%23dddddd%22%20width%3D%22100%25%22%20height%3D%22100%25%22%2F%3E%3Ctext%20fill%3D%22%23666666%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EProfile%20image%20not%20available%3C%2Ftext%3E%3C%2Fsvg%3E';
+      }
+    },
+    checkUserRole() {
+      axios.get(`/api/groups/${this.id}/check`)
+        .then(response => {
+          if (response.data.authorized) {
+            this.authRole = true;
+          } else {
+            this.authRole = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching group role:', error);
+          this.authRole = false;
+        });
+    }
+  },
+  mounted() {
+    this.profilePhotoModalInstance = new Modal(this.$refs.profilePhotoModal, { backdrop: 'static' });
+    this.coverPhotoModalInstance = new Modal(this.$refs.coverPhotoModal, { backdrop: 'static' });
+    this.cover_position = this.userData.cover_position;
+    if (this.id) {
+      this.checkUserRole();
+      this.fetchGroupData();
+      this.showSkeletor = true;
+    }
+  },
+  beforeDestroy() {
+    // Unregister the userProfile module only if it was registered by this component
+    if (this.moduleRegistered) {
+      unregisterVuexModule('userProfile');
+    }
+  }
 }
 </script>
+
 <style>
 .profile_bg_img {
     position: relative;

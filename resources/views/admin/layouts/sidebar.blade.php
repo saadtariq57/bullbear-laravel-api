@@ -42,12 +42,6 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="--{ -{ route -('admin.watchlist.index') } -} --" class="waves-effect">
-                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">1</span>
-                        <span>Watchlist Management </span>
-                    </a>
-                </li> -->
 
                 <li>
                     <a href="{{ route('admin.symbols.index') }}" class="waves-effect">
@@ -105,7 +99,26 @@
                                 <li><a href="{{ route('admin.groups.categories.create') }}">Add New Category</a></li>
                     </ul>
                 </li>
-
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uim uim-box"></i>
+                        <span>Watchlists</span>
+                    </a>
+                     <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('admin.watchlists.index') }}">All Watchlists</a></li>
+                                <li><a href="{{ route('admin.watchlists.create') }}">Add New Watchlist</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uim uim-box"></i>
+                        <span>User Sessions</span>
+                    </a>
+                     <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{{ route('admin.sessions.index') }}">All Sessions</a></li>
+                                <li><a href="{{ route('admin.sessions.create') }}">Add New Session</a></li>
+                    </ul>
+                </li>
                 <li>
                     <a href="{{ route('admin.posts.index') }}" class="waves-effect">
                         <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">3</span>

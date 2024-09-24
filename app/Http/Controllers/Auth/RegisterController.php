@@ -81,6 +81,7 @@ class RegisterController extends Controller
             'name' => $initialData['name'],
             'email' => $initialData['email'],
             'password' => Hash::make($request->password),
+            'subscription_plan_id' => 1,
         ]);
 
         $request->session()->forget('initial_signup_data');
@@ -129,12 +130,27 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        // Validate the incoming registration request
         $this->validator($request->all())->validate();
 
+        // Create the user
         event(new Registered($user = $this->create($request->all())));
 
-        return $this->registered($request, $user)
-            ?: redirect($this->redirectPath());
+        // Log the user in
+        $this->guard()->login($user);
+
+        // Retrieve period and plan_id from the request
+        $period = $request->input('period');
+        $plan_id = $request->input('plan_id');
+        $allowedPeriods = ['monthly', 'yearly'];
+
+        if ($period && $plan_id && in_array($period, $allowedPeriods) && $plan_id > 1) {
+            $redirectUrl = "/{$period}/{$plan_id}/checkout";
+
+            return redirect($redirectUrl);
+        }
+
+        return redirect('/email/verify');
     }
 
     protected function registered(Request $request, $user)

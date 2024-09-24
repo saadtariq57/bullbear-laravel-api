@@ -3,6 +3,7 @@ import PricingService from '../services/pricingService';
 const userSubscriptionModule = {
     namespaced: true,
     state: () => ({
+        isLoading: true,
         subscriptionPlans: [],
         selectedPlan: null,
         showYearly: true,
@@ -10,14 +11,13 @@ const userSubscriptionModule = {
     mutations: {
         setPlans(state, plans) {
             state.subscriptionPlans = plans;
+            state.isLoading = false;
         },
         setSelectedPlan(state, plan) {
             state.selectedPlan = plan;
-            localStorage.setItem('selectedPlan', JSON.stringify(plan));
         },
         setBillingCycle(state, isYearly) {
             state.showYearly = isYearly;
-            localStorage.setItem('showYearly', state.showYearly);
         }
     },
     actions: {
@@ -30,10 +30,22 @@ const userSubscriptionModule = {
                 throw error;
             }
         },
-        async setAndRedirectToCheckout({ commit }, { plan, router  }) {
-            // console.log(plan);
+        setAndRedirectToCheckout({ commit, state }, { plan, router }) {
             commit('setSelectedPlan', plan);
-            router.push({ name: 'checkout' });
+            const period = state.showYearly ? 'yearly' : 'monthly';
+
+            // Redirect to the dynamic checkout route
+            router.push({
+                name: 'checkout',
+                params: {
+                    period: period,
+                    planId: plan.id,
+                },
+            }).catch(err => {
+                if (err.name !== 'NavigationDuplicated') {
+                    console.error('Navigation error:', err);
+                }
+            });
         },
         async toggleBillingCycle({ commit, state }) {
             const isYearly = !state.showYearly; 

@@ -102,14 +102,12 @@
 <script>
 import axios from "axios";
 import ConfirmationPopup from "./ConfirmationPopup.vue"
-import LoginPopup from "../login/LoginPopup.vue"
 import basicImage from '../../../images/basic_exam.png';
 import advanceImage from '../../../images/advance_exam.jpg';
 
 export default {
   components: {
     ConfirmationPopup,
-    LoginPopup,
   },
   data() {
     return {
@@ -117,7 +115,7 @@ export default {
       basicImage: basicImage,
       advanceImage: advanceImage,
       hideSkeletor: false,
-      showAllExams: false // Add this boolean property
+      showAllExams: false
     };
   },
   methods: {

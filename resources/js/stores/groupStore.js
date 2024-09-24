@@ -108,7 +108,7 @@ const userGroupModule = {
             try {
                 const messageData = { text, userId, replyTo };
                 const message = await GroupService.sendMessage(groupId, messageData);
-                //commit('addMessage', message.data);
+                commit('addMessage', message.data);
             } catch (error) {
                 console.error('Error sending message:', error);
             }

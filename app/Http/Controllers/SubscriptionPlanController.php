@@ -39,61 +39,91 @@ class SubscriptionPlanController extends Controller
 
 	// User pricing page 
 	public function userIndex(Request $request)
-    {
-		$user = Auth::user();
-        try {
-			// Fetch all subscription plans
-			$plans = SubscriptionPlan::all(); 
-			$activeSubscriptionName = $user->subscriptions()->where('stripe_status', 'active')->value('name');
-			$currentSubscription = $user->subscription($activeSubscriptionName);
-			// Loop through each plan
-			foreach ($plans as $plan) {
-				// Fetch features for the current plan
-				$features = PlanFeatures::where('plan_id', $plan->id)->get();
-				$plan->features = $features;
-				if ($currentSubscription && $currentSubscription->items[0]->stripe_product === $plan->stripe_product_id) {
-					$plan->currentSubscription = $currentSubscription;
-				}
-			}
-			
-			$this->addStripePricesToPlans($plans);
-	
-			return response()->json($plans);
-		} catch (\Exception $e) {
-			// Handle any exceptions
-			return response()->json(['error' => 'Failed to fetch subscription plans.'], 500);
-		}
-    }
+	{
+	    try {
+	        // Fetch all plans with their features
+	        $plans = SubscriptionPlan::with('planFeatures')->get();
+	        $user = Auth::user();
+	        
+	        // If user is authenticated
+	        if ($user) {
+	            // Retrieve the name of the user's active subscription, if any
+	            $activeSubscriptionName = $user->subscriptions()
+	                                            ->where('stripe_status', 'active')
+	                                            ->value('name');
 
+	            // Get the current subscription instance, if any
+	            $currentSubscription = $user->subscription($activeSubscriptionName);
+
+	            if ($currentSubscription) {
+	                // If there's an active subscription, mark the corresponding plan
+	                foreach ($plans as $plan) {
+	                    if ($currentSubscription->items[0]->stripe_product === $plan->stripe_product_id) {
+	                        $plan->currentSubscription = $currentSubscription;
+	                        break;
+	                    }
+	                }
+	            } else {
+	                // If no active subscription, mark the "Free" plan as current
+	                foreach ($plans as $plan) {
+	                    if (strtolower($plan->name) === 'free') {
+	                        $plan->currentSubscription = 'free'; // Use a string or boolean to indicate this is the current free plan
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+
+	        // Add Stripe prices to the plans
+	        $this->addStripePricesToPlans($plans);
+	        return response()->json($plans);
+	    } catch (\Exception $e) {
+	        return response()->json(['error' => 'Failed to fetch subscription plans.'], 500);
+	    }
+	}
+
+
+    public function showSubscriptionPlan($id)
+    {
+        $plan = SubscriptionPlan::find($id);
+
+        if (!$plan) {
+            return response()->json(['message' => 'Plan not found.'], 404);
+        }
+
+        return response()->json(['plan' => $plan], 200);
+    }
 	// create user subscription
+
 	public function createUserSubscription(Request $request)
 	{
-		$user = Auth::user();
-		$priceIntent = $request->price_Intent;
-		$cardHolderName = $request->cardHolderName;
-		$payment_method = $request->payment_method;
-		$planName = $request->planName;
-		// $stripeToken = $request->_token;
-		try {
-			// Create or update the user's Stripe customer information
-			$user->createOrGetStripeCustomer();
-			
-			// Cancel all existing subscriptions
-			$activeSubscriptions = $user->subscriptions()->where('stripe_status', 'active')->get();
-			if($activeSubscriptions){
-				foreach ($activeSubscriptions as $subscription) {
-					$subscription->cancelNow();
-				}
-			}
-			
-			// Subscribe the user to the plan using Cashier
-			$user->newSubscription($planName, $priceIntent)->create($payment_method);
-			$user->update(['subscription_plan' => $planName]);
-			return 'Subscription created successfully';
-		} catch (\Exception $e) {
-			// Handle any errors that occur during subscription creation
-			return $e->getMessage();
-		}
+	    $user = Auth::user();
+	    $priceIntent = $request->price_Intent;
+	    $cardHolderName = $request->cardHolderName;
+	    $payment_method = $request->payment_method;
+	    $planName = $request->planName;
+
+	    try {
+	        // Create or update the user's Stripe customer information
+	        $user->createOrGetStripeCustomer();
+	        
+	        // Cancel all existing subscriptions
+	        $activeSubscriptions = $user->subscriptions()->where('stripe_status', 'active')->get();
+	        if($activeSubscriptions){
+	            foreach ($activeSubscriptions as $subscription) {
+	                $subscription->cancelNow();
+	            }
+	        }
+	        
+	        // Subscribe the user to the plan using Cashier
+	        $user->newSubscription($planName, $priceIntent)->create($payment_method);
+	        $user->update(['subscription_plan_id' => SubscriptionPlan::where('name', $planName)->first()->id]);
+	        return response()->json(['message' => 'Subscription created successfully'], 200);
+	    } catch (\Exception $e) {
+	        // Handle any errors that occur during subscription creation
+	        \Log::error('Subscription Creation Error: ' . $e->getMessage());
+	        return response()->json(['error' => $e->getMessage()], 500);
+	    }
 	}
 	/**
 	 * Adds Stripe price details to each plan.

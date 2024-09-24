@@ -346,9 +346,6 @@ class WidgetController extends Controller
                     return response()->json(['error' => 'No quotes data received from the API'], 404);
                 }
                 
-                // Log the quotes data
-                //Log::info('Quotes data received from API', $quotes);
-                
                 $widgetData = $widget->toArray();
                 $widgetData['symbols'] = $widget->widgetSymbols->map(function ($widgetSymbol) use ($quotes) {
                     $symbolData = $widgetSymbol->symbol->toArray();
@@ -419,7 +416,7 @@ class WidgetController extends Controller
                 }
 
                 // Find symbols to delete that aren't in the incoming list
-                $incomingSymbolIds = array_column($incomingSymbols, 'symbol_id'); // Corrected the key to match incoming data
+                $incomingSymbolIds = array_column($incomingSymbols, 'symbol_id');
                 $symbolsToDelete = array_diff($existingSymbolIds, $incomingSymbolIds);
                 foreach ($symbolsToDelete as $symbolIdToDelete) {
                     $widget->widgetSymbols()->where('symbol_id', $symbolIdToDelete)->delete();

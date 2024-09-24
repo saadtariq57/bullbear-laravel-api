@@ -91,57 +91,86 @@ import ProfileWatchlists from './ProfileWatchlists.vue';
 import ProfilePhotos from './ProfilePhotos.vue';
 import watchlistTables from '../watchlist/tabs/Tabs.vue';
 import ProfileFollowers from './ProfileFollowers.vue';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userFeedModule from '@/stores/userFeedStore';
+import userProfileModule from '@/stores/profileStore';
+import userGroupsModule from '@/stores/groupStore';
+
 export default {
-    name: 'UserFeed',
-    components: {
-        ProfileInfo,
-        PostItems,
-        CreatePost,
-        ActiveChatRooms,
-        ProfileWatchlists,
-        ProfilePhotos,
-        ProfileFollowers,
-        watchlistTables,
-        ProfileWigets
-    },
-    data() {
-        return {
-        };
-    },
-    computed: {
-        ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
-        // ...mapState('UserGroups', ['suggestedChats']),
-        ...mapState('userProfile', ['userProfileData', 'isOwnProfile']),
-        ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
-        // allChats() {
-        //     return this.suggestedChats.concat(this.myChats);
-        // },
-    },
-    created() {
-        const context = 'profile';
-        const userName = this.$route.params.userName;
-        // this.fetchSuggestedChats();
-        this.fetchJoinedChats(userName);
-        this.fetchPosts({ context, userName });
-        this.fetchReactionTypes();
-        this.getUserProfileData({ context, userName });
-        this.$nextTick(() => {
-            this.initializeRealTimeUpdates({ context });
-        });
+  name: 'UserFeed',
+  components: {
+    ProfileInfo,
+    PostItems,
+    CreatePost,
+    ActiveChatRooms,
+    ProfileWatchlists,
+    ProfilePhotos,
+    ProfileFollowers,
+    watchlistTables,
+    ProfileWigets
+  },
+  data() {
+    return {
+      modulesRegistered: []
+    };
+  },
+  computed: {
+    ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
+    ...mapState('userProfile', ['userProfileData', 'isOwnProfile']),
+    ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+  },
+  created() {
+    const context = 'profile';
+    const userName = this.$route.params.userName;
 
-    },
-    methods: {
-        ...mapActions('userProfile', ['getUserProfileData']),
-        ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
-        ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
-
-        handleShowPostModal(post) {
-            this.$refs.createPost.sharePostModal(post); // Call the method in the child component
-            //   console.log('Received post data:', post);
-        }
+    // Register userProfile module
+    if (!this.$store.hasModule('userProfile')) {
+      registerVuexModule('userProfile', userProfileModule);
+      this.modulesRegistered.push('userProfile');
     }
+
+    // Register userFeed module
+    if (!this.$store.hasModule('userFeed')) {
+      registerVuexModule('userFeed', userFeedModule);
+      this.modulesRegistered.push('userFeed');
+    }
+
+    // Register userGroups module
+    if (!this.$store.hasModule('UserGroups')) {
+      registerVuexModule('UserGroups', userGroupsModule);
+      this.modulesRegistered.push('UserGroups');
+    }
+
+    // Fetch initial data
+    this.fetchJoinedChats(userName);
+    this.fetchPosts({ context, userName });
+    this.fetchReactionTypes();
+    this.getUserProfileData({ context, userName });
+
+    // Initialize real-time updates
+    this.$nextTick(() => {
+      this.initializeRealTimeUpdates({ context });
+    });
+  },
+  methods: {
+    ...mapActions('userProfile', ['getUserProfileData']),
+    ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+    ...mapActions('UserGroups', ['fetchSuggestedChats', 'fetchJoinedChats']),
+
+    handleShowPostModal(post) {
+      this.$refs.createPost.sharePostModal(post);
+    }
+  },
+  beforeDestroy() {
+    this.modulesRegistered.forEach(module => {
+      if (this.$store.hasModule(module)) {
+        unregisterVuexModule(module);
+      }
+    });
+  }
 }
 </script>
+
 <style>
 .no-chat-wrapper {
     width: 55px;

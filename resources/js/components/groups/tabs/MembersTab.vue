@@ -87,6 +87,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import axios from 'axios';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userProfileModule from '@/stores/profileStore';
 
 export default {
   name: 'MembersTab',
@@ -97,6 +99,8 @@ export default {
       hideSkeletor: false,
       editMember: null,
       authRole: null,
+      group_id: null,
+      moduleRegistered: false
     };
   },
   computed: {
@@ -105,7 +109,15 @@ export default {
   },
   created() {
     this.group_id = this.$route.params.group_id;
+
+    // Register the userProfile module if not already registered
+    if (!this.$store.hasModule('userProfile')) {
+      registerVuexModule('userProfile', userProfileModule);
+      this.moduleRegistered = true; 
+    }
+
     this.fetchGroupMembers();
+
     const userName = this.userData.name;
     const context = 'group';
     this.getUserProfileData({ context, userName });
@@ -154,7 +166,6 @@ export default {
           this.members = response.data.members;
           this.membersCount = response.data.members_count;
           this.hideSkeletor = true;
-          console.log('hi')
         })
         .catch(error => {
           console.error('Error fetching group members:', error);
@@ -215,6 +226,12 @@ export default {
   },
   mounted() {
     this.memberEditModalInstance = new bootstrap.Modal(this.$refs.memberEditModal, { backdrop: 'static' });
+  },
+  beforeDestroy() {
+    // Unregister the userProfile module only if it was registered by this component
+    if (this.moduleRegistered) {
+      unregisterVuexModule('userProfile');
+    }
   }
 };
 </script>

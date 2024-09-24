@@ -1,14 +1,14 @@
 // stores/index.js
 import { createStore } from 'vuex';
-import userFeedModule from './userFeedStore';
+/*import userFeedModule from './userFeedStore';
 import userFeedCommentModule from './userFeedCommentStore';
 import userGroupModule from './groupStore';
 import userSubscriptionModule from './pricingStore';
 import userProfileModule from './profileStore';
+import userWatchlistModule from './watchlistStore';
+import userWidgetsModule from './widgetsStore';*/
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
 import userNotificationModule from './notificationStore';
-import userWatchlistModule from './watchlistStore';
-import userWidgetsModule from './widgetsStore';
 import searchModule from './searchStore';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -153,14 +153,14 @@ const store = createStore({
     },
     modules: {
         userNotification: userNotificationModule,
-        userFeed: userFeedModule,
-        userFeedComment: userFeedCommentModule,
-        UserGroups: userGroupModule,
-        userSubscriptionModule: userSubscriptionModule,
-        userProfile: userProfileModule,
+        //userFeed: userFeedModule,
+        //userFeedComment: userFeedCommentModule,
+        //UserGroups: userGroupModule,
+        //userSubscriptionModule: userSubscriptionModule,
+        //userProfile: userProfileModule,
         profileGroupHeader: ProfileGroupHeaderModule,
-        userWatchlists: userWatchlistModule,
-        userWidgets: userWidgetsModule,
+        //userWatchlists: userWatchlistModule,
+        //userWidgets: userWidgetsModule,
         searchResults: searchModule
     }
 });

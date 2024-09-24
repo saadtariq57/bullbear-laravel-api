@@ -43,7 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'about',
         'status',
         'type',
-        'subscription_plan',
+        'subscription_plan_id',
         'details',
         'referrer_id',
         'last_data_update',
@@ -84,6 +84,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'emailNotification' => 'boolean',
         // Other casts as necessary
     ];
+
+    public function personalSessions()
+    {
+        return $this->hasMany(PersonalSession::class);
+    }
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -116,6 +121,31 @@ class User extends Authenticatable implements MustVerifyEmail
     public function receivesBroadcastNotificationsOn()
     {
         return 'user.notifications.' . $this->id;
+    }
+
+    public function subscriptionPlan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id');
+    }
+
+    public function getSubscriptionFeatures()
+    {
+        return $this->subscriptionPlan->planFeatures()->where('enabled', true)->get();
+    }
+
+    public function hasFeature($featureName)
+    {
+        return $this->subscriptionPlan->planFeatures()
+                    ->where('feature_name', $featureName)
+                    ->where('enabled', true)
+                    ->exists();
+    }
+
+    public function getFeatureLimit($featureName)
+    {
+        return $this->subscriptionPlan->planFeatures()
+                    ->where('feature_name', $featureName)
+                    ->value('limit');
     }
 
 }

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\PersonalSessionController;
 
 Auth::routes(['verify' => true]);
 Broadcast::routes();
@@ -104,11 +105,35 @@ Route::middleware(['auth'])->group(function () {
             Route::put('categories/{examCategory}', [ExamController::class, 'categoriesUpdate'])->name('categories.update');
             Route::delete('categories/{examCategory}', [ExamController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
-        // Route::prefix('admin/watchlist')->name('admin.watchlist.')->group(function () {
-        //     Route::get('/', [WatchlistController::class, 'AdminIndex'])->name('index');
-        //     Route::get('create', [WatchlistController::class, 'WatchlistCreate'])->name('create');
-        //     Route::get('edit', [WatchlistController::class, 'WatchlistEdit'])->name('edit');
-        // });
+        Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+            // Watchlists Resource Routes
+            Route::resource('watchlists', WatchlistController::class);
+            // Route to manage symbols within a watchlist
+            Route::get('watchlists/{watchlist}/symbols', [WatchlistController::class, 'symbols'])->name('watchlists.symbols');
+            Route::post('watchlists/{watchlist}/symbols', [WatchlistController::class, 'updateSymbols'])->name('watchlists.updateSymbols');
+        });
+        Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+            // List all sessions
+            Route::get('sessions', [PersonalSessionController::class, 'index'])->name('sessions.index');
+            
+            // Show form to create a new session
+            Route::get('sessions/create', [PersonalSessionController::class, 'create'])->name('sessions.create');
+            
+            // Store a new session
+            Route::post('sessions', [PersonalSessionController::class, 'store'])->name('sessions.store');
+            
+            // Show a specific session
+            Route::get('sessions/{personalSession}', [PersonalSessionController::class, 'show'])->name('sessions.show');
+            
+            // Show form to edit a session
+            Route::get('sessions/{personalSession}/edit', [PersonalSessionController::class, 'edit'])->name('sessions.edit');
+            
+            // Update a specific session
+            Route::put('sessions/{personalSession}', [PersonalSessionController::class, 'update'])->name('sessions.update');
+            
+            // Delete a specific session
+            Route::delete('sessions/{personalSession}', [PersonalSessionController::class, 'destroy'])->name('sessions.destroy');
+        });
 
         // mass emails routes
         Route::prefix('admin/emails')->name('admin.emails.')->group(function () {

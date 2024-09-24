@@ -11,6 +11,8 @@ const userFeedModule = {
         newPostAvailable: false,
         fetchedCommentsFlags: {},
         visibleCommentsFlags: {},
+        isFetchingMore:false,
+        hasMorePosts: true,
     }),
     mutations: {
         setPosts(state, posts) {
@@ -32,6 +34,12 @@ const userFeedModule = {
                 state.newPostAvailable = false;
                 state.newPostData = null;
             }
+        },
+        setIsFetchingMore(state, isFetching) {
+            state.isFetchingMore = isFetching;
+        },
+        setHasMorePosts(state, hasMore) {
+            state.hasMorePosts = hasMore;
         },
         setLoading(state, isLoading) {
           state.isLoading = isLoading;
@@ -116,7 +124,6 @@ const userFeedModule = {
           commit('setLoading', true);
           try {
             const userId = rootState.userData.id;
-            // console.log('Group Id Feed Store ' + groupId);
             let posts;
             let lastPostId;
             posts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName, lastPostId, singlePostID);
@@ -130,18 +137,27 @@ const userFeedModule = {
             commit('setLoading', false);
           }
         },
-        async fetchMorePosts({ commit, state, rootState}, { context, groupId = null }) {
+        async fetchMorePosts({ commit, state, rootState }, { context, groupId = null, userName = null }) {
+            if (state.isLoading || state.isFetchingMore || !state.hasMorePosts) return;
+
             const userId = rootState.userData.id;
-            if (state.isLoading) return;
-            const lastPostId = state.posts[state.posts.length - 1].id;
-            commit('setLoading', true);
+            const lastPostId = state.posts.length ? state.posts[state.posts.length - 1].id : null;
+            console.log('User Profile Last ID:', lastPostId);
+            commit('setIsFetchingMore', true);
             try {
-                const morePosts = await UserFeedService.fetchUserPosts(userId, context, groupId, lastPostId);
-                commit('appendPosts', morePosts);
+                const morePosts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName, lastPostId);
+                if (morePosts.length === 0) {
+                    commit('setHasMorePosts', false);
+                } else {
+                    commit('appendPosts', morePosts);
+                     /*if (morePosts.length < 8) {
+                         commit('setHasMorePosts', false);
+                     }*/
+                }
             } catch (error) {
                 console.error('Error fetching more posts:', error);
             } finally {
-                commit('setLoading', false);
+                commit('setIsFetchingMore', false);
             }
         },
         async addVote({ commit, rootState }, { pollId, optionId }) {
