@@ -68,6 +68,22 @@
                             @enderror
                         </div>
 
+                        <!-- Meeting Link -->
+                        <div class="mb-3">
+                            <label for="meetLink" class="form-label">Add Meet Link</label>
+                            <input
+                                type="text"
+                                class="form-control @error('meetLink') is-invalid @enderror"
+                                id="meetLink"
+                                name="meetLink"
+                                value="{{ $personalSession->meet_link }}"
+                                required
+                                aria-required="true"
+                            >
+                            @error('meetLink')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <!-- Status -->
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>

@@ -7,9 +7,16 @@ use App\Models\PersonalSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SessionBooked;
+use App\Mail\SessionConfirmed;
+use App\Mail\SessionCancelled;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class PersonalSessionController extends Controller
 {
+    
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -122,15 +129,16 @@ class PersonalSessionController extends Controller
             'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);
 
+        $oldStatus = $personalSession->status;
         // If user_id is being updated
         if ($request->has('user_id')) {
             $selectedUser = User::findOrFail($request->input('user_id'));
             $featureName = $selectedUser->hasFeature('monthly_personal_sessions') ? 'monthly_personal_sessions' : 'monthly_personal_session';
 
             // Check if the selected user can access the feature
-            if (Gate::forUser($selectedUser)->denies('access-feature', $featureName)) {
-                return redirect()->back()->with('error', 'The selected user has reached their session limit or does not have access to this feature.');
-            }
+            // if (Gate::forUser($selectedUser)->denies('access-feature', $featureName)) {
+            //     return redirect()->back()->with('error', 'The selected user has reached their session limit or does not have access to this feature.');
+            // }
 
             $personalSession->user_id = $selectedUser->id;
             $personalSession->feature = $featureName;
@@ -139,9 +147,19 @@ class PersonalSessionController extends Controller
         // Update other fields
         $personalSession->scheduled_at = $request->input('scheduled_at');
         $personalSession->status = $request->input('status');
+        $personalSession->meet_link = $request->input('meetLink');
 
         $personalSession->save();
 
+        $personalSession->load('user');
+        if($oldStatus != 'confirmed' && $personalSession->status == 'confirmed'){
+            // \Log::info("Session Booking Details: " . json_encode($personalSession));
+            Mail::to($personalSession->user->email)->send(new SessionConfirmed($personalSession->user, $personalSession));
+        }else if($oldStatus != 'cancelled' && $personalSession->status == 'cancelled'){
+            \Log::info("Session Booking Cancelled Details: " . json_encode($personalSession));
+            Mail::to($personalSession->user->email)->send(new SessionCancelled($personalSession->user, $personalSession));
+        }
+        
         return redirect()->route('admin.sessions.index')->with('success', 'Session updated successfully.');
     }
 
@@ -232,8 +250,6 @@ class PersonalSessionController extends Controller
                 'message' => 'You have reached your session limit or do not have access to this feature.',
             ], 403);
         }
-
-        // Create session
         $session = PersonalSession::create([
             'user_id'     => $user->id,
             'scheduled_at'=> $request->input('scheduled_at'),
@@ -241,11 +257,16 @@ class PersonalSessionController extends Controller
             'feature'     => $featureName,
         ]);
 
-        // Return JSON response
+        // \Log::info("Session Booking Details: " . json_encode($session));
+
+        // Send the email
+        Mail::to($user->email)->send(new SessionBooked($user, $session));
+
         return response()->json([
             'success' => true,
             'message' => 'Session booked successfully.',
             'data' => $session,
         ]);
+      
     }
 }

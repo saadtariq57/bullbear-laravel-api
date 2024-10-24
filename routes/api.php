@@ -230,8 +230,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
     Route::get('/{userId}/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
-
-    // Exam Routes (Authenticated)
     Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
     Route::get('/exams/{examId}/questions', [ExamController::class, 'getExamQuestions']);
     Route::post('/exams/submit/{examId}', [ExamController::class, 'submitExam'])->name('exam.submit');

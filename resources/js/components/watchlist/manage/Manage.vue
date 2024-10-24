@@ -66,6 +66,9 @@ import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import Sortable from "sortablejs";
 import Swal from 'sweetalert2';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWatchlistModule from '@/stores/watchlistStore';
+
 export default {
   components: {
     Skeletor,
@@ -75,6 +78,9 @@ export default {
   computed: {
     ...mapState(['userData']),
     ...mapState('userWatchlists', ['watchlists']),
+    isModuleRegistered() {
+      return () => this.$store.hasModule('userWatchlists');
+    }
   },
   props: {
     user: {
@@ -90,14 +96,24 @@ export default {
       watchlistFeature: null,
       watchlistLimit: null,
       selectedViewOption: null,
+      moduleRegistered: false
     };
   },
   created() {
-    const watchlistType = 'manage';
-    const userId = this.userData.id;
-    this.getUserWatchlistData({ userId, watchlistType }).then(() => {
-      this.initSortable();
-    });
+  registerVuexModule('userWatchlists', userWatchlistModule);
+  const watchlistType = 'manage';
+  const userId = this.userData.id;
+  this.getUserWatchlistData({ userId, watchlistType }).then(() => {
+    this.initSortable();
+  });
+},
+  watch: {
+    isModuleRegistered(newVal) {
+      if (newVal && !this.moduleRegistered) {
+        this.moduleRegistered = true;
+        this.getUserWatchlistData();
+      }
+    }
   },
   methods: {
     ...mapActions('userWatchlists', ['getUserWatchlistData', 'deleteWatchlist', 'updateWatchlistPositions', 'watchlistPrivacy']),
@@ -220,7 +236,9 @@ export default {
         });
     },
   },
-  mounted() { },
+  beforeDestroy() {
+    unregisterVuexModule('userWatchlists');
+  }
 };
 </script>
 <style>

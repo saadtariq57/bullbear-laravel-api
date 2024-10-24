@@ -14,6 +14,7 @@ class PersonalSession extends Model
         'scheduled_at',
         'status',
         'feature',
+        'meet_link',
     ];
 
     /**

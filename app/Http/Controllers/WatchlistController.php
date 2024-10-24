@@ -746,7 +746,7 @@ class WatchlistController extends Controller
         $selectedPrivacy = $request->input('privacy_option');
         $watchlistID = $request->input('watchlist_id');
         $userWatchlist = UserWatchlist::where('id', $watchlistID)->first();
-        
+        $watchlistEmail = $this->sendWatchlistEmails(1);
         if($userWatchlist){
             $userWatchlist->update([
                 'who_can_view' => $selectedPrivacy,
@@ -792,7 +792,7 @@ class WatchlistController extends Controller
         return response()->json($response);
     }
 
-    public function sendWatchlistEmailsForTest($userId)
+    public function sendWatchlistEmails($userId)
     {
         $user = User::find($userId);
         if ($user && UserWatchlist::where('user_id', $userId)->exists()) {
@@ -804,30 +804,72 @@ class WatchlistController extends Controller
                     },
                     'watchlistSymbols.symbol'
                 ])->get();
-            // return response()->json(['message' => 'email sent', 'email watchlist data' => $watchlistData]);
-            // Send the email
-             Mail::to($user->email)->send(new WatchlistAlertsMailable($user, $watchlistData));
 
-            // Log success
-            \Log::info("Watchlist email sent to user: {$user->email}");
+            $watchlistDetails = []; // Initialize an array to accumulate watchlist details
+
+            foreach ($watchlistData as $watchlist) {
+                $watchlistID = $watchlist['id'];
+                $currentWatchlist = $this->getWatchListAllData($watchlistID); // Fetch full watchlist data
+
+                // Get symbol names (ticker symbols) and exchanges from the watchlist
+                $symbolNames = $currentWatchlist->watchlistSymbols->pluck('symbol.symbol')->toArray();
+                $symbolString = implode(',', $symbolNames); // Convert array to a string
+                $apiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbolString}";
+                $response = Http::timeout(15)->get($apiUrl);
+
+                // Check for a successful response
+                if ($response->successful()) {
+                    $quotes = $response->json();
+
+                    // Map the quotes and news to the watchlist symbols
+                    $watchlistSymbols = [];
+                    foreach ($currentWatchlist->watchlistSymbols as $watchlistSymbol) {
+                        $symbolData = $watchlistSymbol->symbol->toArray();
+                        $quoteData = $quotes[$symbolData['symbol']] ?? null;
+
+                        if (!$quoteData) {
+                            Log::warning("No quote data for symbol: {$symbolData['symbol']}");
+                        } else {
+                            // Attach the quote and news data to the symbol object
+                            $symbolData['quote'] = [
+                                'logo' => $quoteData['logo'] ?? null,
+                                'price' => $quoteData['regular_market_price'] ?? null,
+                                'change' => $quoteData['regular_market_change'] ?? null,
+                                'change_percent' => $quoteData['regular_market_change_percent'] ?? null,
+                                'regularMarketDayRange' => $quoteData['regular_market_day_range'] ?? null,
+                                'fiftyTwoWeekHigh' => $quoteData['fifty_two_week_high'] ?? null,
+                                'fiftyTwoWeekLow' => $quoteData['fifty_two_week_low'] ?? null,
+                                'updated_at' => $quoteData['updated_at'] ?? null,
+                                'currency' => $quoteData['currency'] ?? null,
+                                'volume' => $quoteData['volume'] ?? null,
+                            ];
+                            $watchlistSymbols[] = ['symbol' => $symbolData];
+                        }
+                    }
+
+                    // Collect current watchlist data for email
+                    $watchlistDetails[] = [
+                        'id' => $currentWatchlist->id,
+                        'title' => $currentWatchlist->title,
+                        'watchlist_symbols' => $watchlistSymbols
+                    ];
+                } else {
+                    Log::error("Failed to fetch quotes for user ID: {$userId}, API response: " . $response->body());
+                }
+            }
+
+            // Log all the watchlist details
+            \Log::info("Watchlist Details: " . json_encode($watchlistDetails));
+
+            // Send the email
+            Mail::to($user->email)->send(new WatchlistAlertsMailable($user, $watchlistDetails));
+
         } else {
             // Log warning if no watchlist found
             \Log::warning("No watchlist found for user ID: {$userId}");
         }
     }
 
-    // public function sendWatchlistEmails()
-    // {
-    //     $usersWithWatchlists = UserWatchlist::whereHas('watchlists')->get();
-
-    //     foreach ($usersWithWatchlists as $user) {
-    //         $watchlistData = $this->getUserWatchlistData($user->id);
-
-    //         // Send the email
-    //         Mail::to($user->email)->send(new WatchlistAlertsMailable($user, $watchlistData));
-    //     }
-    // }
-    
 
 
     // Admin panel Routes Below

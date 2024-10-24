@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DailyNotificationsMailable;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
@@ -99,15 +103,91 @@ class NotificationController extends Controller
         return response()->json($categorized);
     }    
 
+    
     public function markAsRead($id)
     {
         $notification = Auth::user()->notifications()->findOrFail($id);
         $data = $notification->data;
         $data['unread_count'] = 0;
         $notification->update(['data' => $data, 'read_at' => now()]);
-
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read']);
     }
     
+    public function sendDailyNotifications($userId)
+    {
+        $user = User::findOrFail($userId);
+        $today = Carbon::today()->toDateString();
+        \Log::info("Today's date: " . $today);
+        $notifications = $user->notifications()
+            ->whereDate('created_at', $today)
+            ->latest()
+            ->get();
+
+        $transformedNotifications = $notifications->map(function ($notification) {
+            $baseData = [
+                'type' => $notification->data['type'],
+                'url' => $notification->data['url'],
+                'read_at' => $notification->read_at,
+                'user' => [
+                    'id' => $notification->data['user']['id'] ?? null,
+                    'name' => $notification->data['user']['name'] ?? 'Unknown',
+                    'avatar' => $notification->data['user']['avatar'] ?? null,
+                ],
+            ];
+
+            switch ($notification->data['type']) {
+                case 'message':
+                    return array_merge($baseData, [
+                        'message_id' => $notification->data['message_id'],
+                        'group_id' => $notification->data['group_id'],
+                        'group_title' => $notification->data['group_title'],
+                        'group_avatar' => $notification->data['group_avatar'],
+                        'unread_count' => $notification->data['unread_count'],
+                        'last_message' => $notification->data['last_message'],
+                        'last_message_time' => $notification->data['last_message_time'],
+                        'preview' => $notification->data['preview'],
+                    ]);
+                case 'follower':
+                    return array_merge($baseData, [
+                        'following_id' => $notification->data['following_id'],
+                        'follower_id' => $notification->data['follower_id'],
+                        'last_follow_time' => $notification->data['last_follow_time'],
+                    ]);
+                case 'reaction':
+                    return array_merge($baseData, [
+                        'reacted_by' => $notification->data['reacted_by'],
+                        'reacted_to' => $notification->data['reacted_to'],
+                        'last_notification_time' => $notification->data['last_notification_time'],
+                        'title' => $notification->data['title'],
+                        'description' => $notification->data['description'],
+                    ]);
+                case 'comment':
+                    return array_merge($baseData, [
+                        'commented_by' => $notification->data['commented_by'],
+                        'commented_to' => $notification->data['commented_to'],
+                        'last_notification_time' => $notification->data['last_notification_time'],
+                        'title' => $notification->data['title'],
+                        'description' => $notification->data['description'],
+                    ]);
+                case 'pollVote':
+                    return array_merge($baseData, [
+                        'voted_by' => $notification->data['voted_by'],
+                        'voted_to' => $notification->data['voted_to'],
+                        'last_notification_time' => $notification->data['last_notification_time'],
+                        'title' => $notification->data['title'],
+                        'description' => $notification->data['description'],
+                    ]);
+                default:
+                    return $baseData; 
+            }
+        });
+
+        \Log::info("Sending daily notifications to user:", ['notifications' => $transformedNotifications]);
+
+        // Send the email
+        \Mail::to($user->email)->send(new DailyNotificationsMailable($user, $transformedNotifications));
+
+        // return response()->json(['status' => 'success', 'message' => 'Daily notifications sent.']);
+    }
       
 }
