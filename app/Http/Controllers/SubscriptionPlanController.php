@@ -67,7 +67,7 @@ class SubscriptionPlanController extends Controller
 	                // If no active subscription, mark the "Free" plan as current
 	                foreach ($plans as $plan) {
 	                    if (strtolower($plan->name) === 'free') {
-	                        $plan->currentSubscription = 'free'; // Use a string or boolean to indicate this is the current free plan
+	                        $plan->currentSubscription = 'free';
 	                        break;
 	                    }
 	                }

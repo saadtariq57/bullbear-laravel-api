@@ -1,7 +1,6 @@
 <template>
     <div class="d-flex gap-3">
         <!-- Followers -->
-        <!-- Followers -->
         <div class="btn-group dropdown-hover">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
@@ -13,7 +12,6 @@
                         <div class="d-flex align-items-center gap-3">
                             <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="45" height="45">
                             <div>
-                                <!-- <h6 class="text-uppercase fs-6 fw-6 clr-primary mb-1">{{ follower.user.name }}</h6> -->
                                 <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap">{{ follower.user.name }} has started following you</p>
                             </div>
                         </div>

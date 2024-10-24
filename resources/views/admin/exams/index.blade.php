@@ -1,31 +1,55 @@
 @extends('admin.layouts.master')
+
 @section('title')
     Exams Database
 @endsection
+
 @section('page-title')
     Exams Database
 @endsection
+
 @section('css')
     <!-- Sweet Alert-->
     <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Optional: Add additional CSS for badges or styling -->
+    <style>
+        .badge-basic {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        .badge-advanced {
+            background-color: #6c757d;
+            color: #fff;
+        }
+    </style>
 @endsection
-@section('body')
 
-<body data-sidebar="colored">
+@section('body')
+    <body data-sidebar="colored">
 @endsection
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
+                    <!-- Search and Add Exam Button -->
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-inline float-md-start mb-3">
                                 <form action="{{ route('admin.exams.index') }}" method="GET">
                                     <div class="search-box me-2">
                                         <div class="position-relative">
-                                            <input type="text" name="search" class="form-control border" placeholder="Search..." value="{{ request()->query('search') }}">
-                                            <button type="submit" style="background: none; border: none;"><i class="ri-search-line search-icon"></i></button>
+                                            <input 
+                                                type="text" 
+                                                name="search" 
+                                                class="form-control border" 
+                                                placeholder="Search..." 
+                                                value="{{ request()->query('search') }}"
+                                            >
+                                            <button type="submit" style="background: none; border: none;">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -33,13 +57,15 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 float-end">
-                                <a href="{{route('admin.exams.create')}}" class="btn btn-primary">
+                                <a href="{{ route('admin.exams.create') }}" class="btn btn-primary">
                                     <i class="mdi mdi-plus me-1"></i> Add Exam
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <!-- end row -->
+                    <!-- End Search and Add Button Row -->
+
+                    <!-- Exams Table -->
                     <div class="table-responsive mb-4">
                         <table class="table table-hover table-nowrap align-middle mb-0">
                             <thead class="bg-light">
@@ -48,6 +74,7 @@
                                     <th scope="col">Featured Image</th>
                                     <th scope="col">Title</th>
                                     <th scope="col">Category</th>
+                                    <th scope="col">Type</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Number of Questions</th>
                                     <th scope="col">Time Limit per Question</th>
@@ -55,49 +82,86 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($exams as $exam)
+                                @forelse($exams as $exam)
                                     <tr>
                                         <td>{{ $exam->id }}</td>
                                         <td>
-                                            <img src="{{ URL::asset($exam->featured_img) }}" alt=""
-                                                 class="avatar-xs rounded-circle me-2">
+                                            @if($exam->featured_img)
+                                                <img 
+                                                    src="{{ asset('uploads/' . $exam->featured_img) }}" 
+                                                    alt="Exam Image" 
+                                                    class="avatar-xs rounded-circle me-2"
+                                                >
+                                            @else
+                                                <img 
+                                                    src="{{ URL::asset('default-image.png') }}" 
+                                                    alt="Default Image" 
+                                                    class="avatar-xs rounded-circle me-2"
+                                                >
+                                            @endif
                                         </td>
-                                        <td><a href="#" class="text-body">{{ $exam->title }}</a></td>
-                                        <td>{{ $exam->category }}</td>
-                                        <td>{{ $exam->description }}</td>
+                                        <td>
+                                            <a href="#" class="text-body">{{ $exam->title }}</a>
+                                        </td>
+                                        <td>{{ $exam->category ?? 'N/A' }}</td>
+                                        <td>
+                                            @if($exam->type === 'basic')
+                                                <span class="badge badge-basic">Basic</span>
+                                            @elseif($exam->type === 'advanced')
+                                                <span class="badge badge-advanced">Advanced</span>
+                                            @else
+                                                <span class="badge bg-secondary">N/A</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ Str::limit($exam->description, 50) }}</td>
                                         <td>{{ $exam->number_of_questions }}</td>
                                         <td>{{ $exam->per_question_time_limit }} seconds</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
-                                                    <a href="{{ route('admin.exams.edit', $exam) }}" class="px-2 text-primary">
+                                                    <a href="{{ route('admin.exams.edit', $exam) }}" class="px-2 text-primary" title="Edit">
                                                         <i class="ri-pencil-line font-size-18"></i>
                                                     </a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <a href="{{ route('admin.exams.add_questions', $exam) }}" class="px-2 text-primary">
+                                                    <a href="{{ route('admin.exams.add_questions', $exam) }}" class="px-2 text-primary" title="Add Questions">
                                                         <i class="ri-settings-line font-size-18"></i>
                                                     </a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <form action="{{route('admin.exams.destroy', $exam->id)}}" method="POST">
+                                                    <form action="{{ route('admin.exams.destroy', $exam->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button class="btn btn-danger delete-exam" type="button" data-exam-id="{{ $exam->id }}">
+                                                        <button 
+                                                            class="btn btn-danger btn-sm delete-exam" 
+                                                            type="button" 
+                                                            data-exam-id="{{ $exam->id }}" 
+                                                            title="Delete"
+                                                        >
                                                             <i class="fas fa-trash-alt"></i>
+                                                        </button>
                                                     </form>
                                                 </li>
                                             </ul>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center">No exams found.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
+                    <!-- End Exams Table -->
+
+                    <!-- Pagination -->
                     <div class="row mt-4">
                         <div class="col-sm-6">
                             <div>
-                                <p class="mb-sm-0">{{ $exams->firstItem() }} to {{ $exams->lastItem() }} of {{ $exams->total() }} entries</p>
+                                <p class="mb-sm-0">
+                                    {{ $exams->firstItem() }} to {{ $exams->lastItem() }} of {{ $exams->total() }} entries
+                                </p>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -112,55 +176,57 @@
             </div>
         </div>
     </div>
-    <!-- end row -->
-@endsection
-@section('scripts')
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    <!-- Sweet Alerts js -->
-    <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            // Intercept delete button click
-            $('.delete-exam').on('click', function() {
-                let examId = $(this).data('exam-id');
-                
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // If user confirmed, submit the associated form
-                        $(this).closest('form').submit();
-                    }
+
+    <!-- Delete Confirmation Script -->
+    @section('scripts')
+        <!-- App js -->
+        <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        <!-- Sweet Alerts js -->
+        <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                // Intercept delete button click
+                $('.delete-exam').on('click', function() {
+                    let examId = $(this).data('exam-id');
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If user confirmed, submit the associated form
+                            $(this).closest('form').submit();
+                        }
+                    });
                 });
             });
-        });
-    </script>
-    @if(session('success'))
-        <script>
-            Swal.fire({
-                title: 'Success!',
-                text: '{{ session("success") }}',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
         </script>
-    @endif
 
-    @if(session('error'))
-        <script>
-            Swal.fire({
-                title: 'Error!',
-                text: '{{ session("error") }}',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    @endif
+        @if(session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session("success") }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
+        @if(session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session("error") }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+    @endsection
 @endsection

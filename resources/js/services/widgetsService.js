@@ -9,14 +9,12 @@ const widgetsService = {
             console.error('Error getting widgets by category:', error);
         }
     },
-    async getQuotes(symbolIds) {
+    async getQuotes(widgetId) {
         try {
-            const response = await axios.get(`http://localhost:3000/api/quotes`, {
-                params: { ids: symbolIds.join(',') }
-            });
+            const response = await axios.get(`/api/widget/${widgetId}`);
             return response.data;
         } catch (error) {
-            console.error('Error fetching quotes:', error);
+            console.error(`Error fetching quotes for widget ${widgetId}:`, error);
         }
     },
 };

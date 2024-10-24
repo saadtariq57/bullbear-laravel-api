@@ -30,26 +30,26 @@
                 <tr v-for="(widgetData, key) in widget.symbols" :key="key">
                   <td class="fw-5">{{ widgetData.symbol }}</td>
                   <td class="fw-5 symbol-name-width">{{ widgetData.name }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.stats">
+                  <td class="text-end fw-5" v-if="!widgetData.price">
                     <Skeletor width="40px" />
                   </td>
-                  <td class="text-end fw-5" v-else>{{ widgetData.stats.regular_market_price }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.stats">
+                  <td class="text-end fw-5" v-else>{{ widgetData.price }}</td>
+                  <td class="text-end fw-5" v-if="!widgetData.change">
                     <Skeletor width="40px" />
                   </td>
-                  <td class="text-end fw-5" v-else :class="widgetData.stats.regular_market_change > 0 ? 'Green' : 'Red'">
+                  <td class="text-end fw-5" v-else :class="widgetData.change > 0 ? 'Green' : 'Red'">
                     {{
-                      widgetData.stats.regular_market_change }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.stats">
+                      widgetData.change }}</td>
+                  <td class="text-end fw-5" v-if="!widgetData.change_percent">
                     <Skeletor width="40px" />
                   </td>
                   <td class="text-end fw-5" v-else
-                    :class="widgetData.stats.regular_market_change_percent > 0 ? 'Green positive-arrow-icon-after' : 'Red negative-arrow-icon-after'">
-                    {{ widgetData.stats.regular_market_change_percent }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.stats">
+                    :class="widgetData.change_percent > 0 ? 'Green positive-arrow-icon-after' : 'Red negative-arrow-icon-after'">
+                    {{ widgetData.change_percent }}</td>
+                  <td class="text-end fw-5" v-if="!widgetData.volume">
                     <Skeletor width="40px" />
                   </td>
-                  <td class="text-end fw-5" v-else>{{ widgetData.stats.volume }}</td>
+                  <td class="text-end fw-5" v-else>{{ widgetData.volume }}</td>
                 </tr>
               </tbody>
             </table>
@@ -80,6 +80,8 @@ import TopMovers from '../widgets/TopMovers.vue';
 import TopTen from '../widgets/TopTen.vue';
 import LatestArticles from '../widgets/LatestArticles.vue';
 import RecentQuotes from '../widgets/RecentQuotes.vue';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWidgetsModule from '@/stores/widgetsStore';
 
 export default {
   components: {
@@ -89,28 +91,53 @@ export default {
     TopTen,
     RecentQuotes,
   },
+  props: {
+    category: String,
+    subCategory: String,
+  },
+  data() {
+    return {
+      moduleRegistered: false,
+    };
+  },
   computed: {
     ...mapState('userWidgets', ['widgets', 'isLoading']),
     categoryTitle() {
       return this.subCategory || this.category;
     },
   },
-  props: {
-    category: String,
-    subCategory: String,
-  },
   created() {
-    this.fetchWidgets();
+    this.registerModuleAndFetchWidgets();
+
+  },
+  beforeDestroy() {
+    this.unregisterModule();
   },
   methods: {
     ...mapActions('userWidgets', ['getWidgetsByCategory']),
+    
+    registerModuleAndFetchWidgets() {
+      if (!this.$store.hasModule('userWidgets')) {
+        registerVuexModule('userWidgets', userWidgetsModule);
+        this.moduleRegistered = true;
+      }
+      this.fetchWidgets();
+    },
+
+    unregisterModule() {
+      if (this.moduleRegistered) {
+        unregisterVuexModule('userWidgets');
+      }
+    },
+
     fetchWidgets() {
       const { category, subCategory } = this.$route.params;
       this.getWidgetsByCategory({ category, subCategory });
     },
   },
-}
+};
 </script>
+
 <style>
 .dividers {
   width: 1px;

@@ -1,9 +1,8 @@
 import { createApp } from "vue";
-//import Navigation from "./components/header/Navigation.vue";
 import router from "./router";
 import store from './stores/index';
 import App from "./components/App.vue";
-
+import { VueReCaptcha } from 'vue-recaptcha-v3';
 // Set axios with common header
 import axios from 'axios';
 
@@ -32,11 +31,11 @@ window.axios = axios;
 
 // Create Vue app
 const app = createApp(App);
-//app.component("Navigation", Navigation);
 
 // Use router
 app.use(router);
 app.use(store);
+app.use(VueReCaptcha, { siteKey: '6LdtJ2oqAAAAAL8q_A4fD3SsYRDL4Obq34tqbAO5' });
 
 // Mount the app
 router.isReady().then(() => {

@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SubscriptionPlansSeeder::class,
-            EmailTemplateSeeder::class
+            EmailTemplateSeeder::class,
+            EbookSeeder::class,
+            CourseSeeder::class,
 
         ]);
     }

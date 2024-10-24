@@ -52,36 +52,19 @@ const userWatchlistModule = {
         async getUserWatchlistData({ commit }, { userId, watchlistType }) {
             try {
                 commit('SET_LOADING', true);
-                
-                let data;
-                if (userId) {
-                    // Fetch user-specific watchlists
-                    data = await watchlistService.getUserWatchlistData(userId);
-                } else {
-                    // Fetch only featured watchlists for guests
-                    data = await watchlistService.getFeaturedWatchlists();
-                    console.log(data);
-                }
-                
+
+                // Fetch all watchlist data in one API call
+                const data = userId
+                    ? await watchlistService.getUserWatchlistData(userId)
+                    : await watchlistService.getFeaturedWatchlists();
+
                 if (userId) {
                     commit('SET_HAS_WATCHLIST', data.hasUserWatchlist);
-                    commit('SET_WATCHLISTS', Array.isArray(data.watchlistDetails) ? data.watchlistDetails : []);
-                } else {
-                    // For guests, set watchlists to featured
-                    commit('SET_WATCHLISTS', Array.isArray(data.watchlistDetails) ? data.watchlistDetails : []);
                 }
 
-                if (watchlistType !== 'manage' || !userId) {
-                    for (const watchlist of data.watchlistDetails) {
-                        if (Array.isArray(watchlist.watchlist_symbols) && watchlist.watchlist_symbols.length >= 1) {
-                            const symbolData = await watchlistService.getSymbols(watchlist.id);
-                            commit('UPDATE_WATCHLIST_SYMBOLS', {
-                                watchlistId: watchlist.id,
-                                symbols: Array.isArray(symbolData.watchlist_symbols) ? symbolData.watchlist_symbols : [],
-                            });
-                        }
-                    }
-                }
+                // Ensure watchlistDetails is an array
+                const watchlists = Array.isArray(data.watchlistDetails) ? data.watchlistDetails : [];
+                commit('SET_WATCHLISTS', watchlists);
 
                 commit('SET_LOADING', false);
             } catch (error) {
@@ -90,6 +73,7 @@ const userWatchlistModule = {
                 commit('SET_LOADING', false);
             }
         },
+
         async editWatchlist({ commit }, watchlistId){
             try{
                 const data = await watchlistService.editWatchlist(watchlistId);
@@ -126,12 +110,16 @@ const userWatchlistModule = {
           try {
             const response = await watchlistService.addWatchlistSymbol(postData);
             if (response.status && response.status !== 200) {
-              throw new Error(response.data || 'Error adding symbol to watchlist');
+              throw response;
             }
             commit('SET_EDIT_WATCHLIST_DATA', response);
           } catch (error) {
             console.error('Error adding symbol to watchlist:', error);
-            throw error;
+            if (error.response) {
+              throw error.response;
+            } else {
+              throw new Error('Error adding symbol to watchlist');
+            }
           }
         },
         async deleteSymbolFromWatchlist({ commit }, {watchlistId, symbolId}) {

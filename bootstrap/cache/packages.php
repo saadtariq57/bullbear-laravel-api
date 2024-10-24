@@ -6,6 +6,13 @@
       0 => 'Ably\\LaravelBroadcaster\\LaravelAblyBroadcasterServiceProvider',
     ),
   ),
+  'cmixin/business-day' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Cmixin\\BusinessDay\\Laravel\\ServiceProvider',
+    ),
+  ),
   'laravel/cashier' => 
   array (
     'providers' => 

@@ -1,38 +1,124 @@
 <template>
   <div class="row gx-3 gy-3">
     <div v-for="chat in chats" :key="chat.id" class="col-lg-4 col-md-6">
-      <div class="card m-0 h-100">
-        <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="chat-avatar-wrapper">
-          <img :src="`uploads/${chat.avatar}`" class="card-img-top" :alt="`${chat.group_title} Profile Picture`"
-            @error="handleAvatarError(chat)" :class="{ 'd-none': chat.avatarFailed }">
-          <div class="group_name" :class="{ 'd-flex': chat.avatarFailed }">
-            <p class="px-2">{{ chat.group_title }}</p>
+      <div class="card m-0 h-100 shadow-sm">
+        <a
+          
+          class="chat-avatar-wrapper position-relative"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Go to chat room"
+          @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
+        >
+          <img
+            :src="`uploads/${chat.avatar}`"
+            class="card-img-top rounded-top"
+            :alt="`${chat.group_title} Profile Picture`"
+            @error="handleAvatarError(chat)"
+            :class="{ 'd-none': chat.avatarFailed }"
+          />
+          <div class="group_name bg-primary" :class="{ 'd-flex': chat.avatarFailed }">
+            <p class="px-2 text-white">{{ chat.group_title }}</p>
           </div>
+          <span
+            v-if="chat.privacy === 'private'"
+            class="badge bg-warning position-absolute top-0 end-0 m-2"
+            data-bs-toggle="tooltip"
+            data-bs-placement="left"
+            title="This group is private"
+          >
+            Private
+          </span>
         </a>
-        <div class="card-body position-relative">
-          <h3 class="fs-14 fw-6">{{ chat.group_title }}</h3>
+        <div class="card-body">
+        <a
+          
+          class="chat-avatar-wrapper position-relative"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Go to chat room"
+          @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
+        >
+          <h5
+            class="card-title fs-16 fw-bold"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            title="Chat Title"
+          >
+            {{ chat.group_title }}
+          </h5>
+        </a>
+          <p class="card-text fs-14">{{ chat.about }}</p>
+          <p class="card-text fs-12 text-muted">
+            Created on: {{ formatDate(chat.created_at) }}
+          </p>
           <div class="d-flex justify-content-between align-items-center mb-2">
             <p class="fs-14 text-secondary mb-0">
+              <i
+                v-if="chat.symbol && chat.exchange"
+                class="bi bi-graph-up-arrow me-1"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Trading Symbol/Exchange"
+              ></i>
               <span v-if="chat.symbol && chat.exchange">
-                <i class="bi bi-graph-up-arrow"></i> {{ chat.symbol }}/{{ chat.exchange }}
+                {{ chat.symbol }}/{{ chat.exchange }}
               </span>
-              Members: {{ chat.members_count }}
+              <span v-else>
+                Members: {{ chat.members_count }}
+              </span>
             </p>
             <p class="mb-0">
               <i
-                :class="{ 'bi-globe': chat.join_privacy === 'public', 'bi-lock-fill': chat.join_privacy === 'private' }"></i>
-              {{ chat.join_privacy.charAt(0).toUpperCase() + chat.join_privacy.slice(1) }}
+                :class="privacyIcon(chat.join_privacy)"
+                class="me-1"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                :title="`${capitalize(chat.join_privacy)} group`"
+              ></i>
+              {{ capitalize(chat.join_privacy) }}
             </p>
           </div>
-          <button v-show="!chat.joined" @click="joinChat(chat)" class="btn"
-            :class="{ 'btn-primary': !chat.joined && !chat.requestPending, 'btn-secondary': chat.requestPending }"
-            :disabled="chat.requestPending">
-            <span v-if="chat.joined">Visit Chat Room</span>
-            <span v-else-if="chat.requestPending">Request Pending</span>
-            <span v-else>Join Group</span>
-          </button>
-          <a :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`" class="btn btn-primary"
-            v-show="chat.joined">Visit Chat Room</a>
+
+          <!-- Buttons -->
+          <div class="mt-3">
+            <template v-if="!loggedIn">
+              <button
+                @click="handleSignIn"
+                class="btn btn-secondary btn-sm w-100"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                title="Sign in to join this group"
+              >
+                Sign in to Join
+              </button>
+            </template>
+            <template v-else>
+              <button
+                v-if="!chat.joined"
+                @click="joinChat(chat)"
+                class="btn btn-primary btn-sm w-100"
+                :class="{ 'btn-secondary': chat.requestPending }"
+                :disabled="chat.requestPending"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                :title="chat.requestPending ? 'Your join request is pending' : 'Join this group'"
+              >
+                <span v-if="chat.requestPending">Request Pending</span>
+                <span v-else>Join Group</span>
+              </button>
+              <a
+                v-else
+                :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`"
+                class="btn btn-success btn-sm w-100 mt-2"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Visit Chat Room"
+              >
+                Visit Chat Room
+              </a>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -42,16 +128,32 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { isLoggedIn } from '@/stores';
 
 export default {
   props: {
-    chats: Array,
-    joined: Boolean,
+    chats: {
+      type: Array,
+      required: true,
+    },
+    joined: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      loggedIn: false,
+      tooltips: [],
+    };
+  },
+  created() {
+    this.checkLoginStatus();
   },
   watch: {
     chats: {
       handler(newChats) {
-        newChats.forEach(chat => {
+        newChats.forEach((chat) => {
           if (!chat.avatarFailed) {
             this.checkAvatar(chat);
           }
@@ -62,54 +164,71 @@ export default {
     },
   },
   methods: {
+    async checkLoginStatus() {
+      this.loggedIn = await isLoggedIn();
+    },
+    handleSignIn() {
+      this.$store.dispatch('showLoginPopup');
+      this.$store.dispatch('setRedirectPath', '/groups');
+    },
+    handleGroup(chatId, title, requestPending){
+      if(this.loggedIn){
+        window.location.href = `/groups/${chatId}/${this.formatGroupName(title)}`;
+      }else{
+        this.handleSignIn();
+      }
+    },
     joinChat(chat) {
       if (chat.joined || chat.requestPending) return;
 
-      axios.post(`/api/groups/join/${chat.id}`)
-        .then(response => {
+      axios
+        .post(`/api/groups/join/${chat.id}`)
+        .then((response) => {
           chat.joined = response.data.joined;
           chat.requestPending = response.data.requestPending;
-          this.$emit('chat-joined');
-          // alert(response.data.message);
-          const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "400px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "success",
-                    title: "Joined chat successfully!"
-                  });
+
+          if (chat.joined) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              width: '400px',
+              timer: 2000,
+              timerProgressBar: true,
+              icon: 'success',
+              title: 'You have successfully joined the chat!',
+            });
+
+            window.location.href = `/groups/${response.data.id}/${this.formatGroupName(response.data.group_title)}`;
+          } else if (chat.requestPending) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              width: '400px',
+              timer: 2000,
+              timerProgressBar: true,
+              icon: 'info',
+              title: 'Your join request has been sent and is pending approval.',
+            });
+            this.$emit('chat-joined');
+          }
         })
-        .catch(error => {
-          // console.error('Error joining chat:', error);
-          const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    width: "400px",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                      toast.onmouseenter = Swal.stopTimer;
-                      toast.onmouseleave = Swal.resumeTimer;
-                    }
-                  });
-                  Toast.fire({
-                    icon: "error",
-                    title: "Error joining chat"
-                  });
+        .catch(() => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            width: '400px',
+            timer: 2000,
+            timerProgressBar: true,
+            icon: 'error',
+            title: 'Failed to join the chat. Please try again.',
+          });
         });
     },
     formatGroupName(groupTitle) {
-      return groupTitle.replace(/ /g, '-');
+      return groupTitle.replace(/ /g, '-').toLowerCase();
     },
     handleAvatarError(chat) {
       chat.avatarFailed = true;
@@ -121,15 +240,54 @@ export default {
         this.handleAvatarError(chat);
       };
     },
+    capitalize(text) {
+      if (!text) return '';
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    },
+    formatDate(timestamp) {
+      if (!timestamp) return 'N/A';
+      const date = new Date(timestamp * 1000);
+      return date.toLocaleDateString();
+    },
+    privacyIcon(privacy) {
+      return privacy === 'public' ? 'bi bi-globe' : 'bi bi-lock-fill';
+    },
+    initializeTooltips() {
+      if (typeof bootstrap !== 'undefined') {
+        const tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        tooltipTriggerList.forEach((tooltipTriggerEl) => {
+          const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',
+            delay: { hide: 100 },
+          });
+          this.tooltips.push(tooltip);
+        });
+      }
+    },
+    disposeTooltips() {
+      this.tooltips.forEach((tooltip) => tooltip.dispose());
+      this.tooltips = [];
+    },
+  },
+  mounted() {
+    this.initializeTooltips();
+  },
+  beforeUnmount() {
+    this.disposeTooltips();
   },
 };
 </script>
 
-<style>
-.chat-avatar-wrapper {
-  height: 235px;
+<style scoped>
+a:hover{
+  cursor: pointer;
 }
-
+.chat-avatar-wrapper {
+  height: 200px;
+  position: relative;
+}
 .group_name {
   display: none;
   align-items: center;
@@ -137,7 +295,6 @@ export default {
   height: 100%;
   background-color: var(--cta-btn);
 }
-
 .group_name p {
   margin: 0;
   color: #fff;
@@ -146,5 +303,13 @@ export default {
   text-align: center;
   font-family: cursive !important;
   font-style: italic;
+}
+.chat-avatar-wrapper:hover .group_name {
+  display: flex;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  transition: .5s linear;
 }
 </style>

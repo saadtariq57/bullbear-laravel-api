@@ -229,6 +229,7 @@ import { Skeletor } from "vue-skeletor";
 import Swal from 'sweetalert2';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userProfileModule from '@/stores/profileStore';
+import userGroupModule from '@/stores/groupStore';
 
 export default {
   components: {
@@ -250,7 +251,6 @@ export default {
       selectedImage: null,
       zoomLevel: 0,
       uploadingProfilePhoto: true,
-      groupData: null,
       showSkeletor: false,
       authRole: null,
       defaultCoverImage: '/uploads/photos/d-cover.jpg',
@@ -258,13 +258,14 @@ export default {
       coverImageLoadAttempts: 0,
       profileImageLoadAttempts: 0,
       maxLoadAttempts: 2,
-      moduleRegistered: false // Track module registration
+      moduleRegistered: false
     };
   },
   computed: {
     ...mapState(['userData', 'success']),
     ...mapState('userProfile', ['userProfileData', 'coverImagePath', 'profileImagePath', 'isOwnProfile']),
     ...mapState('profileGroupHeader', ['UpdatedCoverImagePath', 'message', 'UpdatedProfileImagePath']),
+    ...mapState('userGroup', ['groupData']),
     coverImageSrc() {
       return this.UpdatedCoverImagePath != null
         ? `/uploads/${this.UpdatedCoverImagePath}`
@@ -277,15 +278,20 @@ export default {
     },
   },
   created() {
-    // Register the userProfile module if not already registered
     if (!this.$store.hasModule('userProfile')) {
       registerVuexModule('userProfile', userProfileModule);
-      this.moduleRegistered = true; // Track that the module was registered here
+      this.moduleRegistered = true;
     }
-    console.log('the context is: ', this.context);
+
+    if (!this.$store.hasModule('userGroup')) {
+      registerVuexModule('userGroup', userGroupModule);
+      this.moduleRegistered = true;
+    }
+    this.fetchGroupData(this.id);
   },
   methods: {
     ...mapActions('profileGroupHeader', ['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),
+    ...mapActions('userGroup', ['fetchGroupData']),
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
       const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
@@ -491,7 +497,7 @@ export default {
           const file = new File([blob], 'profile_photo.jpg', { type: 'image/jpeg' });
           const group_Id = this.id;
           this.uploadProfileImage({ file, context, group_Id });
-          this.fetchGroupData();
+          this.fetchGroupData(this.id);
         }, 'image/jpeg');
       }
     },
@@ -520,7 +526,7 @@ export default {
           const file = new File([blob], 'cover_photo.jpg', { type: 'image/jpeg' });
           const groupId = this.id;
           await this.uploadCoverImage({ file, context, groupId });
-          await this.fetchGroupData(); 
+          await this.fetchGroupData(this.id); 
           await this.calculateOffsets();
         }, 'image/jpeg');
       }
@@ -534,20 +540,11 @@ export default {
       } else {
         const group_Id = this.id;
         this.RemoveCoverImage({ context, group_Id });
-        this.fetchGroupData();
+        this.fetchGroupData(this.id);
         this.calculateOffsets();
       }
     },
     updatePreview() { },
-    fetchGroupData() {
-      axios.get(`/api/groups/join/${this.id}`)
-        .then(response => {
-          this.groupData = response.data;
-        })
-        .catch(error => {
-          console.error('There was an error fetching the group data:', error);
-        });
-    },
     handleCoverImageError(event) {
       if (this.coverImageLoadAttempts < this.maxLoadAttempts) {
         this.coverImageLoadAttempts++;
@@ -586,14 +583,13 @@ export default {
     this.cover_position = this.userData.cover_position;
     if (this.id) {
       this.checkUserRole();
-      this.fetchGroupData();
       this.showSkeletor = true;
     }
   },
   beforeDestroy() {
-    // Unregister the userProfile module only if it was registered by this component
     if (this.moduleRegistered) {
       unregisterVuexModule('userProfile');
+      unregisterVuexModule('userGroup');
     }
   }
 }
@@ -602,7 +598,7 @@ export default {
 <style>
 .profile_bg_img {
     position: relative;
-    height: 50vh;
+    height: 25vh;
 }
 
 .profile-cover-photo {
@@ -612,8 +608,6 @@ export default {
     top: 0;
     left: 0;
     z-index: 0;
-    /* Ensure cover photo is above overlay */
-    /* cursor: move; Make the cover photo draggable */
 }
 
 .cover-photo-overlay {
@@ -623,10 +617,7 @@ export default {
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    /* Semi-transparent overlay for better visibility */
-    /* z-index: 1; Ensure overlay is above cover photo */
     cursor: ns-resize;
-    /* Change cursor to indicate vertical resize */
 }
 
 .cover-photo-btn {
