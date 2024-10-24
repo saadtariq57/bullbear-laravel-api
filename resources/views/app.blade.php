@@ -1,4 +1,6 @@
 @extends('layouts.master')
-@section('body')
-<body>
-  @endsection
+
+@section('content')
+    <!-- Vue.js Mounting Point -->
+    <div id="app"></div>
+@endsection

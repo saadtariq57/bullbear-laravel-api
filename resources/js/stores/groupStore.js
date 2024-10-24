@@ -5,6 +5,7 @@ import ablyService from '../services/ablyService.js';
 const userGroupModule = {
     namespaced: true,
     state: () => ({
+        groupData: {},
         suggestedChats: [],
         joinedChats: [],
         messages: [],
@@ -14,6 +15,13 @@ const userGroupModule = {
         error: null
     }),
     mutations: {
+        setGroup(state, groupData){
+            state.groupData = groupData;
+        },
+        setJoinedStatus(state, payload) {
+            state.groupData.isJoined = payload.joined;
+            state.groupData.requestPending = payload.requestPending;
+        },
         setSuggestedChats(state, chats) {
             state.suggestedChats = chats;
         },
@@ -53,6 +61,14 @@ const userGroupModule = {
         }
     },
     actions: {
+        async fetchGroupData({commit}, groupId){
+            try{
+                const groupData = await GroupService.fetchSingleGroup(groupId);
+                commit('setGroup', groupData);
+            }catch(error){
+                commit('setError', error.message);
+            }
+        },
         async fetchSuggestedChats({ commit }) {
             commit('setLoading', true);
             try {
@@ -80,7 +96,6 @@ const userGroupModule = {
           try {
             let messages;
               messages = await GroupService.fetchGroupMessages(groupId);
-            console.log(messages);
             commit('setMessages', messages);
           } catch (error) {
             commit('setError', error.message);
@@ -116,7 +131,7 @@ const userGroupModule = {
         async editMessage({commit}, { groupId, messageId, newText } ){
             try{
                 const updatedMessage = await GroupService.editMessage(groupId, messageId, newText);
-                commit('updateMessage', {messageId, newText: updatedMessage.text })
+                commit('updateMessage', {messageId, newText: updatedMessage.data.text })
 
             } catch(error) {
                 console.error('Error updateing message:', error)
@@ -134,7 +149,6 @@ const userGroupModule = {
             if (!rootState.loggedIn || !rootState.userData) return;
                 ablyService.initializeAbly().then(() => {
                   ablyService.subscribeToGroupChat(groupId, (message) => {
-                    console.log('Hello Callback');
                     if (message.name === "NewMessage") {
                         commit('addMessage', message.data);
                     }

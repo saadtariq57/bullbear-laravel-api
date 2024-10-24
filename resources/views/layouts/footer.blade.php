@@ -27,12 +27,10 @@
                      <div class="footer-links">
                          <div class="menu-footer-navigation-one-container">
                              <ul id="menu-footer-navigation-one" class="menu  list-unstyled">
-                                 <li class="pb-3"><a href="https://richtv.io/about-us/" aria-label="about us">About
+                                 <li class="pb-3"><a href="/about-us/" aria-label="about us">About
                                          Us</a></li>
                                  <li class="pb-3"><a href="/pricing">Pricing and Plans </a></li>
-                                 {{-- <li class="pb-3"><a href="/affiliate-center" aria-label="Affiliate program">Affiliate
-                                         Program</a></li> --}}
-                                 <li class="pb-3"><a href="https://richtv.io/contact/" aria-label="contact us">Contact
+                                 <li class="pb-3"><a href="/contact-us/" aria-label="contact us">Contact
                                          us</a></li>
                                  {{-- <li class="pb-3"><a href="/register" aria-label="Join club">Join the Club</a></li> --}}
                              </ul>
@@ -52,7 +50,7 @@
                                  </li>
                                  <li class="pb-3"><a href="https://richtv.io/financial-news/"
                                          aria-label="News">News</a></li>
-                                 <li class="pb-3"><a href="/trading-school/" aria-label="trading school">Trading
+                                 <li class="pb-3"><a href="/trading-education/" aria-label="trading school">Trading
                                          School</a></li>
                              </ul>
                          </div>

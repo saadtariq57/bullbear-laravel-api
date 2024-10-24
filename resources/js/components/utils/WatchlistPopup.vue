@@ -50,10 +50,12 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import Swal from 'sweetalert2';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWatchlistsModule from '@/stores/watchlistStore';
 
 export default {
   name: 'WatchlistPopup',
@@ -68,19 +70,11 @@ export default {
     const router = useRouter();
     const store = useStore();
     const selectedWatchlistId = ref(null);
+    const moduleRegistered = ref(false);
 
-    const watchlists = computed(() => store.state.userWatchlists.watchlists || []);
-    const isLoading = computed(() => store.state.userWatchlists.isLoading);
+    const watchlists = computed(() => store.state.userWatchlists?.watchlists || []);
+    const isLoading = computed(() => store.state.userWatchlists?.isLoading);
     const userData = computed(() => store.state.userData);
-
-    onMounted(() => {
-      console.log('Component mounted');
-      fetchWatchlists();
-    });
-
-    watch(watchlists, (newValue) => {
-      console.log('Watchlists updated:', newValue);
-    });
 
     const fetchWatchlists = async () => {
       if (userData.value) {
@@ -97,36 +91,62 @@ export default {
       }
     };
 
-    const addToWatchlist = async () => {
-      if (selectedWatchlistId.value) {
-        try {
-          await store.dispatch('userWatchlists/addSymbolToWatchlist', {
-            watchlist_id: selectedWatchlistId.value,
-            symbol: props.symbol
-          });
-          emit('added');
-          emit('close');
-          Swal.fire({
-            icon: 'success',
-            title: 'Symbol added to watchlist',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-          });
-        } catch (error) {
-          console.error('Error adding to watchlist:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error adding symbol to watchlist',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-          });
-        }
+    onMounted(async () => {
+      console.log('Component mounted');
+      if (!store.hasModule('userWatchlists')) {
+        registerVuexModule('userWatchlists', userWatchlistsModule);
+        moduleRegistered.value = true;
       }
-    };
+      await fetchWatchlists();
+    });
+
+    onBeforeUnmount(() => {
+      if (moduleRegistered.value) {
+        unregisterVuexModule('userWatchlists');
+      }
+    });
+
+    watch(watchlists, (newValue) => {
+      console.log('Watchlists updated:', newValue);
+    });
+
+  const addToWatchlist = async () => {
+    if (selectedWatchlistId.value) {
+      try {
+        await store.dispatch('userWatchlists/addSymbolToWatchlist', {
+          watchlist_id: selectedWatchlistId.value,
+          symbol: props.symbol
+        });
+        emit('added');
+        emit('close');
+        Swal.fire({
+          icon: 'success',
+          title: 'Symbol added to watchlist',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      } catch (error) {
+        console.log(error);
+
+        let errorMessage = 'Error Adding symbol to watchlist';
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMessage = error.response.data.error;
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: errorMessage || 'An error occurred',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    }
+  };
+
 
     const createNewWatchlist = () => {
       router.push('/watchlist/store');
