@@ -52,4 +52,9 @@ return [
         'base_url' => env('FINANCIAL_MODEL_API_URL', 'https://financialmodelingprep.com/api/v3/'),
         'api_key' => env('FINANCIAL_MODEL_API_KEY'),
     ],
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
 ];

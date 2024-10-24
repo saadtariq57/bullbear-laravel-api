@@ -105,6 +105,8 @@ import { Skeletor } from "vue-skeletor";
 import Confirm from '../../shared/confirm.vue';
 import Sortable from "sortablejs";
 import Swal from 'sweetalert2';
+import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+import userWatchlistModule from '@/stores/watchlistStore';
 
 export default {
   components: {
@@ -114,6 +116,9 @@ export default {
   },
   computed: {
     ...mapState('userWatchlists', ['searchedSymbols', 'editWatchlistData', 'error']),
+    isModuleRegistered() {
+      return () => this.$store.hasModule('userWatchlists');
+    }
   },
   data() {
     return {
@@ -122,13 +127,23 @@ export default {
       modalData: {},
       inputTimeout: null,
       sortableInstance: null,
+      moduleRegistered: false
     };
   },
   created() {
+    registerVuexModule('userWatchlists', userWatchlistModule);
     const watchlistId = this.$route.params.id;
     this.editWatchlist(watchlistId).then(() => {
       this.initSortable();
     });
+  },
+  watch: {
+    isModuleRegistered(newVal) {
+      if (newVal && !this.moduleRegistered) {
+        this.moduleRegistered = true;
+        this.getUserWatchlistData();
+      }
+    }
   },
   methods: {
     ...mapActions('userWatchlists', ['searchSymbol', 'addSymbolToWatchlist', 'editWatchlist', 'editWatchlistName', 'deleteSymbolFromWatchlist', 'updateSymbolPosition']),
@@ -315,6 +330,9 @@ export default {
         });
     }
   },
+  beforeDestroy() {
+    unregisterVuexModule('userWatchlists');
+  }
 };
 </script>
 <style>

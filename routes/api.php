@@ -154,7 +154,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
     Route::get('/{userId}/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
-
+    // Route::get('/test-notifications/{userId}', [NotificationController::class, 'sendDailyNotifications']);
 
     // user Album
     // Route::get('/userAlbumData', [UserController::class, 'getUserAlbumData'])->name('getUserAlbumData');
@@ -196,7 +196,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/personal_sessions', [PersonalSessionController::class, 'userIndex'])->name('personal_sessions.userIndex');
     Route::post('/personal_sessions', [PersonalSessionController::class, 'userStore'])->name('personal_sessions.userStore');
     Route::put('/personal_sessions/{id}', [PersonalSessionController::class, 'userUpdate'])->name('personal_sessions.userUpdate');
-
+    // Route::get('/personal-access', [PersonalSessionController::class, 'handleGoogleCallback']);
 });
 
 //Additional Routes

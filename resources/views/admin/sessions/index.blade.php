@@ -55,6 +55,7 @@
                                     <th scope="col">ID</th>
                                     <th scope="col">User</th>
                                     <th scope="col">Scheduled At</th>
+                                    <th scope="col">Meeting Link</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Feature</th>
                                     <th scope="col" style="width: 200px;">Action</th>
@@ -66,6 +67,7 @@
                                         <td>{{ $session->id }}</td>
                                         <td>{{ $session->user->name }} ({{ $session->user->email }})</td>
                                         <td>{{ \Carbon\Carbon::parse($session->scheduled_at)->format('F d, Y h:i A') }}</td>
+                                        <td>{{ $session->meet_link }}</td>
                                         <td>
                                             <span class=" 
                                                 @if($session->status == 'pending') badge-warning 

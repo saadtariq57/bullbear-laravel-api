@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\LiveTemplate;
 use App\Models\Webinar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LiveStreamMailable;
 
 class LiveController extends Controller
 {

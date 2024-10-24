@@ -96,6 +96,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Scheduled At</th>
+                                        <th>Meeting Link</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -104,6 +105,7 @@
                                     <tr v-for="session in paginatedSessions" :key="session.id">
                                         <td>{{ session.id }}</td>
                                         <td>{{ formatDate(session.scheduled_at) }}</td>
+                                        <td><a :href="session.meet_link" target="_blank">{{ session.meet_link }}</a></td>
                                         <td>
                                             <span :class="statusBadge(session.status)" aria-label="Session Status">
                                                 {{ capitalize(session.status) }}
@@ -210,6 +212,7 @@
                         <p><strong>ID:</strong> {{ selectedSession.id }}</p>
                         <p><strong>Scheduled At:</strong> {{ formatDate(selectedSession.scheduled_at) }}</p>
                         <p><strong>Status:</strong> {{ capitalize(selectedSession.status) }}</p>
+                        <p><strong>Meeting Link:</strong> <a :href="selectedSession.meet_link" target="_blank">{{ selectedSession.meet_link }}</a></p>
                     </div>
                     <div class="modal-body" v-else>
                         <p>Loading...</p>

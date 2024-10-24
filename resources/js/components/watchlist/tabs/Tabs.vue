@@ -74,7 +74,7 @@
                           <tr v-else v-for="symbolData in watchlist.watchlist_symbols" :key="symbolData.id">
                             <td class="gray2 sticky-side position-sticky pl-0">
                               <a :href="`/stock-quote/${symbolData.symbol.name}`" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30">
+                                <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30" v-if="symbolData.symbol.quote">
                                 <div class="lh-sm">
                                   <span class="text-color fw-bolder">{{ symbolData.symbol.symbol }}</span><br>
                                   <span class="fw-5 text-color">{{ symbolData.symbol.name }}</span>
@@ -216,7 +216,7 @@
                           <tr v-else v-for="symbolData in watchlist.watchlist_symbols" :key="symbolData.id">
                             <td class="gray2 sticky-side position-sticky pl-0">
                               <a :href="`/quotes/${symbolData.symbol.symbol}`" class="gray d-flex align-items-center gap-2" aria-label="Stock Quote">
-                                <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30">
+                                <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30" v-if="symbolData.symbol.quote">
                                 <div class="lh-sm">
                                   <span class="text-color fw-bolder">{{ symbolData.symbol.symbol }}</span><br>
                                   <span class="fw-5 text-color">{{ symbolData.symbol.name }}</span>
