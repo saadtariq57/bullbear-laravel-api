@@ -1,6 +1,15 @@
 import axios from "axios";
 
 const GroupService = {
+    async fetchSingleGroup(groupId){
+        try{
+            const response = await axios.get(`/api/groups/${groupId}`);
+            return response.data;
+        }catch(error){
+            console.error('Error fetching suggested chats:', error);
+            throw error;
+        }
+    },
     async fetchSuggestedChats() {
         try {
             const response = await axios.get('/api/suggested-chats');

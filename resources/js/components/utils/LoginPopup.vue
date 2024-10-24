@@ -6,7 +6,7 @@
       <div class="modal-body row p-0">
         <div class="col-lg-4 d-xl-flex d-none align-items-end" style="background-color: #EAECF4;">
           <div class="login-men">
-            <img src="build/images/man.png" alt="men">
+            <img src="/build/images/man.png" alt="men">
           </div>
         </div>
         <div class="col-xl-8">

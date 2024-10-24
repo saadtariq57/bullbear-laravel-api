@@ -8,35 +8,107 @@ use App\Models\ExamCategory;
 use App\Models\ExamQuestion;
 use App\Models\ExamResult;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ExamController extends Controller
 {
 
     public function getAllExams(Request $request)
     {
+        // Retrieve query parameters
         $search = $request->query('search');
+        $type = $request->query('type');
+        $perPage = 10;
 
-        if ($search) {
-            $exams = Exam::where('title', 'LIKE', "%{$search}%")
-                ->orWhere('category', 'LIKE', "%{$search}%")
-                // ... add other fields if needed
-                ->paginate(10);
-        } else {
-            $exams = Exam::paginate(10);
+        // Initialize the query builder for Exam
+        $query = Exam::query();
+
+        // Filter by exam type if provided
+        if ($type) {
+            $query->where('type', $type);
         }
 
-        $categories = ExamCategory::with(['exams' => function ($query) {
-            $query->orderByDesc('created_at')->take(3);
-        }])->get();
+        // Implement search functionality
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'LIKE', "%{$search}%")
+                  ->orWhere('category', 'LIKE', "%{$search}%");
+            });
+        }
 
-        // Replace category IDs with names in the exams
-        $exams->getCollection()->transform(function ($exam) use ($categories) {
-            $categoryName = $categories->where('id', $exam->category)->first()->name ?? '';
-            $exam->category = $categoryName;
+        // Fetch exams with pagination
+        $exams = $query->orderBy('type')
+                       ->orderBy('category')
+                       ->orderByDesc('created_at')
+                       ->paginate($perPage);
+
+        // Get the exams IDs from the current page
+        $examIds = $exams->pluck('id')->toArray();
+
+        // Retrieve the authenticated user, if any
+        $user = $request->user();
+        $userId = $user ? $user->id : null;
+
+        // Initialize an empty collection for latest results
+        $latestResults = collect();
+
+        if ($userId) {
+            // Fetch the latest exam_result for each exam for the user
+            $latestResults = ExamResult::where('user_id', $userId)
+                                ->whereIn('exam_id', $examIds)
+                                ->orderBy('exam_id')
+                                ->orderByDesc('exam_date')
+                                ->get()
+                                ->groupBy('exam_id')
+                                ->map(function ($group) {
+                                    return $group->first();
+                                });
+        }
+
+        // Define the cutoff date for attempting the exam
+        $oneWeekAgo = Carbon::now()->subWeek();
+
+        // Attach 'canAttempt' to each exam
+        $exams->getCollection()->transform(function ($exam) use ($latestResults, $oneWeekAgo, $userId) {
+            if (!$userId) {
+                // No authenticated user; cannot attempt
+                $exam->canAttempt = false;
+            } else {
+                $lastResult = $latestResults->get($exam->id);
+
+                if (!$lastResult) {
+                    // User has never attempted this exam
+                    $exam->canAttempt = true;
+                } else {
+                    // Parse the last attempt date
+                    $lastAttemptDate = Carbon::parse($lastResult->exam_date);
+                    // Determine if the last attempt was at least one week ago
+                    $exam->canAttempt = $lastAttemptDate->lessThanOrEqualTo($oneWeekAgo);
+                }
+            }
+
             return $exam;
         });
 
-        return response()->json(['exams' => $exams, 'categories' => $categories]);
+        // Group exams by Type and then by Category
+        $groupedExams = $exams->getCollection()->groupBy('type')->map(function ($typeGroup) {
+            return $typeGroup->groupBy('category');
+        });
+
+        // Prepare the final response structure
+        $response = [
+            'data' => $groupedExams,
+            'pagination' => [
+                'current_page' => $exams->currentPage(),
+                'last_page'    => $exams->lastPage(),
+                'per_page'     => $exams->perPage(),
+                'total'        => $exams->total(),
+                'from'         => $exams->firstItem(),
+                'to'           => $exams->lastItem(),
+            ],
+        ];
+
+        return response()->json($response);
     }
 
     public function initiateExam($examId)
@@ -74,8 +146,8 @@ class ExamController extends Controller
 
     public function submitExam(Request $request, $examId)
     {
-        $user = auth()->user(); // Get the authenticated user
-        $userAnswers = $request->input('userAnswers'); // Retrieve user answers from the request
+        $user = auth()->user();
+        $userAnswers = $request->input('userAnswers');
         $totalTimeSpent = 0;
 
         // Logic to calculate the results
@@ -118,9 +190,39 @@ class ExamController extends Controller
         }
     }
 
+    public function getAllExamResult()
+    {
+        $results = ExamResult::orderBy('exam_date', 'desc')->get();
+        return response()->json($results);
+    }
 
+    public function getRecommendedExams(Request $request)
+    {
+        $user = $request->user();
+        // Recommend the latest 5 exams that the user hasn't taken yet.
+        $takenExamIds = ExamResult::where('user_id', $user->id)->pluck('exam_id')->toArray();
 
+        $recommendedExams = Exam::whereNotIn('id', $takenExamIds)
+                                ->orderBy('created_at', 'desc')
+                                ->take(5)
+                                ->get();
 
+        return response()->json($recommendedExams);
+    }
+
+    public function getPastPerformance(Request $request)
+    {
+        $user = $request->user();
+
+        // Fetch past exam results with related exam details
+        $pastResults = ExamResult::where('user_id', $user->id)
+                                 ->with('exam')
+                                 ->orderBy('exam_date', 'desc')
+                                 ->take(5)
+                                 ->get();
+
+        return response()->json($pastResults);
+    }
 
     // Admin panel Routes Below
 
@@ -135,14 +237,12 @@ class ExamController extends Controller
         if ($search) {
             $exams = Exam::where('title', 'LIKE', "%{$search}%")
                 ->orWhere('category', 'LIKE', "%{$search}%")
-                // ... add other fields if needed
                 ->paginate(10);
         } else {
             $exams = Exam::paginate(10);
         }
 
         return view('admin.exams.index', compact('exams'));
-        //return view('admin.symbols.index', ['symbols' => $symbols]);
     }
     /**
      * Show the form for creating a new resource.
@@ -162,6 +262,7 @@ class ExamController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'type' => 'required|in:basic,advanced',
             'description' => 'nullable|string',
             'number_of_questions' => 'required|integer|min:1',
             'per_question_time_limit' => 'required|integer|min:1',
@@ -189,7 +290,7 @@ class ExamController extends Controller
             return $this->storeQuestions($request, $exam);
         }
 
-        $dbQuestions = $exam->questions; // This fetches the related questions using the assumed relationship
+        $dbQuestions = $exam->questions;
 
         return view('admin.exams.add_questions', compact('exam', 'dbQuestions'));
     }
@@ -197,7 +298,7 @@ class ExamController extends Controller
     /**
      * Store the questions of a specific exam.
      */
-    public function storeQuestions(Request $request, Exam $exam)
+   public function storeQuestions(Request $request, Exam $exam)
     {
         $data = $request->validate([
             'exam_id' => 'required|integer',
@@ -208,7 +309,7 @@ class ExamController extends Controller
             'questions.*.option_c' => 'required|string',
             'questions.*.option_d' => 'required|string',
             'questions.*.correct_answer' => 'required|in:A,B,C,D',
-            'questions.*.featured_image' => 'nullable|file|image', // Adjusted for actual image upload
+            'questions.*.featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // Get list of IDs of questions currently in the database for the exam
@@ -228,20 +329,24 @@ class ExamController extends Controller
             // Check if a question ID is provided (existing question)
             if (isset($questionData['id'])) {
                 $question = $exam->questions()->find($questionData['id']);
-                if ($question) { // Check if the question really exists in the database
+                if ($question) { // Check if the question exists
                     // Handle image upload if provided
                     if (isset($questionData['featured_image']) && $questionData['featured_image'] instanceof UploadedFile) {
-                        // $path = $questionData['featured_image']->store('path/to/store');
-                        // $questionData['featured_image'] = $path;
+                        $path = $questionData['featured_image']->store(
+                            "photos/" . now()->year . "/" . now()->month, 'public'
+                        );
+                        $questionData['featured_image'] = $path;
                     }
                     // Update the existing question with the new data
                     $question->update($questionData);
                 }
-            } else { // New question (no ID provided)
+            } else {
                 // Handle image upload if provided
                 if (isset($questionData['featured_image']) && $questionData['featured_image'] instanceof UploadedFile) {
-                    // $path = $questionData['featured_image']->store('path/to/store');
-                    // $questionData['featured_image'] = $path;
+                    $path = $questionData['featured_image']->store(
+                        "photos/" . now()->year . "/" . now()->month, 'public'
+                    );
+                    $questionData['featured_image'] = $path;
                 }
                 // Create a new question
                 $exam->questions()->create($questionData);
@@ -250,6 +355,7 @@ class ExamController extends Controller
 
         return redirect()->route('admin.exams.index')->with('success', 'Questions updated successfully.');
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -268,6 +374,7 @@ class ExamController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'type' => 'required|in:basic,advanced',
             'description' => 'nullable|string',
             'number_of_questions' => 'required|integer|min:1',
             'per_question_time_limit' => 'required|integer|min:1',
@@ -305,7 +412,6 @@ class ExamController extends Controller
         if ($search) {
             $categories = ExamCategory::where('name', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
-                // ... add other fields if needed
                 ->paginate(10);
         } else {
             $categories = ExamCategory::paginate(10);

@@ -22,7 +22,7 @@
             </div>
           </div>
           <div v-else>
-            <div v-for="n in 10" :key="n" class="market-news d-flex align-items-center border-bottom border-1 border-grey ">
+            <div v-for="n in 6" :key="n" class="market-news d-flex align-items-center border-bottom border-1 border-grey ">
               <div class="feature-img">
                 <div class="stock-post-img loading-animation"></div>
               </div>

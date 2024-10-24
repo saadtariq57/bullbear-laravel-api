@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WatchlistAlertsMailable;
+use Illuminate\Support\Facades\Log;
 
 class WatchlistController extends Controller
 {
@@ -287,59 +288,133 @@ class WatchlistController extends Controller
 
     public function getWatchLists(Request $request)
     {
-        // Check if the user is authenticated
-        if (Auth::check()) {
-            $user = Auth::user();
-            // Ensure the user_id from the request matches the authenticated user
-            $user_id = $request->input('user_id');
+        try {
+            $userId = $request->input('user_id');
+            $isAuthenticated = Auth::check();
+            $user = $isAuthenticated ? Auth::user() : null;
 
-            if ($user_id != $user->id) {
+            // Authorization Check
+            if ($isAuthenticated && $userId != $user->id) {
                 return response()->json([
                     'error' => 'Unauthorized access.'
                 ], 403);
             }
 
-            // Fetch user-specific watchlists with related symbols, ordered by position
-            $userWatchlists = UserWatchlist::where('user_id', $user_id)
-                ->orderBy('position')
-                ->with([
-                    'watchlistSymbols' => function ($query) {
-                        $query->orderBy('position');
-                    },
-                    'watchlistSymbols.symbol'
-                ])
-                ->get();
+            // Fetch appropriate watchlists
+            $query = UserWatchlist::query();
+            if ($isAuthenticated && $userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('featured', true);
+            }
 
-            if ($userWatchlists->isNotEmpty()) {
+            $watchlists = $query->orderBy('position')->with([
+                'watchlistSymbols.symbol'
+            ])->get();
+
+            if ($watchlists->isEmpty() && $isAuthenticated) {
                 return response()->json([
-                    'watchlistDetails' => $userWatchlists,
-                    'hasUserWatchlist' => true
+                    'watchlistDetails' => [],
+                    'hasUserWatchlist' => false
                 ]);
             }
+
+            // **Create a Symbol-Exchange Map**
+            $symbolExchangeMap = $watchlists->pluck('watchlistSymbols')->flatten()->pluck('symbol')->unique('symbol')->mapWithKeys(function ($symbol) {
+                return [strtoupper($symbol->symbol) => strtoupper($symbol->exchange)];
+            })->toArray();
+
+            $allSymbols = array_keys($symbolExchangeMap);
+
+            if (!empty($allSymbols)) {
+                // Fetch all quotes in a single API call
+                $symbolString = implode(',', $allSymbols);
+                $quotesApiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbolString}";
+                $quotesResponse = Http::timeout(15)->get($quotesApiUrl);
+
+                if ($quotesResponse->successful()) {
+                    $quotes = $quotesResponse->json();
+
+                    // Ensure $quotes is an associative array with uppercase keys
+                    if (is_array($quotes) && !empty($quotes)) {
+                        $quotes = array_change_key_case($quotes, CASE_UPPER);
+                    } else {
+                        // Log unexpected structure
+                        Log::error('Quotes API returned unexpected structure.', ['quotes' => $quotes]);
+                        $quotes = [];
+                    }
+                } else {
+                    Log::error('Quotes API request failed', [
+                        'status' => $quotesResponse->status(),
+                        'body' => $quotesResponse->body(),
+                        'url' => $quotesApiUrl,
+                    ]);
+                    $quotes = [];
+                }
+
+                // Fetch all news using the Symbol-Exchange Map
+                $news = $this->getSymbolNews($symbolExchangeMap);
+            } else {
+                $quotes = [];
+                $news = [];
+            }
+
+            // **Attach quotes and news to each symbol with field mapping**
+            foreach ($watchlists as $watchlist) {
+                foreach ($watchlist->watchlistSymbols as $watchlistSymbol) {
+                    $symbol = $watchlistSymbol->symbol;
+                    $symbolName = strtoupper($symbol->symbol); // Ensure uppercase
+
+                    // Attach quote data with field mapping
+                    if (isset($quotes[$symbolName])) {
+                        $symbol->quote = [
+                            'price' => $quotes[$symbolName]['regular_market_price'] ?? null,
+                            'change' => $quotes[$symbolName]['regular_market_change'] ?? null,
+                            'change_percent' => $quotes[$symbolName]['regular_market_change_percent'] ?? null,
+                            'logo' => $quotes[$symbolName]['logo'] ?? null,
+                            'regularMarketDayRange' => $quotes[$symbolName]['regular_market_day_range'] ?? null,
+                            'fiftyTwoWeekHigh' => $quotes[$symbolName]['fifty_two_week_high'] ?? null,
+                            'fiftyTwoWeekLow' => $quotes[$symbolName]['fifty_two_week_low'] ?? null,
+                            'updated_at' => $quotes[$symbolName]['updated_at'] ?? null,
+                            'currency' => $quotes[$symbolName]['currency'] ?? null,
+                            'volume' => $quotes[$symbolName]['volume'] ?? null,
+                        ];
+                    } else {
+                        Log::warning("No quote data for symbol: {$symbolName}");
+                        $symbol->quote = null;
+                    }
+
+                    // Attach news data
+                    $symbol->news = $news[$symbolName] ?? [];
+                }
+            }
+
+            $response = [
+                'watchlistDetails' => $watchlists
+            ];
+
+            if ($isAuthenticated) {
+                $response['hasUserWatchlist'] = $watchlists->isNotEmpty();
+            }
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            Log::error('Error in WatchlistController@getWatchLists', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
         }
-
-        // If user is not authenticated or has no watchlists, return featured watchlists
-        $featuredWatchlists = UserWatchlist::where('featured', true)
-            ->orderBy('position')
-            ->with([
-                'watchlistSymbols' => function ($query) {
-                    $query->orderBy('position');
-                },
-                'watchlistSymbols.symbol'
-            ])
-            ->get();
-
-        $response = [
-            'watchlistDetails' => $featuredWatchlists
-        ];
-
-        // If the user is authenticated but has no watchlists
-        if (Auth::check()) {
-            $response['hasUserWatchlist'] = false;
-        }
-
-        return response()->json($response);
     }
+
+
+
+
 
     public function getFeaturedWatchlists()
     {
@@ -357,6 +432,57 @@ class WatchlistController extends Controller
             'watchlistDetails' => $featuredWatchlists
         ]);
     }
+
+    public function getSymbolNews($symbolExchangeMap)
+    {
+        $wordpressApiUrl = config('services.wordpresstags.api_url');
+        $tags = [];
+
+        foreach ($symbolExchangeMap as $symbol => $exchange) {
+            // Ensure both symbol and exchange are present
+            if (!empty($symbol) && !empty($exchange)) {
+                $tags[] = strtoupper($symbol) . ':' . strtoupper($exchange);
+            } else {
+                Log::warning("Missing symbol or exchange for tag creation. Symbol: {$symbol}, Exchange: {$exchange}");
+            }
+        }
+
+        $tagsParam = implode(',', $tags);
+
+        // Ensure the URL is properly formatted
+        if (substr($wordpressApiUrl, -1) !== '/') {
+            $wordpressApiUrl .= '/';
+        }
+        $wordpressApiUrl .= $tagsParam . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
+
+        try {
+            $response = file_get_contents($wordpressApiUrl);
+            if ($response === FALSE) {
+                throw new \Exception('Failed to retrieve data from WordPress API.');
+            }
+
+            $posts = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('Invalid JSON response from WordPress API: ' . json_last_error_msg());
+            }
+
+            $symbolNews = [];
+            foreach ($posts as $newsData) {
+                if (isset($newsData['symbol'])) {
+                    $symbol = strtoupper($newsData['symbol']);
+                    $symbolNews[$symbol] = $newsData;
+                } else {
+                    Log::warning('News data missing symbol key.', ['newsData' => $newsData]);
+                }
+            }
+            return $symbolNews;
+        } catch (\Exception $e) {
+            \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
+            return [];
+        }
+    }
+
 
     public function getSymbols($watchlistId)
     {
@@ -449,35 +575,6 @@ class WatchlistController extends Controller
         }
     }
 
-
-
-
-    public function getSymbolNews($symbols, $exchanges)
-    {
-        $wordpressApiUrl = config('services.wordpresstags.api_url');
-        $tags = [];
-
-        foreach ($symbols as $index => $symbol) {
-            $tags[] = $symbol . ':' . $exchanges[$index];
-        }
-        $tagsParam = implode(',', $tags);
-
-        $wordpressApiUrl .= $tagsParam . '/?secret_key=H2F1aR6nJR7K91MmD3Fe4Q';
-
-        try {
-            $response = file_get_contents($wordpressApiUrl);
-            $posts = json_decode($response, true);
-            $symbolNews = [];
-            foreach ($posts as $newsData) {
-                $symbolNews[$newsData['symbol']] = $newsData;
-            }
-            return $symbolNews;
-        } catch (\Exception $e) {
-            \Log::error('Error fetching WordPress posts: ' . $e->getMessage());
-            return [];
-        }
-    }
-
     public function getWatchListAllData($watchlistId)
     {
         return UserWatchlist::where('id', $watchlistId)
@@ -507,7 +604,10 @@ class WatchlistController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            return response()->json('unauthorized request', 401);
+            return response()->json([
+                'error' => 'Unauthorized request',
+                'status' => 401
+            ], 401);
         }
 
         $data = $request->all();
@@ -523,11 +623,29 @@ class WatchlistController extends Controller
         }
 
         if (!$symbolId) {
-            return response()->json('Invalid symbol', 400);
+            return response()->json([
+                'error' => 'Invalid symbol',
+                'status' => 400
+            ], 400);
         }
 
         if (empty($data['watchlist_id'])) {
-            return response()->json('Watchlist ID is required', 400);
+            return response()->json([
+                'error' => 'Watchlist ID is required',
+                'status' => 400
+            ], 400);
+        }
+
+        // Check if the symbol already exists in the watchlist
+        $existingSymbol = WatchlistSymbol::where('watchlist_id', $data['watchlist_id'])
+            ->where('symbol_id', $symbolId)
+            ->first();
+
+        if ($existingSymbol) {
+            return response()->json([
+                'error' => 'Symbol already exists in watchlist',
+                'status' => 409
+            ], 409);
         }
 
         try {
@@ -546,9 +664,14 @@ class WatchlistController extends Controller
             $response = $this->getWatchListAllData($data['watchlist_id']);
             return response()->json($response);
         } catch (\Exception $e) {
-            return response()->json('Error adding symbol to watchlist: ' . $e->getMessage(), 500);
+            return response()->json([
+                'error' => 'Error adding symbol to watchlist: ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
         }
     }
+
+
 
 
     public function copyWatchlist(Request $request)

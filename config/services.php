@@ -38,7 +38,9 @@ return [
     ],
 
     'wordpress' => [
-        'api_url' => env('WORDPRESS_API_URL'),
+        'api_url'  => env('WORDPRESS_API_URL'),
+        'username' => env('WORDPRESS_USERNAME'),
+        'password' => env('WORDPRESS_PASSWORD'),
     ],
 
     'wordpresstags' => [

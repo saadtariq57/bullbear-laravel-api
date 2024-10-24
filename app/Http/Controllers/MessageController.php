@@ -48,6 +48,22 @@ class MessageController extends Controller
             'replyTo' => 'nullable|integer|exists:messages,id' 
         ]);
 
+        $group = Group::find($groupId);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Check if the user is an active member of the group
+        $isMember = $group->members()
+                          ->where('group_members.user_id', $request->userId)
+                          ->wherePivot('status', 'active')
+                          ->exists();
+
+        if (!$isMember) {
+            return response()->json(['status' => 403, 'message' => 'You are not a member of this group.'], 403);
+        }
+
         $message = new Message();
         $message->text = $request->text;
         $message->user_id = $request->userId;

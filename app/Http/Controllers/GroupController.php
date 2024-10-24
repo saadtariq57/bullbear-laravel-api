@@ -90,8 +90,6 @@ class GroupController extends Controller
         $userId = $request->user_id;
         $role = $request->role;
         $status = $request->status;
-
-        // Specify the table name in the where clause to avoid ambiguity
         $member = $group->members()->where('group_members.user_id', $userId)->first();
 
         if ($member) {
@@ -127,12 +125,12 @@ class GroupController extends Controller
         if ($group->join_privacy == 'public') {
             if (!$member) {
                 $group->members()->attach($user->id, ['status' => 'active']);
-                return response()->json(['joined' => true, 'requestPending' => false, 'message' => 'You have joined the group.']);
+                return response()->json(['id' =>$group->id, 'group_title' => $group->group_title, 'joined' => true, 'requestPending' => false, 'message' => 'You have joined the group.']);
             }
         } elseif ($group->join_privacy == 'private') {
             if (!$member) {
                 $group->members()->attach($user->id, ['status' => 'pending']);
-                return response()->json(['joined' => false, 'requestPending' => true, 'message' => 'Your request to join the group has been sent.']);
+                return response()->json(['id' =>$group->id, 'group_title' => $group->group_title, 'joined' => false, 'requestPending' => true, 'message' => 'Your request to join the group has been sent.']);
             }
         }
 
@@ -150,7 +148,6 @@ class GroupController extends Controller
         $user = $request->user();
     }
     $currentUser = $request->user();
-    // return response()->json($user);
     if (!$user) {
         return response()->json(['error' => 'User not found'], 404);
     }
@@ -188,7 +185,6 @@ class GroupController extends Controller
         $query = Group::query();
 
         if ($userId) {
-            // If user is logged in, fetch groups they're not a member of
             $query->whereDoesntHave('members', function($q) use ($userId) {
                 $q->where('group_members.user_id', $userId);
             })
@@ -203,7 +199,7 @@ class GroupController extends Controller
             ->withCount('members')
             ->withCount('messages')
             ->orderBy('messages_count', 'desc')
-            ->take(10)
+            ->take(9)
             ->get();
 
         return response()->json($recentlyActiveGroups->map(function($group) use ($userId) {
@@ -218,6 +214,218 @@ class GroupController extends Controller
             return $group;
         }));
     }
+
+    public function getGroupById($id)
+    {
+        $group = Group::withCount('members')
+                   ->find($id);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        $user = auth()->user();
+        $isJoined = false;
+
+        if ($user) {
+            $isJoined = $group->members()
+                   ->where('users.id', $user->id)
+                   ->exists();
+            $isPending = $group->members()
+                               ->where('users.id', $user->id)
+                               ->where('group_members.status', 'pending')
+                               ->exists();
+        }
+
+        $group->isJoined = $isJoined;
+        $group->requestPending = $isPending;
+
+        return response()->json($group);
+    }
+
+
+    public function groupCoverPosition(Request $request){
+        $group_id = $request->input('group_id');
+        $group = Group::find($group_id);
+    // Check if group exists
+    if (!$group) {
+        return response()->json(['message' => 'Group not found'], 404);
+    }
+
+    // Update the 'cover_position' from the request
+    $group->cover_position = $request->input('cover_position');
+    $group->save(); // Save the changes
+
+    // Return a success response
+    return response()->json(['message' => 'Cover position updated successfully'], 200);
+    }
+    public function updateGroupCover(Request $request){
+        $request->validate([
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
+        ]);
+    
+        $group = Group::find($request->group_id);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Handle the file upload
+        if ($request->hasFile('cover_photo')) {
+            $file = $request->file('cover_photo')->store('/photos', 'public');
+            
+    
+            // Update the group cover image path and cover position
+            // $group->update(['cover' => $file]);
+            $group->cover = $file;
+            $group->cover_position = '0px';
+            $group->save();
+    
+            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
+        }
+    
+        return response()->json(['message' => 'Invalid file provided'], 400);
+    }
+
+    public function removeGroupCoverPhoto(Request $request) {
+        $group = Group::find($request->input('group_id'));
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Assuming the fields in your database are `cover` and `cover_position`
+        $group->cover = 'photos/d-cover.jpg';
+        $group->cover_position = '0px';
+        $group->save();
+
+        return response()->json(['message' => 'Cover removed successfully', 'group' => $group]);
+    }
+    public function GroupProfilePhoto(Request $request){
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
+        ]);
+    
+        $group = Group::find($request->group_id);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Handle the file upload
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo')->store('/photos', 'public');
+            
+    
+            // Update the group cover image path and cover position
+            $group->update(['avatar' => $file]);
+    
+            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
+        }
+    
+        return response()->json(['message' => 'Invalid file provided'], 400);
+    }
+    public function getGroupMembers($groupId)
+    {
+        $group = Group::with(['members' => function($query) {
+            $query->select('users.id', 'users.name', 'users.avatar'); // Customize the fields as needed
+        }])
+        ->withCount('members')
+        ->find($groupId);
+
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        $response = [
+            'members' => $group->members,
+            'members_count' => $group->members_count
+        ];
+    
+        return response()->json($response);
+    }
+    public function updateGroupMember(Request $request, $groupId)
+    {
+
+        $userId = $request->user_id;
+        $role = $request->role;
+        $status = $request->status;
+
+        // First, find the group to ensure it exists
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Check if the user is a member of the group
+        $member = $group->members()->where('users.id', $userId)->first();
+        if (!$member) {
+            return response()->json(['message' => 'Member not found in the group'], 404);
+        }
+
+        // Update role and status in the pivot table
+        $group->members()->updateExistingPivot($userId, [
+            'role' => $role,
+            'status' => $status,
+            // 'updated_at' => now();
+        ]);
+
+        $group->load('members');
+
+        // Return the updated group data
+        return response()->json([
+            'message' => 'Member updated successfully',
+            'group' => $group
+        ]);
+    }
+    
+    public function removeGroupMember(Request $request, $groupId)
+    {
+        $memberId = $request->member_id;
+
+        // First, find the group
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+    
+        // Check if the user is a member of the group
+        $isMember = $group->members()->where('users.id', $memberId)->exists();
+        if (!$isMember) {
+            return response()->json(['message' => 'Member not found in the group'], 404);
+        }
+    
+        // Remove the member from the group
+        $group->members()->detach($memberId);
+        $group->load('members');
+    
+        // Return the updated group data
+        return response()->json(['message' => 'Cover updated successfully']);
+    }
+
+    public function checkUserGroupRole(Request $request, $groupId)
+    {
+        $memberId = $request->member_id;
+        $actingUserId = auth()->id();
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        // Check if the acting user is an admin of the group
+        $actingMember = $group->members()->where('users.id', $actingUserId)->first();
+        if (!$actingMember || $actingMember->pivot->role === 'admin') {
+            return response()->json(['authorized' => true]);
+        } else {
+            return response()->json(['authorized' => false]);
+        }
+    }
+
+
+    public function defaultGroups()
+    {
+        $defaultGroups = Group::orderBy('created_at', 'desc')->take(30)->get();
+        return response()->json($defaultGroups);
+    }
+
+
+    /* Admin Methods */
 
     public function create()
     {
@@ -365,201 +573,5 @@ class GroupController extends Controller
     {
         $category->delete();
         return redirect()->route('admin.groups.categories.index')->with('success', 'Category deleted successfully');
-    }
-
-    public function getGroupById($id)
-    {
-        $group = Group::withCount('members') // This counts the members relationship
-                   ->find($id);
-
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        return response()->json($group);
-    }
-    public function groupCoverPosition(Request $request){
-        $group_id = $request->input('group_id');
-        $group = Group::find($group_id);
-    // Check if group exists
-    if (!$group) {
-        return response()->json(['message' => 'Group not found'], 404);
-    }
-
-    // Update the 'cover_position' from the request
-    $group->cover_position = $request->input('cover_position');
-    $group->save(); // Save the changes
-
-    // Return a success response
-    return response()->json(['message' => 'Cover position updated successfully'], 200);
-    }
-    public function updateGroupCover(Request $request){
-        $request->validate([
-            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
-        ]);
-    
-        $group = Group::find($request->group_id);
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-    
-        // Handle the file upload
-        if ($request->hasFile('cover_photo')) {
-            $file = $request->file('cover_photo')->store('/photos', 'public');
-            
-    
-            // Update the group cover image path and cover position
-            // $group->update(['cover' => $file]);
-            $group->cover = $file;
-            $group->cover_position = '0px';
-            $group->save();
-    
-            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
-        }
-    
-        return response()->json(['message' => 'Invalid file provided'], 400);
-    }
-    public function removeGroupCoverPhoto(Request $request) {
-        $group = Group::find($request->input('group_id'));
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        // Assuming the fields in your database are `cover` and `cover_position`
-        $group->cover = 'photos/d-cover.jpg';
-        $group->cover_position = '0px';
-        $group->save();
-
-        return response()->json(['message' => 'Cover removed successfully', 'group' => $group]);
-    }
-    public function GroupProfilePhoto(Request $request){
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validate the incoming input
-        ]);
-    
-        $group = Group::find($request->group_id);
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-    
-        // Handle the file upload
-        if ($request->hasFile('profile_photo')) {
-            $file = $request->file('profile_photo')->store('/photos', 'public');
-            
-    
-            // Update the group cover image path and cover position
-            $group->update(['avatar' => $file]);
-    
-            return response()->json(['message' => 'Cover updated successfully', 'path' => $file]);
-        }
-    
-        return response()->json(['message' => 'Invalid file provided'], 400);
-    }
-    public function getGroupMembers($groupId)
-    {
-        $group = Group::with(['members' => function($query) {
-            $query->select('users.id', 'users.name', 'users.avatar'); // Customize the fields as needed
-        }])
-        ->withCount('members')
-        ->find($groupId);
-
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        // return response()->json($group->members);
-        $response = [
-            'members' => $group->members,
-            'members_count' => $group->members_count
-        ];
-    
-        return response()->json($response);
-    }
-    public function updateGroupMember(Request $request, $groupId)
-    {
-
-        $userId = $request->user_id;
-        $role = $request->role;
-        $status = $request->status;
-
-        // First, find the group to ensure it exists
-        $group = Group::find($groupId);
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        // Check if the user is a member of the group
-        $member = $group->members()->where('users.id', $userId)->first();
-        if (!$member) {
-            return response()->json(['message' => 'Member not found in the group'], 404);
-        }
-
-        // Update role and status in the pivot table
-        $group->members()->updateExistingPivot($userId, [
-            'role' => $role,
-            'status' => $status,
-            // 'updated_at' => now();
-        ]);
-
-        // Optionally, you can reload the group with its members to reflect the change
-        $group->load('members');
-
-        // Return the updated group data
-        return response()->json([
-            'message' => 'Member updated successfully',
-            'group' => $group
-        ]);
-    }
-    
-    public function removeGroupMember(Request $request, $groupId)
-    {
-        $memberId = $request->member_id;
-
-        // First, find the group
-        $group = Group::find($groupId);
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-    
-        // Check if the user is a member of the group
-        $isMember = $group->members()->where('users.id', $memberId)->exists();
-        if (!$isMember) {
-            return response()->json(['message' => 'Member not found in the group'], 404);
-        }
-    
-        // Remove the member from the group
-        $group->members()->detach($memberId);
-    
-        // Optionally, reload the group with its members
-        $group->load('members');
-    
-        // Return the updated group data
-        return response()->json(['message' => 'Cover updated successfully']);
-    }
-
-    public function checkUserGroupRole(Request $request, $groupId)
-    {
-        $memberId = $request->member_id;
-        $actingUserId = auth()->id();
-        $group = Group::find($groupId);
-        if (!$group) {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
-
-        // Check if the acting user is an admin of the group
-        $actingMember = $group->members()->where('users.id', $actingUserId)->first();
-        if (!$actingMember || $actingMember->pivot->role === 'admin') {
-            return response()->json(['authorized' => true]);
-        } else {
-            return response()->json(['authorized' => false]);
-        }
-    }
-
-
-    public function defaultGroups()
-    {
-        // Fetch default groups from the database or any other source
-        $defaultGroups = Group::orderBy('created_at', 'desc')->take(30)->get(); // Example: Fetching 10 latest groups
-        return response()->json($defaultGroups);
     }
 }

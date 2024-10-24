@@ -24,14 +24,19 @@ const userWidgetsModule = {
         },
         UPDATE_WIDGET_SYMBOL_QUOTES(state, { widgetId, quotes }) {
             const widget = state.widgets.find(w => w.id === widgetId);
+            
             if (widget) {
-                Object.keys(widget.symbols).forEach(symbolKey => {
-                    const symbolData = widget.symbols[symbolKey];
-                    if (quotes[symbolData.symbol_id]) {
-                        symbolData.stats = quotes[symbolData.symbol_id];
+                widget.symbols.forEach(widgetSymbol => {
+                    const quote = quotes.symbols.find(q => q.id === widgetSymbol.symbol_id);
+                    if (quote) {
+                        widgetSymbol.price = quote.price;
+                        widgetSymbol.change = quote.change;
+                        widgetSymbol.change_percent = quote.change_percent;
+                        widgetSymbol.volume = quote.volume;
                     }
                 });
             }
+
         },
     },
     actions: {
@@ -40,23 +45,23 @@ const userWidgetsModule = {
             commit('SET_ERROR', null);
             try {
                 const widgets = await widgetsService.getWidgetsByCategory({ category, subCategory });
-                console.log(widgets);
                 commit('SET_WIDGETS', widgets);
-                // Fetch Quotes
-                const allSymbolIds = widgets.flatMap(widget => Object.values(widget.symbols).map(symbol => symbol.symbol_id));
-                if (allSymbolIds.length > 0) {
-                    const quotes = await widgetsService.getQuotes(allSymbolIds);
-                    widgets.forEach(widget => {
+                for (const widget of widgets) {
+                    try {
+                        const quotes = await widgetsService.getQuotes([widget.id]);
                         dispatch('updateWidgetSymbolQuotes', { widgetId: widget.id, quotes });
-                    });
+                    } catch (quoteError) {
+                        console.error(`Error fetching quotes for widget ${widget.id}:`, quoteError);
+                    }
                 }
+
                 commit('SET_LOADING', false);
             } catch (error) {
                 commit('SET_ERROR', error.message);
                 commit('SET_LOADING', false);
             }
         },
-        async updateWidgetSymbolQuotes({ commit }, { widgetId, quotes }) {
+        async updateWidgetSymbolQuotes({ state, commit }, { widgetId, quotes }) {
             commit('UPDATE_WIDGET_SYMBOL_QUOTES', { widgetId, quotes });
         },
     },

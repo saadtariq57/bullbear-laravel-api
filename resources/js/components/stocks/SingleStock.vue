@@ -2,89 +2,176 @@
   <div class="container-xxl pt-4">
     <div class="row">
       <div class="col-lg-8 col-md-12">
-        <div v-if="!isLoading && stockData">
-          <div class="d-flex justify-content-between flex-wrap">
-            <h1>
-              <span class="text-black fs-2 fw-bolder">{{ stockData.long_name }}</span>
-              <span class="text-secondary d-table fs-5">{{ stockData.symbol }}:{{ stockData.full_exchange_name }}</span>
-            </h1>
+        <!-- Stock Data Display -->
+        <div v-if="!isLoading && stockData" class="stock-data-card card shadow-sm p-4 mb-4">
+          <div class="d-flex justify-content-between flex-wrap align-items-center">
+            <div>
+              <h1 class="mb-2">
+                <span class="text-black fs-2 fw-bolder">{{ stockData.long_name }}</span>
+                <span class="text-secondary d-block fs-5">{{ stockData.symbol }}:{{ stockData.full_exchange_name }}</span>
+              </h1>
+              <div class="stock-subheader fs-14 fw-6 text-muted">
+                <span>RT Quote</span>
+                <span> | Last {{ stockData.full_exchange_name }} LS, VOL From CTA</span>
+                <span> | {{ stockData.currency }}</span>
+              </div>
+            </div>
             <div class="fs-13">
-              <button class="btn-primary fw-6 me-2">EXPORT
+              <button 
+                class="btn btn-primary fw-6 me-2" 
+                @click="exportChart" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="Export the current data"
+              >
+                EXPORT
                 <i class="bi bi-upload icon-bold ms-2"></i>
               </button>
-              <button class="btn-primary fw-6 me-2">Watchlist
+
+              <button 
+                class="btn btn-success fw-6 me-2" 
+                @click="handleAddToWatchlist(stockData.symbol)" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="Add to your watchlist"
+              >
+                Watchlist
                 <i class="bi bi-plus-lg icon-bold ms-2"></i>
               </button>
             </div>
           </div>
-          <div class="stock-subheader fs-14 fw-6">
-            <span>RT Quote</span>
-            <span> | Last {{ stockData.full_exchange_name }} LS, VOL From CTA</span>
-            <span> | {{ stockData.currency }}</span>
-          </div>
-          <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
+          
+          <div class="d-flex justify-content-between pt-3 fw-6">
             <div>
               <div>
-                <span>Last | {{ formatTime(stockData.regular_market_time) }}</span>
+                <span>Last Updated | {{ formatTime(stockData.regular_market_time) }}</span>
               </div>
-              <div class="d-flex flex-wrap fw-bold">
+              <div class="d-flex align-items-center mt-2">
                 <span class="fs-1 fw-6">{{ roundToTwoDecimals(stockData.regular_market_price) }}</span>
-                <span :class="['fs-3 align-self-center ps-3', stockData.regular_market_change >= 0 ? 'Green postive-arrow-icon' : 'Red negative-arrow-icon']">
-                  <span>{{ roundToTwoDecimals(stockData.regular_market_change)}}</span>
-                  <span> ({{ roundToTwoDecimals(stockData.regular_market_change_percent)}}%)</span>
+                <span 
+                  :class="['fs-3 ps-3', stockData.regular_market_change >= 0 ? 'text-success' : 'text-danger']"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  :title="`Change: ${roundToTwoDecimals(stockData.regular_market_change)} (${roundToTwoDecimals(stockData.regular_market_change_percent)}%)`"
+                >
+                  <i :class="stockData.regular_market_change >= 0 ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                  {{ roundToTwoDecimals(stockData.regular_market_change) }}
+                  ({{ roundToTwoDecimals(stockData.regular_market_change_percent) }}%)
                 </span>
               </div>
             </div>
-            <div class="fw-6 pt-4">
+            <div class="fw-6 pt-3">
               <div class="text-secondary pb-1">Volume</div>
               <div>{{ formatNumber(stockData.volume) }}</div>
             </div>
-            <div class="fw-6 pt-4 px-0">
-              <div class="text-secondary pb-1">52 week range</div>
+            <div class="fw-6 pt-3">
+              <div class="text-secondary pb-1">52 Week Range</div>
               <div>{{ roundToTwoDecimals(stockData.fifty_two_week_low) }} - {{ roundToTwoDecimals(stockData.fifty_two_week_high) }}</div>
             </div>
           </div>
-        </div>
-        
-        <div v-else>
-          <div class="d-flex justify-content-between flex-wrap">
-            <h1>
-              <span class="text-black fs-2 fw-bolder"><Skeletor width="200px" height="30px" /></span>
-              <span class="text-secondary d-table fs-5"><Skeletor width="150px" height="20px" /></span>
-            </h1>
-            <div class="fs-13">
-              <Skeletor width="100px" height="30px" class="me-2" />
-              <Skeletor width="100px" height="30px" />
+
+          <!-- Additional Metrics -->
+          <div class="row mt-4">
+            <div class="col-md-4 mb-3">
+              <div class="metric-card p-3 bg-light rounded" data-bs-toggle="tooltip" data-bs-placement="top" title="Price to Earnings Ratio">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-bar-chart-line fs-3 me-2 text-primary"></i>
+                  <div>
+                    <div class="fw-bold">P/E Ratio</div>
+                    <div>{{ roundToTwoDecimals(stockData.trailing_pe) }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="metric-card p-3 bg-light rounded" data-bs-toggle="tooltip" data-bs-placement="top" title="Dividend Yield">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-cash-stack fs-3 me-2 text-success"></i>
+                  <div>
+                    <div class="fw-bold">Dividend Yield</div>
+                    <div>{{ roundToTwoDecimals(stockData.dividend_yield) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="metric-card p-3 bg-light rounded" data-bs-toggle="tooltip" data-bs-placement="top" title="Market Capitalization">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-coin fs-3 me-2 text-warning"></i>
+                  <div>
+                    <div class="fw-bold">Market Cap</div>
+                    <div>{{ formatNumber(stockData.market_cap) }}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="stock-subheader fs-14 fw-6 mt-2">
-            <Skeletor width="300px" height="20px" />
-          </div>
-          <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
-            <div>
+
+        </div>
+        
+        <!-- Loading Skeletons -->
+        <div v-else>
+          <div class="stock-data-card card shadow-sm p-4 mb-4">
+            <div class="d-flex justify-content-between flex-wrap">
+              <h1>
+                <Skeletor width="200px" height="30px" />
+                <span class="text-secondary d-block fs-5"><Skeletor width="150px" height="20px" /></span>
+              </h1>
+              <div class="fs-13">
+                <Skeletor width="100px" height="30px" class="me-2" />
+                <Skeletor width="100px" height="30px" />
+              </div>
+            </div>
+            <div class="stock-subheader fs-14 fw-6 mt-2">
+              <Skeletor width="300px" height="20px" />
+            </div>
+            <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
               <div>
+                <div>
+                  <Skeletor width="150px" height="20px" />
+                </div>
+                <div class="d-flex flex-wrap fw-bold mt-2">
+                  <Skeletor width="100px" height="40px" class="me-2" />
+                  <Skeletor width="150px" height="40px" />
+                </div>
+              </div>
+              <div class="fw-6 pt-4">
+                <Skeletor width="80px" height="20px" class="mb-2" />
+                <Skeletor width="100px" height="20px" />
+              </div>
+              <div class="fw-6 pt-4 px-0">
+                <Skeletor width="120px" height="20px" class="mb-2" />
                 <Skeletor width="150px" height="20px" />
               </div>
-              <div class="d-flex flex-wrap fw-bold mt-2">
-                <Skeletor width="100px" height="40px" class="me-2" />
-                <Skeletor width="150px" height="40px" />
+            </div>
+            <!-- Loading Additional Metrics -->
+            <div class="row mt-4">
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
               </div>
             </div>
-            <div class="fw-6 pt-4">
-              <Skeletor width="80px" height="20px" class="mb-2" />
-              <Skeletor width="100px" height="20px" />
-            </div>
-            <div class="fw-6 pt-4 px-0">
-              <Skeletor width="120px" height="20px" class="mb-2" />
-              <Skeletor width="150px" height="20px" />
-            </div>
+          </div>
+          <!-- Loading Tabs -->
+          <div class="stocks-nav-tabs mt-4">
+            <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
+              <li v-for="i in 7" :key="i" class="nav-item stock-li-navbtn">
+                <Skeletor width="100px" height="30px" />
+              </li>
+            </ul>
           </div>
         </div>
         
+        <!-- Tabs Navigation -->
         <div class="stocks-nav-tabs mt-4">
           <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
             <template v-if="!isLoading && stockData">
-              <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in tabs" :key="tab.id">
+              <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in availableTabs" :key="tab.id">
                 <button 
                   class="stock-navbtn nav-link border-0 fs-6 fw-6 text-secondary m-auto" 
                   :class="{ 'active': activeTab === tab.id }"
@@ -106,23 +193,42 @@
           </ul>
         </div>
         
+        <!-- Tabs Content -->
         <div class="tab-content" id="myTabContent">
           <component 
-            :is="activeTab === 'SUMMARY' ? SummaryTab : tabs.find(tab => tab.id === activeTab)?.component"
+            :is="activeTab === 'SUMMARY' ? SummaryTab : availableTabs.find(tab => tab.id === activeTab)?.component"
             :stock-data="stockData" 
             :symbol="symbol"
             :is-loading="isLoading"
             :key="`${activeTab}-${symbol}`"
+            ref="summaryTabRef"
           />
         </div>
       </div>
+      
+      <!-- Sidebar Widgets -->
+      <div class="col-lg-4">
+        <Markets />
+        <GroupChats />
+        <MarketMovers />
+      </div>
     </div>
+    
+    <!-- Watchlist Modal -->
+    <WatchlistPopup 
+      v-if="showWatchlistModal" 
+      :symbol="selectedSymbol"
+      @close="closeWatchlistModal"
+      @added="handleWatchlistAdded"
+    />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, shallowRef, watchEffect, onMounted } from 'vue';
+import { defineComponent, ref, watchEffect, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+import { isLoggedIn } from '../../stores';
 import axios from 'axios';
 import { Skeletor } from 'vue-skeletor';
 import SummaryTab from './SummaryTab.vue';
@@ -132,6 +238,10 @@ import EarningsTab from './EarningsTab.vue';
 import FinancialsTab from './FinancialsTab.vue';
 import OptionsTab from './OptionsTab.vue';
 import OwnershipTab from './OwnershipTab.vue';
+import MarketMovers from '../widgets/TopMovers.vue';
+import Markets from '../widgets/Markets.vue';
+import GroupChats from '../widgets/GroupChatsSidebar.vue';
+import WatchlistPopup from '../utils/WatchlistPopup.vue';
 
 const TABS = [
   { id: 'SUMMARY', name: 'Summary', component: SummaryTab },
@@ -153,25 +263,79 @@ export default defineComponent({
     FinancialsTab,
     OptionsTab,
     OwnershipTab,
+    MarketMovers,
+    Markets,
+    GroupChats,
+    WatchlistPopup,
   },
   setup() {
     const route = useRoute();
     const stockData = ref({});
+    const stockType = ref('');
     const activeTab = ref('SUMMARY');
     const symbol = ref('');
     const isLoading = ref(true);
-    const tabs = shallowRef(TABS);
+    const summaryTabRef = ref(null);
+    const store = useStore();
+    const isUserLoggedIn = computed(() => isLoggedIn());
+    const showWatchlistModal = ref(false);
+    const selectedSymbol = ref('');
+
+    const handleAddToWatchlist = (symbol) => {
+      if (isUserLoggedIn.value) {
+        selectedSymbol.value = symbol;
+        showWatchlistModal.value = true;
+      } else {
+        store.dispatch('setRedirectPath', '/watchlist');
+        store.dispatch('showLoginPopup');
+      }
+    };
+
+    const closeWatchlistModal = () => {
+      showWatchlistModal.value = false;
+    };
+
+    const handleWatchlistAdded = () => {
+      console.log('Symbol added to watchlist');
+    };
+
+    const exportChart = () => {
+      if (summaryTabRef.value && typeof summaryTabRef.value.exportChart === 'function') {
+        summaryTabRef.value.exportChart();
+      } else {
+        console.warn('[SingleStock] SummaryTab component or exportChart method not found.');
+      }
+    };
+
+    // Define tab visibility based on stock type
+    const tabVisibility = {
+      'stocks': ['SUMMARY', 'NEWS', 'PROFILE', 'EARNINGS', 'FINANCIALS', 'OPTIONS', 'OWNERSHIP'],
+      'etf': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'indices': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'crypto': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'futures': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'bonds': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'trust': ['SUMMARY', 'NEWS', 'PROFILE'],
+      'fund': ['SUMMARY', 'NEWS', 'PROFILE'],
+    };
+    
+    const availableTabs = computed(() => {
+      const visibleTabIds = tabVisibility[stockType.value] || [];
+      return TABS.filter(tab => visibleTabIds.includes(tab.id));
+    });
 
     const fetchStockData = async () => {
       isLoading.value = true;
       try {
-        const response = await axios.get(`https://dev.stocks.richtv.io/api/quotes?symbols=${symbol.value}`);
-        stockData.value = response.data[symbol.value] || {};
+        const response = await axios.get(`/api/quotes/${symbol.value}`);
+        stockData.value = response.data.quote[symbol.value] || {};
+        stockType.value = response.data.type || ''; // Store the type
       } catch (error) {
         console.error('Error fetching stock data:', error);
         stockData.value = null;
       } finally {
         isLoading.value = false;
+        initializeTooltips();
       }
     };
 
@@ -199,26 +363,110 @@ export default defineComponent({
       fetchStockData();
     });
 
+    watch(availableTabs, (newTabs) => {
+      if (!newTabs.find(tab => tab.id === activeTab.value)) {
+        activeTab.value = newTabs.length > 0 ? newTabs[0].id : 'SUMMARY';
+      }
+    });
+
+    const initializeTooltips = () => {
+      // Initialize Bootstrap tooltips
+      if (typeof bootstrap !== 'undefined') {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover focus',
+            fallbackPlacements: ['top', 'right', 'bottom', 'left'],
+          });
+        });
+      } else {
+        console.warn('Bootstrap is not loaded. Tooltips will not be initialized.');
+      }
+    };
+
     return {
       stockData,
       activeTab,
       symbol,
       isLoading,
-      tabs,
+      availableTabs,
       setActiveTab,
       formatTime,
       formatNumber,
       fetchStockData,
       roundToTwoDecimals,
       SummaryTab,
+      summaryTabRef,
+      exportChart,
+      isUserLoggedIn,
+      showWatchlistModal,
+      selectedSymbol,
+      handleAddToWatchlist,
+      closeWatchlistModal,
+      handleWatchlistAdded,
     };
   },
 });
 </script>
 
-<style>
-  @import "vue-skeletor/dist/vue-skeletor.css";
-.stocks-nav-tabs .stock-li-navbtn .active{
-  padding-bottom:10px;
+<style scoped>
+@import "vue-skeletor/dist/vue-skeletor.css";
+
+/* General Styles */
+.stock-data-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.metric-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Tooltip Styles */
+.tooltip-inner {
+  background-color: #333 !important;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.tooltip-arrow::before {
+  border-top-color: #333 !important;
+}
+
+/* Tabs Navigation */
+
+.stock-navbtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stock-navbtn {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Additional Enhancements */
+.text-success {
+  color: #198754 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
 }
 </style>

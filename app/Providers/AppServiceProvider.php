@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
+use Cmixin\BusinessDay;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $baseList = 'us-national';
+        BusinessDay::enable(Carbon::class, $baseList);
         Schema::defaultStringLength(191);
     }
 }

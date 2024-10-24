@@ -3,7 +3,7 @@
   <Hero />
   <!-- Hero Section End  -->
   <!-- FeaturedVideo Section Start  -->
-  <FeaturedVideo />
+  <FeaturedVideo playlist-id="PLiBGEhbXkQPAoX8JgMr6D-KeN5ZGmN8ct"/>
   <!-- FeaturedVideo Section End  -->
   <!-- advanced-features-section Start -->
   <section class="advanced-features-section container-fluid bg-smoke py-80">

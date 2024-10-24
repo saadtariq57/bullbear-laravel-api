@@ -125,76 +125,170 @@ class WidgetController extends Controller
             return [$startDate, $endDate];
         }
 
-/*        public function fetchOHLCData($symbol)
+        public function fetchIntradayOHLCData(Request $request, $symbol)
         {
             $baseUrl = config('services.fmodel.base_url');
             $apiKey = config('services.fmodel.api_key');
 
+            $range = $request->input('range', '1D');
+            $interval = $request->input('interval', '1min');
+
             try {
-                [$startDate, $endDate] = $this->getValidTradeDates('1day', 'ca');
+                $intradayIntervals = ['1min', '5min', '10min', '15min', '30min', '1h'];
 
-                $response = Http::get("{$baseUrl}/historical-chart/1min/{$symbol}", [
-                    'from' => $startDate,
-                    'to' => $endDate,
-                    'apikey' => $apiKey
-                ]);
-
-                if ($response->successful()) {
-                    return $response->json();
+                if (!in_array($interval, $intradayIntervals)) {
+                    return response()->json(['error' => 'Invalid interval for intraday data'], 400);
                 }
 
-                return response()->json(['error' => 'Failed to fetch OHLC data'], 500);
-            } catch (\Exception $e) {
-                return response()->json(['error' => $e->getMessage()], 500);
-            }
-        }*/
-        public function fetchOHLCData($symbol, $range = '1D', $interval = '1min')
-        {
-            $baseUrl = config('services.fmodel.base_url');
-            $apiKey = config('services.fmodel.api_key');
-
-            try {
                 [$startDate, $endDate] = $this->getDateRangeFromRange($range);
 
                 $response = Http::get("{$baseUrl}/historical-chart/{$interval}/{$symbol}", [
-                    'from' => $startDate,
-                    'to' => $endDate,
+                    'from' => $startDate->toDateString(),
+                    'to' => $endDate->toDateString(),
                     'apikey' => $apiKey
                 ]);
 
                 if ($response->successful()) {
-                    return $response->json();
+                    $data = $response->json();
+                    // Validate each data item
+                    if (!$this->validateIntradayData($data)) {
+                        return response()->json(['error' => 'Invalid data format from external API'], 500);
+                    }
+                    usort($data, fn($a, $b) => strtotime($a['date']) - strtotime($b['date']));
+                    return response()->json($data);
                 }
 
-                return response()->json(['error' => 'Failed to fetch OHLC data'], 500);
+                return response()->json(['error' => 'Failed to fetch intraday data'], 500);
+
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
         }
 
-        private function getDateRangeFromRange($range)
+        /**
+         * Fetches daily OHLC data based on range.
+         */
+        public function fetchDailyOHLCData(Request $request, $symbol)
         {
-            $endDate = now();
-            switch ($range) {
-                case '1D':
-                    $startDate = $endDate->copy()->subDay();
-                    break;
-                case '5D':
-                    $startDate = $endDate->copy()->subDays(5);
-                    break;
-                case '1M':
-                    $startDate = $endDate->copy()->subMonth();
-                    break;
-                case '6M':
-                    $startDate = $endDate->copy()->subMonths(6);
-                    break;
-                case '1Y':
-                    $startDate = $endDate->copy()->subYear();
-                    break;
-                default:
-                    $startDate = $endDate->copy()->subDay();
+            $baseUrl = config('services.fmodel.base_url');
+            $apiKey = config('services.fmodel.api_key');
+
+            $range = $request->input('range', '5D');
+
+            try {
+                $dailyRanges = ['1M', '3M', '6M', 'YTD', '1Y', '2Y', '5Y', 'Max'];
+
+                if (!in_array($range, $dailyRanges)) {
+                    return response()->json(['error' => 'Invalid range for daily data'], 400);
+                }
+
+                [$startDate, $endDate] = $this->getDateRangeFromRange($range);
+
+                $interval = '1D';
+
+                $response = Http::get("{$baseUrl}/historical-price-full/{$symbol}", [
+                    'from' => $startDate->toDateString(),
+                    'to' => $endDate->toDateString(),
+                    'apikey' => $apiKey
+                ]);
+
+                if ($response->successful()) {
+                    $data = $response->json('historical');
+                    if (!$this->validateDailyData($data)) {
+                        return response()->json(['error' => 'Invalid data format from external API'], 500);
+                    }
+                    usort($data, fn($a, $b) => strtotime($a['date']) - strtotime($b['date']));
+                    return response()->json($data);
+                }
+
+                return response()->json(['error' => 'Failed to fetch daily OHLC data'], $response->status());
+
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
             }
-            return [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')];
+        }
+
+        /**
+         * Determines the start and end dates based on the range.
+         */
+            private function getDateRangeFromRange($range)
+            {
+                // Initialize endDate as today
+                $endDate = Carbon::today();
+                if (!$endDate->isBusinessDay()) {
+                    $endDate = $endDate->previousBusinessDay();
+                }
+
+                // Determine startDate based on the range
+                switch ($range) {
+                    case '1D':
+                        $startDate = $endDate->copy()->subBusinessDay();
+                        break;
+                    case '5D':
+                        $startDate = $endDate->copy()->subBusinessDays(5);
+                        break;
+                    case '1M':
+                        $startDate = $endDate->copy()->subMonths(1)->startOfDay();
+                        break;
+                    case '3M':
+                        $startDate = $endDate->copy()->subMonths(3)->startOfDay();
+                        break;
+                    case '6M':
+                        $startDate = $endDate->copy()->subMonths(6)->startOfDay();
+                        break;
+                    case 'YTD':
+                        $startDate = $endDate->copy()->startOfYear();
+                        break;
+                    case '1Y':
+                        $startDate = $endDate->copy()->subYear()->startOfDay();
+                        break;
+                    case '2Y':
+                        $startDate = $endDate->copy()->subYears(2)->startOfDay();
+                        break;
+                    case '5Y':
+                        $startDate = $endDate->copy()->subYears(5)->startOfDay();
+                        break;
+                    case 'Max':
+                        $startDate = $endDate->copy()->subYears(30)->startOfDay();
+                        break;
+                    default:
+                        // Handle unexpected range values gracefully
+                        throw new \InvalidArgumentException("Invalid range provided: {$range}");
+                }
+
+                return [$startDate, $endDate];
+            }
+
+        /**
+         * Validates intraday data from external API.
+         */
+        private function validateIntradayData($data)
+        {
+            if (!is_array($data)) {
+                return false;
+            }
+            foreach ($data as $item) {
+                if (!isset($item['date'], $item['open'], $item['high'], $item['low'], $item['close'], $item['volume'])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Validates daily data from external API.
+         */
+        private function validateDailyData($data)
+        {
+            if (!is_array($data)) {
+                return false;
+            }
+            foreach ($data as $item) {
+                if (!isset($item['date'], $item['open'], $item['high'], $item['low'], $item['close'], $item['volume'])) {
+                    return false;
+                }
+            }
+            return true;
         }
         public function getFundOwnership($symbol)
         {
@@ -312,7 +406,103 @@ class WidgetController extends Controller
             $widgets = Widget::paginate(10);
             return view('admin.widgets.index', compact('widgets'));
         }
-        
+
+        public function getQuote($symbol) {
+            try {
+                $symbolData = Symbol::where('symbol', $symbol)->first();
+                $apiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbol}";
+                $response = Http::timeout(15)->get($apiUrl);
+
+                if (!$response->successful()) {
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error('API request failed', $errorDetails);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch quotes from API',
+                        'details' => $errorDetails
+                    ], 503);
+                }
+
+                $quote = $response->json();
+                if (empty($quote)) {
+                    return response()->json(['error' => 'No quotes data received from the API'], 404);
+                }
+
+                return response()->json([
+                    'quote' => $quote,
+                    'type' => $symbolData->type,
+                ]);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+        public function getQuotes($symbols) {
+            try {
+                $apiUrl = env('STOCKS_API_URL') . "/api/quotes?symbols={$symbols}";
+                $response = Http::timeout(15)->get($apiUrl);
+
+                if (!$response->successful()) {
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error('API request failed', $errorDetails);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch quotes from API',
+                        'details' => $errorDetails
+                    ], 503);
+                }
+
+                return $response->json();
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+        public function getCollection($type){
+            try{
+                $apiUrl = env('STOCKS_API_URL') . "/api/market-collections/{$type}";
+                $response = Http::timeout(15)->get($apiUrl);
+
+                if(!$response->successful()){
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error('API request failed', $errorDetails);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch quotes from API',
+                        'details' => $errorDetails
+                    ], 503);
+                }
+
+                return $response->json();
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                ], 500); 
+            }
+        }
+
         public function show($id)
         {
             try {
@@ -346,6 +536,7 @@ class WidgetController extends Controller
                     return response()->json(['error' => 'No quotes data received from the API'], 404);
                 }
                 
+
                 $widgetData = $widget->toArray();
                 $widgetData['symbols'] = $widget->widgetSymbols->map(function ($widgetSymbol) use ($quotes) {
                     $symbolData = $widgetSymbol->symbol->toArray();
@@ -366,6 +557,7 @@ class WidgetController extends Controller
                         'price' => $quoteData['regular_market_price'] ?? null,
                         'change' => $quoteData['regular_market_change'] ?? null,
                         'change_percent' => $quoteData['regular_market_change_percent'] ?? null,
+                        'volume' => $quoteData['volume'] ?? null,
                     ];
                 });
                 
@@ -514,40 +706,468 @@ class WidgetController extends Controller
         return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
     }
     
+    /* WordPress Functions */
     public function fetchPostWordpress(Request $request)
     {
         $wordpressApiUrl = 'https://richtv.io/wp-json/wp/v2/posts';
 
+        $params = [];
+
+        if ($request->has('id')) {
+            // Fetch a single post by ID
+            $wordpressApiUrl .= '/' . $request->input('id');
+            $params['_embed'] = true;
+        } elseif ($request->has('slug')) {
+            // Fetch a single post by slug
+            $params['slug'] = $request->input('slug');
+            $params['_embed'] = true;
+        } else {
+            // Fetch multiple posts based on category
+            $params = [
+                'categories' => $request->input('categories', 962),
+                'per_page' => $request->input('per_page', 10),
+                'page' => $request->input('page', 1),
+                'orderby' => $request->input('orderby', 'date'),
+                'order' => $request->input('order', 'desc'),
+                '_embed' => true,
+            ];
+        }
+
+        try {
+            $response = Http::get($wordpressApiUrl, $params);
+
+            if ($response->successful()) {
+                if ($request->has('id') || $request->has('slug')) {
+                    // Process single post by ID or slug
+                    $posts = $response->json();
+                    $post = $request->has('id') ? $posts : (count($posts) > 0 ? $posts[0] : null);
+
+                    if (!$post) {
+                        return [
+                            'post' => null,
+                        ];
+                    }
+
+                    $authorInfo = isset($post['_embedded']['author'][0]) ? $post['_embedded']['author'][0] : null;
+                    $featuredMedia = isset($post['_embedded']['wp:featuredmedia'][0]) ? $post['_embedded']['wp:featuredmedia'][0] : null;
+
+                    // Remove 'Read more' links from excerpt
+                    $cleanExcerpt = preg_replace('/<a[^>]*>Read more<\/a>/i', '', $post['excerpt']['rendered'] ?? '');
+
+                    // Additional Author Details (e.g., avatar, description)
+                    $additionalAuthorInfo = [];
+                    if ($authorInfo) {
+                        $additionalAuthorInfo = [
+                            'avatar_url' => $authorInfo['avatar_urls']['96'] ?? null,
+                            'description' => $authorInfo['description'] ?? '',
+                            // Add more fields as needed
+                        ];
+                    }
+
+                    $processedPost = [
+                        'id' => $post['id'],
+                        'slug' => $post['slug'] ?? '',
+                        'title' => $post['title']['rendered'] ?? '',
+                        'link' => $post['link'] ?? '',
+                        'date' => $post['date'] ?? '',
+                        'author_info' => [
+                            'id' => $authorInfo ? ($authorInfo['id'] ?? 'Null') : 'Null',
+                            'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',
+                            'link' => $authorInfo ? ($authorInfo['link'] ?? '#') : '#',
+                            'avatar_url' => $additionalAuthorInfo['avatar_url'],
+                            'description' => $additionalAuthorInfo['description'],
+                        ],
+                        'featured_media_url' => $featuredMedia ? ($featuredMedia['source_url'] ?? null) : null,
+                        'excerpt' => $cleanExcerpt,
+                        'content' => $post['content']['rendered'] ?? '',
+                    ];
+
+                    return [
+                        'post' => $processedPost,
+                    ];
+                } else {
+                    // Process multiple posts
+                    $posts = $response->json();
+
+                    $processedPosts = array_map(function ($post) {
+                        $authorInfo = isset($post['_embedded']['author'][0]) ? $post['_embedded']['author'][0] : null;
+                        $featuredMedia = isset($post['_embedded']['wp:featuredmedia'][0]) ? $post['_embedded']['wp:featuredmedia'][0] : null;
+
+                        // Remove 'Read more' links from excerpt
+                        $cleanExcerpt = preg_replace('/<a[^>]*>Read more<\/a>/i', '', $post['excerpt']['rendered'] ?? '');
+
+                        return [
+                            'id' => $post['id'],
+                            'slug' => $post['slug'] ?? '',
+                            'title' => $post['title']['rendered'] ?? '',
+                            'link' => $post['link'] ?? '',
+                            'date' => $post['date'] ?? '',
+                            'author_info' => [
+                                'id' => $authorInfo ? ($authorInfo['id'] ?? 'Null') : 'Null',
+                                'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',
+                                'link' => $authorInfo ? ($authorInfo['link'] ?? '#') : '#',
+                                'avatar_url' => $authorInfo['avatar_urls']['96'],
+                                'description' => $authorInfo['description'],
+                            ],
+                            'featured_media_url' => $featuredMedia ? ($featuredMedia['source_url'] ?? null) : null,
+                            'excerpt' => $cleanExcerpt,
+                        ];
+                    }, $posts);
+
+                    return [
+                        'posts' => $processedPosts,
+                        'total_posts' => $response->header('X-WP-Total'),
+                        'total_pages' => $response->header('X-WP-TotalPages'),
+                    ];
+                }
+            } else {
+                \Log::error('Error fetching WordPress posts: ' . $response->body());
+                return [
+                    'error' => 'Failed to fetch posts',
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Exception while fetching WordPress posts: ' . $e->getMessage());
+            return [
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function fetchAuthorPosts(Request $request)
+    {
+        $wordpressApiUrl = 'https://richtv.io/wp-json/wp/v2/';
+
+        // Validate the incoming request
+        $request->validate([
+            'author_id' => 'required|integer',
+            'per_page' => 'integer|min:1|max:100',
+            'page' => 'integer|min:1',
+        ]);
+
+        $authorId = $request->input('author_id');
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+
+        try {
+            // Fetch author details
+            $authorResponse = Http::get($wordpressApiUrl . "users/{$authorId}", [
+                '_embed' => true,
+            ]);
+
+            if (!$authorResponse->successful()) {
+                Log::error('Error fetching WordPress author: ' . $authorResponse->body());
+                return response()->json([
+                    'error' => 'Failed to fetch author information',
+                    'status' => $authorResponse->status(),
+                ], $authorResponse->status());
+            }
+
+            $authorData = $authorResponse->json();
+
+            // Process author information
+            $author = [
+                'id' => $authorData['id'],
+                'name' => $authorData['name'] ?? 'Unknown',
+                'description' => $authorData['description'] ?? '',
+                'avatar_url' => $authorData['avatar_urls']['96'] ?? null,
+                'link' => $authorData['link'] ?? '#',
+            ];
+
+            // Fetch posts by author
+            $postsResponse = Http::get($wordpressApiUrl . "posts", [
+                'author' => $authorId,
+                'per_page' => $perPage,
+                'page' => $page,
+                'orderby' => 'date',
+                'order' => 'desc',
+                '_embed' => true,
+            ]);
+
+            if (!$postsResponse->successful()) {
+                Log::error('Error fetching WordPress posts by author: ' . $postsResponse->body());
+                return response()->json([
+                    'error' => 'Failed to fetch posts',
+                    'status' => $postsResponse->status(),
+                ], $postsResponse->status());
+            }
+
+            $posts = $postsResponse->json();
+            $totalPosts = $postsResponse->header('X-WP-Total', 0);
+            $totalPages = $postsResponse->header('X-WP-TotalPages', 1);
+
+            // Process posts
+            $processedPosts = array_map(function ($post) {
+                $authorInfo = $post['_embedded']['author'][0] ?? null;
+                $featuredMedia = $post['_embedded']['wp:featuredmedia'][0] ?? null;
+                $cleanExcerpt = preg_replace('/<a[^>]*>Read more<\/a>/i', '', $post['excerpt']['rendered'] ?? '');
+
+                return [
+                    'id' => $post['id'],
+                    'slug' => $post['slug'] ?? '',
+                    'title' => $post['title']['rendered'] ?? '',
+                    'link' => $post['link'] ?? '',
+                    'date' => $post['date'] ?? '',
+                    'author_info' => [
+                        'id' => $authorInfo['id'] ?? null,
+                        'name' => $authorInfo['name'] ?? 'Unknown',
+                        'link' => $authorInfo['link'] ?? '#',
+                        'avatar_url' => $authorInfo['avatar_urls']['96'] ?? null,
+                        'description' => $authorInfo['description'] ?? '',
+                    ],
+                    'category_slug' => isset($post['categories']) && is_array($post['categories']) && count($post['categories']) > 0
+                        ? $this->getCategorySlug($post['categories'][0])
+                        : '',
+                    'categories' => $post['categories'] ?? [], 
+                    'featured_media_url' => $featuredMedia['source_url'] ?? null,
+                    'excerpt' => $cleanExcerpt,
+                ];
+            }, $posts);
+
+            return response()->json([
+                'author' => $author,
+                'posts' => $processedPosts,
+                'total_posts' => $totalPosts,
+                'total_pages' => $totalPages,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Exception while fetching author posts: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function getCategorySlug($categoryId)
+    {
+
+        $categories = [
+            4342 => 'fundamental-analysis',
+            962 => 'technical-analysis',
+            11445 => 'investing-money-management',
+            11438 => 'investing101',
+            12490 => 'investment-strategy',
+            11441 => 'stock-market-basics',
+            11439 => 'how-to-invest',
+            11533 => 'trading-strategies',
+            205 => 'cryptocurrency',
+            963 => 'investing',
+            961 => 'stocks',
+            3591 => 'press-release',
+            12800 => 'specialized-reports',
+        ];
+
+        return $categories[$categoryId] ?? 'uncategorized';
+    }
+
+    public function fetchComments(Request $request)
+    {
+        $wordpressApiUrl = 'https://richtv.io/wp-json/wp/v2/comments';
+
         $params = [
-            'categories' => $request->input('categories', 962),
-            'per_page' => $request->input('per_page', 10),
+            'post' => $request->input('post_id'),
+            'per_page' => $request->input('per_page', 20),
             'page' => $request->input('page', 1),
-            'orderby' => $request->input('orderby', 'date'),
-            'order' => $request->input('order', 'desc'),
-            '_embed' => true, // This should include author and media information
         ];
 
         try {
             $response = Http::get($wordpressApiUrl, $params);
 
             if ($response->successful()) {
+                $comments = $response->json();
+                $total_comments = $response->header('X-WP-Total');
+                $total_pages = $response->header('X-WP-TotalPages');
+
+                // Process comments to include necessary fields
+                $processedComments = array_map(function ($comment) {
+                    return [
+                        'id' => $comment['id'],
+                        'author_name' => $comment['author_name'] ?? 'Anonymous',
+                        'author_email' => $comment['author_email'] ?? '',
+                        'content' => $comment['content']['rendered'] ?? '',
+                        'date' => $comment['date'] ?? '',
+                    ];
+                }, $comments);
+
+                return [
+                    'comments' => $processedComments,
+                    'total_comments' => $total_comments,
+                    'total_pages' => $total_pages,
+                ];
+            } else {
+                \Log::error('Error fetching comments: ' . $response->body());
+                return response()->json([
+                    'error' => 'Failed to fetch comments',
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            \Log::error('Exception while fetching comments: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function postComment(Request $request)
+    {
+        // Retrieve WordPress API credentials from config
+        $wordpressApiUrl = config('services.wordpress.api_url');
+        $wordpressUsername = config('services.wordpress.username');
+        $wordpressPassword = config('services.wordpress.password');
+
+        // Ensure the Laravel user is authenticated
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        // Validate input
+        $validated = $request->validate([
+            'post_id' => 'required|integer',
+            'content' => 'required|string',
+        ]);
+
+        // Prepare the payload for WordPress
+        $payload = [
+            'post'         => $validated['post_id'],
+            'content'      => $validated['content'],
+            'author_name'  => $user->name,
+            'author_email' => $user->email,
+            'author_vueid' => $user->id,
+            //'author'     => $wordpressUserId,
+        ];
+
+        try {
+            // Make the POST request with Basic Authentication
+            $response = Http::withBasicAuth($wordpressUsername, $wordpressPassword)
+                            ->post($wordpressApiUrl, $payload);
+
+            if ($response->successful()) {
+                $comment = $response->json();
+                return response()->json([
+                    'comment' => [
+                        'id'          => $comment['id'],
+                        'author_name' => $comment['author_name'] ?? 'Anonymous',
+                        'author_email'=> $comment['author_email'] ?? '',
+                        'content'     => $comment['content']['rendered'] ?? '',
+                        'date'        => $comment['date'] ?? '',
+                    ],
+                ], 201); // 201 Created
+            } else {
+                Log::error('Error posting comment: ' . $response->body());
+                return response()->json([
+                    'error'  => 'Failed to post comment',
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception while posting comment: ' . $e->getMessage());
+            return response()->json([
+                'error'   => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+
+
+    public function fetchPrioritizedInternalNews(Request $request)
+    {
+        $symbol = $request->input('symbol');
+        $categoryNews = 961; // News category ID
+        $fallbackCategory = 962; // Technical Analysis category ID
+
+        // First, try to fetch posts with both symbol tag and categoryNews
+        $posts = $this->fetchWordpressPosts([
+            'tags' => $symbol,
+            'categories' => $categoryNews,
+            'per_page' => 5,
+        ]);
+
+        // If no posts found, fallback to categoryNews only
+        if (empty($posts['posts'])) {
+            $posts = $this->fetchWordpressPosts([
+                'categories' => $categoryNews,
+                'per_page' => 5,
+            ]);
+        }
+
+        return response()->json($posts);
+    }
+
+    public function fetchPrioritizedTechnicalAnalysis(Request $request)
+    {
+        $symbol = $request->input('symbol');
+        $categoryTech = 962; // Technical Analysis category ID
+
+        // First, try to fetch posts with both symbol tag and categoryTech
+        $posts = $this->fetchWordpressPosts([
+            'tags' => $symbol,
+            'categories' => $categoryTech,
+            'per_page' => 5,
+        ]);
+
+        // If no posts found, fallback to categoryTech only
+        if (empty($posts['posts'])) {
+            $posts = $this->fetchWordpressPosts([
+                'categories' => $categoryTech,
+                'per_page' => 5,
+            ]);
+        }
+
+        return response()->json($posts);
+    }
+
+    /**
+     * Helper function to fetch WordPress posts based on parameters
+     */
+    private function fetchWordpressPosts(array $params)
+    {
+        $wordpressApiUrl = 'https://richtv.io/wp-json/wp/v2/posts';
+        $defaultParams = [
+            'per_page' => 10,
+            'page' => 1,
+            'orderby' => 'date',
+            'order' => 'desc',
+            '_embed' => true,
+        ];
+
+        $queryParams = array_merge($defaultParams, $params);
+
+        try {
+            $response = Http::get($wordpressApiUrl, $queryParams);
+
+            if ($response->successful()) {
                 $posts = $response->json();
-                
-                // Process the posts to extract the required information
-                $processedPosts = array_map(function($post) {
-                    $authorInfo = isset($post['_embedded']['author'][0]) ? $post['_embedded']['author'][0] : null;
-                    $featuredMedia = isset($post['_embedded']['wp:featuredmedia'][0]) ? $post['_embedded']['wp:featuredmedia'][0] : null;
+
+                $processedPosts = array_map(function ($post) {
+                    $authorInfo = $post['_embedded']['author'][0] ?? null;
+                    $featuredMedia = $post['_embedded']['wp:featuredmedia'][0] ?? null;
+
+                    // Remove 'Read more' links from excerpt
+                    $cleanExcerpt = preg_replace('/<a[^>]*>Read more<\/a>/i', '', $post['excerpt']['rendered'] ?? '');
 
                     return [
                         'id' => $post['id'],
+                        'slug' => $post['slug'] ?? '',
                         'title' => $post['title']['rendered'] ?? '',
                         'link' => $post['link'] ?? '',
                         'date' => $post['date'] ?? '',
                         'author_info' => [
-                            'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',
-                            'link' => $authorInfo ? ($authorInfo['link'] ?? '#') : '#',
+                            'name' => $authorInfo['name'] ?? 'Unknown',
+                            'link' => $authorInfo['link'] ?? '#',
                         ],
-                        'featured_media_url' => $featuredMedia ? ($featuredMedia['source_url'] ?? null) : null,
+                        'featured_media_url' => $featuredMedia['source_url'] ?? null,
+                        'excerpt' => $cleanExcerpt,
                     ];
                 }, $posts);
 
@@ -572,6 +1192,9 @@ class WidgetController extends Controller
             ];
         }
     }
+
+    /* Wordpress Functions End */
+
     //Widget Categories
     public function categoriesIndex(Request $request)
     {
@@ -639,27 +1262,37 @@ class WidgetController extends Controller
 
         $query = Widget::query();
 
-        if ($categoryName) {
-            $category = WidgetCategory::where('name', $categoryName)->first();
-            if ($category) {
-                $query->where('category_id', $category->id);
-            }
-        }
-
+        // Handle subCategory filtering first, if provided
         if ($subCategoryName) {
             $subCategory = WidgetCategory::where('name', $subCategoryName)->first();
-            if ($subCategory) {
-                $query->where('category_id', $subCategory->id);
+            if (!$subCategory) {
+                // Return early if subCategory is provided but not found
+                return response()->json(['message' => 'Subcategory not found'], 404);
             }
+            $query->where('category_id', $subCategory->id);
+        } 
+        // Fallback to category if no subCategory is provided
+        else if ($categoryName) {
+            $category = WidgetCategory::where('name', $categoryName)->first();
+            if (!$category) {
+                // Return early if category is provided but not found
+                return response()->json(['message' => 'Category not found'], 404);
+            }
+            $query->where('category_id', $category->id);
         }
 
-        // Load widgets with symbols including symbol details
+        // Load widgets with symbols, including symbol details
         $widgets = $query->with(['widgetSymbols.symbol'])->orderBy('display_order')->get();
 
+        // If no widgets were found, return an appropriate message
+        if ($widgets->isEmpty()) {
+            return response()->json(['message' => 'No widgets found for the specified category or subcategory'], 404);
+        }
+
         // Transform the data to include only necessary fields
-        $widgets->each(function($widget) {
-            $widget->symbols = $widget->widgetSymbols->map(function($widgetSymbol) {
-                // Check if symbol exists
+        $widgets->each(function ($widget) {
+            $widget->symbols = $widget->widgetSymbols->map(function ($widgetSymbol) {
+                // Check if the symbol exists
                 if ($widgetSymbol->symbol) {
                     return [
                         'symbol_id' => $widgetSymbol->symbol_id,
@@ -671,12 +1304,17 @@ class WidgetController extends Controller
                         'peak_price' => $widgetSymbol->peak_price,
                     ];
                 }
-                return null; // Return null if symbol does not exist
-            })->filter(); // Filter out null values
-            $widget->makeHidden('widgetSymbols'); // Hide the widgetSymbols relationship from the response
+                return null;
+            })->filter(); // Remove null values (symbols without data)
+            
+            $widget->makeHidden('widgetSymbols'); // Hide unnecessary widgetSymbols relation
         });
 
+        // Return the widgets data
         return response()->json($widgets);
     }
+
+
+
 
 }

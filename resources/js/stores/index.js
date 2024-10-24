@@ -1,12 +1,4 @@
-// stores/index.js
 import { createStore } from 'vuex';
-/*import userFeedModule from './userFeedStore';
-import userFeedCommentModule from './userFeedCommentStore';
-import userGroupModule from './groupStore';
-import userSubscriptionModule from './pricingStore';
-import userProfileModule from './profileStore';
-import userWatchlistModule from './watchlistStore';
-import userWidgetsModule from './widgetsStore';*/
 import ProfileGroupHeaderModule from './profileGroupHeaderStore';
 import userNotificationModule from './notificationStore';
 import searchModule from './searchStore';
@@ -49,6 +41,9 @@ const store = createStore({
     actions: {
         showLoginPopup({ commit }) {
             commit('SET_SHOW_LOGIN_POPUP', true);
+        },
+        upgradePlan({ commit }) {
+            window.location.href = '/pricing';
         },
         hideLoginPopup({ commit }) { 
             commit('SET_SHOW_LOGIN_POPUP', false);
@@ -153,14 +148,7 @@ const store = createStore({
     },
     modules: {
         userNotification: userNotificationModule,
-        //userFeed: userFeedModule,
-        //userFeedComment: userFeedCommentModule,
-        //UserGroups: userGroupModule,
-        //userSubscriptionModule: userSubscriptionModule,
-        //userProfile: userProfileModule,
         profileGroupHeader: ProfileGroupHeaderModule,
-        //userWatchlists: userWatchlistModule,
-        //userWidgets: userWidgetsModule,
         searchResults: searchModule
     }
 });

@@ -1,8 +1,62 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { ref, watch } from 'vue';
 import { isCheckingAuth, checkLoginStatus, isLoggedIn, showLoginPopup } from './stores';
+import NotFound from './components/NotFound.vue';
 
 const routes = [
+    {
+        path: '/404',
+        name: 'NotFoundPage',
+        component: NotFound,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        redirect: '/404',
+    },
+    {
+        path: '/about-us',
+        name: 'About',
+        component: () => import('./components/static/About.vue'),
+    },
+    {
+        path: '/privacy-policy',
+        name: 'PrivacyPolicy',
+        component: () => import('./components/static/PrivacyPolicy.vue'),
+    },
+    {
+        path: '/terms-of-use',
+        name: 'TermsOfUse',
+        component: () => import('./components/static/TermsOfUse.vue'),
+    },
+    {
+        path: '/contact-us',
+        name: 'ContactUs',
+        component: () => import('./components/static/ContactUs.vue'),
+    },
+    {
+        path: '/glossary',
+        name: 'Glossary',
+        component: () => import('./components/static/Glossary.vue'),
+    },
+    {
+      path: '/blog/:slug',
+      name: 'category',
+      component: () => import('./components/blog/Category.vue'),
+      props: true,
+    },
+    {
+      path: '/blog/:categorySlug/:postSlug',
+      name: 'post',
+      component: () => import('./components/blog/Post.vue'),
+      props: true,
+    },
+    {
+      path: '/author/:id/:name',
+      name: 'Author',
+      component: () => import('./components/blog/Author.vue'),
+      props: true,
+    },
     {
         path: '/markets/:category',
         name: route => `markets.${route.params.category}`,
@@ -21,14 +75,9 @@ const routes = [
         }),
     },
     {
-        path: '/watchlist-ideas',
-        name: 'watchlistpro',
-        component: () => import('./components/richtvpro/WatchlistIdeas.vue'),
-    },
-    {
         path: '/pro-picks',
         name: 'propicks',
-        component: () => import('./components/richtvpro/ProPicks.vue'),
+        component: () => import('./components/richpicks/RichTvPicks.vue'),
     },
     {
         path: '/personal-access',
@@ -36,16 +85,20 @@ const routes = [
         component: () => import('./components/richtvpro/PersonalAccess.vue'),
     },
     {
+        path: '/stocks-screener',
+        name: 'stocks-screener',
+        component: () => import('./components/screener/StockScreener.vue'),
+    },
+    {
         path: '/specialize-reports',
         name: 'specialize-reports',
         component: () => import('./components/richtvpro/SpecializeReports.vue'),
     },
     {
-        path: '/technical-analysis',
-        name: 'technical-analysis',
-        component: () => import('./components/richtvpro/TechnicalAnalysis.vue'),
+        path: '/trading-education',
+        name: 'trading-education',
+        component: () => import('./components/education/TradingSchool.vue'),
     },
-
     {
         path: '/pricing',
         name: 'pricing',
@@ -118,10 +171,7 @@ const routes = [
         path: "/exam/:examName/question/:questionId",
         name: "exam.question",
         component: () => import("./components/exam/ExamQuestions.vue"),
-        props: (route) => ({
-            examId: route.query.examId,
-            timeLimit: route.query.timeLimit,
-        }),
+        props: true,
     },
     {
         path: "/exam/result/:id",
@@ -140,7 +190,7 @@ const routes = [
         component: () => import('./components/groups/SingleGroup.vue'),
         props: true,
         children: [
-            { path: '', name: 'group-single-default', redirect: { name: 'group-discussion' } },
+            { path: '', name: 'group-single-default', redirect: { name: 'group-live-chat' } },
             {
                 path: 'discussion',
                 name: 'group-discussion',
@@ -169,11 +219,6 @@ const routes = [
                 next();
             }
         }
-    },
-    {
-        path: '/trading-school',
-        name: 'TradingBooks',
-        component: () => import('./components/richtvpro/TradingSchool.vue'),
     },
     {
         path: '/:period/:planId/checkout',
@@ -261,7 +306,9 @@ const routes = [
 routes.forEach(route => {
 
     if (!['pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live', 
-        'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlistpro', 'watchlist', 'personal-access'].includes(route.name)) {
+        'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlist', 'personal-access',
+        'stocks-screener', 'trading-education', 'category', 'post', 'NotFound', 'NotFoundPage', 'propicks', 'exams',
+        'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary'].includes(route.name)) {
         route.meta = { ...route.meta, requiresAuth: true };
     }
 });

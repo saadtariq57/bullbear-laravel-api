@@ -40,6 +40,33 @@ body {
     font-family: var(--primary-font) !important;
 }
 
+.post-content p,
+.post-content ul,
+.post-content ol,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* 2. UL, OL font sizes same as paragraphs */
+.post-content ul,
+.post-content ol {
+  font: 400 16px/24px Poppins;
+  color: var(--text-color);
+}
+
+/* 3. Images contained within the container */
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
