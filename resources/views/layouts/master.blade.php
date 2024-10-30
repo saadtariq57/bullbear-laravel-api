@@ -4,16 +4,57 @@
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{ $meta['title'] ?? 'RichTv' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ $meta['description'] ?? 'Default description.' }}">
-    <!-- App favicon -->
+    @if(isset($meta['keywords']))
+        <meta name="keywords" content="{{ $meta['keywords'] }}">
+    @endif
+
+    @if(isset($meta['og:title']))
+        <meta property="og:title" content="{{ $meta['og:title'] }}">
+    @endif
+
+    @if(isset($meta['og:description']))
+        <meta property="og:description" content="{{ $meta['og:description'] }}">
+    @endif
+
+    @if(isset($meta['og:type']))
+        <meta property="og:type" content="{{ $meta['og:type'] }}">
+    @endif
+
+    @if(isset($meta['og:url']))
+        <meta property="og:url" content="{{ $meta['og:url'] }}">
+    @endif
+
+    @if(isset($meta['og:image']))
+        <meta property="og:image" content="{{ $meta['og:image'] }}">
+    @endif
+
+    @if(isset($meta['twitter:card']))
+        <meta name="twitter:card" content="{{ $meta['twitter:card'] }}">
+    @endif
+
+    @if(isset($meta['twitter:title']))
+        <meta name="twitter:title" content="{{ $meta['twitter:title'] }}">
+    @endif
+
+    @if(isset($meta['twitter:description']))
+        <meta name="twitter:description" content="{{ $meta['twitter:description'] }}">
+    @endif
+
+    @if(isset($meta['twitter:image']))
+        <meta name="twitter:image" content="{{ $meta['twitter:image'] }}">
+    @endif
+
     <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.png') }}">
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Include Head CSS -->
+    <link 
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500;600;700;800;900&display=swap" 
+        rel="stylesheet"
+    >
     @include('layouts.head-css')
 </head>
 
@@ -31,33 +72,6 @@
     <!-- END layout-wrapper -->
     <!-- vendor-scripts -->
     @include('layouts.vendor-scripts')
-    <script>
-        // Define a function to hide the overlay loader
-        function hideLoader() {
-            const overlayLoader = document.getElementById('overlay_loader');
-            overlayLoader.style.display = 'none';
-        }
-
-        // Define a function to check if all data is displayed
-        function checkDataDisplayed() {
-            const appElement = document.getElementById('app');
-
-            // If the app element exists, it means the content has been loaded
-            if (appElement) {
-                // Hide the loader
-                hideLoader();
-            } else {
-                // Retry after a delay
-                setTimeout(checkDataDisplayed, 300);
-            }
-        }
-
-        // Listen for the DOMContentLoaded event
-        window.addEventListener('DOMContentLoaded', () => {
-            // Start checking if all data is displayed
-            checkDataDisplayed();
-        });
-    </script>
 </body>
 
 </html>

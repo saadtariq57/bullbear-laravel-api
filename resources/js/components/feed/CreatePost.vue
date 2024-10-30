@@ -3,17 +3,18 @@
     <div class="">
       <div class="d-flex align-items-center gap-3 px-sm-1 px-2">
         <a href="#">
-          <img class="post-avatar img-fluid rounded-circle border-2 border-primary" width="50px"
-            :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar">
+          <img
+            class="post-avatar img-fluid rounded-circle border-2 border-primary"
+            width="50px"
+            :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + userData.avatar"
+          >
         </a>
-        <!-- Model Handleing Buttons -->
-        <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3"
-          @click="showPostModal">
+        <!-- Modal Handling Button -->
+        <button type="button" class="btn border border-secondary w-100 text-start rounded-5 p-sm-3" @click="showPostModal">
           <span class="fs-5">Start a post</span>
         </button>
       </div>
       <div>
-
         <div class="d-flex justify-content-around mt-2 create-post-wrapper">
           <button type="button" class="btn fs-5 btn-feed-hover" @click="showPostModal">
             <i class="bi bi-pen me-2"></i>
@@ -29,17 +30,19 @@
           </button>
         </div>
 
-
-        <!-- Single Post Modal -->
-        <div ref="postModal" class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel"
-          aria-hidden="true">
+        <!-- Unified Post Modal (Create/Edit) -->
+        <div ref="postModal" class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <!-- Post Settings trigger button -->
                 <button class="btn d-flex gap-3 align-items-center" @click="showPostSettingModal">
-                  <img class="post-avatar img-fluid rounded-circle border-2 border-primary" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar"
-                    width="50px" height="50px">
+                  <img
+                    class="post-avatar img-fluid rounded-circle border-2 border-primary"
+                    :src="UpdatedProfileImagePath != null ? '/uploads/' + UpdatedProfileImagePath : '/uploads/' + userData.avatar"
+                    width="50px"
+                    height="50px"
+                  >
                   <div>
                     <div class="d-flex gap-2 align-items-center">
                       <span class="fs-4 fw-6">{{ userData.name }}</span>
@@ -48,18 +51,22 @@
                     <div>Post to Anyone</div>
                   </div>
                 </button>
-                <button type="button" class="btn-close align-self-baseline" @click="hidePostModal"
-                  aria-label="Close"></button>
+                <button type="button" class="btn-close align-self-baseline" @click="hidePostModal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <div class="write-post-wrapper">
-                  <!-- Content for create post modal -->
-                  <form action="" class="post-textarea">
-                    <textarea v-model="textContent"
+                  <!-- Content for create/edit post modal -->
+                  <form class="post-textarea">
+                    <textarea
+                      v-model="textContent"
                       :class="[postClass, { 'color-textarea': currentPostType === 'color' }]"
-                      :maxlength="textAreaMaxLength" class="w-100 border-0" :style="textareaStyle"
-                      placeholder="How are you trading the markets?" :disabled="loadingLinkData"
-                      id="textarea-modalpost"></textarea>
+                      :maxlength="textAreaMaxLength"
+                      class="w-100 border-0"
+                      :style="textareaStyle"
+                      :placeholder="isEditing ? 'Edit your post...' : 'How are you trading the markets?'"
+                      :disabled="loadingLinkData"
+                      id="textarea-modalpost"
+                    ></textarea>
                     <!-- Loading Spinner -->
                     <div v-if="loadingLinkData" class="loading-spinner">
                       Loading...
@@ -73,24 +80,23 @@
                   </form>
                   <!-- Previews -->
                   <!-- Media Preview -->
-                  <div v-if="showMediaPreview && currentPostType === 'photo'"
-                    class="media-preview-container position-relative">
+                  <div v-if="showMediaPreview && currentPostType === 'photo'" class="media-preview-container position-relative">
                     <div class="preview-wrapper" v-if="uploadedMedia.length === 1">
-                      <!-- For single image, use uploadedMedia[0].preview -->
-                      <img :src="`/${uploadedMedia[0].preview}`" alt="Media preview" class="img-fluid">
+                      <img :src="uploadedMedia[0].url ? `/uploads/${uploadedMedia[0].url}` : uploadedMedia[0].preview" alt="Media preview" class="img-fluid">
                       <div class="preview-actions">
                         <i class="bi bi-pencil" @click="showMediaPostModal"></i>
-                        <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
+                        <i class="bi bi-x-lg" @click="removeMedia(0)"></i>
                       </div>
                     </div>
                     <div v-if="isMultiImage" class="multi-image-preview position-relative">
-                      <!-- For multiple images, iterate over uploadedMedia and use media.preview -->
-                      <div v-for="(media, index) in uploadedMedia" :key="index" class="image-container">
-                        <img :src="`/${media.preview}`" alt="Media preview" class="img-thumbnail">
+                      <div v-for="(media, index) in uploadedMedia" :key="index" class="image-container preview-images">
+                        <img :src="media.url ? `/uploads/${media.url}` : `${media.preview}`" alt="Media preview" class="img-thumbnail">
+                          <div class="preview-actions-images">
+                            <i class="bi bi-x-lg" @click="removeMedia(index)"></i>
+                          </div>
                       </div>
-                      <div class="preview-actions">
+                      <div class="preview-actions-outer">
                         <i class="bi bi-pencil" @click="showMediaPostModal"></i>
-                        <i class="bi bi-x-lg" @click="handleBackFromUpload"></i>
                       </div>
                     </div>
                   </div>
@@ -98,26 +104,21 @@
                   <div v-if="showPollPreview && currentPostType === 'poll'" class="poll-preview-container px-md-3">
                     <div class="container shadow border border-light-grey py-4 position-relative">
                       <h5>{{ pollData.question }}</h5>
-                      <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank"
-                          class="astronaut-blue fw-6 fs-6">Learn more</a></span>
+                      <span class="text-secondary fw-5 fs-12">The author can see how you vote. <a href="#" target="_blank" class="astronaut-blue fw-6 fs-6">Learn more</a></span>
                       <div class="py-4" id="poll-options">
-                        <button v-for="(option, index) in pollData.options" :key="index"
-                          class="w-100 btn rounded-5 mb-2 border-btn border-2 fw-6">{{ option }}</button>
+                        <button v-for="(option, index) in pollData.options" :key="index" class="w-100 btn rounded-5 mb-2 border-btn border-2 fw-6">{{ option }}</button>
                       </div>
                       <div class="text-secondary">
-                        <span>35</span> votes - <span>{{ pollData.duration }} days</span> left - <a href=""
-                          class="Blue">Show reasult</a>
+                        <span>35</span> votes - <span>{{ pollData.duration }} days</span> left - <a href="#" class="Blue">Show result</a>
                       </div>
                       <div class="preview-actions">
                         <i class="bi bi-pencil" @click="showPollPostModal"></i>
                         <i class="bi bi-x-lg" @click="backFromCreatePoll"></i>
                       </div>
                     </div>
-
                   </div>
                   <!-- Link Preview -->
-                  <div v-if="showLinkPreview && currentPostType === 'link'"
-                    class="link-preview-container px-sm-4 position-relative">
+                  <div v-if="showLinkPreview && currentPostType === 'link'" class="link-preview-container px-sm-4 position-relative">
                     <div class="card preview-wrapper shadow mb-3">
                       <div class="link-preview-wrapper text-center rounded-top">
                         <img :src="`/${linkData.image}`" alt="Link preview" class="link-image img-fluid rounded-top">
@@ -135,43 +136,37 @@
                   <!-- Share Preview -->
                   <div v-if="sharePostPreview" class="px-2">
                     <div class="border border-1 border-secondary-subtle rounded-2 share-photo-preview shadow mb-3">
-                      <div class="post-file" v-if="sharePostPreview.post_type == 'photo'">
-                        <div v-if="sharePostPreview.multi_image > 0"
-                          class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
-                          <div v-for="(photo, index) in  sharePostPreview.photos " :key="photo.id"
-                            class="multi-post-img-wrapper text-center btn p-0 border-0">
+                      <!-- Share Preview Content -->
+                      <div v-if="sharePostPreview.post_type === 'photo'" class="post-file">
+                        <div v-if="sharePostPreview.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
+                          <div v-for="(photo, index) in sharePostPreview.photos" :key="photo.id" class="multi-post-img-wrapper text-center btn p-0 border-0">
                             <div v-if="sharePostPreview.photos.length > 4" class="position-relative multi-post-img">
-                              <img :src="`/uploads/${photo.image}`" alt="Post image"
-                                class="img-fluid object-fit-cover multi-post-img share-preview-photo">
-                              <div v-if="index === 3"
-                                class="overlay-post-gallery d-flex justify-content-center align-items-center">
+                              <img :src="`/uploads/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img share-preview-photo">
+                              <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
                                 <span class="text-white fs-2 fw-6">+{{ sharePostPreview.photos.length - 4 }}</span>
                               </div>
                             </div>
                             <div v-else-if="sharePostPreview.photos.length === 3" class="multi-post-img">
-                              <img :src="`/uploads/${photo.image}`" alt="Post image"
+                              <img
+                                :src="`/uploads/${photo.image}`"
+                                alt="Post image"
                                 class="img-fluid object-fit-cover multi-post-img share-preview-photo"
-                                :class="{ 'w-100': index === 2 }">
+                                :class="{ 'w-100': index === 2 }"
+                              >
                             </div>
                             <div v-else class="multi-post-img">
-                              <img :src="`/uploads/${photo.image}`" alt="Post image"
-                                class="img-fluid object-fit-cover multi-post-img share-preview-photo">
+                              <img :src="`/uploads/${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img share-preview-photo">
                             </div>
-
                           </div>
                         </div>
                         <div v-else class="text-center">
                           <div v-for="photo in sharePostPreview.photos" :key="photo.id" class="btn p-0">
-                            <!-- Pass the clicked post data -->
                             <img :src="`/uploads/${photo.image}`" alt="Post image" class="img-fluid share-preview-photo single-share-preview-photo">
                           </div>
                         </div>
                       </div>
-                      <div v-if="sharePostPreview.colored_post_id"
-                        class="colored-post-text d-flex justify-content-center align-items-center"
-                        :style="{ backgroundImage: 'linear-gradient(45deg, ' + sharePostPreview.colored_post.color_1 + ' 0%, ' + sharePostPreview.colored_post.color_2 + ' 100%)' }">
-                        <p :style="{ color: sharePostPreview.colored_post.text_color }" class="px-3 py-2 lh-base">{{ sharePostPreview.post_text }}
-                        </p>
+                      <div v-if="sharePostPreview.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center" :style="{ backgroundImage: 'linear-gradient(45deg, ' + sharePostPreview.colored_post.color_1 + ' 0%, ' + sharePostPreview.colored_post.color_2 + ' 100%)' }">
+                        <p :style="{ color: sharePostPreview.colored_post.text_color }" class="px-3 py-2 lh-base">{{ sharePostPreview.post_text }}</p>
                       </div>
                       <div v-if="sharePostPreview.post_type === 'link'" class="link-file">
                         <img :src="`${sharePostPreview.post_link_image}`" alt="Post image" class="img-fluid w-100">
@@ -184,17 +179,14 @@
                               <!-- Display options if voting time is active and the user hasn't voted yet -->
                               <div v-if="!sharePostPreview.poll.userVoted">
                                 <div v-for="option in sharePostPreview.poll.options" :key="option.id" class="mb-2">
-                                  <button @click="submitVote(sharePostPreview.poll.id, option.id)"
-                                    class="w-100 btn rounded-5 border-btn border-2 fw-6">
+                                  <button @click="submitVote(sharePostPreview.poll.id, option.id)" class="w-100 btn rounded-5 border-btn border-2 fw-6">
                                     {{ option.option_text }}
                                   </button>
                                 </div>
                               </div>
                               <div class="text-secondary">
                                 Total votes: {{ sharePostPreview.poll.totalVotes }} - Time left: {{ sharePostPreview.poll.timeLeft }}
-                                <button v-if="sharePostPreview.poll.userVoted" @click="undoVote(sharePostPreview.poll.id)"
-                                  class="btn undo-vote-btn ps-2 fw-bold">Undo
-                                  Vote</button>
+                                <button v-if="sharePostPreview.poll.userVoted" @click="undoVote(sharePostPreview.poll.id)" class="btn undo-vote-btn ps-2 fw-bold">Undo Vote</button>
                               </div>
                             </div>
                           </div>
@@ -203,17 +195,23 @@
                       <div class="border-top border-1 border-secondary-subtle px-3 py-2">
                         <div class="d-flex gap-2 align-items-center mb-2">
                           <div>
-                            <img :src="`/uploads/${sharePostPreview.user.avatar}`" alt="" width="40px" height="40px"
-                              class="rounded-circle">
+                            <img :src="`/uploads/${sharePostPreview.user.avatar}`" alt="" width="40px" height="40px" class="rounded-circle">
                           </div>
                           <div>
-                            <h4 class="mb-0 fs-16 lh-base">{{ sharePostPreview.user.name }}</h4>
+                            <h4 class="mb-0 fs-16 lh-base">
+                              <span class="fw-semibold" v-if="shareTargetGroupName">
+                                {{ shareTargetGroupName }}
+                                <i class="bi bi-caret-right-fill me-2 text-primary"></i>
+                              </span>
+                              {{ sharePostPreview.user.name }}
+                            </h4>
                             <span class="fs-13">{{ formatDateTime(sharePostPreview.created_at) }}</span>
                           </div>
                         </div>
-                        <p class="mb-0" v-if="!sharePostPreview.colored_post_id && sharePostPreview.post_type !== 'link'">
-                          {{ sharePostPreview.post_text }}</p>
-                        <div class="link-post-details pt-3" v-if="sharePostPreview.post_type === 'link'">
+                        <p v-if="!sharePostPreview.colored_post_id && sharePostPreview.post_type !== 'link'" class="mb-0">
+                          {{ sharePostPreview.post_text }}
+                        </p>
+                        <div v-if="sharePostPreview.post_type === 'link'" class="link-post-details pt-3">
                           <h3 class="link-title fs-5">{{ sharePostPreview.post_link_title }}</h3>
                           <span class="Blue fs-12">{{ sharePostPreview.post_link }}</span>
                         </div>
@@ -227,10 +225,13 @@
                   <div id="user-color-con" class="position-relative align-self-center" v-show="showColorOptions">
                     <div class="d-flex justify-content-between align-items-center user-poster-button color-wrapper">
                       <div class="d-flex gap-2">
-
-                        <div v-for="(style, index) in colorStyles" :key="index" class="all_colors_style"
-                          :style="{ 'background-image': style.background }" @click="selectColor(style)">
-                        </div>
+                        <div
+                          v-for="(style, index) in colorStyles"
+                          :key="index"
+                          class="all_colors_style"
+                          :style="{ 'background-image': style.background }"
+                          @click="selectColor(style)"
+                        ></div>
                       </div>
                       <div class="btn-close-color bg-white">
                         <button type="button" class="btn-close ms-5" aria-label="Close" @click="hideColor()"></button>
@@ -239,7 +240,7 @@
                   </div>
                   <!-- Emojis Model Button-->
                   <div>
-                    <button class="btn" v-on:click="toggleEmojiPicker">
+                    <button class="btn" @click="toggleEmojiPicker">
                       <abbr title="Open Emoji">
                         <i class="bi bi-emoji-smile fs-4"></i>
                       </abbr>
@@ -251,73 +252,92 @@
                 <div class="d-flex gap-3 my-2">
                   <!-- Add Media Button -->
                   <abbr title="Add Media">
-                    <button class="icons-hover d-flex justify-content-center align-items-center"
+                    <button
+                      class="icons-hover d-flex justify-content-center align-items-center"
                       @click="showMediaPostModal"
-                      :disabled="currentPostType && currentPostType !== 'photo' || sharePostPreview != null">
+                      :disabled="currentPostType && currentPostType !== 'photo' || sharePostPreview != null"
+                    >
                       <i class="bi bi-image fs-4"></i>
                     </button>
                   </abbr>
 
                   <!-- Create a Poll Button -->
                   <abbr title="Create a Poll">
-                    <button class="icons-hover d-flex justify-content-center align-items-center"
+                    <button
+                      class="icons-hover d-flex justify-content-center align-items-center"
                       @click="showPollPostModal"
-                      :disabled="currentPostType && currentPostType !== 'poll' || sharePostPreview != null">
+                      :disabled="currentPostType && currentPostType !== 'poll' || sharePostPreview != null"
+                    >
                       <i class="bi bi-bar-chart-line-fill fs-4"></i>
                     </button>
                   </abbr>
 
                   <!-- Color Posts Button -->
                   <abbr title="Color Posts">
-                    <button class="icons-hover d-flex justify-content-center align-items-center" @click="showColor"
-                      :disabled="currentPostType && currentPostType !== 'color' || sharePostPreview != null">
+                    <button
+                      class="icons-hover d-flex justify-content-center align-items-center"
+                      @click="showColor"
+                      :disabled="currentPostType && currentPostType !== 'color' || sharePostPreview != null"
+                    >
                       <i class="bi bi-palette-fill fs-4"></i>
                     </button>
                   </abbr>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="publishPost"
-                  :disabled="!isPublishable || isPublishing" v-if="!sharePostPreview">Publish Post</button>
-                  <button type="button" class="btn btn-primary" v-else>Share Post</button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="isEditing ? updatePost() : publishPost()"
+                  :disabled="!isPublishable || isPublishing"
+                >
+                  {{ isEditing ? 'Update Post' : 'Publish Post' }}
+                </button>
+                <button
+                  v-if="isEditing"
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="hidePostModal"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
         </div>
-        <!-- Single Post Modal End -->
-      </div>
-    </div>
+        <!-- Unified Post Modal End -->
 
-    <div class="d-flex justify-content-around">
-      <!-- Post Setting Modal -->
-      <div ref="postSettingModal" class="modal fade" id="postSettingModal" tabindex="-1"
-        aria-labelledby="postSettingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-          <PostSettings @backFromSettings="handleBackFromSettings" @updateFromSettings="handleUpdateFromSettings" />
-        </div>
-      </div>
-      <!-- Post Setting Modal End -->
+        <!-- Additional Modals -->
+        <div class="d-flex justify-content-around">
+          <!-- Post Setting Modal -->
+          <div ref="postSettingModal" class="modal fade" id="postSettingModal" tabindex="-1" aria-labelledby="postSettingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <PostSettings @backFromSettings="handleBackFromSettings" @updateFromSettings="handleUpdateFromSettings" />
+            </div>
+          </div>
+          <!-- Post Setting Modal End -->
 
-      <!-- Media Post Modal -->
-      <div ref="mediaPostModal" class="modal fade" id="mediapostModal" tabindex="-1" aria-labelledby="mediapostModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-          <UploadMedia ref="uploadMediaComponent" @mediaUploaded="handleMediaUpload"
-            @backFromUpload="handleBackFromUpload" />
+          <!-- Media Post Modal -->
+          <div ref="mediaPostModal" class="modal fade" id="mediapostModal" tabindex="-1" aria-labelledby="mediapostModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <UploadMedia ref="uploadMediaComponent" @mediaUploaded="handleMediaUpload" @backFromUpload="handleBackFromUpload" />
+            </div>
+          </div>
+          <!-- Media Post Modal End -->
+
+          <!-- Poll Post Modal -->
+          <div ref="pollpostModal" class="modal fade" id="pollpostModal" tabindex="-1" aria-labelledby="pollpostModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <CreatePoll ref="createPollComponent" @backFromPoll="backFromCreatePoll" @pollCreated="handlePollCreation" />
+            </div>
+          </div>
+          <!-- Poll Post Modal End -->
         </div>
       </div>
-      <!-- Media Post Modal End -->
-      <!-- Poll Post Model -->
-      <div ref="pollpostModal" class="modal fade" id="pollpostModal" tabindex="-1" aria-labelledby="pollpostModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-          <CreatePoll ref="createPollComponent" @backFromPoll="backFromCreatePoll" @pollCreated="handlePollCreation" />
-        </div>
-      </div>
-      <!-- Poll Post Model End -->
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap';
 import EmojiPicker from 'vue3-emoji-picker';
@@ -327,25 +347,36 @@ import UploadMedia from './UploadMedia.vue';
 import CreatePoll from './CreatePoll.vue';
 import PostSettings from './PostSettings.vue';
 import { formatDateTime } from '../../utils';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 export default {
+  emits: ['post-created', 'post-updated'],
   components: {
     PostSettings,
     UploadMedia,
     CreatePoll,
-    EmojiPicker
+    EmojiPicker,
   },
   props: {
     context: {
       type: String,
-      default: 'feed'
+      default: 'feed',
     },
     groupId: {
       type: [String, Number],
-      default: null
+      default: null,
+    },
+    groupName: {
+      type: String,
+      default: null,
     },
   },
   data() {
     return {
+      // General Post Data
+      isEditing: false,
+      editPostId: null,
       currentPostType: null,
       loadingLinkData: false,
       selectedColor: '',
@@ -363,28 +394,41 @@ export default {
       uploadedMedia: [],
       isMultiImage: false,
       showMediaPreview: false,
-      postText: '',
       showPollPreview: false,
       showLinkPreview: false,
       sharePostPreview: null,
+      shareContext: null,
+      shareTargetGroupId: null,
+      shareTargetGroupName: null,
       pollData: {
         question: '',
         options: [],
-        duration: ''
+        duration: '',
       },
       linkData: {
         title: '',
         image: '',
         siteName: '',
-        url: ''
+        url: '',
       },
-      feedMediaimaged: false,
       isPublishing: false,
+      // Poll and Link Data for Editing
+      editPollData: {
+        question: '',
+        options: [],
+        duration: '',
+      },
+      editLinkData: {
+        title: '',
+        image: '',
+        siteName: '',
+        url: '',
+      },
     };
   },
   computed: {
     ...mapState(['userData']),
-    ...mapState('profileGroupHeader',['UpdatedProfileImagePath']),
+    ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
     postClass() {
       return this.selectedColor ? 'colored-post' : '';
     },
@@ -395,22 +439,23 @@ export default {
       return this.selectedColor ? 100 : null;
     },
     isSettingsChanged() {
-      return this.comment_status !== this.initialCommentStatus ||
-        this.post_privacy !== this.initialPostPrivacy;
+      return this.comment_status !== this.initialCommentStatus || this.post_privacy !== this.initialPostPrivacy;
     },
     textareaStyle() {
-      return this.selectedColor ? {
-        'color': this.textColor,
-        'background-image': this.selectedColor,
-        'font-size': '2.5rem',
-        'text-align': 'center'
-      } : {};
+      return this.selectedColor
+        ? {
+            color: this.textColor,
+            'background-image': this.selectedColor,
+            'font-size': '2.5rem',
+            'text-align': 'center',
+          }
+        : {};
     },
     isPublishable() {
       const hasContent = this.textContent.trim().length > 0;
-      const isSpecialType = ['color', 'poll', 'photo'].includes(this.currentPostType);
+      const isSpecialType = ['color', 'poll', 'photo', 'link'].includes(this.currentPostType);
       return hasContent || isSpecialType;
-    }
+    },
   },
   mounted() {
     // Initialize all modal instances
@@ -429,10 +474,16 @@ export default {
   },
   methods: {
     formatDateTime,
-    sharePostModal(post) {
-      this.postModalInstance.show();
+    sharePostModal(payload) {
+      const { post, groupId, groupName } = payload;
       console.log('Received post data:', post);
+      console.log('Received Group Id:', groupId);
+      console.log('Received Group Name:', groupName);
       this.sharePostPreview = post;
+      this.shareContext = groupId ? 'group' : 'feed';
+      this.shareTargetGroupId = groupId;
+      this.shareTargetGroupName = groupName;
+      this.postModalInstance.show();
     },
     showPostModal() {
       this.postModalInstance.show();
@@ -440,9 +491,16 @@ export default {
     hidePostModal() {
       this.postModalInstance.hide();
       setTimeout(() => this.removeBackdrop('postModal'), 150);
-      this.clearPostType();
-      this.$refs.uploadMediaComponent.resetStateParent();
+      if(!this.isEditing){
+        this.clearPostType();
+        this.isEditing = false;
+        this.$refs.uploadMediaComponent.resetStateParent();
+        this.editPostId = null;
+      }
       this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
     },
     showMediaPostModal() {
       this.hidePostModal();
@@ -453,8 +511,11 @@ export default {
       setTimeout(() => this.removeBackdrop('mediaPostModal'), 150);
     },
     handleBackFromUpload() {
-      this.clearPostType();
-      this.$refs.uploadMediaComponent.resetStateParent();
+      if(!this.isEditing){
+        console.log('Not Editing');
+        this.clearPostType();
+        this.$refs.uploadMediaComponent.resetStateParent();
+      }
       this.hideMediaPostModal();
       setTimeout(() => this.showPostModal(), 300);
       const textarea = document.getElementById('textarea-modalpost');
@@ -465,12 +526,37 @@ export default {
     handleMediaUpload(payload) {
       if (payload.files.length > 0) {
         this.currentPostType = 'photo';
-        this.uploadedMedia = payload.files;
-        this.isMultiImage = payload.multiImage;
+        console.log(payload);
+        // Map new media files, each marked as new
+        const newMedia = payload.files.map(file => ({
+          file: file.file,
+          preview: file.preview,
+          alt: file.alt,
+          isNew: true
+        }));
+
+        this.uploadedMedia = this.isEditing
+          ? [...this.uploadedMedia.filter(media => !media.isNew), ...newMedia]
+          : newMedia;
+
+        this.uploadedMedia.length > 1 ? this.isMultiImage = true : false;
         this.showMediaPreview = true;
       }
+
       this.hideMediaPostModal();
       setTimeout(() => this.showPostModal(), 300);
+    },
+
+
+    removeMedia(index) {
+      this.uploadedMedia.splice(index, 1);
+      // If no media left, reset related states
+      if (this.uploadedMedia.length === 0) {
+        console.log('No Media Left');
+        this.currentPostType = 'text';
+      } else if (this.uploadedMedia.length === 1) {
+        this.isMultiImage = false;
+      }
     },
     showPollPostModal() {
       this.hidePostModal();
@@ -486,7 +572,7 @@ export default {
         this.pollData = {
           question: pollData.question,
           options: pollData.options,
-          duration: pollData.duration
+          duration: pollData.duration,
         };
         this.showPollPreview = true;
         console.log('Poll created:', pollData);
@@ -522,9 +608,13 @@ export default {
       let backdrops = document.querySelectorAll('.modal-backdrop');
       if (backdrops.length > 0) {
         if (modalId === 'postModal') {
-          backdrops[backdrops.length - 1].remove(); // Remove the last backdrop for post modal
+          backdrops[backdrops.length - 1].remove();
         } else if (modalId === 'mediaPostModal' && backdrops.length > 1) {
-          backdrops[backdrops.length - 2].remove(); // Remove the second last for media modal
+          backdrops[backdrops.length - 2].remove();
+        } else if (modalId === 'pollpostModal' && backdrops.length > 0) {
+          backdrops[backdrops.length - 1].remove();
+        } else if (modalId === 'postSettingModal' && backdrops.length > 0) {
+          backdrops[backdrops.length - 1].remove();
         }
       }
     },
@@ -532,7 +622,7 @@ export default {
       this.showEmojiPicker = !this.showEmojiPicker;
     },
     onSelectEmoji(emoji) {
-      this.textContent += emoji.i;
+      this.textContent += emoji.native;
     },
     selectColor(style) {
       this.currentPostType = 'color';
@@ -559,27 +649,28 @@ export default {
       }
       this.loadingLinkData = true;
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      axios.get('/api/fetch-link-data', {
-        headers: {
-          'X-CSRF-TOKEN': csrfToken
-        },
-        params: { url }
-      })
-        .then(response => {
+      axios
+        .get('/api/fetch-link-data', {
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
+          params: { url },
+        })
+        .then((response) => {
           this.linkData = {
             title: response.data.title,
             image: response.data.image,
             siteName: response.data.siteName,
-            url
+            url,
           };
           this.currentPostType = 'link';
           this.showLinkPreview = true;
           this.loadingLinkData = false;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching link data:', error);
+          this.loadingLinkData = false;
         });
-
     },
     clearLinkPreview() {
       this.linkData = { title: '', image: '', siteName: '', url: '' };
@@ -587,6 +678,7 @@ export default {
       this.currentPostType = null;
     },
     clearPostType() {
+      console.log('Who is Calling You bro');
       this.currentPostType = null;
       this.uploadedMedia = [];
       this.isMultiImage = false;
@@ -598,6 +690,9 @@ export default {
       this.showPollPreview = false;
       this.pollData = { question: '', options: [], duration: '' };
       this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
       this.clearColor();
       this.clearLinkPreview();
     },
@@ -609,16 +704,11 @@ export default {
     },
     async fetchColorOptions() {
       try {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const response = await axios.get('/api/color-options', {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken
-          }
-        });
-        this.colorStyles = response.data.map(color => ({
+        const response = await axios.get('/api/color-options');
+        this.colorStyles = response.data.map((color) => ({
           background: `linear-gradient(45deg, ${color.color_1} 0%, ${color.color_2} 100%)`,
           textColor: color.text_color,
-          id: color.id
+          id: color.id,
         }));
       } catch (error) {
         console.error('Error fetching color options:', error);
@@ -626,15 +716,22 @@ export default {
     },
     publishPost() {
       const formData = new FormData();
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       this.isPublishing = true;
       formData.append('user_id', this.userData.id);
       formData.append('post_type', this.currentPostType || 'text');
       formData.append('post_privacy', this.post_privacy);
       formData.append('comments_status', this.comment_status);
       formData.append('post_text', this.textContent);
+      if (this.sharePostPreview) {
+        formData.append('shared_id', this.sharePostPreview.id);
+      }
       if (this.context === 'group' && this.groupId) {
         formData.append('group_id', this.groupId);
+        formData.append('group_name', this.groupName);
+      }
+      if (this.shareTargetGroupId) {
+        formData.append('group_id', this.shareTargetGroupId);
+        formData.append('group_name', this.shareTargetGroupName);
       }
       switch (this.currentPostType) {
         case 'color':
@@ -648,14 +745,142 @@ export default {
           });
           formData.append('duration', this.pollData.duration);
           break;
-        case 'photo':
-          formData.append('multi_image', this.isMultiImage ? '1' : '0');
-          this.uploadedMedia.forEach((mediaItem, index) => {
-            if (mediaItem.file && mediaItem.file instanceof File) {
-              formData.append(`images[${index}]`, mediaItem.file);
-            }
-          });
+          case 'photo':
+            formData.append('multi_image', this.isMultiImage ? '1' : '0');
+            this.uploadedMedia.forEach((mediaItem, index) => {
+              if (mediaItem.isNew && mediaItem.file instanceof File) {
+                formData.append(`images[${index}]`, mediaItem.file);
+              }
+            });
+            break;
+        case 'link':
+          formData.append('post_link', this.linkData.url);
+          formData.append('post_link_title', this.linkData.title);
+          formData.append('post_link_image', this.linkData.image);
           break;
+      }
+      axios
+        .post('/api/create-post', formData)
+        .then((response) => {
+          console.log('Post published:', response.data);
+          this.clearPostType();
+          this.hidePostModal();
+          this.isPublishing = false;
+          this.$refs.uploadMediaComponent.resetStateParent();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Post created successfully!',
+            toast: true,
+            position: 'top-right',
+            timer: 3000,
+            showConfirmButton: false,
+          });
+          // Optionally, emit an event or update the post list
+          this.$emit('post-created', response.data.post);
+        })
+        .catch((error) => {
+          console.error('Error publishing post:', error);
+          this.isPublishing = false;
+          // Handle error (e.g., show notification)
+        });
+    },
+    // Unified Edit Post Methods
+    showEditPostModal(post) {
+      console.log(post);
+      this.isEditing = true;
+      this.editPostId = post.id;
+      this.textContent = post.post_text;
+      this.currentPostType = post.post_type;
+      this.selectedColor = post.colored_post ? `linear-gradient(45deg, ${post.colored_post.color_1} 0%, ${post.colored_post.color_2} 100%)` : '';
+      this.textColor = post.colored_post ? post.colored_post.text_color : '';
+      this.selectedColorId = post.colored_post_id || null;
+
+      switch (post.post_type) {
+        case 'photo':
+          this.uploadedMedia = (post.photos || []).map(photo => ({
+            id: photo.id,
+            url: photo.image,
+            isNew: false
+          }));
+          this.isMultiImage = post.multi_image === '1';
+          this.showMediaPreview = true;
+          break;
+        case 'poll':
+          this.pollData = {
+            question: post.poll ? post.poll.question : '',
+            options: post.poll ? post.poll.options.map(opt => opt.option_text) : [],
+            duration: post.poll ? post.poll.duration : '',
+          };
+          this.showPollPreview = true;
+          break;
+        case 'link':
+          this.linkData = {
+            title: post.post_link_title || '',
+            image: post.post_link_image || '',
+            siteName: post.link ? post.link.siteName : '',
+            url: post.post_link || '',
+          };
+          this.showLinkPreview = true;
+          break;
+        // Add cases for other post types as needed
+        default:
+          break;
+      }
+
+      this.postModalInstance.show();
+    },
+    updatePost() {
+      const formData = new FormData();
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      this.isPublishing = true;
+
+      formData.append('post_id', this.editPostId);
+      formData.append('post_type', this.currentPostType || 'text');
+      formData.append('post_privacy', this.post_privacy);
+      formData.append('comments_status', this.comment_status);
+      formData.append('post_text', this.textContent);
+
+      if (this.sharePostPreview) {
+        formData.append('shared_id', this.sharePostPreview.id);
+      }
+
+      // Append group information if applicable
+      if (this.context === 'group' && this.groupId) {
+        formData.append('group_id', this.groupId);
+        formData.append('group_name', this.groupName);
+      }
+
+      // Append target group information if sharing
+      if (this.shareTargetGroupId) {
+        formData.append('group_id', this.shareTargetGroupId);
+        formData.append('group_name', this.shareTargetGroupName);
+      }
+
+      // Handle different post types
+      switch (this.currentPostType) {
+        case 'color':
+          formData.append('colored_post_id', this.selectedColorId);
+          formData.append('post_text', this.textContent);
+          break;
+        case 'poll':
+          formData.append('question', this.pollData.question);
+          this.pollData.options.forEach((option, index) => {
+            formData.append(`options[${index}]`, option);
+          });
+          formData.append('duration', this.pollData.duration);
+          break;
+          case 'photo':
+            formData.append('multi_image', this.isMultiImage ? '1' : '0');
+            
+            this.uploadedMedia.forEach((mediaItem, index) => {
+              if (mediaItem.isNew && mediaItem.file instanceof File) {
+                formData.append(`images[${index}]`, mediaItem.file);
+              } else if (!mediaItem.isNew && mediaItem.id) {
+                formData.append(`existing_images[${index}]`, mediaItem.id);
+              }
+            });
+            break;
         case 'link':
           formData.append('post_link', this.linkData.url);
           formData.append('post_link_title', this.linkData.title);
@@ -663,40 +888,52 @@ export default {
           break;
       }
 
-      axios.post('/api/create-post', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'X-CSRF-TOKEN': csrfToken
-        }
-      })
-        .then(response => {
-          console.log('Post published:', response.data);
+      axios
+        .post('/api/update-post', formData)
+        .then((response) => {
+          console.log('Post updated:', response.data);
           this.clearPostType();
-          this.hidePostModal();
-          this.isPublishing = false;
+          this.isEditing = false;
           this.$refs.uploadMediaComponent.resetStateParent();
+          this.editPostId = null;
+          this.hidePostModal();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Post updated successfully!',
+            toast: true,
+            position: 'top-right',
+            timer: 3000,
+            showConfirmButton: false,
+          });
+          // Optionally, emit an event or update the post list
+          this.$emit('post-updated', response.data.post);
         })
-        .catch(error => {
-          console.error('Error publishing post:', error);
+        .catch((error) => {
+          console.error('Error updating post:', error);
           this.isPublishing = false;
-          // Handle error
+          // Handle error (e.g., show notification)
         });
-    }
+    },
+    // Shared Preview Methods
   },
   created() {
     this.fetchColorOptions();
-  }
+  },
 };
 </script>
+
 <style>
 .color-textarea {
   height: 240px;
 }
-
+.post-textarea textarea{
+  height: auto;
+}
 .media-preview-container {
   max-height: 500px;
   overflow-y: auto;
-  overflow-X: hidden;
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -733,8 +970,11 @@ export default {
   justify-content: center;
   align-items: center;
 }
+.preview-images{
+  position: relative;
+}
 
-.preview-actions {
+.preview-actions, .preview-actions-images {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -742,7 +982,26 @@ export default {
   gap: 10px;
 }
 
-.preview-actions i {
+.preview-actions-outer{
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  display: flex;
+  gap: 10px;
+}
+.preview-actions-outer i{
+  color: #fff;
+  background: #000000d1;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  cursor: pointer;
+}
+.preview-actions i, .preview-actions-images i {
   color: #fff;
   background: #000000d1;
   width: 35px;
@@ -769,43 +1028,6 @@ export default {
   background-color: #000000;
 }
 
-/* #mediapostModal .modal-dialog {
-  max-width: 70%;
-  height: 93vh;
-} */
-
-/* #mediapostModal .modal-dialog .modal-content {
-  height: 100%;
-} */
-
-/* #postModal .modal-dialog {
-  max-width: 50%;
-} */
-
-.post-textarea textarea {
-  resize: none;
-  height: auto;
-  padding: 10px 15px;
-}
-
-.post-textarea~.media-preview-container textarea {
-  background-color: black;
-}
-
-/* .post-icon-bg {
-  width: 55px;
-  height: 55px;
-  background-color: rgb(244, 242, 238);
-  border-radius: 50%;
-  cursor: pointer;
-}
-.clear-color {
-  position:absolute;
-  top:20px;
-  right:20px;
-  width:30px;
-  height:30px;
-} */
 .v3-emoji-picker {
   position: absolute;
   top: -60px;
@@ -822,12 +1044,11 @@ export default {
 .share-preview-photo {
   cursor: auto;
 }
-.single-share-preview-photo{
+.single-share-preview-photo {
   max-height: 600px;
 }
 
 @media screen and (max-width: 768px) {
-
   #mediapostModal .modal-dialog,
   #postModal .modal-dialog {
     max-width: 95%;

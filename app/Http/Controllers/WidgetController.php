@@ -46,84 +46,6 @@ class WidgetController extends Controller
 
             return response()->json($groups);
         }
-        private function isValidTradeDate($date, $location)
-        {
-            // You'll need to implement this function to check if the date is a valid trading day
-            // This might involve checking against a list of holidays or using an API
-            // For now, we'll use a simplified version that just checks if it's a weekday
-            return !in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY]);
-        }
-        private function getValidTradeDates($period, $location)
-        {
-            $timezone = 'America/Toronto'; 
-            $now = Carbon::now($timezone);
-            $currentDate = $now->format('Y-m-d');
-
-            if (!$this->isValidTradeDate($now, $location)) {
-                $currentDate = $now->subDay()->format('Y-m-d');
-            }
-
-            $startDate = $endDate = $currentDate;
-
-            switch ($period) {
-                case '1day':
-                    if ($now->hour >= 17) {
-                        if ($this->isValidTradeDate($now, $location)) {
-                            $startDate = $endDate = $currentDate;
-                        } else {
-                            $startDate = $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
-                        }
-                    } else {
-                        $previousDate = Carbon::parse($currentDate)->subDay();
-                        while (!$this->isValidTradeDate($previousDate, $location)) {
-                            $previousDate->subDay();
-                        }
-                        $startDate = $endDate = $previousDate->format('Y-m-d');
-                    }
-                    break;
-
-                case '1week':
-                    if ($now->hour >= 17) {
-                        $endDate = $this->isValidTradeDate($now, $location) ? $currentDate : Carbon::parse($currentDate)->subDay()->format('Y-m-d');
-                    } else {
-                        $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
-                    }
-
-                    $businessDaysCount = 1;
-                    $potentialStartDate = Carbon::parse($endDate);
-                    while ($businessDaysCount < 5) {
-                        $potentialStartDate->subDay();
-                        if ($this->isValidTradeDate($potentialStartDate, $location)) {
-                            $businessDaysCount++;
-                        }
-                    }
-                    $startDate = $potentialStartDate->format('Y-m-d');
-                    break;
-
-                case '1month':
-                    if ($now->hour >= 17) {
-                        $endDate = $this->isValidTradeDate($now, $location) ? $currentDate : Carbon::parse($currentDate)->subDay()->format('Y-m-d');
-                    } else {
-                        $endDate = Carbon::parse($currentDate)->subDay()->format('Y-m-d');
-                    }
-
-                    $businessDaysCount = 1;
-                    $potentialStartDate = Carbon::parse($endDate);
-                    while ($businessDaysCount < 20) {
-                        $potentialStartDate->subDay();
-                        if ($this->isValidTradeDate($potentialStartDate, $location)) {
-                            $businessDaysCount++;
-                        }
-                    }
-                    $startDate = $potentialStartDate->format('Y-m-d');
-                    break;
-
-                default:
-                    throw new \Exception('Invalid period');
-            }
-
-            return [$startDate, $endDate];
-        }
 
         public function fetchIntradayOHLCData(Request $request, $symbol)
         {
@@ -500,6 +422,90 @@ class WidgetController extends Controller
                     'error' => 'An unexpected error occurred',
                     'message' => $e->getMessage(),
                 ], 500); 
+            }
+        }
+        public function getCryptoCollection($type){
+            try{
+                $apiUrl = env('STOCKS_API_URL') . "/api/crypto-collections/{$type}";
+                $response = Http::timeout(15)->get($apiUrl);
+
+                if(!$response->successful()){
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error('API request failed', $errorDetails);
+
+                    return response()->json([
+                        'error' => 'Failed to fetch quotes from API',
+                        'details' => $errorDetails
+                    ], 503);
+                }
+
+                return $response->json();
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                ], 500); 
+            }
+        }
+        public function getCalendar(Request $request, $type)
+        {
+            try {
+                // Define a mapping of types to their respective API endpoints
+                $typeToEndpoint = [
+                    'earnings' => 'earnings-calendar',
+                    'economic' => 'economic-calendar',
+                    'dividends' => 'dividends-calendar',
+                    'ipo' => 'ipo-calendar',
+                    'splits' => 'splits-calendar'
+                ];
+
+                // Check if the provided type is valid
+                if (!array_key_exists($type, $typeToEndpoint)) {
+                    return response()->json(['error' => 'Invalid calendar type'], 400);
+                }
+
+                // Retrieve query parameters
+                $startDate = $request->query('startDate');
+                $endDate = $request->query('endDate');
+
+                // Get the appropriate endpoint for the given type
+                $apiEndpoint = $typeToEndpoint[$type];
+                $apiUrl = env('STOCKS_API_URL') . "/api/{$apiEndpoint}?startDate={$startDate}&endDate={$endDate}";
+
+                // Make the API request with a 15-second timeout
+                $response = Http::timeout(20)->get($apiUrl);
+
+                // Check if the response was successful
+                if (!$response->successful()) {
+                    $errorDetails = [
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                        'url' => $apiUrl,
+                    ];
+                    Log::error(ucfirst($type) . ' Calendar API request failed', $errorDetails);
+
+                    return response()->json([
+                        'error' => "Failed to fetch {$type} calendar data",
+                        'details' => $errorDetails
+                    ], 503);
+                }
+
+                // Return the JSON response from the API
+                return $response->json();
+
+            } catch (\Exception $e) {
+                // Handle unexpected exceptions and log the error
+                Log::error("Unexpected error in getCalendar ({$type})", ['message' => $e->getMessage()]);
+
+                return response()->json([
+                    'error' => 'An unexpected error occurred',
+                    'message' => $e->getMessage(),
+                ], 500);
             }
         }
 

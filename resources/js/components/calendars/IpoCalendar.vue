@@ -120,8 +120,7 @@
         </div>
       </div>
       <div class="col-lg-4">
-        <Markets />
-        <LatestArticles />
+        <SidebarCalendars v-if="this.contentLoaded"/>
       </div>
     </div>
   </div>
@@ -129,13 +128,11 @@
 
 <script>
 import axios from 'axios';
-import Markets from '../widgets/Markets.vue';
-import LatestArticles from '../widgets/LatestArticles.vue';
+import SidebarCalendars from './SidebarCalendars.vue';
 
 export default {
   components: {
-    LatestArticles,
-    Markets
+    SidebarCalendars
   },
   data() {
     return {
@@ -155,7 +152,8 @@ export default {
       tabNames: ['upcoming', 'recent'],
       loadedTabs: new Set(),
       initialRowCount: 50,
-      selectedIpoType: 'all'
+      selectedIpoType: 'all',
+      contentLoaded = false;
     };
   },
   methods: {
@@ -178,8 +176,7 @@ export default {
       const formatDate = (date) => date.toISOString().split('T')[0];
       
       try {
-        const response = await axios.get(`https://dev.stocks.richtv.io/api/ipo-calendar?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
-        console.log(`Fetched IPO data for ${tabName}:`, response.data);
+        const response = await axios.get(`/api/calendar/ipo?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
         this.ipoEvents[tabName] = response.data;
         this.filterIpoEvents();
         this.loadedTabs.add(tabName);
@@ -230,6 +227,7 @@ export default {
   },
   mounted() {
     this.fetchIpoCalendar(this.activeTab);
+    this.contentLoaded = true;
   }
 };
 </script>

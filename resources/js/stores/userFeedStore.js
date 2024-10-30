@@ -28,6 +28,15 @@ const userFeedModule = {
                 state.newPostData = newPost;
             }
         },
+        updatePost(state, post) {
+            const index = state.posts.findIndex(p => p.id === post.id);
+            if (index !== -1) {
+                state.posts[index] = { ...state.posts[index], ...post };
+            }
+        },
+        removePost(state, postId){
+            state.posts = state.posts.filter(post => post.id !== postId);
+        },
         shiftNewPost(state) {
             if (state.newPostData) {
                 state.posts.unshift(state.newPostData);
@@ -116,7 +125,7 @@ const userFeedModule = {
         },
         updateFetchedCommentsVisibility(state, postId){
             state.visibleCommentsFlags[postId] = !state.visibleCommentsFlags[postId];
-        }
+        },
     },
     actions: {
         async fetchPosts({ commit, rootState }, { context, groupId = null, userName = null, singlePostID }) {
@@ -127,15 +136,27 @@ const userFeedModule = {
             let posts;
             let lastPostId;
             posts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName, lastPostId, singlePostID);
-            
             commit('setPosts', posts);
-            
+            if (posts.length < 10) {
+                commit('setHasMorePosts', false);
+            }
             
           } catch (error) {
             commit('setError', error.message);
           } finally {
             commit('setLoading', false);
           }
+        },
+        addPost({commit, rootState}, post){
+            const transformedPost = UserFeedService.transfromPost([post], post.user.id);
+            commit('addNewPost', transformedPost[0]);
+        },
+        updatePost({commit, rootState}, post){
+            const transformedPost = UserFeedService.transfromPost([post], post.user.id);
+            commit('updatePost', transformedPost[0]);
+        },
+        removePost({commit, rootState}, postId){
+            commit('removePost', postId);
         },
         async fetchMorePosts({ commit, state, rootState }, { context, groupId = null, userName = null }) {
             if (state.isLoading || state.isFetchingMore || !state.hasMorePosts) return;
@@ -150,9 +171,9 @@ const userFeedModule = {
                     commit('setHasMorePosts', false);
                 } else {
                     commit('appendPosts', morePosts);
-                     /*if (morePosts.length < 8) {
+                     if (morePosts.length < 9) {
                          commit('setHasMorePosts', false);
-                     }*/
+                     }
                 }
             } catch (error) {
                 console.error('Error fetching more posts:', error);

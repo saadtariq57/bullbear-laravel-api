@@ -129,37 +129,13 @@
               <form @submit.prevent="updatePrivacySettings" class="mt-5 pt-3">
                 <div class="row g-3 px-3 pt-3 align-items-center">
                   <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Status</p>
-                  </div>
-                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.status_privacy" aria-label="status_privacy">
-                      <option value="Online">Online</option>
-                      <option value="Offline">Offline</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row g-3 px-3 pt-3 align-items-center">
-                  <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow search engines to index my profile and posts?</p>
-                  </div>
-                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.search_index_privacy" aria-label="search_index_privacy">
-                      <option value="Everyone">Everyone</option>
-                      <option value="Friends">Friends</option>
-                      <option value="Nobody">Nobody</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row g-3 px-3 pt-3 align-items-center">
-                  <div class="col-12 col-sm-6">
                     <p class="fs-18 mb-2 mb-sm-4">Allow people to view my posts?</p>
                   </div>
                   <div class="col-12 col-sm-6 mt-0 mt-sm-3">
                     <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.post_privacy" aria-label="post_privacy">
                       <option value="Everyone">Everyone</option>
                       <option value="Followers">Followers</option>
-                      <option value="IFollow">I Follow</option>
-                      <option value="OnlyMe">Only Me</option>
+                      <option value="Private">Only Me</option>
                     </select>
                   </div>
                 </div>
@@ -171,7 +147,7 @@
                     <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.groups_privacy" aria-label="groups_privacy">
                       <option value="Everyone">Everyone</option>
                       <option value="Followers">Followers Only</option>
-                      <option value="OnlyMe">Only Me</option>
+                      <option value="Private">Only Me</option>
                     </select>
                   </div>
                 </div>
@@ -183,7 +159,7 @@
                     <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.watchlists_privacy" aria-label="watchlists_privacy">
                       <option value="Everyone">Everyone</option>
                       <option value="Followers">Followers Only</option>
-                      <option value="OnlyMe">Only Me</option>
+                      <option value="Private">Only Me</option>
                     </select>
                     <p class="notice">If you want people to view your specific watchlists please <a href="/watchlist/manage">click here to manage watchlists</a></p>
                   </div>
@@ -196,18 +172,7 @@
                     <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.photos_privacy" aria-label="photos_privacy">
                       <option value="Everyone">Everyone</option>
                       <option value="Followers">Followers Only</option>
-                      <option value="OnlyMe">Only Me</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row g-3 px-3 pt-3 align-items-center">
-                  <div class="col-12 col-sm-6">
-                    <p class="fs-18 mb-2 mb-sm-4">Allow people to view my Followers and Followings?</p>
-                  </div>
-                  <div class="col-12 col-sm-6 mt-0 mt-sm-3">
-                    <select class="form-select form-select-lg fs-16 mb-3" v-model="privacySettings.follow_privacy" aria-label="follow_privacy">
-                      <option value="public">Public</option>
-                      <option value="private">Private</option>
+                      <option value="Private">Only Me</option>
                     </select>
                   </div>
                 </div>
@@ -1024,10 +989,10 @@
               <button class="nav-link text-start" id="v-pills-social-links-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-social-links" type="button" role="tab" aria-controls="v-pills-social-links"
                 aria-selected="false"><i class="bi bi-twitter-x pe-3 fs-18 align-middle"></i>Social Links</button>
-              <button class="nav-link text-start" id="v-pills-notification-setting-tab" data-bs-toggle="pill"
+              <!-- <button class="nav-link text-start" id="v-pills-notification-setting-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-notification-setting" type="button" role="tab"
                 aria-controls="v-pills-notification-setting" aria-selected="false"><i
-                  class="bi bi-bell-fill pe-3 fs-18 align-middle"></i>Notification Setting</button>
+                  class="bi bi-bell-fill pe-3 fs-18 align-middle"></i>Notification Setting</button> -->
               <button class="nav-link text-start" id="v-pills-membership-tab" data-bs-toggle="pill"
                 data-bs-target="#v-pills-membership" type="button" role="tab" aria-controls="v-pills-membership"
                 aria-selected="false"><i class="bi bi-person-lines-fill pe-3 fs-18 align-middle"></i>Membership</button>
@@ -1093,13 +1058,10 @@ export default {
       },
       countries: getNames(),
       privacySettings: {
-        status_privacy: '',
-        search_index_privacy: '',
         post_privacy: '',
         groups_privacy: '',
         watchlists_privacy: '',
         photos_privacy: '',
-        follow_privacy: '',
       },
       updatePasswordData: {
         currentPassword: '',
@@ -1150,12 +1112,7 @@ export default {
     },
     async cancelSubscription(subscriptionName) {
       try {
-        const response = await axios.post(`/api/cancelSubscription/${subscriptionName}`, {
-          withCredentials: true,
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-          },
-        });
+        const response = await axios.post(`/api/cancelSubscription/${subscriptionName}`);
         this.getInvoices();
         this.confirmModalInstance.hide();
         const Toast = Swal.mixin({
@@ -1236,7 +1193,6 @@ export default {
       } else {
         axios.post(`/api/updatePaymentMethod/`, this.formData)
           .then(response => {
-            console.log('Response:', response.data);
           })
           .catch(error => {
             console.error('Error:', error);
@@ -1245,19 +1201,15 @@ export default {
     },
     loadPrivacySettings() {
       this.privacySettings = {
-        status_privacy: this.userData.status_privacy || '',
-        search_index_privacy: this.userData.search_index_privacy || '',
         post_privacy: this.userData.post_privacy || '',
         groups_privacy: this.userData.groups_privacy || '',
         watchlists_privacy: this.userData.watchlists_privacy || '',
         photos_privacy: this.userData.photos_privacy || '',
-        follow_privacy: this.userData.follow_privacy || '',
       };
     },
     async updatePrivacySettings() {
       try {
         const response = await axios.post('/api/privacy-settings', this.privacySettings);
-        // alert('Privacy settings updated successfully.');
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",

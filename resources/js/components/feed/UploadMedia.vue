@@ -8,7 +8,7 @@
     <div class="modal-body">
       <div class="d-flex align-items-center justify-content-center modal-row" v-if="!uploadimageSelected">
         <div class="text-center">
-          <img src="https://www.fzcoltd.com/wp-content/uploads/2022/11/company-registration-1024x827.jpg" alt=""
+          <img src="/build/images/company-registration-1024x827.jpg" alt=""
             class="mb-3" width="200">
           <h2>Select files to begin</h2>
           <p>Share images in your post.</p>

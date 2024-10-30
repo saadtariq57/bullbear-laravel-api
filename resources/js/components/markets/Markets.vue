@@ -2,7 +2,6 @@
   <div class="container my-4" v-if="widgets.length">
     <div class="text-center">
       <p class="mb-0 fw-bold text-black text-capitalize" v-if="subCategory">{{ subCategory }}</p>
-      <p class="mb-0 fw-bold text-black text-capitalize">{{ category }}</p>
       <h1 class="fw-bold border-bottom pb-3 text-capitalize">{{ categoryTitle }}</h1>
     </div>
     <div v-for="widget in widgets" :key="widget.id" class="widget-container my-4">
@@ -13,7 +12,7 @@
         <div class="col-lg-8">
           <div class="mt-3 overflow-auto market-table-wrapper">
             <div class="d-flex justify-content-end align-items-center mb-3">
-              <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button>
+              <!-- <button class="btn btn-primary fs-6"><i class="bi bi-plus-circle me-2"></i>Add to Watchlist</button> -->
             </div>
             <table class="table table-width border">
               <thead>
@@ -57,8 +56,6 @@
         </div>
         <div class="col-lg-4">
           <TopMovers />
-          <RecentQuotes />
-          <TopTen />
           <LatestArticles />
         </div>
       </div>
@@ -77,9 +74,7 @@ import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
 import TopMovers from '../widgets/TopMovers.vue';
-import TopTen from '../widgets/TopTen.vue';
 import LatestArticles from '../widgets/LatestArticles.vue';
-import RecentQuotes from '../widgets/RecentQuotes.vue';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userWidgetsModule from '@/stores/widgetsStore';
 
@@ -88,8 +83,6 @@ export default {
     Skeletor,
     TopMovers,
     LatestArticles,
-    TopTen,
-    RecentQuotes,
   },
   props: {
     category: String,

@@ -7,7 +7,11 @@
                 </a>
             </div>
         </div>
-        <p v-else>No Media Found</p>
+        <div class="text-center" v-else>
+        <i class="bi bi-x-octagon-fill" style="color: red; font-size: 35px;"></i>
+        <p class="text-center fw-bold">
+            No Media Found</p>        
+        </div>
     </div>
 </template>
 <script>

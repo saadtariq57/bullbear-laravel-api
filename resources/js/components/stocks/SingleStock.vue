@@ -2,8 +2,84 @@
   <div class="container-xxl pt-4">
     <div class="row">
       <div class="col-lg-8 col-md-12">
+        <!-- Loading Skeletons -->
+        <div v-if="isLoading">
+          <div class="stock-data-card card shadow-sm p-4 mb-4">
+            <div class="d-flex justify-content-between flex-wrap">
+              <h1>
+                <Skeletor width="200px" height="30px" />
+                <span class="text-secondary d-block fs-5"><Skeletor width="150px" height="20px" /></span>
+              </h1>
+              <div class="fs-13">
+                <Skeletor width="100px" height="30px" class="me-2" />
+                <Skeletor width="100px" height="30px" />
+              </div>
+            </div>
+            <div class="stock-subheader fs-14 fw-6 mt-2">
+              <Skeletor width="300px" height="20px" />
+            </div>
+            <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
+              <div>
+                <div>
+                  <Skeletor width="150px" height="20px" />
+                </div>
+                <div class="d-flex flex-wrap fw-bold mt-2">
+                  <Skeletor width="100px" height="40px" class="me-2" />
+                  <Skeletor width="150px" height="40px" />
+                </div>
+              </div>
+              <div class="fw-6 pt-4">
+                <Skeletor width="80px" height="20px" class="mb-2" />
+                <Skeletor width="100px" height="20px" />
+              </div>
+              <div class="fw-6 pt-4 px-0">
+                <Skeletor width="120px" height="20px" class="mb-2" />
+                <Skeletor width="150px" height="20px" />
+              </div>
+            </div>
+            <!-- Loading Additional Metrics -->
+            <div class="row mt-4">
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <Skeletor width="100%" height="80px" />
+              </div>
+            </div>
+          </div>
+          <!-- Loading Tabs -->
+          <div class="stocks-nav-tabs mt-4">
+            <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
+              <li v-for="i in 7" :key="i" class="nav-item stock-li-navbtn">
+                <Skeletor width="100px" height="30px" />
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Error handeling -->
+        <div v-else-if="error" class="error-message">
+          <div class="text-center">
+            <i class="bi bi-exclamation-circle text-danger mb-3" style="font-size: 3rem;"></i>
+            
+            <!-- Error Message -->
+            <h4 class="mb-2">We were unable to find the Quotes for the Symbol {{symbol}}.</h4>
+            <p class="mb-4">See more suggested symbols below.</p>
+          </div>
+          <!-- Widgets Side by Side -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <MarketMetrics :metricsKey="'most_actives'" @add-to-watchlist="handleAddToWatchlist" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <CryptoMetrics :metricsKey="'trending'" @add-to-watchlist="handleAddToWatchlist" />
+            </div>
+          </div>
+        </div>
         <!-- Stock Data Display -->
-        <div v-if="!isLoading && stockData" class="stock-data-card card shadow-sm p-4 mb-4">
+        <div v-else-if="stockData" class="stock-data-card card shadow-sm p-4 mb-4">
           <div class="d-flex justify-content-between flex-wrap align-items-center">
             <div>
               <h1 class="mb-2">
@@ -109,66 +185,8 @@
 
         </div>
         
-        <!-- Loading Skeletons -->
-        <div v-else>
-          <div class="stock-data-card card shadow-sm p-4 mb-4">
-            <div class="d-flex justify-content-between flex-wrap">
-              <h1>
-                <Skeletor width="200px" height="30px" />
-                <span class="text-secondary d-block fs-5"><Skeletor width="150px" height="20px" /></span>
-              </h1>
-              <div class="fs-13">
-                <Skeletor width="100px" height="30px" class="me-2" />
-                <Skeletor width="100px" height="30px" />
-              </div>
-            </div>
-            <div class="stock-subheader fs-14 fw-6 mt-2">
-              <Skeletor width="300px" height="20px" />
-            </div>
-            <div class="d-flex justify-content-between pt-1 fw-6 mt-3">
-              <div>
-                <div>
-                  <Skeletor width="150px" height="20px" />
-                </div>
-                <div class="d-flex flex-wrap fw-bold mt-2">
-                  <Skeletor width="100px" height="40px" class="me-2" />
-                  <Skeletor width="150px" height="40px" />
-                </div>
-              </div>
-              <div class="fw-6 pt-4">
-                <Skeletor width="80px" height="20px" class="mb-2" />
-                <Skeletor width="100px" height="20px" />
-              </div>
-              <div class="fw-6 pt-4 px-0">
-                <Skeletor width="120px" height="20px" class="mb-2" />
-                <Skeletor width="150px" height="20px" />
-              </div>
-            </div>
-            <!-- Loading Additional Metrics -->
-            <div class="row mt-4">
-              <div class="col-md-4 mb-3">
-                <Skeletor width="100%" height="80px" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <Skeletor width="100%" height="80px" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <Skeletor width="100%" height="80px" />
-              </div>
-            </div>
-          </div>
-          <!-- Loading Tabs -->
-          <div class="stocks-nav-tabs mt-4">
-            <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
-              <li v-for="i in 7" :key="i" class="nav-item stock-li-navbtn">
-                <Skeletor width="100px" height="30px" />
-              </li>
-            </ul>
-          </div>
-        </div>
-        
         <!-- Tabs Navigation -->
-        <div class="stocks-nav-tabs mt-4">
+        <div class="stocks-nav-tabs mt-4" v-if="stockData">
           <ul class="nav border-0 nav-tabs justify-content-between flex-wrap" id="course-content-tab" role="tablist">
             <template v-if="!isLoading && stockData">
               <li class="nav-item stock-li-navbtn" role="presentation" v-for="tab in availableTabs" :key="tab.id">
@@ -194,7 +212,7 @@
         </div>
         
         <!-- Tabs Content -->
-        <div class="tab-content" id="myTabContent">
+        <div class="tab-content" id="myTabContent" v-if="!isLoading && !error && stockData">
           <component 
             :is="activeTab === 'SUMMARY' ? SummaryTab : availableTabs.find(tab => tab.id === activeTab)?.component"
             :stock-data="stockData" 
@@ -208,9 +226,9 @@
       
       <!-- Sidebar Widgets -->
       <div class="col-lg-4">
-        <Markets />
-        <GroupChats />
-        <MarketMovers />
+        <Markets v-if="this.contentLoaded"/>
+        <GroupChats v-if="this.contentLoaded"/>
+        <MarketMovers v-if="this.contentLoaded"/>
       </div>
     </div>
     
@@ -242,6 +260,9 @@ import MarketMovers from '../widgets/TopMovers.vue';
 import Markets from '../widgets/Markets.vue';
 import GroupChats from '../widgets/GroupChatsSidebar.vue';
 import WatchlistPopup from '../utils/WatchlistPopup.vue';
+import MarketMetrics from '../widgets/MarketMetrics.vue';
+import CryptoMetrics from '../widgets/CryptoMetrics.vue';
+
 
 const TABS = [
   { id: 'SUMMARY', name: 'Summary', component: SummaryTab },
@@ -267,6 +288,8 @@ export default defineComponent({
     Markets,
     GroupChats,
     WatchlistPopup,
+    MarketMetrics,
+    CryptoMetrics,
   },
   setup() {
     const route = useRoute();
@@ -280,6 +303,8 @@ export default defineComponent({
     const isUserLoggedIn = computed(() => isLoggedIn());
     const showWatchlistModal = ref(false);
     const selectedSymbol = ref('');
+    const contentLoaded = ref(false);
+    const error = ref(null);
 
     const handleAddToWatchlist = (symbol) => {
       if (isUserLoggedIn.value) {
@@ -324,20 +349,32 @@ export default defineComponent({
       return TABS.filter(tab => visibleTabIds.includes(tab.id));
     });
 
-    const fetchStockData = async () => {
-      isLoading.value = true;
-      try {
-        const response = await axios.get(`/api/quotes/${symbol.value}`);
-        stockData.value = response.data.quote[symbol.value] || {};
-        stockType.value = response.data.type || ''; // Store the type
-      } catch (error) {
-        console.error('Error fetching stock data:', error);
-        stockData.value = null;
-      } finally {
-        isLoading.value = false;
-        initializeTooltips();
-      }
-    };
+     const fetchStockData = async () => {
+        isLoading.value = true;
+        try {
+          const response = await axios.get(`/api/quotes/${symbol.value}`);
+          
+          if (response.data && response.data.quote && response.data.quote[symbol.value]) {
+            stockData.value = response.data.quote[symbol.value];
+            stockType.value = response.data.type || ''; 
+            error.value = null;
+          } else {
+            stockData.value = null;
+            error.value = response.data.error || 'No data available';
+          }
+        } catch (err) { 
+          console.error('Error fetching stock data:', err);
+          if (err.response && err.response.data && err.response.data.error) {
+            error.value = err.response.data.error;
+          } else {
+            error.value = 'An error occurred while fetching data';
+          }
+          stockData.value = null;
+        } finally {
+          isLoading.value = false;
+          initializeTooltips();
+        }
+      };
 
     const roundToTwoDecimals = (value) => {
       return value ? Number(value).toFixed(2) : 'N/A';
@@ -361,6 +398,7 @@ export default defineComponent({
 
     onMounted(() => {
       fetchStockData();
+      contentLoaded.value = true;
     });
 
     watch(availableTabs, (newTabs) => {
@@ -404,6 +442,8 @@ export default defineComponent({
       handleAddToWatchlist,
       closeWatchlistModal,
       handleWatchlistAdded,
+      contentLoaded,
+      error
     };
   },
 });
@@ -411,7 +451,6 @@ export default defineComponent({
 
 <style scoped>
 @import "vue-skeletor/dist/vue-skeletor.css";
-
 /* General Styles */
 .stock-data-card {
   background-color: #ffffff;

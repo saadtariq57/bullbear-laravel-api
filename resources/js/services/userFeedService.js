@@ -17,7 +17,8 @@ const UserFeedService = {
                 url += `?lastPostId=${lastPostId}`;
             }
             
-            // console.log(userName);
+            console.log(lastPostId);
+            console.log(url);
             const response = await axios.get(url);
             const data = response.data.data;
             

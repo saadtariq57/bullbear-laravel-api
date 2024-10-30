@@ -12,7 +12,9 @@ class Post extends Model
     protected $fillable = [
         'user_id',
         'group_id',
-        'post_id', // If this is for referencing the old DB, consider renaming for clarity
+        'group_name',
+        'shared_id',
+        'post_id',
         'post_text',
         'post_link',
         'post_link_title',
@@ -36,7 +38,7 @@ class Post extends Model
 
     public function group()
     {
-        return $this->belongsTo(Group::class); // Assuming you have a Group model
+        return $this->belongsTo(Group::class);
     }
 
     public function coloredPost()
@@ -63,4 +65,9 @@ class Post extends Model
     {
         return $this->hasMany(Reaction::class);
     }
+    public function sharedPost()
+    {
+        return $this->belongsTo(Post::class, 'shared_id');
+    }
+
 }

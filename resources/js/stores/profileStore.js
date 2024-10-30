@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 const userProfileModule = {
     namespaced: true,
     state: () => ({
-        isLoading: false,
+        isLoadingProfile: true,
         error: null,
         success: null,
         userProfileData: null,
@@ -20,8 +20,20 @@ const userProfileModule = {
         followingsData: null,
         currentFollowersData: null,
         currentFollowingsData: null,
+        suggestedTraders: [],
+        isSuggestedTradersLoading: false,
+        userOnline: 'Offline',
     }),
     mutations: {
+        SET_SUGGESTED_TRADERS(state, suggestedTraders) {
+            state.suggestedTraders = suggestedTraders;
+        },
+        SET_SUGGESTED_TRADERS_LOADING(state, isLoadingProfile) {
+            state.isSuggestedTradersLoading = isLoadingProfile;
+        },
+        SET_USER_ONLINE(state, active_status){
+            state.userOnline = active_status;
+        },
         SET_PROFILE_DATA(state, userProfileData) {
             state.userProfileData = userProfileData;
         },
@@ -58,8 +70,8 @@ const userProfileModule = {
         SET_USER_MEDIA(state, userMedia) {
             state.userMedia = userMedia;
         },
-        SET_LOADING(state, isLoading) {
-            state.isLoading = isLoading;
+        SET_LOADING(state, isLoadingProfile) {
+            state.isLoadingProfile = isLoadingProfile;
         },
         SET_ERROR(state, error) {
             state.error = error;
@@ -69,10 +81,54 @@ const userProfileModule = {
         },
     },
     actions: {
+        async fetchSuggestedTraders({ commit }) {
+            commit('SET_SUGGESTED_TRADERS_LOADING', true);
+            try {
+                const response = await axios.get('/api/suggested-followers');
+                commit('SET_SUGGESTED_TRADERS', response.data.data);
+            } catch (error) {
+                console.error('Error fetching suggested traders:', error);
+                // Optionally, set an error state
+            } finally {
+                commit('SET_SUGGESTED_TRADERS_LOADING', false);
+            }
+        },
+        async followSuggestedTrader({ commit, dispatch }, traderId) {
+            try {
+                await ProfileService.followUser(traderId);
+                commit('SET_IS_FOLLOWING', true);
+                // Optionally, update counts or fetch updated data
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: "success",
+                    title: "Followed trader successfully!"
+                });
+                // Refresh suggested traders
+                dispatch('fetchSuggestedTraders');
+            } catch (error) {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    width: "400px",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    icon: "error",
+                    title: "Error while following trader"
+                });
+                console.error('Error while following trader:', error);
+            }
+        },
         async getUserProfileData({ commit }, { userName = null }) {
             try {
                 const data = await ProfileService.getUserProfileData(userName);
                 commit('SET_PROFILE_DATA', data.userProfile);
+                commit('SET_USER_ONLINE', data.active_status);
                 commit('SET_IS_OWN_PROFILE', data.isOwnProfile);
                 commit('SET_USER_MEDIA', data.userMedia);
                 commit('SET_IS_FOLLOWING', data.isFollowing);
@@ -91,6 +147,8 @@ const userProfileModule = {
                 console.log('Profile data: ', data);
             } catch (error) {
                 console.error('Error fetching profile data:', error);
+            } finally{
+                commit('SET_LOADING', false);
             }
         },
         async followUser({ commit }, { userId, followersCount }) {
@@ -182,9 +240,17 @@ const userProfileModule = {
                 throw error;
             }
         },
-        // Add more actions as needed
     },
     getters: {
+        getSuggestedTraders(state) {
+            return state.suggestedTraders;
+        },
+        isSuggestedTradersLoading(state) {
+            return state.isSuggestedTradersLoading;
+        },
+        getOnlineStatus(state){
+            return state.userOnline;
+        },
         getProfileData(state) {
             return state.userProfileData;
         },
@@ -203,8 +269,8 @@ const userProfileModule = {
         getUserMedia(state) {
             return state.userMedia;
         },
-        isLoading(state) {
-            return state.isLoading;
+        isLoadingProfile(state) {
+            return state.isLoadingProfile;
         },
         getError(state) {
             return state.error;
@@ -214,6 +280,43 @@ const userProfileModule = {
         },
         getProfileImagePath(state) {
             return state.profileImagePath;
+        },
+        // **Access Control Getters**
+        canViewPosts(state, getters) {
+            if (!state.userProfileData) return false;
+            if (getters.getIsOwnProfile) return true;
+            const privacy = state.userProfileData.post_privacy;
+            if (privacy === 'Public') return true;
+            if (privacy === 'Private') return false;
+            // Assuming 'Followers' is the third option
+            return getters.getIsFollowing;
+        },
+        canViewGroups(state, getters) {
+            if (!state.userProfileData) return false;
+            if (getters.getIsOwnProfile) return true;
+            const privacy = state.userProfileData.groups_privacy;
+            if (privacy === 'Everyone') return true;
+            if (privacy === 'Private') return false;
+            // Assuming 'Followers' is the third option
+            return getters.getIsFollowing;
+        },
+        canViewWatchlists(state, getters) {
+            if (!state.userProfileData) return false;
+            if (getters.getIsOwnProfile) return true;
+            const privacy = state.userProfileData.watchlists_privacy;
+            if (privacy === 'Everyone') return true;
+            if (privacy === 'Private') return false;
+            // Assuming 'Followers' is the third option
+            return getters.getIsFollowing;
+        },
+        canViewPhotos(state, getters) {
+            if (!state.userProfileData) return false;
+            if (getters.getIsOwnProfile) return true;
+            const privacy = state.userProfileData.photos_privacy;
+            if (privacy === 'Everyone') return true;
+            if (privacy === 'Private') return false;
+            // Assuming 'Followers' is the third option
+            return getters.getIsFollowing;
         },
     }
 };

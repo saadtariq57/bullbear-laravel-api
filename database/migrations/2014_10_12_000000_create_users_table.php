@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('linkedin', 100)->nullable();
             $table->string('youtube', 100)->nullable();
             $table->enum('follow_privacy', ['public', 'private'])->default('public');
-            $table->string('post_privacy')->default('ifollow');
+            $table->string('post_privacy')->default('Everyone');
             $table->boolean('showlastseen')->default(true);
             $table->boolean('emailNotification')->default(true);
             $table->text('about')->nullable();

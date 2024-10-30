@@ -24,7 +24,7 @@ class FetchYouTubePlaylist extends Command
             'featured' => env('YOUTUBE_PLAYLIST_ID_FEATURED'),
             'another' => env('YOUTUBE_PLAYLIST_ID_ANOTHER'),
         ];
-        $maxResults = 50;
+        $maxResults = 500;
 
         foreach ($playlists as $type => $playlistId) {
             $this->info("Fetching playlist: {$type} ({$playlistId})");

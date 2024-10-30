@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\DailyNotificationsMailable;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -21,11 +22,12 @@ class NotificationController extends Controller
     public function getNotifications($userId)
     {
         $user = User::findOrFail($userId);
-        $notifications = $user->notifications()->latest()->get();
+        $notifications = $user->notifications()->whereNull('read_at')->latest()->get();
     
         // Transform each notification to match the broadcast data structure
         $transformedNotifications = $notifications->map(function ($notification) {
             $baseData = [
+                'id' => $notification->id,
                 'type' => $notification->data['type'],
                 'url' => $notification->data['url'],
                 'read_at' => $notification->read_at,

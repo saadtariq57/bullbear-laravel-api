@@ -119,8 +119,7 @@
         </div>
       </div>
       <div class="col-lg-4">
-        <Markets />
-        <LatestArticles />
+        <SidebarCalendars v-if="this.contentLoaded"/>
       </div>
     </div>
   </div>
@@ -128,13 +127,11 @@
 
 <script>
 import axios from 'axios';
-import Markets from '../widgets/Markets.vue';
-import LatestArticles from '../widgets/LatestArticles.vue';
+import SidebarCalendars from './SidebarCalendars.vue';
 
 export default {
   components: {
-    LatestArticles,
-    Markets
+    SidebarCalendars,
   },
   data() {
     return {
@@ -155,7 +152,8 @@ export default {
       activeTab: 'today',
       tabNames: ['yesterday', 'today', 'tomorrow', 'thisWeek', 'nextWeek'],
       loadedTabs: new Set(),
-      initialRowCount: 50
+      initialRowCount: 50,
+      contentLoaded: false,
     };
   },
   methods: {
@@ -163,8 +161,7 @@ export default {
       if (this.loadedTabs.has(targetArray)) return;
       
       try {
-        const response = await axios.get(`https://dev.stocks.richtv.io/api/earnings-calendar?startDate=${startDate}&endDate=${endDate}`);
-        console.log(`Fetched data for ${targetArray}:`, response.data);
+        const response = await axios.get(`/api/calendar/earnings?startDate=${startDate}&endDate=${endDate}`);
         this.allEarnings[targetArray] = response.data;
         this.loadedTabs.add(targetArray);
       } catch (error) {
@@ -252,6 +249,7 @@ export default {
   },
   mounted() {
     this.loadTabData(this.activeTab);
+    this.contentLoaded = true;
   }
 };
 </script>

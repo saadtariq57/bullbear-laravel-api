@@ -22,6 +22,7 @@ import { mapState, mapActions } from 'vuex';
 import PostItems from './PostItems.vue';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userFeedModule from '@/stores/userFeedStore';
+import userFeedComment from '@/stores/userFeedCommentStore';
 
 export default {
     name: 'UserFeed',
@@ -51,6 +52,7 @@ export default {
     created() {
         // Register the module
         registerVuexModule('userFeed', userFeedModule);
+        registerVuexModule('userFeedComment', userFeedComment);
         this.moduleRegistered = true;
 
         // Fetch post and initialize

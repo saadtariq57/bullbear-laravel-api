@@ -9,7 +9,7 @@
           <MarketMetrics metricsKey="most_actives" @add-to-watchlist="handleAddToWatchlist" />
         </div>
         <div class="col-xl-4 col-md-6 mb-32">
-          <CryptoMetrics metricsKey="most_visited" />
+          <CryptoMetrics metricsKey="most_visited" @add-to-watchlist="handleAddToWatchlist" />
         </div>
       </div>
     </div>
