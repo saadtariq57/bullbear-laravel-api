@@ -147,7 +147,7 @@ export default {
       tabNames: ['last30Days', 'last7Days', 'yesterday'],
       loadedTabs: new Set(),
       initialRowCount: 50,
-      contentLoaded = false;
+      contentLoaded: false,
     };
   },
   methods: {

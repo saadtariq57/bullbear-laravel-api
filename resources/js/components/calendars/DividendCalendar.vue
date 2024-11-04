@@ -148,7 +148,7 @@ export default {
       tabNames: ['yesterday', 'today', 'tomorrow', 'thisWeek', 'nextWeek'],
       loadedTabs: new Set(),
       initialRowCount: 50,
-      contentLoaded = false;
+      contentLoaded: false,
     };
   },
   methods: {

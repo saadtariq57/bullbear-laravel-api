@@ -153,7 +153,7 @@ export default {
       loadedTabs: new Set(),
       initialRowCount: 50,
       selectedIpoType: 'all',
-      contentLoaded = false;
+      contentLoaded: false,
     };
   },
   methods: {
