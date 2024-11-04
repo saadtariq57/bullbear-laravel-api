@@ -193,6 +193,7 @@ export default {
             title: response.data.title || "Embedded Live Stream",
             src: response.data.embedded_code,
           };
+          this.loadingLive = false;
         } else {
           console.error("No embedded live stream found.");
           this.liveError = true;

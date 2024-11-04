@@ -32,11 +32,11 @@ class InjectSeoMeta
                     'og:description' => 'RichTv offers comprehensive insights into markets, finance, and trading strategies.',
                     'og:type' => 'website',
                     'og:url' => url('/'),
-                    'og:image' => url('/build/images/logo.svg'),
+                    'og:image' => url('/build/images/OG/logo.svg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => 'Welcome to RichTv',
                     'twitter:description' => 'RichTv offers comprehensive insights into markets, finance, and trading strategies.',
-                    'twitter:image' => url('/build/images/logo.svg'),
+                    'twitter:image' => url('/build/images/OG/richtv.jpg'),
                 ];
                 break;
 
@@ -49,11 +49,11 @@ class InjectSeoMeta
                     'og:description' => 'Learn more about RichTv.',
                     'og:type' => 'website',
                     'og:url' => url('/about-us'),
-                    'og:image' => url('/build/images/about-us-image.jpg'),
+                    'og:image' => url('/build/images/OG/about-us-image.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => 'About Us | RichTv',
                     'twitter:description' => 'Learn more about RichTv.',
-                    'twitter:image' => url('/build/images/about-us-image.jpg'),
+                    'twitter:image' => url('/build/images/OG/about-us-image.jpg'),
                 ];
                 break;
 
@@ -66,11 +66,27 @@ class InjectSeoMeta
                     'og:description' => 'Read our privacy policy.',
                     'og:type' => 'website',
                     'og:url' => url('/privacy-policy'),
-                    'og:image' => url('/build/images/privacy-policy-image.jpg'),
+                    'og:image' => url('/build/images/OG/richtv.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => 'Privacy Policy | RichTv',
                     'twitter:description' => 'Read our privacy policy.',
-                    'twitter:image' => url('/build/images/privacy-policy-image.jpg'),
+                    'twitter:image' => url('/build/images/OG/richtv.jpg'),
+                ];
+                break;
+            case 'terms-of-use':
+                $meta = [
+                    'title' => 'Terms Of Use | RichTv',
+                    'description' => 'Read our privacy policy.',
+                    'keywords' => 'Privacy Policy, RichTv Privacy',
+                    'og:title' => 'Privacy Policy | RichTv',
+                    'og:description' => 'Read our privacy policy.',
+                    'og:type' => 'website',
+                    'og:url' => url('/privacy-policy'),
+                    'og:image' => url('/build/images/OG/richtv.jpg'),
+                    'twitter:card' => 'summary_large_image',
+                    'twitter:title' => 'Privacy Policy | RichTv',
+                    'twitter:description' => 'Read our privacy policy.',
+                    'twitter:image' => url('/build/images/OG/richtv.jpg'),
                 ];
                 break;
 
@@ -83,11 +99,11 @@ class InjectSeoMeta
                     'og:description' => 'Get in touch with RichTv.',
                     'og:type' => 'website',
                     'og:url' => url('/contact-us'),
-                    'og:image' => url('/build/images/contact-us-image.jpg'),
+                    'og:image' => url('/build/images/OG/richtv.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => 'Contact Us | RichTv',
                     'twitter:description' => 'Get in touch with RichTv.',
-                    'twitter:image' => url('/build/images/contact-us-image.jpg'),
+                    'twitter:image' => url('/build/images/OG/richtv.jpg'),
                 ];
                 break;
 
@@ -100,11 +116,11 @@ class InjectSeoMeta
                         'og:description' => 'Prepare for your trading exams with RichTv\'s comprehensive resources and guidance.',
                         'og:type' => 'website',
                         'og:url' => url('/exams'),
-                        'og:image' => url('/build/images/exams-image.jpg'),
+                        'og:image' => url('/build/images/OG/exams-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Exams | RichTv',
                         'twitter:description' => 'Prepare for your trading exams with RichTv\'s comprehensive resources and guidance.',
-                        'twitter:image' => url('/build/images/exams-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/exams-image.jpg'),
                     ];
                     break;
 
@@ -117,11 +133,11 @@ class InjectSeoMeta
                         'og:description' => 'Find the best stocks to invest in with RichTv\'s advanced stock screener tool.',
                         'og:type' => 'website',
                         'og:url' => url('/stocks-screener'),
-                        'og:image' => url('/build/images/stocks-screener-image.jpg'),
+                        'og:image' => url('/build/images/OG/stocks-screener-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Stock Screener | RichTv',
                         'twitter:description' => 'Find the best stocks to invest in with RichTv\'s advanced stock screener tool.',
-                        'twitter:image' => url('/build/images/stocks-screener-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/stocks-screener-image.jpg'),
                     ];
                     break;
 
@@ -134,11 +150,11 @@ class InjectSeoMeta
                         'og:description' => 'Gain personalized insights and access exclusive content with RichTv\'s Personal Access.',
                         'og:type' => 'website',
                         'og:url' => url('/personal-access'),
-                        'og:image' => url('/build/images/personal-access-image.jpg'),
+                        'og:image' => url('/build/images/OG/personal-access-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Personal Access | RichTv',
                         'twitter:description' => 'Gain personalized insights and access exclusive content with RichTv\'s Personal Access.',
-                        'twitter:image' => url('/build/images/personal-access-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/personal-access-image.jpg'),
                     ];
                     break;
 
@@ -151,11 +167,11 @@ class InjectSeoMeta
                         'og:description' => 'Discover top investment picks curated by RichTv\'s experts in Pro Picks.',
                         'og:type' => 'website',
                         'og:url' => url('/pro-picks'),
-                        'og:image' => url('/build/images/pro-picks-image.jpg'),
+                        'og:image' => url('/build/images/OG/pro-picks-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Pro Picks | RichTv',
                         'twitter:description' => 'Discover top investment picks curated by RichTv\'s experts in Pro Picks.',
-                        'twitter:image' => url('/build/images/pro-picks-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/pro-picks-image.jpg'),
                     ];
                     break;
 
@@ -168,11 +184,11 @@ class InjectSeoMeta
                         'og:description' => 'Stay updated with RichTv\'s Economic Calendar featuring key market events and indicators.',
                         'og:type' => 'website',
                         'og:url' => url('/economic-calendar'),
-                        'og:image' => url('/build/images/economic-calendar-image.jpg'),
+                        'og:image' => url('/build/images/OG/economic-calendar-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Economic Calendar | RichTv',
                         'twitter:description' => 'Stay updated with RichTv\'s Economic Calendar featuring key market events and indicators.',
-                        'twitter:image' => url('/build/images/economic-calendar-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/economic-calendar-image.jpg'),
                     ];
                     break;
 
@@ -185,11 +201,11 @@ class InjectSeoMeta
                         'og:description' => 'Track upcoming earnings reports with RichTv\'s comprehensive Earnings Calendar.',
                         'og:type' => 'website',
                         'og:url' => url('/earning-calendar'),
-                        'og:image' => url('/build/images/earning-calendar-image.jpg'),
+                        'og:image' => url('/build/images/OG/earning-calendar-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Earnings Calendar | RichTv',
                         'twitter:description' => 'Track upcoming earnings reports with RichTv\'s comprehensive Earnings Calendar.',
-                        'twitter:image' => url('/build/images/earning-calendar-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/earning-calendar-image.jpg'),
                     ];
                     break;
 
@@ -202,11 +218,11 @@ class InjectSeoMeta
                         'og:description' => 'Stay informed about upcoming dividend payouts with RichTv\'s Dividend Calendar.',
                         'og:type' => 'website',
                         'og:url' => url('/dividend-calendar'),
-                        'og:image' => url('/build/images/dividend-calendar-image.jpg'),
+                        'og:image' => url('/build/images/OG/dividend-calendar-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Dividend Calendar | RichTv',
                         'twitter:description' => 'Stay informed about upcoming dividend payouts with RichTv\'s Dividend Calendar.',
-                        'twitter:image' => url('/build/images/dividend-calendar-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/dividend-calendar-image.jpg'),
                     ];
                     break;
 
@@ -219,11 +235,11 @@ class InjectSeoMeta
                         'og:description' => 'Monitor stock splits with ease using RichTv\'s detailed Splits Calendar.',
                         'og:type' => 'website',
                         'og:url' => url('/splits-calendar'),
-                        'og:image' => url('/build/images/splits-calendar-image.jpg'),
+                        'og:image' => url('/build/images/OG/splits-calendar-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Splits Calendar | RichTv',
                         'twitter:description' => 'Monitor stock splits with ease using RichTv\'s detailed Splits Calendar.',
-                        'twitter:image' => url('/build/images/splits-calendar-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/splits-calendar-image.jpg'),
                     ];
                     break;
 
@@ -236,11 +252,11 @@ class InjectSeoMeta
                         'og:description' => 'Keep track of upcoming Initial Public Offerings with RichTv\'s IPO Calendar.',
                         'og:type' => 'website',
                         'og:url' => url('/ipo-calendar'),
-                        'og:image' => url('/build/images/ipo-calendar-image.jpg'),
+                        'og:image' => url('/build/images/OG/ipo-calendar-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'IPO Calendar | RichTv',
                         'twitter:description' => 'Keep track of upcoming Initial Public Offerings with RichTv\'s IPO Calendar.',
-                        'twitter:image' => url('/build/images/ipo-calendar-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/ipo-calendar-image.jpg'),
                     ];
                     break;
 
@@ -253,11 +269,11 @@ class InjectSeoMeta
                         'og:description' => 'Join RichTv\'s vibrant chat rooms to discuss market trends and strategies with fellow traders.',
                         'og:type' => 'website',
                         'og:url' => url('/groups'),
-                        'og:image' => url('/build/images/chat-rooms-image.jpg'),
+                        'og:image' => url('/build/images/OG/chat-rooms-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Chat Rooms | RichTv',
                         'twitter:description' => 'Join RichTv\'s vibrant chat rooms to discuss market trends and strategies with fellow traders.',
-                        'twitter:image' => url('/build/images/chat-rooms-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/chat-rooms-image.jpg'),
                     ];
                     break;
 
@@ -270,11 +286,11 @@ class InjectSeoMeta
                         'og:description' => 'Understand financial terms and jargon with RichTv\'s comprehensive Glossary.',
                         'og:type' => 'website',
                         'og:url' => url('/glossary'),
-                        'og:image' => url('/build/images/glossary-image.jpg'),
+                        'og:image' => url('/build/images/OG/glossary-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Glossary | RichTv',
                         'twitter:description' => 'Understand financial terms and jargon with RichTv\'s comprehensive Glossary.',
-                        'twitter:image' => url('/build/images/glossary-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/glossary-image.jpg'),
                     ];
                     break;
 
@@ -287,11 +303,11 @@ class InjectSeoMeta
                         'og:description' => 'Experience real-time market analysis and live trading sessions with RichTv Live.',
                         'og:type' => 'website',
                         'og:url' => url('/richtv-live'),
-                        'og:image' => url('/build/images/richtv-live-image.jpg'),
+                        'og:image' => url('/build/images/OG/richtv-live-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'RichTv Live | RichTv',
                         'twitter:description' => 'Experience real-time market analysis and live trading sessions with RichTv Live.',
-                        'twitter:image' => url('/build/images/richtv-live-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/richtv-live-image.jpg'),
                     ];
                     break;
 
@@ -304,11 +320,11 @@ class InjectSeoMeta
                         'og:description' => 'Gain insights from top CEOs through exclusive interviews on RichTv.',
                         'og:type' => 'website',
                         'og:url' => url('/ceo-interviews'),
-                        'og:image' => url('/build/images/ceo-interviews-image.jpg'),
+                        'og:image' => url('/build/images/OG/ceo-interviews-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'CEO Interviews | RichTv',
                         'twitter:description' => 'Gain insights from top CEOs through exclusive interviews on RichTv.',
-                        'twitter:image' => url('/build/images/ceo-interviews-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/ceo-interviews-image.jpg'),
                     ];
                     break;
 
@@ -321,11 +337,11 @@ class InjectSeoMeta
                         'og:description' => 'Monitor your favorite stocks and track their performance with RichTv\'s Watchlist.',
                         'og:type' => 'website',
                         'og:url' => url('/watchlist'),
-                        'og:image' => url('/build/images/watchlist-image.jpg'),
+                        'og:image' => url('/build/images/OG/watchlist-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Watchlist | RichTv',
                         'twitter:description' => 'Monitor your favorite stocks and track their performance with RichTv\'s Watchlist.',
-                        'twitter:image' => url('/build/images/watchlist-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/watchlist-image.jpg'),
                     ];
                     break;
 
@@ -338,11 +354,11 @@ class InjectSeoMeta
                         'og:description' => 'Enhance your trading skills with RichTv\'s comprehensive Trading Education programs.',
                         'og:type' => 'website',
                         'og:url' => url('/trading-education'),
-                        'og:image' => url('/build/images/trading-education-image.jpg'),
+                        'og:image' => url('/build/images/OG/trading-education-image.jpg'),
                         'twitter:card' => 'summary_large_image',
                         'twitter:title' => 'Trading Education | RichTv',
                         'twitter:description' => 'Enhance your trading skills with RichTv\'s comprehensive Trading Education programs.',
-                        'twitter:image' => url('/build/images/trading-education-image.jpg'),
+                        'twitter:image' => url('/build/images/OG/trading-education-image.jpg'),
                     ];
                     break;
         }
@@ -366,11 +382,11 @@ class InjectSeoMeta
                     'og:description' => "Get the latest stock quote, profile, and earnings information for {$symbol} on RichTv.",
                     'og:type' => 'website',
                     'og:url' => url("/quotes/{$matches[1]}"),
-                    'og:image' => url("/build/images/quotes/quote.jpg"),
+                    'og:image' => url("/build/images/OG/quote-image.jpg"),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "{$symbol} Stock Quote | RichTv",
                     'twitter:description' => "Get the latest stock quote, profile, and earnings information for {$symbol} on RichTv.",
-                    'twitter:image' => url("/build/images/quotes/{$matches[1]}-image.jpg"), // Ensure images exist
+                    'twitter:image' => url("/build/images/OG/quote-image.jpg"),
                 ];
             }
             // Handle Blog Category and Posts
@@ -384,11 +400,11 @@ class InjectSeoMeta
                     'og:description' => "Explore articles and insights in the $categorySlug category.",
                     'og:type' => 'website',
                     'og:url' => url("/blog/{$matches[1]}"),
-                    'og:image' => url('/build/images/blog-category.jpg'),
+                    'og:image' => url('/build/images/OG/blog-category.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$categorySlug | RichTv Blog",
                     'twitter:description' => "Explore articles and insights in the $categorySlug category.",
-                    'twitter:image' => url('/build/images/blog-category.jpg'),
+                    'twitter:image' => url('/build/images/OG/blog-category.jpg'),
                 ];
             } elseif (preg_match('/^blog\/([^\/]+)\/([^\/]+)\/?$/', $path, $matches)) {
                 $categorySlug = ucfirst(str_replace('-', ' ', $matches[1]));
@@ -401,11 +417,11 @@ class InjectSeoMeta
                     'og:description' => "Read '$postSlug' in the $categorySlug category.",
                     'og:type' => 'article',
                     'og:url' => url("/blog/{$matches[1]}/{$matches[2]}"),
-                    'og:image' => url('/build/images/blog-post.jpg'),
+                    'og:image' => url('/build/images/OG/blog-post.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$postSlug | $categorySlug | RichTv Blog",
                     'twitter:description' => "Read '$postSlug' in the $categorySlug category.",
-                    'twitter:image' => url('/build/images/blog-post.jpg'),
+                    'twitter:image' => url('/build/images/OG/blog-post.jpg'),
                 ];
             }
 
@@ -421,11 +437,11 @@ class InjectSeoMeta
                     'og:description' => "Read articles by $authorName on RichTv.",
                     'og:type' => 'profile',
                     'og:url' => url("/author/{$matches[1]}/{$matches[2]}"),
-                    'og:image' => url('/build/images/author-profile.jpg'),
+                    'og:image' => url('/build/images/OG/author-profile.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$authorName | Author at RichTv",
                     'twitter:description' => "Read articles by $authorName on RichTv.",
-                    'twitter:image' => url('/build/images/author-profile.jpg'),
+                    'twitter:image' => url('/build/images/OG/author-profile.jpg'),
                 ];
             }
 
@@ -440,11 +456,11 @@ class InjectSeoMeta
                     'og:description' => "Explore the $category markets with RichTv's comprehensive insights.",
                     'og:type' => 'website',
                     'og:url' => url("/markets/{$matches[1]}"),
-                    'og:image' => url('/build/images/markets-category.jpg'),
+                    'og:image' => url('/build/images/OG/markets-category.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$category Markets | RichTv",
                     'twitter:description' => "Explore the $category markets with RichTv's comprehensive insights.",
-                    'twitter:image' => url('/build/images/markets-category.jpg'),
+                    'twitter:image' => url('/build/images/OG/markets-category.jpg'),
                 ];
             } elseif (preg_match('/^markets\/([^\/]+)\/([^\/]+)\/?$/', $path, $matches)) {
                 $category = ucfirst(str_replace('-', ' ', $matches[1]));
@@ -457,11 +473,11 @@ class InjectSeoMeta
                     'og:description' => "Detailed analysis and insights on $subCategory within $category markets.",
                     'og:type' => 'website',
                     'og:url' => url("/markets/{$matches[1]}/{$matches[2]}"),
-                    'og:image' => url('/build/images/markets-subcategory.jpg'),
+                    'og:image' => url('/build/images/OG/markets-subcategory.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$subCategory in $category Markets | RichTv",
                     'twitter:description' => "Detailed analysis and insights on $subCategory within $category markets.",
-                    'twitter:image' => url('/build/images/markets-subcategory.jpg'),
+                    'twitter:image' => url('/build/images/OG/markets-subcategory.jpg'),
                 ];
             }
 
@@ -477,11 +493,11 @@ class InjectSeoMeta
                     'og:description' => "Read the latest post by $username on RichTv.",
                     'og:type' => 'article',
                     'og:url' => url("/post/{$matches[1]}/{$matches[2]}"),
-                    'og:image' => url('/build/images/post-image.jpg'),
+                    'og:image' => url('/build/images/OG/post-image.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "Post by $username | RichTv",
                     'twitter:description' => "Read the latest post by $username on RichTv.",
-                    'twitter:image' => url('/build/images/post-image.jpg'),
+                    'twitter:image' => url('/build/images/OG/post-image.jpg'),
                 ];
             }
 
@@ -496,11 +512,11 @@ class InjectSeoMeta
                     'og:description' => "View the profile of $userName on RichTv.",
                     'og:type' => 'profile',
                     'og:url' => url("/profile/{$matches[1]}"),
-                    'og:image' => url('/build/images/user-profile.jpg'),
+                    'og:image' => url('/build/images/OG/user-profile.jpg'),
                     'twitter:card' => 'summary_large_image',
                     'twitter:title' => "$userName's Profile | RichTv",
                     'twitter:description' => "View the profile of $userName on RichTv.",
-                    'twitter:image' => url('/build/images/user-profile.jpg'),
+                    'twitter:image' => url('/build/images/OG/user-profile.jpg'),
                 ];
             }
         }
@@ -515,11 +531,11 @@ class InjectSeoMeta
                 'og:description' => 'RichTv provides in-depth analysis and resources on markets, finance, trading strategies, and more.',
                 'og:type' => 'website',
                 'og:url' => url()->current(),
-                'og:image' => url('/build/images/default-og-image.jpg'),
+                'og:image' => url('/build/images/OG/default-og-image.jpg'),
                 'twitter:card' => 'summary_large_image',
                 'twitter:title' => 'RichTv | Your Gateway to Financial Insights',
                 'twitter:description' => 'RichTv provides in-depth analysis and resources on markets, finance, trading strategies, and more.',
-                'twitter:image' => url('/build/images/default-og-image.jpg'),
+                'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
             ];
         }
 
