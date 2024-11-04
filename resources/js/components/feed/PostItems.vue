@@ -1,81 +1,181 @@
 <template>
   <div class="mt-3">
     <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert text-center mb-3">
-      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">New
-        Post
-        Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i></button>
+      <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">
+        New Post Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i>
+      </button>
     </div>
     <div v-if="computedPosts.length > 0">
-      <div ref="scrollContainer" v-for="post in computedPosts" :key="post.id" class="post shadow mb-4 rounded-2">
+      <div
+        ref="scrollContainer"
+        v-for="post in computedPosts"
+        :key="post.id"
+        class="post shadow mb-4 rounded-2"
+      >
         <!-- Post heading section -->
         <div class="post-wrapper">
           <div class="post-heading p-3">
             <div class="d-flex justify-content-between">
               <div class="user-avatar d-flex gap-2 align-items-center">
                 <div class="img">
-                  <img :src="'/uploads/'+post.user.avatar" class="rounded-circle" :alt="post.user.name + ' profile picture'">
+                  <img
+                    :src="'/uploads/' + post.user.avatar"
+                    class="rounded-circle"
+                    :alt="post.user.name + ' profile picture'"
+                  />
                 </div>
                 <div class="user-info text-start">
-                  <a href="" class="text-black fw-bold">{{ post.user.name }}</a>
+                    <a :href="`/profile/${post.user.name}`" class="text-black fw-bold">{{ post.user.name }}</a>
+                    <a v-if="post.group_name && !post.originalPost" :href="`/${post.group_id}/${post.group_name}/discussion`" class="text-black fw-bold">
+                    <i class="bi bi-caret-right-fill clr-primary"></i>
+                    <span class="fw-semibold">
+                      {{ formatGroupName(post.group_name) }} 
+                    </span>
+                    </a>
+                  
                   <div class="time">
                     <span>{{ formatDateTime(post.created_at) }}</span>
                   </div>
                 </div>
               </div>
               <!-- Post settings -->
+              <div v-if="post.user.id === userData.id && post.post_type != 'poll'" class="position-relative">
+                <button
+                  class="btn dropdown-toggle"
+                  type="button"
+                  id="postSettingsMenuButton"
+                  @click="toggleDropdown($event)"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="postSettingsMenuButton">
+                  <li>
+                    <button class="dropdown-item" @click="editPost(post)">Edit</button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item text-danger" @click="deletePost(post.id)">Delete</button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
           <!-- Post Content -->
           <div v-if="post.post_text" class="post-description px-3 text-break">
-            <div v-if="post.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
-              :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.colored_post.color_1 + ' 0%, ' + post.colored_post.color_2 + ' 100%)' }">
-              <p :style="{ color: post.colored_post.text_color }" class="px-3 py-2 lh-base">{{ post.post_text }}</p>
+            <div
+              v-if="post.colored_post_id"
+              class="colored-post-text d-flex justify-content-center align-items-center"
+              :style="{
+                backgroundImage:
+                  'linear-gradient(45deg, ' +
+                  post.colored_post.color_1 +
+                  ' 0%, ' +
+                  post.colored_post.color_2 +
+                  ' 100%)'
+              }"
+            >
+              <p
+                :style="{ color: post.colored_post.text_color }"
+                class="px-3 py-2 lh-base"
+              >
+                {{ post.post_text }}
+              </p>
             </div>
             <p v-else>{{ post.post_text }}</p>
           </div>
 
-
           <!-- Post Media -->
-          <div v-if="post.post_type === 'photo'" class="post-file" @post-clicked="handlePostClicked">
-            <div v-if="post.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between px-3">
-              <div v-for="(photo, index) in  post.photos " :key="photo.id"
-                class="multi-post-img-wrapper text-center btn p-0" @click="openPostPreviewModal(post)">
-                <div v-if="post.photos.length > 4" class="position-relative multi-post-img">
-                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
-                  <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
-                    <span class="text-white fs-2 fw-6">+{{ post.photos.length - 4 }}</span>
+          <div
+            v-if="post.post_type === 'photo'"
+            class="post-file"
+            @post-clicked="handlePostClicked"
+          >
+            <div
+              v-if="post.multi_image > 0"
+              class="d-flex flex-wrap row-gap-3 justify-content-between px-3"
+            >
+              <div
+                v-for="(photo, index) in post.photos"
+                :key="photo.id"
+                class="multi-post-img-wrapper text-center btn p-0"
+                @click="openPostPreviewModal(post)"
+              >
+                <div
+                  v-if="post.photos.length > 4"
+                  class="position-relative multi-post-img"
+                >
+                  <img
+                    :src="'/uploads/' + photo.image"
+                    alt="Post image"
+                    class="img-fluid object-fit-cover multi-post-img"
+                  />
+                  <div
+                    v-if="index === 3"
+                    class="overlay-post-gallery d-flex justify-content-center align-items-center"
+                  >
+                    <span class="text-white fs-2 fw-6">
+                      +{{ post.photos.length - 4 }}
+                    </span>
                   </div>
                 </div>
-                <div v-else-if="post.photos.length === 3" class="multi-post-img">
-                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img"
-                    :class="{ 'w-100': index === 2 }">
+                <div
+                  v-else-if="post.photos.length === 3"
+                  class="multi-post-img"
+                >
+                  <img
+                    :src="'/uploads/' + photo.image"
+                    alt="Post image"
+                    class="img-fluid object-fit-cover multi-post-img"
+                    :class="{ 'w-100': index === 2 }"
+                  />
                 </div>
                 <div v-else class="multi-post-img">
-                  <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid object-fit-cover multi-post-img">
+                  <img
+                    :src="'/uploads/' + photo.image"
+                    alt="Post image"
+                    class="img-fluid object-fit-cover multi-post-img"
+                  />
                 </div>
-
               </div>
             </div>
             <div v-else class="text-center single-post-img">
-              <div v-for=" photo  in   post.photos  " :key="photo.id" class="btn p-0" @click="openPostPreviewModal(post)">
-                <!-- Pass the clicked post data -->
-                <img :src="'/uploads/'+`${photo.image}`" alt="Post image" class="img-fluid">
+              <div
+                v-for="photo in post.photos"
+                :key="photo.id"
+                class="btn p-0"
+                @click="openPostPreviewModal(post)"
+              >
+                <img
+                  :src="'/uploads/' + photo.image"
+                  alt="Post image"
+                  class="img-fluid"
+                />
               </div>
             </div>
           </div>
-          <!-- Poll Content -->
 
-          <div v-if="post.post_type === 'poll' && post.poll && post.poll.isActive" class="post-poll">
+          <!-- Poll Content -->
+          <div
+            v-if="post.post_type === 'poll' && post.poll && post.poll.isActive"
+            class="post-poll"
+          >
             <div class="container-fluid px-sm-5">
               <div class="container shadow border border-light-grey py-4">
                 <h5>{{ post.poll.text }}</h5>
                 <div class="py-4">
                   <!-- Display options if voting time is active and the user hasn't voted yet -->
                   <div v-if="!post.poll.userVoted">
-                    <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
-                      <button @click="submitVote(post.poll.id, option.id)"
-                        class="w-100 btn rounded-5 border-btn border-2 fw-6">
+                    <div
+                      v-for="option in post.poll.options"
+                      :key="option.id"
+                      class="mb-2"
+                    >
+                      <button
+                        @click="submitVote(post.poll.id, option.id)"
+                        class="w-100 btn rounded-5 border-btn border-2 fw-6"
+                      >
                         {{ option.option_text }}
                       </button>
                     </div>
@@ -83,10 +183,23 @@
 
                   <!-- Display results if the user has voted or the voting time has expired -->
                   <div v-else-if="post.poll.isActive">
-                    <div v-for="option in post.poll.options" :key="option.id" class="mb-2">
+                    <div
+                      v-for="option in post.poll.options"
+                      :key="option.id"
+                      class="mb-2"
+                    >
                       <div class="poll-result">
-                        <div class="poll-meter-container rounded-2 d-flex justify-content-between align-items-center p-2"
-                          :style="{ 'background': 'linear-gradient(to right, #8c8c8c33 ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%, transparent ' + calculatePercentage(option.votes, post.poll.totalVotes) + '%)' }">
+                        <div
+                          class="poll-meter-container rounded-2 d-flex justify-content-between align-items-center p-2"
+                          :style="{
+                            background:
+                              'linear-gradient(to right, #8c8c8c33 ' +
+                              calculatePercentage(option.votes, post.poll.totalVotes) +
+                              '%, transparent ' +
+                              calculatePercentage(option.votes, post.poll.totalVotes) +
+                              '%)'
+                          }"
+                        >
                           <div class="poll-option-text">
                             {{ option.option_text }}
                           </div>
@@ -99,101 +212,371 @@
                   </div>
                   <div class="text-secondary">
                     Total votes: {{ post.poll.totalVotes }} - Time left: {{ post.poll.timeLeft }}
-                    <button v-if="post.poll.userVoted" @click="undoVote(post.poll.id)"
-                      class="btn undo-vote-btn ps-2 fw-bold">Undo
-                      Vote</button>
+                    <button
+                      v-if="post.poll.userVoted"
+                      @click="undoVote(post.poll.id)"
+                      class="btn undo-vote-btn ps-2 fw-bold"
+                    >
+                      Undo Vote
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- link Media -->
+
+          <!-- Link Media -->
           <div v-if="post.post_type === 'link'" class="link-file">
             <a :href="post.post_link" target="_blank">
-              <img :src="'/uploads/'+`${post.post_link_image}`" alt="Post image" class="img-fluid w-100">
+              <img
+                :src="'/uploads/' + post.post_link_image"
+                alt="Post image"
+                class="img-fluid w-100"
+              />
               <div class="link-post-details px-3 pt-3">
                 <h3 class="link-title fs-5">{{ post.post_link_title }}</h3>
                 <span class="Blue fs-12">{{ post.post_link }}</span>
               </div>
             </a>
           </div>
+          <!-- Shared Post Preview -->
+          <div v-if="post.originalPost" class="shared-post-preview px-3 py-2 mx-3 my-2 border-top border-secondary-subtle">
+            <div class="d-flex align-items-center mb-2">
+              <img
+                :src="'/uploads/' + post.originalPost.user.avatar"
+                class="rounded-circle me-2"
+                width="40"
+                height="40"
+                :alt="post.originalPost.user.name + ' avatar'"
+              />
+              <div class="shared-post-info">
+                <a :href="`/profile/${post.originalPost.user.name}`">
+                <span class="fw-semibold">
+                  {{ post.originalPost.user.name }}
+                </span>
+                </a>
+                <a v-if="post.originalPost.group_name" :href="`/${post.originalPost.group_id}/${post.originalPost.group_name}/discussion`">
+                <i class="bi bi-caret-right-fill clr-primary"></i>
+                <span class="fw-semibold">
+                  {{ formatGroupName(post.originalPost.group_name) }} 
+                </span>
+                </a>
+                <span class="text-muted ms-2">{{ formatDateTime(post.originalPost.created_at) }}</span>
+              </div>
+              <FollowButton
+                v-if="!isOwnProfile(post.originalPost.user_id)"
+                :userId="post.originalPost.user.id"
+                :initialIsFollowing="isFollowing(post.originalPost.user.id)"
+                :initialFollowersCount="this.userData.followers_count"
+                :userName="post.originalPost.user.name"
+                class="ms-auto"
+              />
+              <JoinGroupButton
+                v-else-if="isGroupPost(post.originalPost)"
+                :groupId="post.originalPost.group_id"
+                :groupName="post.originalPost.group_name"
+                :groupAvatar="post.originalPost.group_avatar || null"
+                :createdAt="post.originalPost.created_at || null"
+                :requestPending="isRequestPending(post.originalPost.group_id)"
+                :joined="isJoined(post.originalPost.group_id)"
+                class="ms-auto"
+              />
+            </div>
+            <div class="shared-post-content">
+              <!-- Render based on shared post type -->
+              <template v-if="post.originalPost.post_type === 'text'">
+                <div v-if="post.originalPost.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
+                  :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
+                  <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
+                    {{ post.originalPost.post_text }}
+                  </p>
+                </div>
+                <p v-else>{{ post.originalPost.post_text }}</p>
+              </template>
+
+              <template v-else-if="post.originalPost.post_type === 'photo'">
+                <div class="post-file" @click="openPostPreviewModal(post.originalPost)">
+                  <div v-if="post.originalPost.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between">
+                    <div
+                      v-for="(photo, index) in post.originalPost.photos"
+                      :key="photo.id"
+                      class="multi-post-img-wrapper text-center btn p-0"
+                      @click.stop="openPostPreviewModal(post.originalPost)"
+                    >
+                      <div v-if="post.originalPost.photos.length > 4" class="position-relative multi-post-img">
+                        <img
+                          :src="'/uploads/' + photo.image"
+                          alt="Post image"
+                          class="img-fluid object-fit-cover multi-post-img"
+                        />
+                        <div v-if="index === 3" class="overlay-post-gallery d-flex justify-content-center align-items-center">
+                          <span class="text-white fs-2 fw-6">+{{ post.originalPost.photos.length - 4 }}</span>
+                        </div>
+                      </div>
+                      <div v-else-if="post.originalPost.photos.length === 3" class="multi-post-img">
+                        <img
+                          :src="'/uploads/' + photo.image"
+                          alt="Post image"
+                          class="img-fluid object-fit-cover multi-post-img"
+                          :class="{ 'w-100': index === 2 }"
+                        />
+                      </div>
+                      <div v-else class="multi-post-img">
+                        <img
+                          :src="'/uploads/' + photo.image"
+                          alt="Post image"
+                          class="img-fluid object-fit-cover multi-post-img"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else class="text-center single-post-img">
+                    <div
+                      v-for="photo in post.originalPost.photos"
+                      :key="photo.id"
+                      class="btn p-0"
+                      @click.stop="openPostPreviewModal(post.originalPost)"
+                    >
+                      <img
+                        :src="'/uploads/' + photo.image"
+                        alt="Post image"
+                        class="img-fluid"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <template v-else-if="post.originalPost.post_type === 'poll'">
+                <div class="post-poll">
+                  <div class="container-fluid px-sm-5 py-2">
+                    <div class="container shadow border border-light-grey py-4">
+                      <h5>{{ post.originalPost.poll.text }}</h5>
+                      <div class="py-4">
+                        <!-- Display options if voting time is active and the user hasn't voted yet -->
+                        <div v-if="!post.originalPost.poll.userVoted">
+                          <div
+                            v-for="option in post.originalPost.poll.options"
+                            :key="option.id"
+                            class="mb-2"
+                          >
+                            <button
+                              @click="submitVote(post.originalPost.poll.id, option.id)"
+                              class="w-100 btn rounded-5 border-btn border-2 fw-6"
+                            >
+                              {{ option.option_text }}
+                            </button>
+                          </div>
+                        </div>
+
+                        <!-- Display results if the user has voted or the voting time has expired -->
+                        <div v-else-if="post.originalPost.poll.isActive">
+                          <div
+                            v-for="option in post.originalPost.poll.options"
+                            :key="option.id"
+                            class="mb-2"
+                          >
+                            <div class="poll-result">
+                              <div
+                                class="poll-meter-container rounded-2 d-flex justify-content-between align-items-center p-2"
+                                :style="{
+                                  background: 'linear-gradient(to right, #8c8c8c33 ' +
+                                    calculatePercentage(option.votes, post.originalPost.poll.totalVotes) +
+                                    '%, transparent ' +
+                                    calculatePercentage(option.votes, post.originalPost.poll.totalVotes) +
+                                    '%)'
+                                }"
+                              >
+                                <div class="poll-option-text">
+                                  {{ option.option_text }}
+                                </div>
+                                <div class="poll-percentage t-black t-bold t-14">
+                                  {{ calculatePercentage(option.votes, post.originalPost.poll.totalVotes) }}%
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-secondary">
+                          Total votes: {{ post.originalPost.poll.totalVotes }} - Time left: {{ post.originalPost.poll.timeLeft }}
+                          <button
+                            v-if="post.originalPost.poll.userVoted"
+                            @click="undoVote(post.originalPost.poll.id)"
+                            class="btn undo-vote-btn ps-2 fw-bold"
+                          >
+                            Undo Vote
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <template v-else-if="post.originalPost.post_type === 'link'">
+                <div class="link-file">
+                  <a :href="post.originalPost.post_link" target="_blank">
+                    <img
+                      :src="'/uploads/' + post.originalPost.post_link_image"
+                      alt="Post image"
+                      class="img-fluid w-100"
+                    />
+                    <div class="link-post-details px-3 pt-3">
+                      <h3 class="link-title fs-5">{{ post.originalPost.post_link_title }}</h3>
+                      <span class="Blue fs-12">{{ post.originalPost.post_link }}</span>
+                    </div>
+                  </a>
+                </div>
+              </template>
+            </div>
+          </div>
+          <!-- End of Shared Post Preview -->
           <!-- Interaction buttons and Like/Comment counts -->
           <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
             <div class="like-count">
               <!-- Reaction Post trigger modal -->
               <div class="reaction-icons">
-                <button @click="handleShowReactionsPost(post.id, post.organizedReactions)" class="btn">
-                  <span v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
-                    :key="index">
-                    <img :src="`/${reactionDetail.details[0].reactionImage}`" class="reaction-icon"> {{
-                      reactionDetail.count }}
-                    <span v-if="Object.keys(post.organizedReactions).length > 3">+{{
-                      Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
+                <button
+                  @click="handleShowReactionsPost(post.id, post.organizedReactions)"
+                  class="btn"
+                >
+                  <span
+                    v-for="(reactionDetail, index) in Object.values(post.organizedReactions).slice(0, 3)"
+                    :key="index"
+                  >
+                    <img
+                      :src="`/${reactionDetail.details[0].reactionImage}`"
+                      class="reaction-icon"
+                    />{{ reactionDetail.count }}
+                    <span v-if="Object.keys(post.organizedReactions).length > 3">
+                      +{{ Object.values(post.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}
+                    </span>
                   </span>
                 </button>
               </div>
             </div>
             <div class="comment-count">
-              <button @click="toggleComments(post.id, userData.id)" class="btn btn-feed-hover border-0">
+              <button
+                @click="toggleComments(post.id, userData.id)"
+                class="btn btn-feed-hover border-0"
+              >
                 <i class="bi bi-chat pe-sm-2 pe-1"></i> {{ post.comments_count }} comments
               </button>
             </div>
           </div>
           <div class="row post-reach pb-2 px-sm-4">
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
-              @mouseover="onReactionHover(post.id)" @mouseleave="hideReactionsForPost(post.id)"
-              @click="handleReaction(post.id, 1)">
+            <button
+              type="button"
+              class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
+              @mouseover="onReactionHover(post.id)"
+              @mouseleave="hideReactionsForPost(post.id)"
+              @click="handleReaction(post.id, 1)"
+            >
               <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
-              <i v-if="getReactionName(post.userReaction) == 'Like'" class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"></i>
+              <i
+                v-if="getReactionName(post.userReaction) === 'Like'"
+                class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"
+              ></i>
               <span :class="getReactionName(post.userReaction)">
                 {{ getReactionName(post.userReaction) }}
               </span>
-              <div v-if="showReactionsForPost[post.id]" class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                  @click.stop="handleReaction(post.id, reactionType.id)">
-                  <img :src="`/${reactionType.icon}`" class="reaction-icons-img">
+              <div
+                v-if="showReactionsForPost[post.id]"
+                class="reaction-icons-wrapper position-absolute d-flex gap-1"
+              >
+                <span
+                  v-for="reactionType in reactionTypes"
+                  :key="reactionType.id"
+                  @click.stop="handleReaction(post.id, reactionType.id)"
+                >
+                  <img
+                    :src="`/${reactionType.icon}`"
+                    class="reaction-icons-img"
+                  />
                 </span>
               </div>
             </button>
-            <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
-              @click="toggleComments(post.id, userData.id)"><i
-                class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span></button>
+            <button
+              type="button"
+              class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+              @click="toggleComments(post.id, userData.id)"
+            >
+              <i class="bi bi-chat pe-sm-2 pe-1"></i><span>Comment</span>
+            </button>
             <div class="btn-group col-4">
-              <button type="button" class="btn fs-5 btn-feed-hover border-0 px-2 dropdown-toggle"
-                @click="toggleDropdown($event)" data-bs-toggle="dropdown" data-bs-display="static"
-                aria-expanded="false"><i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span></button>
+              <button
+                type="button"
+                class="btn fs-5 btn-feed-hover border-0 px-2 dropdown-toggle"
+                @click="toggleDropdown($event)"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-expanded="false"
+              >
+                <i class="bi bi-share pe-sm-2 pe-1"></i><span>Share</span>
+              </button>
               <ul class="dropdown-menu dropdown-menu-end z-1">
-                <li><button class="dropdown-item fw-5" @click="triggerPostModal(post)"><i
-                      class="bi bi-pencil-square me-2"></i>Share to Feed </button></li>
-                <li><button class="dropdown-item fw-5"><i class="bi bi-twitter-x me-2"></i>Share to Twitter</button></li>
-                <li><button class="dropdown-item fw-5"><i class="bi bi-whatsapp me-2"></i>Send in WhatsApp</button></li>
-                <li><button class="dropdown-item fw-5"><i class="bi bi-telegram me-2"></i>Send in Telegram</button></li>
-                <li><button class="dropdown-item fw-5"><i class="bi bi-people-fill me-2"></i>Share to a group</button>
+                <li>
+                  <button class="dropdown-item fw-5" @click="triggerPostModal(post)">
+                    <i class="bi bi-pencil-square me-2"></i>Share to Feed
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item fw-5" @click="openShareToGroupModal(post)">
+                    <i class="bi bi-people-fill me-2"></i>Share to Group
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item fw-5" @click="shareToExternal('twitter', post)">
+                    <i class="bi bi-twitter me-2"></i>Share to Twitter
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item fw-5" @click="shareToExternal('whatsapp', post)">
+                    <i class="bi bi-whatsapp me-2"></i>Send in WhatsApp
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item fw-5" @click="shareToExternal('telegram', post)">
+                    <i class="bi bi-telegram me-2"></i>Send in Telegram
+                  </button>
                 </li>
               </ul>
             </div>
           </div>
-
+          <ShareToGroupModal
+            ref="shareToGroupModal"
+            v-if="shareToGroupPost"
+            :post="shareToGroupPost"
+            @share-post="handlePostShare"
+            @modal-mounted="handleShareModalMounted"
+            @close-modal="handleShareModalClosed"
+          />
           <!-- Comments Section -->
-          <PostComment v-if="visibleCommentsFlags[post.id]" :postId="post.id" :reactionTypes="reactionTypes"
-            @show-reactions="handleShowReactions" @comment-submitted="updateCommentsCount($event)" @comment-deleted="updateCommentsCount($event)" />
+          <PostComment
+            v-if="visibleCommentsFlags[post.id]"
+            :postId="post.id"
+            :reactionTypes="reactionTypes"
+            @show-reactions="handleShowReactions"
+            @comment-submitted="updateCommentsCount($event)"
+            @comment-deleted="updateCommentsCount($event)"
+          />
         </div>
       </div>
       <!-- Loading Indicator for More Posts -->
       <div v-if="isFetchingMore" class="text-center my-4">
         <span>Loading more posts...</span>
-        <!-- Optional: Add a spinner for better UX -->
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      
+
       <!-- Optional: No More Posts Message -->
       <div v-else-if="!hasMorePosts" class="text-center my-4">
         <span>No more posts to load.</span>
       </div>
     </div>
     <div v-else-if="loadingComputedPosts">
+      <!-- Skeleton Loaders (Existing) -->
       <div class="post-wrapper shadow mb-3">
         <div class="post-heading p-3">
           <div class="d-flex justify-content-between">
@@ -221,7 +604,6 @@
 
         <div class="post-file mt-3">
           <Skeletor height="300px" width="100%" />
-
         </div>
         <!-- Interaction buttons and Like/Comment counts -->
         <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
@@ -236,17 +618,25 @@
           </div>
         </div>
         <div class="row post-reach pb-2 px-sm-4 mt-2">
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
         </div>
-
       </div>
       <div class="post-wrapper shadow mb-3">
         <div class="post-heading p-3">
@@ -275,7 +665,6 @@
 
         <div class="post-file mt-3">
           <Skeletor height="300px" width="100%" />
-
         </div>
         <!-- Interaction buttons and Like/Comment counts -->
         <div class="like-comment-count d-flex justify-content-between p-3 align-items-center">
@@ -290,39 +679,59 @@
           </div>
         </div>
         <div class="row post-reach pb-2 px-sm-4 mt-2">
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 position-relative col-4">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
-          <button type="button" class="btn fs-5 btn-feed-hover border-0 col-4 px-2">
+          <button
+            type="button"
+            class="btn fs-5 btn-feed-hover border-0 col-4 px-2"
+          >
             <Skeletor height="30px" width="100%" />
           </button>
         </div>
-
       </div>
     </div>
     <div v-else class="d-flex justify-content-center align-items-center no-posts-wrapper">
       <div>
         <div
-          class="mx-auto border border-2 rounded-circle no-posts-icon d-flex justify-content-center align-items-center my-3">
+          class="mx-auto border border-2 rounded-circle no-posts-icon d-flex justify-content-center align-items-center my-3"
+        >
           <i class="bi bi-camera fs-1"></i>
         </div>
         <p class="fs-4 fw-5 no-post-text">No Posts Yet</p>
       </div>
     </div>
-    <ReactionModal ref="reactionModal" v-if="activeReactionData" :activeItem="activeReactionData"
-      @close-modal="activeReactionData = null" @modal-mounted="handleModalMounted" />
-    <PreviewModal ref="previewModal" :previewPost="clickedPost" :reactionTypes="clickedPostReactionTypes"
-      @close-modal="clickedPost = null" @modal-mounted="handlePreviewModalMounted" @comments-count-updated="updateCommentsCount($event)" @comments-count-reupdated="updateCommentsCount($event)"/>
+    <ReactionModal
+      ref="reactionModal"
+      v-if="activeReactionData"
+      :activeItem="activeReactionData"
+      @close-modal="activeReactionData = null"
+      @modal-mounted="handleModalMounted"
+    />
+    <PreviewModal
+      ref="previewModal"
+      :previewPost="clickedPost"
+      :reactionTypes="clickedPostReactionTypes"
+      @close-modal="clickedPost = null"
+      @modal-mounted="handlePreviewModalMounted"
+      @comments-count-updated="updateCommentsCount($event)"
+      @comments-count-reupdated="updateCommentsCount($event)"
+    />
   </div>
 </template>
 
 <script>
 import { formatDateTime } from '../../utils';
-import { Modal } from 'bootstrap';
-import { Dropdown } from 'bootstrap';
+import { Modal, Dropdown } from 'bootstrap';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userFeedModule from '@/stores/userFeedStore';
 import { mapState, mapActions } from 'vuex';
@@ -332,9 +741,13 @@ import CreatePost from './CreatePost.vue';
 import PostComment from './PostComment.vue';
 import ReactionModal from '../utils/ReactionModal.vue';
 import PreviewModal from './PreviewModal.vue';
+import ShareToGroupModal from './ShareToGroupModal.vue';
+import FollowButton from '../profile/FollowButton.vue';
+import JoinGroupButton from '../utils/JoinGroupButton.vue';
+import Swal from 'sweetalert2';
 
 export default {
-  emits: ['show-reactions', 'show-post-modal'],
+  emits: ['show-reactions', 'show-post-modal', 'show-edit-model', 'post-deleted'],
   props: {
     posts: Array,
     reactionTypes: Array,
@@ -342,13 +755,20 @@ export default {
       type: String,
       default: 'feed'
     },
+    groupName: {
+      type: String,
+      default: null
+    },
   },
   components: {
     PostComment,
     ReactionModal,
     PreviewModal,
     CreatePost,
-    Skeletor
+    Skeletor,
+    ShareToGroupModal,
+    FollowButton,
+    JoinGroupButton,
   },
   data() {
     return {
@@ -359,12 +779,19 @@ export default {
       loadingComputedPosts: true,
       moduleRegistered: false,
       debouncedHandleScroll: null,
+      shareToGroupPost: null,
+      shareModalInstance: null,
+      editPostData: null,
     };
   },
   computed: {
     ...mapState(['userData']),
     ...mapState('userFeed', ['fetchedCommentsFlags', 'visibleCommentsFlags', 'hasMorePosts', 'isFetchingMore']),
     computedPosts() {
+      if (this.posts.length === 0) {
+        this.postsLoaded();
+        return [];
+      }
       return this.posts.map(post => {
         let updatedPost = {
           ...post,
@@ -397,6 +824,16 @@ export default {
         });
       }
     },
+    shareToGroupPost(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          if (!this.shareModalInstance) {
+            this.shareModalInstance = new Modal(this.$refs.shareToGroupModal, { backdrop: 'static' });
+          }
+          this.shareModalInstance.show();
+        });
+      }
+    },
     computedPosts: {
       handler() {
         this.postsLoaded();
@@ -417,22 +854,44 @@ export default {
     ...mapActions('userFeedComment', ['fetchCommentsForPost']),
     formatDateTime,
     debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func.apply(this, args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+      let timeout;
+      return function(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func.apply(this, args);
         };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    },
+    editPost(post) {
+      this.editPostData = post;
+      this.triggerPostEditModal(post);
+    },
+    deletePost(postId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`/api/delete-post/${postId}`)
+          .then((response) => {
+            Swal.fire('Deleted!', 'The post has been deleted.', 'success');
+            this.$emit('post-deleted', postId);
+          })
+          .catch((error) => {
+            console.error('Error deleting post:', error);
+            Swal.fire('Error!', 'There was a problem deleting your post.', 'error');
+          });
+        }
+      });
     },
     getReactionName(reactionTypeId) {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
       return reactionType ? reactionType.name : 'Like';
-    },
-    triggerPostModal(post) {
-      this.$emit('show-post-modal', post);
     },
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
@@ -441,6 +900,12 @@ export default {
     },
     postsLoaded() {
       this.loadingComputedPosts = false;
+    },
+    triggerPostModal(post) {
+      this.$emit('show-post-modal', { post: post, groupId: null, groupName: this.groupName });
+    },
+    triggerPostEditModal(post){
+      this.$emit('show-edit-model', post);
     },
     handlePreviewModalMounted(modalElement) {
       if (modalElement) {
@@ -475,15 +940,15 @@ export default {
       this.activeReactionData = { postId, reactionData };
     },
     handleScroll() {
-        const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-        if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
-            this.loadMorePosts();
-        }
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+      if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
+        this.loadMorePosts();
+      }
     },
     async loadMorePosts() {
       if (this.userName) {
         await this.fetchMorePosts({ context: this.context, userName: this.userName });
-      }else{
+      } else {
         await this.fetchMorePosts({ context: this.context });
       }
     },
@@ -492,17 +957,16 @@ export default {
         this.fetchCommentsForPost({ postId, userId });
         this.updateFetchedCommentsFlag(postId);
       } else {
-
         this.updateFetchedCommentsVisibility(postId);
       }
     },
     updateCommentsCount(data) {
-        const postId = data.postId;
-        const increment = data.increment;
-        const postIndex = this.posts.findIndex(post => post.id === postId);
-        if (postIndex !== -1) {
-            this.posts[postIndex].comments_count += increment;
-        }
+      const postId = data.postId;
+      const increment = data.increment;
+      const postIndex = this.posts.findIndex(post => post.id === postId);
+      if (postIndex !== -1) {
+        this.posts[postIndex].comments_count += increment;
+      }
     },
     submitVote(pollId, optionId) {
       this.addVote({ pollId, optionId });
@@ -550,6 +1014,89 @@ export default {
         }
       }
     },
+    handleShareModalMounted(modalElement) { 
+      this.shareModalInstance = new Modal(modalElement, { backdrop: 'static' });
+    },
+
+    openShareToGroupModal(post) {
+      this.shareToGroupPost = post;
+    },
+    handleShareModalClosed(modalElement){
+      this.shareModalInstance.hide();
+    },
+    handlePostShare({ groupId, groupName }) {
+      this.$emit('show-post-modal', {
+        post: this.shareToGroupPost,
+        groupId: groupId,
+        groupName: groupName
+      });
+      this.shareToGroupPost = null;
+    },
+    shareToExternal(platform, post) {
+      const postUrl = encodeURIComponent(`${window.location.origin}/post/${post.user.name}/${post.id}`);
+      const postText = encodeURIComponent(this.shareToGroupPost ? this.shareToGroupPost.post_text : 'Check out this post!');
+      let shareUrl = '';
+
+      switch(platform) {
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?url=${postUrl}&text=${postText}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${postText}%20${postUrl}`;
+          break;
+        case 'telegram':
+          shareUrl = `https://t.me/share/url?url=${postUrl}&text=${postText}`;
+          break;
+        default:
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `Unsupported platform: ${platform}`,
+            toast: true,
+            position: 'top-right',
+            timer: 3000,
+            showConfirmButton: false,
+          });
+          return;
+      }
+
+      window.open(shareUrl, '_blank');
+
+      // Show SweetAlert notification
+      Swal.fire({
+        icon: 'success',
+        title: 'Shared',
+        text: `Post shared to ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`,
+        toast: true,
+        position: 'top-right',
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    },
+    isGroupPost(post) {
+      // Define logic to determine if a post is a group post
+      return post.group_id !== null;
+    },
+    isOwnProfile(userId) {
+      return this.userData.id === userId;
+    },
+    isFollowing(userId) {
+      return this.userData.following.includes(userId);
+    },
+    isJoined(groupId) {
+      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
+      return group && group.status === 'active';
+    },
+    isRequestPending(groupId) {
+      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
+      return group && group.status === 'pending';
+    },
+    formatGroupName(groupName){
+      return groupName
+          .replace(/-/g, ' ')
+          .toLowerCase()
+          .replace(/\b\w/g, char => char.toUpperCase());
+    },
   },
   mounted() {
     this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
@@ -570,7 +1117,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.shared-post-info a{
+  color: #000000;
+}
 .undo-vote-btn {
   padding: 10px 0;
   background: transparent;
@@ -616,7 +1166,7 @@ export default {
 .fade-leave-to
 
 /* .fade-leave-active in <2.1.8 */
-  {
+{
   opacity: 0;
 }
 
@@ -686,7 +1236,6 @@ export default {
 
 .post-reach span.love::before {
   background-image: url('/uploads/icons/love.png');
-
 }
 
 .like {
@@ -844,5 +1393,31 @@ export default {
     height: 15px;
     vertical-align: top;
   }
+}
+
+/* Shared Post Preview Styles */
+.shared-post-preview {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shared-post-preview .shared-post-info {
+  display: flex;
+  align-items: center;
+}
+
+.shared-post-preview .shared-post-info .fw-semibold {
+  margin-right: 0.5rem;
+}
+
+.shared-post-preview .shared-post-content {
+  margin-top: 0.5rem;
+}
+
+/* Follow Button and Join Group Button Alignment */
+.shared-post-preview .follow-button,
+.shared-post-preview .join-group-button {
+  margin-left: auto;
 }
 </style>

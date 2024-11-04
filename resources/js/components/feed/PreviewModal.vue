@@ -1,14 +1,14 @@
 <template>
     <div class="modal fade" ref="previewModal" id="postPreview" tabindex="-1" aria-labelledby="postPreviewLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable m-0 vh-100">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable m-0 vh-100 mw-100">
             <div class="modal-content vh-100 rounded-0 border-0">
                 <!-- <button @click="showData">click</button> -->
                 <div v-if="showPostData" class="row">
                     <div class="col-xl-8 col-md-6 bg-black ps-3 pe-2 vh-100">
                         <div class="modal-header h-100 border-0 rounded-0">
                             <div id="carouselExampleFade" class="carousel slide carousel-fade flex-fill h-100">
-                                <div class="carousel-inner h-100">
+                                <div class="carousel-inner h-100 d-flex align-items-center">
                                     <div class="carousel-item preview-modal-item" v-for="(photo, index) in post.photos"
                                         :key="post.id + index" :class="{ 'active': index === 0 }">
                                         <!-- Add 'active' class conditionally -->

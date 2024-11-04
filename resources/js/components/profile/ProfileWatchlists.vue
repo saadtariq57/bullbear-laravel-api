@@ -62,37 +62,44 @@
                                         have any symbols.</p>
                                     <tbody id="crypto-table-body" v-else>
                                         <tr v-for="symbolData in watchlist.watchlist_symbols" :key="symbolData.id">
-                                            <td class="gray2 sticky-side position-sticky pl-0">
-                                                <a href="/stock-quote/{{ symbolData.symbol.name }}"
-                                                    class="gray d-flex align-items-center gap-2"
-                                                    aria-label="Stock Quote">
-                                                    <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30"> 
-                                                    <div class="lh-sm">
-                                                        <span class="text-color fw-bolder">{{ symbolData.symbol.symbol
-                                                            }}</span><br>
-                                                        <span class="fw-5 text-color text-color">{{ symbolData.symbol.name }}</span>
+                                            <template v-if="symbolData.symbol">
+                                                <td class="gray2 sticky-side position-sticky pl-0">
+                                                    <a :href="`/quotes/${symbolData.symbol.symbol}`"
+                                                        class="gray d-flex align-items-center gap-2"
+                                                        aria-label="Stock Quote">
+                                                        <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30"> 
+                                                        <div class="lh-sm">
+                                                            <span class="text-color fw-bolder">{{ symbolData.symbol.symbol
+                                                                }}</span><br>
+                                                            <span class="fw-5 text-color text-color">{{ symbolData.symbol.name }}</span>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td class="gray lh-sm text-end" id="symbol-price">
+                                                    <div v-if="!symbolData.symbol.quote">
+                                                        <span
+                                                            style="margin-bottom:4px;display:block;width: 50px;text-align:right;">
+                                                            <Skeletor height="15" />
+                                                        </span>
+                                                        <span style="width:50px">
+                                                            <Skeletor height="15" />
+                                                        </span>
                                                     </div>
-                                                </a>
-                                            </td>
-                                            <td class="gray lh-sm text-end" id="symbol-price">
-                                                <div v-if="!symbolData.symbol.quote">
-                                                    <span
-                                                        style="margin-bottom:4px;display:block;width: 50px;text-align:right;">
-                                                        <Skeletor height="15" />
-                                                    </span>
-                                                    <span style="width:50px">
-                                                        <Skeletor height="15" />
-                                                    </span>
-                                                </div>
-                                                <div v-else>
-                                                    {{ symbolData.symbol.quote.price }}
-                                                    <div :class="textChangeClasses(symbolData)">
-                                                        <span>{{ formatNumber(symbolData.symbol.quote.change) }}</span>
-                                                        <span>{{ formatNumber(symbolData.symbol.quote.change_percent)
-                                                            }}</span>
+                                                    <div v-else>
+                                                        {{ symbolData.symbol.quote.price }}
+                                                        <div :class="textChangeClasses(symbolData)">
+                                                            <span>{{ formatNumber(symbolData.symbol.quote.change) }}</span>
+                                                            <span>{{ formatNumber(symbolData.symbol.quote.change_percent)
+                                                                }}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                              <td colspan="2" class="gray2 sticky-side position-sticky pl-0">
+                                                <span class="text-muted">Symbol not available</span>
+                                              </td>
+                                            </template>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -303,7 +310,7 @@ export default {
       });
     }
   },
-  mounted() {
+  /*mounted() {
     this.$watch(
       () => this.userProfileData,
       (newValue, oldValue) => {
@@ -314,7 +321,28 @@ export default {
       }
     );
     this.viewWatchlistModalInstance = new Modal(this.$refs.viewWatchlistModal, { backdrop: 'static' });
-  },
+  },*/
+
+    mounted() {
+      // Initialize Bootstrap modal
+      this.viewWatchlistModalInstance = new Modal(this.$refs.viewWatchlistModal, { backdrop: 'static' });
+      // Fetch watchlists if userProfileData is already available
+      if (this.userProfileData && this.watchlists.length <=0) {
+        let userId = this.isOwnProfile ? this.userData.id : this.userProfileData.id;
+        this.getUserWatchlistData({ userId });
+      } else {
+        // Watch for userProfileData to become available
+        this.$watch(
+          () => this.userProfileData,
+          (newValue) => {
+            if (newValue) {
+              this.getUserWatchlistData({ userId });
+            }
+          }
+        );
+      }
+    },
+
   beforeDestroy() {
     this.modulesRegistered.forEach(module => {
       if (this.$store.hasModule(module)) {

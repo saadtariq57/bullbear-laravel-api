@@ -132,7 +132,7 @@ export default {
             if (!notification.read_at) {
                 this.markNotificationAsRead(notification.id);
             }
-            //window.location.href = notification.url;
+            window.location.href = notification.url;
         },
 
         logout() {

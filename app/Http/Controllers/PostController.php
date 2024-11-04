@@ -38,7 +38,7 @@ class PostController extends Controller
     {
         $search = $request->input('query');
         // Adjust the select and where clauses based on your needs
-        $posts = $search ? Post::select(['id', 'title', 'user_id'])  // Assuming a 'user_id' field
+        $posts = $search ? Post::select(['id', 'title', 'user_id'])
                                  ->where('title', 'LIKE', "%{$search}%")
                                  ->limit(10)
                                  ->get() : [];
@@ -79,6 +79,8 @@ class PostController extends Controller
         $post = Post::create($request->only([
             'user_id',
             'group_id',
+            'group_name',
+            'shared_id',
             'post_text',
             'post_link',
             'post_link_title',
@@ -172,30 +174,219 @@ class PostController extends Controller
         return response()->json(['message' => 'Post created successfully', 'post' => $post]);
     }
 
+    public function updatePost(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'post_type' => 'required',
+            'post_privacy' => 'required',
+            'comments_status' => 'required',
+            'post_text' => 'required_if:post_type,text,color',
+            'colored_post_id' => 'required_if:post_type,color|exists:colored_posts,id',
+            'multi_image' => 'required_if:post_type,photo',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'existing_images' => 'array',
+            'delete_image_ids' => 'array',
+            'post_link' => 'required_if:post_type,link',
+            'post_link_title' => 'required_if:post_type,link',
+            'question' => 'required_if:post_type,poll',
+            'options' => 'required_if:post_type,poll|array',
+            'options.*' => 'string',
+            'duration' => 'required_if:post_type,poll',
+            'shared_id' => 'nullable|exists:posts,id',
+        ]);
+
+        // Find the post to update
+        $post = Post::findOrFail($request->post_id);
+
+        // Update main post fields
+        $post->update($request->only([
+            'post_privacy',
+            'comments_status',
+            'post_text',
+            'post_link',
+            'post_link_title',
+            'post_link_image',
+            'post_type',
+            'multi_image',
+            'shared_id',
+            'group_id',
+            'group_name',
+            'colored_post_id',
+        ]));
+
+        // Handle photo post type
+        if ($request->post_type === 'photo') {
+            // Ensure only provided existing images are retained if `existing_images` is provided
+            if ($request->has('existing_images')) {
+                $existingImageIds = $request->existing_images;
+                
+                // Delete any image not listed in `existing_images`
+                AlbumMedia::where('post_id', $post->id)
+                    ->whereNotIn('id', $existingImageIds)
+                    ->delete();
+            }
+
+            // Handle new image uploads
+            if ($request->hasFile('images')) {
+
+                foreach ($request->file('images') as $image) {
+                    try {
+                        $path = $image->store("photos/" . now()->year . "/" . now()->month, 'public');
+                        AlbumMedia::create([
+                            'post_id' => $post->id,
+                            'image' => $path,
+                        ]);
+                        Log::info("Image uploaded successfully: " . $path);
+                    } catch (\Exception $e) {
+                        Log::error("Image upload failed: " . $e->getMessage());
+                        return response()->json(['error' => 'Image upload failed'], 500);
+                    }
+                }
+            }
+
+            // Handle deletion of images based on `delete_image_ids`
+            if ($request->has('delete_image_ids')) {
+                foreach ($request->delete_image_ids as $imageId) {
+                    $albumMedia = AlbumMedia::find($imageId);
+                    if ($albumMedia && $albumMedia->post_id == $post->id) {
+                        Storage::disk('public')->delete($albumMedia->image);
+                        $albumMedia->delete();
+                    }
+                }
+            }
+        }
+
+        // Reload the post with relationships to reflect changes
+        $user = $request->user();
+        $post = Post::with([
+                        'user:id,name,avatar',
+                        'photos', 
+                        'poll.options',
+                        'poll.userVotes' => function($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        },
+                        'coloredPost', 
+                        'reactions' => function($query) {
+                            $query->with('reactionType:id,name,icon')
+                                  ->with('user:id,name,avatar,about');
+                        }
+                    ])
+                    ->withCount(['comments', 'reactions'])
+                    ->findOrFail($post->id);
+
+        return response()->json(['message' => 'Post updated successfully', 'post' => $post]);
+    }
+
+
+
+    public function deletePost($id, Request $request)
+    {
+        // Authenticate the user
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Find the post
+        $post = Post::findOrFail($id);
+
+        if ($post->user_id !== $user->id && !$user->hasRole('admin')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        // Handle associated data based on post type
+        switch ($post->post_type) {
+            case 'poll':
+                // Delete poll options and votes
+                if ($post->poll) {
+                    $post->poll->options()->delete();
+                    $post->poll->userVotes()->delete();
+                    $post->poll->delete();
+                }
+                break;
+
+            case 'photo':
+                // Delete associated photos
+                foreach ($post->photos as $photo) {
+                    Storage::disk('public')->delete($photo->image);
+                    $photo->delete();
+                }
+                break;
+
+            case 'link':
+                // Optionally, delete link images if stored
+                if ($post->post_link_image) {
+                    Storage::disk('public')->delete($post->post_link_image);
+                }
+                break;
+
+            case 'color':
+                // No additional handling needed
+                break;
+
+            case 'text':
+                // No additional handling needed
+                break;
+
+            default:
+                // Handle other post types if any
+                break;
+        }
+
+        // Delete the main post
+        $post->delete();
+
+        return response()->json(['message' => 'Post deleted successfully']);
+    }
+
+
+
     public function getUserFeed(Request $request)
     {
         $user = $request->user();
         $groupIds = $user->groupMemberships()->pluck('group_id');
-        $followingsIds = $user->followers()->pluck('following_id')->toArray();
+        $followingsIds = $user->followings()->pluck('following_id')->toArray();
+        //return response()->json(['Grouo Id' => $groupIds, 'Following Id' => $followingsIds]);
+
         // Create a query combining posts from groups, followed users, and user's own posts
         $postsQuery = Post::with([
-                            'user:id,name,avatar',
-                            'photos', 
-                            'poll.options', 
-                            'poll.userVotes' => function($query) use ($user) {
-                                $query->where('user_id', $user->id);
-                            },
-                            'coloredPost', 
-                            'reactions' => function($query) {
-                                $query->with('reactionType:id,name,icon')
-                                        ->with('user:id,name,avatar,about');
-                            }
-                        ])
-                        ->withCount(['comments', 'reactions'])
-                        ->whereIn('group_id', $groupIds)
-                        ->orWhereIn('user_id', $followingsIds)
-                        ->orWhere('user_id', $user->id)
-                        ->orderByDesc('created_at');
+            'user:id,name,avatar',
+            'user' => function($query) {
+                $query->withCount('followers'); 
+            },
+            'photos', 
+            'poll.options', 
+            'poll.userVotes' => function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            },
+            'coloredPost', 
+            'reactions' => function($query) {
+                $query->with('reactionType:id,name,icon')
+                      ->with('user:id,name,avatar,about');
+            },
+            'sharedPost.user:id,name,avatar',
+            'sharedPost.photos',
+            'sharedPost.poll.options',
+            'sharedPost.poll.userVotes' => function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            },
+            'sharedPost.coloredPost',
+            'sharedPost.reactions' => function($query) {
+                $query->with('reactionType:id,name,icon')
+                      ->with('user:id,name,avatar,about');
+            }
+        ])
+        ->withCount(['comments', 'reactions'])
+        ->where(function($query) use ($groupIds, $followingsIds, $user) {
+            $query->whereIn('group_id', $groupIds)
+                  ->orWhereIn('user_id', $followingsIds)
+                  ->orWhere('user_id', $user->id);
+                  /*->where('user_id', '!=', $user->id);*/
+        })
+        ->orderByDesc('created_at');
+
         if ($request->has('lastPostId')) {
             $lastPostId = $request->get('lastPostId');
             $postsQuery = $postsQuery->where('id', '<', $lastPostId);
@@ -203,9 +394,250 @@ class PostController extends Controller
 
         $posts = $postsQuery->paginate(10);
         $posts->transform(function ($post) use ($user) {
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Attach the transformed shared post as a new property
+                $post->originalPost = $sharedPost;
+            }
+
             // Check and handle each post type
             switch ($post->post_type) {
                 case 'photo':
+                    break;
+
+                case 'poll':
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
+                    }
+                    unset($post->pollDetails);
+                    break;
+
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
+            }
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
+
+    public function getUserGroupFeed(Request $request, $groupId)
+    {
+        $user = $request->user();
+        $postsQuery = Post::with([
+                                'user:id,name,avatar',
+                                'photos', 
+                                'poll.options', 
+                                'poll.userVotes' => function($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                },
+                                'coloredPost', 
+                                'reactions' => function($query) {
+                                    $query->with('reactionType:id,name,icon')
+                                          ->with('user:id,name,avatar,about');
+                                },
+                                'sharedPost.user:id,name,avatar',
+                                'sharedPost.photos',
+                                'sharedPost.poll.options',
+                                'sharedPost.poll.userVotes' => function($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                },
+                                'sharedPost.coloredPost',
+                                'sharedPost.reactions' => function($query) {
+                                    $query->with('reactionType:id,name,icon')
+                                          ->with('user:id,name,avatar,about');
+                                }
+                            ])
+                            ->withCount(['comments', 'reactions'])
+                            ->where('group_id', $groupId)
+                            ->orderByDesc('created_at');
+
+        if ($request->has('lastPostId')) {
+            $lastPostId = $request->get('lastPostId');
+            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
+        }
+
+        $posts = $postsQuery->paginate(10);
+        $posts->transform(function ($post) use ($user) {
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Attach the transformed shared post as a new property
+                $post->originalPost = $sharedPost;
+            }
+
+            switch ($post->post_type) {
+                case 'photo':
+                    break;
+
+                case 'poll':
+                    if ($post->poll) {
+                        $post->poll->options = $post->poll->options;
+                        // Check if the user has voted
+                        if ($post->poll->userVotes->isNotEmpty()) {
+                            $post->poll->userVoted = true;
+                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
+                        } else {
+                            $post->poll->userVoted = false;
+                        }
+                    }
+                    unset($post->pollDetails);
+                    break;
+
+                case 'color':
+                    unset($post->colorDetails);
+                    break;
+            }
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
+
+    public function getUserProfileFeed(Request $request, $userName)
+    {
+        $user = User::where('name', $userName)->first();
+
+        if ($user) {
+            $postsQuery = Post::with([
+                'user:id,name,avatar',
+                'photos',
+                'poll.options',
+                'poll.userVotes' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                },
+                'coloredPost',
+                'reactions' => function ($query) {
+                    $query->with('reactionType:id,name,icon')
+                          ->with('user:id,name,avatar,about');
+                },
+                // Eager load sharedPost and its relationships
+                'sharedPost.user:id,name,avatar',
+                'sharedPost.photos',
+                'sharedPost.poll.options',
+                'sharedPost.poll.userVotes' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                },
+                'sharedPost.coloredPost',
+                'sharedPost.reactions' => function ($query) {
+                    $query->with('reactionType:id,name,icon')
+                          ->with('user:id,name,avatar,about');
+                }
+            ])
+            ->withCount(['comments', 'reactions'])
+            ->where('user_id', $user->id)
+            ->orderByDesc('created_at');
+        } else {
+            // Handle the case where the user is not found
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if ($request->has('lastPostId')) {
+            $lastPostId = $request->get('lastPostId');
+            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
+        }
+
+        $posts = $postsQuery->paginate(10);
+        $posts->transform(function ($post) use ($user) {
+            // Handle shared post if it exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post based on its post_type
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        // No additional processing needed for photo posts
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Attach the transformed shared post as a new property without altering the main post structure
+                $post->originalPost = $sharedPost;
+                $post->unsetRelation('sharedPost');
+            }
+
+            // Handle the main post based on its post_type
+            switch ($post->post_type) {
+                case 'photo':
+                    // No additional processing needed for photo posts
                     break;
 
                 case 'poll':
@@ -249,122 +681,6 @@ class PostController extends Controller
                         ->withCount(['comments', 'reactions'])
                         ->findOrFail($singlePostID);              
         return response()->json(['data' => [$post]]);
-    }
-
-
-
-
-    public function getUserProfileFeed(Request $request, $userName){
-        $user = User::where('name', $userName)->first();
-        if($user){
-            $postsQuery = Post::with([
-                'user:id,name,avatar',
-                'photos', 
-                'poll.options', 
-                'poll.userVotes' => function($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                },
-                'coloredPost', 
-                'reactions' => function($query) {
-                    $query->with('reactionType:id,name,icon')
-                            ->with('user:id,name,avatar,about');
-                }
-            ])
-            ->withCount(['comments', 'reactions'])
-            ->where('user_id', $user->id) // Only include user's own posts
-            ->orderByDesc('created_at');
-        }
-
-        if ($request->has('lastPostId')) {
-            $lastPostId = $request->get('lastPostId');
-            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
-        }
-
-        $posts = $postsQuery->paginate(10);
-        $posts->transform(function ($post) use ($user) {
-            // Check and handle each post type
-            switch ($post->post_type) {
-                case 'photo':
-                    break;
-
-                case 'poll':
-                    if ($post->poll) {
-                        $post->poll->options = $post->poll->options;
-                        // Check if the user has voted
-                        if ($post->poll->userVotes->isNotEmpty()) {
-                            $post->poll->userVoted = true;
-                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
-                        } else {
-                            $post->poll->userVoted = false;
-                        }
-                    }
-                    unset($post->pollDetails);
-                    break;
-
-                case 'color':
-                    unset($post->colorDetails);
-                    break;
-            }
-
-            return $post;
-        });
-
-        return response()->json($posts);
-    }
-    public function getUserGroupFeed(Request $request, $groupId)
-    {
-        $user = $request->user();
-        $postsQuery = Post::with([
-                                'user:id,name,avatar',
-                                'photos', 
-                                'poll.options', 
-                                'poll.userVotes' => function($query) use ($user) {
-                                    $query->where('user_id', $user->id);
-                                },
-                                'coloredPost', 
-                                'reactions' => function($query) {
-                                    $query->with('reactionType:id,name,icon')
-                                          ->with('user:id,name,avatar,about');
-                                }
-                            ])
-                            ->withCount(['comments', 'reactions'])
-                            ->where('group_id', $groupId) // Filter posts by group ID
-                            ->orderByDesc('created_at');
-
-        if ($request->has('lastPostId')) {
-            $lastPostId = $request->get('lastPostId');
-            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
-        }
-
-        $posts = $postsQuery->paginate(10);
-        $posts->transform(function ($post) use ($user) {
-            switch ($post->post_type) {
-                case 'photo':
-                    break;
-
-                case 'poll':
-                    if ($post->poll) {
-                        $post->poll->options = $post->poll->options;
-                        // Check if the user has voted
-                        if ($post->poll->userVotes->isNotEmpty()) {
-                            $post->poll->userVoted = true;
-                            $post->poll->userVoteOption = $post->poll->userVotes->first()->option_id;
-                        } else {
-                            $post->poll->userVoted = false;
-                        }
-                    }
-                    unset($post->pollDetails);
-                    break;
-
-                case 'color':
-                    unset($post->colorDetails);
-                    break;
-            }
-
-            return $post;
-        });
-
-        return response()->json($posts);
     }
 
     public function fetchPostComments(Request $request, $postId)
@@ -418,7 +734,7 @@ class PostController extends Controller
             'description' => '',
             'type' => 'comment',
             'last_notification_time' => now(),
-            'url' => url("/post/{$request->post_id}"),
+            'url' => url("/post/{$postOwner->name}/{$request->post_id}"),
             'user' => [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
@@ -640,7 +956,7 @@ class PostController extends Controller
 
         // Load reaction type and user data to align with the initial structure
         $reaction->load(['reactionType', 'user:id,name,avatar,about']);
-
+        $postOwner = Post::find($request->post_id)->user;
         if($userId != $ownerId){
             $notificationData = [
                 'reacted_by' => $userId,
@@ -652,7 +968,7 @@ class PostController extends Controller
                 'description' => $reaction->user->name. $notificationDesc,
                 'type' => 'reaction',
                 'last_notification_time' => now(),
-                'url' => url("/post/{$postId}"),
+                'url' => url("/post/{$postOwner->name}/{$postId}"),
                 'user' => [
                     'id' => $reaction->user->id,
                     'name' => $reaction->user->name,
@@ -758,6 +1074,7 @@ class PostController extends Controller
 
             $postID = Poll::find($pollId)->post_id;
             $ownerId = Post::find($postID)->user_id;
+            $postOwner = User::findOrFail($ownerId);
             // trigger notification
             if($userId != $ownerId){
                 $notificationData = [
@@ -769,14 +1086,14 @@ class PostController extends Controller
                     'description' => '',
                     'type' => 'pollVote',
                     'last_notification_time' => now(),
-                    'url' => url("/post/{$postID}"),
+                    'url' => url("/post/{$postOwner->name}/{$postID}"),
                     'user' => [
                         'id' => $userId,
                         'name' => $user->name,
                         'avatar' => $user->avatar,
                     ],
                 ];
-                $postOwner = User::findOrFail($ownerId);
+                
         
                 broadcast(new NewPollVote($notificationData));
                 $postOwner->notify(new NewPollVoteNotification($notificationData));

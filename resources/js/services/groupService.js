@@ -22,18 +22,29 @@ const GroupService = {
         }
     },
 
-    async fetchJoinedChats(userName = null) {
+    async fetchJoinedChats(userName = null, page = 1, per_page = 9) {
         try {
             if (userName) {
+                console.log(userName);
                 const response = await axios.get('/api/joined-chats', {
-                    params: { userName }
+                    params: {
+                      userName,
+                      page,
+                      per_page: per_page,
+                    }
                 });
                 const joinedChats = response.data;
                 console.log(joinedChats);
                 return joinedChats;
             }
             else {
-                const response = await axios.get('/api/joined-chats');
+                console.log('No User Name Supplied');
+                const response = await axios.get('/api/joined-chats', {
+                    params: {
+                      page,
+                      per_page: per_page,
+                    }
+                });
                 const joinedChats = response.data;
                 console.log(joinedChats);
                 return joinedChats;

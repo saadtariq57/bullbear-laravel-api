@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class UserController extends Controller
@@ -63,11 +65,10 @@ class UserController extends Controller
             $users = User::select(['id', 'name', 'first_name', 'last_name', 'email'])
                              ->where('name', 'LIKE', "%{$search}%")
                              ->orWhere('email', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
-                             ->limit(10)  // Limiting to 10 results for dropdown purpose
+                             ->limit(10) 
                              ->get();
         } else {
-            $users = [];  // Return empty array if there's no search query
+            $users = [];
         }
 
         return response()->json($users);
@@ -107,27 +108,127 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
-    public function getUserData()
+    /*public function getUserData()
     {
         // Get the authenticated user
         $authenticatedUser = Auth::user();
 
-        // Check if the user is authenticated
         if ($authenticatedUser) {
-            // Retrieve data for the authenticated user with additional counts
-            // $userData = $authenticatedUser->withCount(['watchlists', 'posts', 'followers'])
-            //                               ->first();
             $userData = User::where('id', $authenticatedUser->id)
                         ->withCount(['watchlists', 'posts', 'followers'])
                         ->first();
             return response()->json($userData);
         } else {
-            // Return an error response if the user is not authenticated
+
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+    }*/
+
+    public function getUserData()
+    {
+        // Get the authenticated user
+        $authenticatedUser = Auth::user();
+
+        if ($authenticatedUser) {
+            // Fetch user data with counts and related relationships
+            $userData = User::where('id', $authenticatedUser->id)
+                ->withCount(['watchlists', 'posts', 'followers', 'followings'])
+                ->with([
+                    'followingsUser:id',
+                    'groups:id'
+                ])
+                ->first();
+
+            // Check if userData is found
+            if (!$userData) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $userArray = $userData->toArray();
+
+            $userArray['following'] = $userData->followingsUser->pluck('id')->toArray();
+            
+            $userArray['groups_info'] = $userData->groups->map(function ($group) {
+                return [
+                    'id' => $group->id,
+                    'status' => $group->pivot['status'],
+                ];
+            })->toArray();
+            unset($userArray['followings_user']);
+            unset($userArray['groups']);
+
+            return response()->json($userArray);
+        } else {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
     }
 
+    /**
+     * Get the profile data of a user by username.
+     */
     public function getUserProfileData($userName)
+    {
+        $user = User::where('name', $userName)
+            ->withCount(['watchlists', 'posts', 'followers', 'followings'])
+            ->firstOrFail();
+
+        $loggedInUser = Auth::user();
+        $isFollowing = false;
+        $isOwnProfile = false;
+
+        if ($loggedInUser) {
+            $isFollowing = Follower::where('follower_id', $loggedInUser->id)
+                ->where('following_id', $user->id)
+                ->exists();
+
+            if ($user->id === $loggedInUser->id) {
+                $isOwnProfile = true;
+            }
+        }
+
+        $postIds = Post::where('user_id', $user->id)->pluck('id');
+        $photos = AlbumMedia::whereIn('post_id', $postIds)->get();
+
+        // Optimize follower and following counts
+        $followersCount = $user->followers_count;
+        $followingsCount = $user->followings_count;
+
+        $followers = $user->followers()->with('follower:id,name,email,avatar,first_name')->get();
+        $followings = $user->followings()->with('following:id,name,email,avatar,first_name')->get();
+
+        // Current user's followers and followings
+        $currentFollowers = $loggedInUser ? $loggedInUser->followers()->with('follower:id,name,email,avatar,first_name')->get() : collect();
+        $currentFollowings = $loggedInUser ? $loggedInUser->followings()->with('following:id,name,email,avatar,first_name')->get() : collect();
+
+        // Check active status for the user being viewed
+        $session = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderBy('last_activity', 'desc')
+            ->first();
+
+        if (!$session) {
+            $activeStatus = 'Offline';
+        } else {
+            $lastActivity = Carbon::createFromTimestamp($session->last_activity);
+            $activeStatus = $lastActivity->diffInSeconds(Carbon::now()) <= 600 ? 'Online' : 'Offline';
+        }
+
+        return response()->json([
+            'userProfile' => $user, 
+            'isOwnProfile' => $isOwnProfile, 
+            'userMedia' => $photos,
+            'isFollowing' => $isFollowing,
+            'followersCount' => $followersCount,
+            'followingsCount' => $followingsCount,
+            'followerUserData' => $followers,
+            'followingsUserData' => $followings,
+            'currentFollowerUserData' => $currentFollowers,
+            'currentFollowingsUserData' => $currentFollowings,
+            'active_status' => $activeStatus,
+        ]);
+    }
+
+    /*public function getUserProfileData($userName)
     {
         $user = User::where('name', $userName)
         ->withCount(['watchlists', 'posts', 'followers' , 'followings'])
@@ -176,7 +277,7 @@ class UserController extends Controller
             'currentFollowerUserData' => $currentFollowers,
             'currentFollowingsUserData' => $currentFollowings,
         ]);
-    }
+    }*/
 
     // public function getUserAlbumData()
     // {
@@ -198,7 +299,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Add validation for cover photo
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         // Upload cover photo
@@ -309,24 +410,18 @@ class UserController extends Controller
 
         // Validate the request
         $request->validate([
-            'status_privacy' => 'required|string',
-            'search_index_privacy' => 'required|string',
-            'my_posts_privacy' => 'required|string',
+            'post_privacy' => 'required|string',
             'groups_privacy' => 'required|string',
-            'watchlist_privacy' => 'required|string',
+            'watchlists_privacy' => 'required|string',
             'photos_privacy' => 'required|string',
-            'follow_privacy' => 'required|string',
         ]);
 
         // Update the user's privacy settings
         $user->update([
-            'status_privacy' => $request->input('status_privacy'),
-            'search_index_privacy' => $request->input('search_index_privacy'),
-            'post_privacy' => $request->input('my_posts_privacy'),
+            'post_privacy' => $request->input('post_privacy'),
             'groups_privacy' => $request->input('groups_privacy'),
-            'watchlists_privacy' => $request->input('watchlist_privacy'),
+            'watchlists_privacy' => $request->input('watchlists_privacy'),
             'photos_privacy' => $request->input('photos_privacy'),
-            'follow_privacy' => $request->input('follow_privacy'),
         ]);
 
         // Redirect back with a success message

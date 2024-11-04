@@ -66,8 +66,6 @@ Route::get('/fetch-link-data', [HomeController::class, 'fetchLinkData']);
 Route::post('/create-post', [PostController::class, 'createPost']);
 Route::get('/user-feed', [PostController::class, 'getUserFeed']);
 Route::get('/singlePost/{singlePostID}', [PostController::class, 'getSinglePost']);
-Route::get('/user-profile/{userName?}', [PostController::class, 'getUserProfileFeed']);
-Route::get('/user-group/{groupId}', [PostController::class, 'getUserGroupFeed']);
 Route::post('/submit-comment', [PostController::class, 'submitComment']);
 Route::post('/edit-comment', [PostController::class, 'editComment']);
 Route::post('/delete-comment', [PostController::class, 'deleteComment']);
@@ -136,6 +134,8 @@ Route::get('/getWidget', [WidgetController::class, 'getWidgetsByCategory']);
 Route::get('/quotes/{symbol}', [WidgetController::class, 'getQuote']);
 Route::get('/getquotes/{symbols}', [WidgetController::class, 'getQuotes']);
 Route::get('/market-collections/{type}', [WidgetController::class, 'getCollection']);
+Route::get('/crypto-collections/{type}', [WidgetController::class, 'getCryptoCollection']);
+Route::get('/calendar/{type}', [WidgetController::class, 'getCalendar']);
 Route::get('/widget/{id}', [WidgetController::class, 'show']);
 Route::get('/fund-ownership/{symbol}', [WidgetController::class, 'getFundOwnership']);
 Route::get('/options/{symbol}', [WidgetController::class, 'getOptions']);
@@ -184,8 +184,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Posts (Authenticated)
     Route::post('/create-post', [PostController::class, 'createPost']);
+    Route::post('/update-post', [PostController::class, 'updatePost']);
+    Route::delete('/delete-post/{id}', [PostController::class, 'deletePost']);
     Route::get('/user-feed', [PostController::class, 'getUserFeed']);
-    Route::get('/user-profile', [PostController::class, 'getUserProfileFeed']);
+    Route::get('/user-profile/{userName?}', [PostController::class, 'getUserProfileFeed']);
     Route::get('/user-group/{groupId}', [PostController::class, 'getUserGroupFeed']);
     Route::post('/submit-comment', [PostController::class, 'submitComment']);
     Route::post('/edit-comment', [PostController::class, 'editComment']);
@@ -205,6 +207,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Groups (Authenticated)
     Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
+    Route::get('/joined-chats-share', [GroupController::class, 'joinedChatsShare']);
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
     Route::get('/groups/{id}', [GroupController::class, 'getGroupById']);
     Route::post('/group-cover-position', [GroupController::class, 'groupCoverPosition']);
@@ -228,6 +231,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/profileData/{userName}', [UserController::class, 'getUserProfileData'])->name('userProfileData');
     Route::post('/users/{user}/follow', [FollowerController::class, 'store']);
     Route::delete('/users/{user}/unfollow', [FollowerController::class, 'destroy']);
+    Route::get('/suggested-followers', [FollowerController::class, 'suggestedFollowers']);
     Route::get('/{userId}/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
     Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
@@ -251,6 +255,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/recent', [PostController::class, 'getRecentPosts'])->name('recent');
         Route::get('/bookmarks', [PostController::class, 'getBookmarkedPosts'])->name('bookmarks');
         Route::post('/create', [PostController::class, 'createPost'])->name('create');
+        Route::post('/share-post', [PostController::class, 'sharePost']);
     });
 
 });

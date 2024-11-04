@@ -50,8 +50,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'referrer_id',
         'last_data_update',
         'user_id',
-        'status_privacy',
-        'search_index_privacy',
         'groups_privacy',
         'watchlists_privacy',
         'photos_privacy',
@@ -84,7 +82,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'details' => 'array',
         'showlastseen' => 'boolean',
         'emailNotification' => 'boolean',
-        // Other casts as necessary
     ];
 
     public function personalSessions()
@@ -103,13 +100,21 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function followers()
     {
-        return $this->hasMany(Follower::class, 'follower_id');
-    }
-    public function followings()
-    {
         return $this->hasMany(Follower::class, 'following_id');
     }
-    
+
+    public function followings()
+    {
+        return $this->hasMany(Follower::class, 'follower_id');
+    }
+    /*public function followersUser()
+    {
+        return $this->belongsToMany(User::class, 'followings', 'following_id', 'follower_id',);
+    }*/
+    public function followingsUser()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
+    }
     public function groupMemberships()
     {
         return $this->hasMany(GroupMember::class);
@@ -117,7 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id');
+        return $this->belongsToMany(Group::class, 'group_members', 'user_id', 'group_id')->withPivot('status');
     }
 
     public function receivesBroadcastNotificationsOn()
@@ -152,19 +157,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Override the default password reset notification.
-     *
-     * @param string $token
-     * @return void
      */
     public function sendPasswordResetNotification($token)
     {
         $resetUrl = url(route('password.reset', ['token' => $token, 'email' => $this->email], false));
-
-        // \Log::info("Sending password reset email to {$this->email}");
-
-        // Use the custom ResetPasswordMailable
         Mail::to($this->email)->send(new ResetPasswordMailable($this, $resetUrl));
-
-        // \Log::info("Password reset email sent to {$this->email}");
     }
 }

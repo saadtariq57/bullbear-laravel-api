@@ -13,21 +13,6 @@ use App\Notifications\NewFollowerNotification;
 
 class FollowerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -73,30 +58,6 @@ class FollowerController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Follower $follower)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Follower $follower)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Follower $follower)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request, $userId)
@@ -119,4 +80,84 @@ class FollowerController extends Controller
         
         return response()->json(['message' => 'User unfollowed successfully', 'deletedFollowerNotification' => $followerId]);
     }
+
+    /**
+     * Get suggested traders to follow.
+     */
+    public function suggestedFollowers()
+    {
+        $currentUser = Auth::user();
+
+        if (!$currentUser) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        // Step 1: Find admins not followed by the current user and exclude self
+        $adminSuggestions = User::select('id', 'name', 'avatar')
+            ->where('type', 'admin')
+            ->where('id', '!=', $currentUser->id)
+            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
+                $query->where('follower_id', $currentUser->id);
+            })
+            ->get();
+
+        // Step 2: Find mutual connections (users followed by the user's followings)
+        $firstLayerFollowings = Follower::where('follower_id', $currentUser->id)
+            ->pluck('following_id');
+
+        $secondLayerFollowings = Follower::whereIn('follower_id', $firstLayerFollowings)
+            ->pluck('following_id')
+            ->unique()
+            ->diff([$currentUser->id]) // Ensure self is excluded
+            ->toArray();
+
+        $mutualSuggestions = User::select('id', 'name', 'avatar')
+            ->whereIn('id', $secondLayerFollowings)
+            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
+                $query->where('follower_id', $currentUser->id);
+            })
+            ->withCount(['posts']) // Count posts for ordering if needed
+            ->get();
+
+        // Combine admin and mutual suggestions, ensuring uniqueness
+        $suggestions = $adminSuggestions->merge($mutualSuggestions)->unique('id');
+
+        // Check if we have enough suggestions, if not, add users with most posts
+        if ($suggestions->count() < 10) {
+            $needed = 10 - $suggestions->count();
+
+            // Get IDs of users the current user is already following
+            $alreadyFollowing = Follower::where('follower_id', $currentUser->id)
+                ->pluck('following_id')
+                ->toArray();
+
+            $additionalSuggestions = User::select('id', 'name', 'avatar')
+                ->where('id', '!=', $currentUser->id) 
+                ->whereNotIn('id', $alreadyFollowing)
+                ->whereNotIn('id', $suggestions->pluck('id'))
+                ->withCount(['posts'])
+                ->orderByDesc('posts_count')
+                ->limit($needed)
+                ->get();
+
+            $suggestions = $suggestions->merge($additionalSuggestions);
+        }
+
+        // Limit the final suggestions to 10
+        $suggestions = $suggestions->take(5);
+
+        // Return only the necessary fields
+        return response()->json([
+            'data' => $suggestions->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'avatar' => $user->avatar,
+                    'posts_count' => $user->posts_count,
+                ];
+            }),
+        ]);
+    }
+
+
 }

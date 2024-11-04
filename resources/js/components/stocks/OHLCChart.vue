@@ -93,7 +93,7 @@ export default {
     };
   },
   mounted() {
-    console.log('[ohlc] component mounted');
+    //console.log('[ohlc] component mounted');
     this.$nextTick(() => {
       this.updateAvailableIntervals();
       this.fetchohlcdata(this.currentRange, this.currentInterval);
@@ -108,10 +108,10 @@ export default {
      * Determines the API endpoint based on the range.
      */
     async fetchohlcdata(range = '1D', interval = '1min') {
-      console.log(`[ohlc] fetching ohlc data for symbol: ${this.symbol}, range: ${range}, interval: ${interval}`);
+      //console.log(`[ohlc] fetching ohlc data for symbol: ${this.symbol}, range: ${range}, interval: ${interval}`);
       
       if (this.isloading) {
-        console.log('[ohlc] data fetch already in progress, skipping');
+        //console.log('[ohlc] data fetch already in progress, skipping');
         return;
       }
       this.isloading = true;
@@ -133,7 +133,7 @@ export default {
         
         const response = await axios.get(apiEndpoint, { params });
         
-        console.log(`[ohlc] data received for ${this.symbol}:`, response.data.length, 'items');
+        //console.log(`[ohlc] data received for ${this.symbol}:`, response.data.length, 'items');
         let fetchedData = response.data.map(item => ({
           date: new Date(item.date).getTime(),
           open: Number(item.open),
@@ -143,26 +143,26 @@ export default {
           volume: Number(item.volume)
         })).sort((a, b) => a.date - b.date);
         
-        console.log('[ohlc] processed chart data:', fetchedData.length, 'items');
+        //console.log('[ohlc] processed chart data:', fetchedData.length, 'items');
         
         // If the data is daily and the user selected a higher interval, aggregate it
         if (!isIntraday && ['1W', '1Mo'].includes(interval)) {
           fetchedData = this.processDataForInterval(fetchedData, interval);
-          console.log('[ohlc] aggregated chart data:', fetchedData.length, 'items');
+          //console.log('[ohlc] aggregated chart data:', fetchedData.length, 'items');
         }
         
-        this.rawChartData = fetchedData; // Store raw data
-        this.chartdata = fetchedData; // Initialize chart data with raw data
+        this.rawChartData = fetchedData;
+        this.chartdata = fetchedData;
         
         // Dispose existing chart if it exists
         if (this.root) {
-          console.log('[ohlc] disposing existing chart');
+          //console.log('[ohlc] disposing existing chart');
           this.root.dispose();
           this.root = null;
         }
         
         // Initialize a new chart with the new data
-        console.log(this.root);
+        //console.log(this.root);
         this.initchart();
         
       } catch (error) {
@@ -177,14 +177,14 @@ export default {
      * Validates the received chart data.
      */
     validatedata(data) {
-      console.log('[ohlc] validating data:', data.length, 'items');
+      //console.log('[ohlc] validating data:', data.length, 'items');
       if (!Array.isArray(data) || data.length === 0) {
         console.error('[ohlc] data validation failed: not an array or empty');
         return false;
       }
       const requiredfields = ['date', 'open', 'high', 'low', 'close', 'volume'];
       const isvalid = data.every(item => requiredfields.every(field => item[field] != null && !isNaN(item[field])));
-      console.log('[ohlc] data validation result:', isvalid);
+      //console.log('[ohlc] data validation result:', isvalid);
       return isvalid;
     },
 
@@ -192,7 +192,7 @@ export default {
      * Initializes the amCharts chart.
      */
     initchart() {
-      console.log('[ohlc] initializing chart');
+      //console.log('[ohlc] initializing chart');
       
       if (!this.$refs.chartdiv) {
         console.error("[ohlc] chart div not found");
@@ -205,10 +205,10 @@ export default {
       }
 
       // Create a new root for the chart
-      console.log('[ohlc] creating new root');
+      //console.log('[ohlc] creating new root');
       let root = am5.Root.new(this.$refs.chartdiv);
       this.root = root;
-      console.log('[ohlc] new root initialized:', this.root);
+      //console.log('[ohlc] new root initialized:', this.root);
       const myTheme = am5.Theme.new(root);
       myTheme.rule("Grid", ["scrollbar", "minor"]).setAll({
         visible: false
@@ -477,13 +477,13 @@ export default {
       });
 
       // Set chart data
-      console.log('[ohlc] setting chart data');
+      //console.log('[ohlc] setting chart data');
       valueSeries.data.setAll(this.chartdata);
       volumeSeries.data.setAll(this.chartdata);
       sbSeries.data.setAll(this.chartdata);
 
-      console.log('[ohlc] chart initialization complete');
-      console.log('[ohlc] first few data points:', this.chartdata.slice(0, 5));
+      //console.log('[ohlc] chart initialization complete');
+      //console.log('[ohlc] first few data points:', this.chartdata.slice(0, 5));
       this.exporting = am5plugins_exporting.Exporting.new(this.root, {
         title: 'Stock Chart',
         filePrefix: "stock-chart",
@@ -589,7 +589,7 @@ export default {
           }
           currentMonth = `${year}-${month}`;
           monthData = { 
-            date: item.date, // Use the date of the first day in the month
+            date: item.date,
             open: item.open, 
             high: item.high, 
             low: item.low, 
@@ -637,7 +637,7 @@ export default {
         return; // No change
       }
       this.currentRange = selectedPeriodName;
-      console.log(`[ohlc] Period changed to: ${selectedPeriodName}`);
+      //console.log(`[ohlc] Period changed to: ${selectedPeriodName}`);
       
       // Update available intervals based on the new period
       this.updateAvailableIntervals();
@@ -655,7 +655,7 @@ export default {
      * Handle interval selection via custom dropdown
      */
     selectInterval() { // 3. Modified selectInterval method
-      console.log(`[ohlc] Interval changed to: ${this.currentInterval}`);
+      //console.log(`[ohlc] Interval changed to: ${this.currentInterval}`);
       
       if (this.rawChartData.length === 0) {
         console.warn('[ohlc] No raw data available to aggregate.');
@@ -690,9 +690,9 @@ export default {
     }
   },
   beforeUnmount() {
-    console.log('[ohlc] component unmounting');
+    //console.log('[ohlc] component unmounting');
     if (this.root) {
-      console.log('[ohlc] disposing root');
+      //console.log('[ohlc] disposing root');
       this.root.dispose();
     }
   },

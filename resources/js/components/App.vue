@@ -36,7 +36,7 @@ export default {
     const showLoginPopupState = ref(false);
 
     onMounted(async () => {
-      await checkLoginStatus();
+      //await checkLoginStatus();
       isCheckingAuthState.value = isCheckingAuth();
     });
 

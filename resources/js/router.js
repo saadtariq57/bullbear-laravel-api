@@ -110,7 +110,7 @@ const routes = [
         component: () => import('./components/feed/UserFeed.vue'),
     },
     {
-        path: '/post/:id',
+        path: '/post/:username/:id',
         name: 'singlePost',
         component: () => import('./components/feed/SinglePost.vue'),
     },
@@ -304,14 +304,24 @@ const routes = [
 ];
 
 routes.forEach(route => {
-
-    if (!['pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live', 
+    const unprotectedRoutes = [
+        'pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live',
         'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlist', 'personal-access',
         'stocks-screener', 'trading-education', 'category', 'post', 'NotFound', 'NotFoundPage', 'propicks', 'exams',
-        'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary'].includes(route.name)) {
+        'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary', 'singlePost'
+    ];
+
+    const routeName = typeof route.name === 'function' ? route.name({ params: { category: '', subCategory: '' } }) : route.name;
+    
+    if (
+        !unprotectedRoutes.includes(routeName) &&
+        !(typeof routeName === 'string' && routeName.startsWith('markets'))
+    ) {
         route.meta = { ...route.meta, requiresAuth: true };
     }
 });
+
+
 
 const router = createRouter({
     history: createWebHistory(),

@@ -1,275 +1,249 @@
 /*
-Template Name: Tocly -  Admin & Dashboard Template
-Author: Themesdesign
-Contact: themesdesign.in@gmail.com
+Template Name: RichTv -  Admin & Dashboard
+Author: Abdul
+Contact: abservicesground@gmail.com
 File: Dashboard Init Js File
 */
 
-
-
-// column chart
-
-var options = {
-  series: [{
-  name: 'Net Profit',
-
-  data: [19, 36, 24, 20, 34, 24, 11, 36, 24, 15, 21, 28]
-}, {
-  name: 'Revenue',
-  data: [07, 12, 10, 12, 11, 10, 13, 10, 12, 8, 13, 13]
-}],
-  chart: {
-  type: 'bar',
-  height: 350,
-  stacked: true,
-  toolbar: {
-    show: false
-  },
-  zoom: {
-    enabled: true
-  }
-},
-
-plotOptions: {
-  bar: {
-    horizontal: false,
-    columnWidth: '42%'
-  },
-},
-dataLabels: {
-  enabled: false
-},
-
-legend: {
- show:false,
-},
-xaxis: {
-  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Des' ],
-},
-colors: ['#0c768a', '#daeaee'],
-fill: {
-  opacity: 1
-}
-};
-
-var chart = new ApexCharts(document.querySelector("#column-chart"), options);
-chart.render();
-
-
-// donut chart
-
-  var options = {
-    series: [40405, 15552, 19824],
-    labels: ["Online", "Offline", "Marketing"],
-    chart: {
-      type: "donut",
-      height: 350,
-    },
-
-    plotOptions: {
-      pie: {
-        size: 100,
-        offsetX: 0,
-        offsetY: 0,
-        donut: {
-          size: "77%",
-          labels: {
-            show: true,
-            name: {
-              show: true,
-              fontSize: "18px",
-              offsetY: -5,
+document.addEventListener('DOMContentLoaded', function () {
+    // User Growth Chart (Line Chart)
+    var userGrowthOptions = {
+        chart: {
+            type: 'line',
+            height: 350,
+            toolbar: {
+                show: false
             },
-            value: {
-              show: true,
-              fontSize: "24px",
-              color: "#343a40",
-              fontWeight: 500,
-              offsetY: 10,
-              formatter: function (val) {
-                return "$" + val;
-              },
-            },
-            total: {
-              show: true,
-              fontSize: "16px",
-              label: "Total value",
-              color: "#9599ad",
-              fontWeight: 400,
-              formatter: function (w) {
-                return (
-                  "$" +
-                  w.globals.seriesTotals.reduce(function (a, b) {
-                    return a + b;
-                  }, 0)
-                );
-              },
-            },
-          },
+            zoom: {
+                enabled: false
+            }
         },
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    legend: {
-      show: true,
-      position: 'bottom',
-    },
-    yaxis: {
-      labels: {
-        formatter: function (value) {
-          return "$" + value;
+        series: [{
+            name: 'New Users',
+            data: @json($userGrowth->pluck('count'))
+        }],
+        xaxis: {
+            categories: @json($userGrowth->pluck('month')->map(function($m) {
+                return \Carbon\Carbon::create()->month($m)->format('M');
+            })),
+            title: {
+                text: 'Month'
+            }
         },
-      },
-    },
-    stroke: {
-      lineCap: "round",
-      width: 2,
-    },
-    colors: ['#0c768a', '#38c786', '#daeaee'],
-  };
-  var chart = new ApexCharts(document.querySelector("#donut-chart"), options);
-  chart.render();
+        yaxis: {
+            title: {
+                text: 'Number of Users'
+            }
+        },
+        colors: ['#edb043'],
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        dataLabels: {
+            enabled: false
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val;
+                }
+            }
+        }
+    };
 
-  
-// world map with line & markers
-var worldlinemap = new jsVectorMap({
-  map: "world_merc",
-  selector: "#world-map-markers",
-  zoomOnScroll: false,
-  zoomButtons: false,
-  markerStyle:{
-    initial: { fill: "#0c768a" },
-    selected: { fill: "#0c768a" }
-  },
-  markers: [{
-          name: "Greenland",
-          coords: [72, -42]
-      },
-      {
-          name: "Canada",
-          coords: [56.1304, -106.3468]
-      },
-      {
-          name: "Brazil",
-          coords: [-14.2350, -51.9253]
-      },
-      {
-          name: "Egypt",
-          coords: [26.8206, 30.8025]
-      },
-      {
-          name: "Russia",
-          coords: [61, 105]
-      },
-      {
-          name: "China",
-          coords: [35.8617, 104.1954]
-      },
-      {
-          name: "United States",
-          coords: [37.0902, -95.7129]
-      },
-      {
-          name: "Norway",
-          coords: [60.472024, 8.468946]
-      },
-      {
-          name: "Ukraine",
-          coords: [48.379433, 31.16558]
-      },
-  ],
-  lines: [{
-          from: "Canada",
-          to: "Egypt"
-      },
-      {
-          from: "Russia",
-          to: "Egypt"
-      },
-      {
-          from: "Greenland",
-          to: "Egypt"
-      },
-      {
-          from: "Brazil",
-          to: "Egypt"
-      },
-      {
-          from: "United States",
-          to: "Egypt"
-      },
-      {
-          from: "China",
-          to: "Egypt"
-      },
-      {
-          from: "Norway",
-          to: "Egypt"
-      },
-      {
-          from: "Ukraine",
-          to: "Egypt"
-      },
-  ],
-  regionStyle: {
-      initial: {
-          stroke: "#daeaee",
-          strokeWidth: 0.25,
-          fill: "#daeaee",
-          fillOpacity: 1,
-      },
-  },
-  lineStyle: {
-      animation: true,
-      strokeDasharray: "6 3 6",
-  },
-})
+    var userGrowthChart = new ApexCharts(document.querySelector("#user-growth-chart"), userGrowthOptions);
+    userGrowthChart.render();
 
+    // Exam Metrics Donut Chart
+    var examMetricsOptions = {
+        series: [
+            @json($totalExams),
+            @json($activeExams),
+            @json($totalQuestions)
+        ],
+        labels: ["Total Exams", "Active Exams", "Total Questions"],
+        chart: {
+            type: 'donut',
+            height: 350,
+        },
+        plotOptions: {
+            pie: {
+                size: '80%',
+                donut: {
+                    size: '60%',
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                            fontSize: '16px',
+                            color: '#343a40',
+                            offsetY: -10
+                        },
+                        value: {
+                            show: true,
+                            fontSize: '20px',
+                            color: '#343a40',
+                            formatter: function (val) {
+                                return val;
+                            }
+                        },
+                        total: {
+                            show: false,
+                        }
+                    }
+                }
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        legend: {
+            position: 'bottom',
+            labels: {
+                colors: '#343a40',
+            }
+        },
+        colors: ['#edb043', '#0c768a', '#38c786'],
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val;
+                }
+            }
+        }
+    };
 
+    var examMetricsDonut = new ApexCharts(document.querySelector("#exam-metrics-donut"), examMetricsOptions);
+    examMetricsDonut.render();
 
-// radialBar
-var options = {
-  labels: ["E-Commerce", "Facebook", "Instagram"],
-  series: [38, 24, 16],
-  chart: {
-      height: 402,
-  type: 'donut',
-},
-plotOptions: {
-  pie: {
-    startAngle: -90,
-    endAngle: 90,
-    offsetY: 10,
-    donut: {
-      size: '80%',
-    },
-  }
-},
-colors: ['#0c768a', '#38c786', '#daeaee'],
-grid: {
-  padding: {
-    bottom: -190
-  }
-},
+    // Live Users By Zip (jsVectorMap)
+    var zipData = {
+        @foreach($liveUsersByZip as $zip)
+            "{{ $zip->zip }}": {{ $zip->count }},
+        @endforeach
+    };
 
-legend: {
-  show: false,
-},
+    // Assuming you have a helper function to convert zip codes to coordinates.
+    // You need to provide latitude and longitude for each zip code.
+    // Here's an example structure:
+    var zipCoordinates = {
+        "10001": [40.7128, -74.0060],
+        "90001": [34.0522, -118.2437],
+    };
 
-responsive: [{
-  breakpoint: 320,
-  options: {
-    chart: {
-      width: 180
-    },
-    legend: {
-      position: 'bottom'
+    // For demonstration, let's assume zipCoordinates is available
+    var zipCoordinates = {
+        @foreach($liveUsersByZip as $zip)
+            "{{ $zip->zip }}": [{{ $zip->latitude }}, {{ $zip->longitude }}],
+        @endforeach
+    };
+
+    var zipMapMarkers = [];
+    for (var zip in zipData) {
+        if (zipCoordinates[zip]) {
+            zipMapMarkers.push({
+                name: `Zip: ${zip}`,
+                coords: zipCoordinates[zip],
+                style: {
+                    fill: '#edb043',
+                    stroke: '#ffffff',
+                    'stroke-width': 1
+                },
+                label: `${zip}: ${zipData[zip]} Users`
+            });
+        }
     }
-  }
-}]
-};
 
-var chart = new ApexCharts(document.querySelector("#social-source"), options);
-chart.render();
+    new jsVectorMap({
+        map: "world_merc",
+        selector: "#zip-map-markers",
+        zoomOnScroll: false,
+        zoomButtons: false,
+        markerStyle:{
+            initial: { 
+                fill: "#edb043",
+                stroke: "#ffffff",
+                'stroke-width': 1
+            },
+            selected: { 
+                fill: "#edb043",
+                stroke: "#ffffff",
+                'stroke-width': 1
+            }
+        },
+        markers: zipMapMarkers,
+        regionStyle: {
+            initial: {
+                fill: "#daeaee",
+                stroke: "#ffffff",
+                "stroke-width": 0.25,
+                fillOpacity: 1,
+            },
+        },
+        tooltip: {
+            enabled: true,
+            format: function (marker) {
+                return marker.label;
+            }
+        }
+    });
+
+    // Active Watchlists Over Time (Area Chart)
+    var activeWatchlistsOptions = {
+        chart: {
+            type: 'area',
+            height: 350,
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false
+            }
+        },
+        series: [{
+            name: 'Active Watchlists',
+            data: @json($watchlistGrowth->pluck('count'))
+        }],
+        xaxis: {
+            categories: @json($watchlistGrowth->pluck('month')->map(function($m) {
+                return \Carbon\Carbon::create()->month($m)->format('M');
+            })),
+            title: {
+                text: 'Month'
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Number of Watchlists'
+            }
+        },
+        colors: ['#edb043'],
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.9,
+                stops: [0, 100]
+            }
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        dataLabels: {
+            enabled: false
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val;
+                }
+            }
+        }
+    };
+
+    var activeWatchlistsChart = new ApexCharts(document.querySelector("#active-watchlists-chart"), activeWatchlistsOptions);
+    activeWatchlistsChart.render();
+});

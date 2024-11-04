@@ -62,7 +62,6 @@ class LiveController extends Controller
     }
     public function getEmbeddedCode()
     {
-        // Fetch the title and embedded code from the database
         $liveTemplate = LiveTemplate::first();
 
         // Check if a live template exists

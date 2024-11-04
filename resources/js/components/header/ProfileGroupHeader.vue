@@ -287,7 +287,9 @@ export default {
       registerVuexModule('userGroup', userGroupModule);
       this.moduleRegistered = true;
     }
-    this.fetchGroupData(this.id);
+    if (this.context == "groupHeader") {
+        this.fetchGroupData(this.id);
+    }
   },
   methods: {
     ...mapActions('profileGroupHeader', ['uploadCoverImage', 'RemoveCoverImage', 'uploadProfileImage', 'clearMessage']),

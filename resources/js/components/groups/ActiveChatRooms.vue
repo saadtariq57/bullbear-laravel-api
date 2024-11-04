@@ -1,126 +1,159 @@
 <template>
-  <div class="row gx-3 gy-3">
-    <div v-for="chat in chats" :key="chat.id" class="col-lg-4 col-md-6">
-      <div class="card m-0 h-100 shadow-sm">
-        <a
-          
-          class="chat-avatar-wrapper position-relative"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title="Go to chat room"
-          @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
-        >
-          <img
-            :src="`uploads/${chat.avatar}`"
-            class="card-img-top rounded-top"
-            :alt="`${chat.group_title} Profile Picture`"
-            @error="handleAvatarError(chat)"
-            :class="{ 'd-none': chat.avatarFailed }"
-          />
-          <div class="group_name bg-primary" :class="{ 'd-flex': chat.avatarFailed }">
-            <p class="px-2 text-white">{{ chat.group_title }}</p>
-          </div>
-          <span
-            v-if="chat.privacy === 'private'"
-            class="badge bg-warning position-absolute top-0 end-0 m-2"
+  <div>
+    <div class="row gx-3 gy-3">
+      <div v-for="chat in chats" :key="chat.id" class="col-lg-4 col-md-6">
+        <div class="card m-0 h-100 shadow-sm">
+          <!-- Existing Chat Card Content -->
+          <a
+            class="chat-avatar-wrapper position-relative"
             data-bs-toggle="tooltip"
-            data-bs-placement="left"
-            title="This group is private"
+            data-bs-placement="top"
+            title="Go to chat room"
+            @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
           >
-            Private
-          </span>
-        </a>
-        <div class="card-body">
-        <a
-          
-          class="chat-avatar-wrapper position-relative"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title="Go to chat room"
-          @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
-        >
-          <h5
-            class="card-title fs-16 fw-bold"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            title="Chat Title"
-          >
-            {{ chat.group_title }}
-          </h5>
-        </a>
-          <p class="card-text fs-14">{{ chat.about }}</p>
-          <p class="card-text fs-12 text-muted">
-            Created on: {{ formatDate(chat.created_at) }}
-          </p>
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <p class="fs-14 text-secondary mb-0">
-              <i
-                v-if="chat.symbol && chat.exchange"
-                class="bi bi-graph-up-arrow me-1"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Trading Symbol/Exchange"
-              ></i>
-              <span v-if="chat.symbol && chat.exchange">
-                {{ chat.symbol }}/{{ chat.exchange }}
-              </span>
-              <span v-else>
-                Members: {{ chat.members_count }}
-              </span>
-            </p>
-            <p class="mb-0">
-              <i
-                :class="privacyIcon(chat.join_privacy)"
-                class="me-1"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                :title="`${capitalize(chat.join_privacy)} group`"
-              ></i>
-              {{ capitalize(chat.join_privacy) }}
-            </p>
-          </div>
-
-          <!-- Buttons -->
-          <div class="mt-3">
-            <template v-if="!loggedIn">
-              <button
-                @click="handleSignIn"
-                class="btn btn-secondary btn-sm w-100"
+            <img
+              :src="`uploads/${chat.avatar}`"
+              class="card-img-top rounded-top"
+              :alt="`${chat.group_title} Profile Picture`"
+              @error="handleAvatarError(chat)"
+              :class="{ 'd-none': chat.avatarFailed }"
+            />
+            <div class="group_name bg-primary" :class="{ 'd-flex': chat.avatarFailed }">
+              <p class="px-2 text-white">{{ chat.group_title }}</p>
+            </div>
+            <span
+              v-if="chat.privacy === 'private'"
+              class="badge bg-warning position-absolute top-0 end-0 m-2"
+              data-bs-toggle="tooltip"
+              data-bs-placement="left"
+              title="This group is private"
+            >
+              Private
+            </span>
+          </a>
+          <div class="card-body">
+            <!-- Existing Card Body Content -->
+            <a
+              class="chat-avatar-wrapper position-relative"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Go to chat room"
+              @click="handleGroup(chat.id, chat.group_title, chat.requestPending)"
+            >
+              <h5
+                class="card-title fs-16 fw-bold"
                 data-bs-toggle="tooltip"
                 data-bs-placement="right"
-                title="Sign in to join this group"
+                title="Chat Title"
               >
-                Sign in to Join
-              </button>
-            </template>
-            <template v-else>
-              <button
-                v-if="!chat.joined"
-                @click="joinChat(chat)"
-                class="btn btn-primary btn-sm w-100"
-                :class="{ 'btn-secondary': chat.requestPending }"
-                :disabled="chat.requestPending"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                :title="chat.requestPending ? 'Your join request is pending' : 'Join this group'"
-              >
-                <span v-if="chat.requestPending">Request Pending</span>
-                <span v-else>Join Group</span>
-              </button>
-              <a
-                v-else
-                :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`"
-                class="btn btn-success btn-sm w-100 mt-2"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Visit Chat Room"
-              >
-                Visit Chat Room
-              </a>
-            </template>
+                {{ chat.group_title }}
+              </h5>
+            </a>
+            <p class="card-text fs-14">{{ chat.about }}</p>
+            <p class="card-text fs-12 text-muted">
+              Created on: {{ formatDate(chat.created_at) }}
+            </p>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <p class="fs-14 text-secondary mb-0">
+                <i
+                  v-if="chat.symbol && chat.exchange"
+                  class="bi bi-graph-up-arrow me-1"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Trading Symbol/Exchange"
+                ></i>
+                <span v-if="chat.symbol && chat.exchange">
+                  {{ chat.symbol }}/{{ chat.exchange }}
+                </span>
+                <span v-else>
+                  Members: {{ chat.members_count }}
+                </span>
+              </p>
+              <p class="mb-0">
+                <i
+                  :class="privacyIcon(chat.join_privacy)"
+                  class="me-1"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  :title="`${capitalize(chat.join_privacy)} group`"
+                ></i>
+                {{ capitalize(chat.join_privacy) }}
+              </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-3">
+              <template v-if="!loggedIn">
+                <button
+                  @click="handleSignIn"
+                  class="btn btn-secondary btn-sm w-100"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  title="Sign in to join this group"
+                >
+                  Sign in to Join
+                </button>
+              </template>
+              <template v-else>
+                <button
+                  v-if="!chat.joined"
+                  @click="joinChat(chat)"
+                  class="btn btn-primary btn-sm w-100"
+                  :class="{ 'btn-secondary': chat.requestPending }"
+                  :disabled="chat.requestPending"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  :title="chat.requestPending ? 'Your join request is pending' : 'Join this group'"
+                >
+                  <span v-if="chat.requestPending">Request Pending</span>
+                  <span v-else>Join Group</span>
+                </button>
+                <a
+                  v-else
+                  :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`"
+                  class="btn btn-success btn-sm w-100 mt-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Visit Chat Room"
+                >
+                  Visit Chat Room
+                </a>
+              </template>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div v-if="joined && lastPage > 1" class="mt-4">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">
+              Previous
+            </a>
+          </li>
+
+          <!-- Display a range of pages -->
+          <li
+            class="page-item"
+            v-for="page in visiblePages"
+            :key="page"
+            :class="{ active: page === currentPage }"
+          >
+            <a class="page-link" href="#" @click.prevent="changePage(page)">
+              {{ page }}
+            </a>
+          </li>
+
+          <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -140,6 +173,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    currentPage: {
+      type: Number,
+      default: 1,
+    },
+    lastPage: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -148,6 +189,7 @@ export default {
     };
   },
   created() {
+    console.log('Props:', this.chats, this.joined, this.currentPage, this.lastPage);
     this.checkLoginStatus();
   },
   watch: {
@@ -163,6 +205,24 @@ export default {
       deep: true,
     },
   },
+  computed: {
+    visiblePages() {
+      const pages = [];
+      const maxVisible = 5;
+      let start = Math.max(this.currentPage - Math.floor(maxVisible / 2), 1);
+      let end = start + maxVisible - 1;
+
+      if (end > this.lastPage) {
+        end = this.lastPage;
+        start = Math.max(end - maxVisible + 1, 1);
+      }
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      return pages;
+    },
+  },
   methods: {
     async checkLoginStatus() {
       this.loggedIn = await isLoggedIn();
@@ -171,10 +231,10 @@ export default {
       this.$store.dispatch('showLoginPopup');
       this.$store.dispatch('setRedirectPath', '/groups');
     },
-    handleGroup(chatId, title, requestPending){
-      if(this.loggedIn){
+    handleGroup(chatId, title, requestPending) {
+      if (this.loggedIn) {
         window.location.href = `/groups/${chatId}/${this.formatGroupName(title)}`;
-      }else{
+      } else {
         this.handleSignIn();
       }
     },
@@ -252,36 +312,17 @@ export default {
     privacyIcon(privacy) {
       return privacy === 'public' ? 'bi bi-globe' : 'bi bi-lock-fill';
     },
-    initializeTooltips() {
-      if (typeof bootstrap !== 'undefined') {
-        const tooltipTriggerList = [].slice.call(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        );
-        tooltipTriggerList.forEach((tooltipTriggerEl) => {
-          const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
-            trigger: 'hover',
-            delay: { hide: 100 },
-          });
-          this.tooltips.push(tooltip);
-        });
-      }
+    
+    changePage(page) {
+      if (page < 1 || page > this.lastPage) return;
+      this.$emit('page-changed', page);
     },
-    disposeTooltips() {
-      this.tooltips.forEach((tooltip) => tooltip.dispose());
-      this.tooltips = [];
-    },
-  },
-  mounted() {
-    this.initializeTooltips();
-  },
-  beforeUnmount() {
-    this.disposeTooltips();
   },
 };
 </script>
 
 <style scoped>
-a:hover{
+a:hover {
   cursor: pointer;
 }
 .chat-avatar-wrapper {
@@ -310,6 +351,6 @@ a:hover{
   left: 0;
   top: 0;
   width: 100%;
-  transition: .5s linear;
+  transition: 0.5s linear;
 }
 </style>

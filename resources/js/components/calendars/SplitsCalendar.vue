@@ -117,8 +117,7 @@
         </div>
       </div>
       <div class="col-lg-4">
-        <Markets />
-        <LatestArticles />
+        <SidebarCalendars v-if="this.contentLoaded"/>
       </div>
     </div>
   </div>
@@ -126,13 +125,11 @@
 
 <script>
 import axios from 'axios';
-import Markets from '../widgets/Markets.vue';
-import LatestArticles from '../widgets/LatestArticles.vue';
+import SidebarCalendars from './SidebarCalendars.vue';
 
 export default {
   components: {
-    LatestArticles,
-    Markets
+    SidebarCalendars
   },
   data() {
     return {
@@ -149,7 +146,8 @@ export default {
       activeTab: 'last7Days',
       tabNames: ['last30Days', 'last7Days', 'yesterday'],
       loadedTabs: new Set(),
-      initialRowCount: 50
+      initialRowCount: 50,
+      contentLoaded = false;
     };
   },
   methods: {
@@ -180,8 +178,7 @@ export default {
       const formatDate = (date) => date.toISOString().split('T')[0];
       
       try {
-        const response = await axios.get(`https://dev.stocks.richtv.io/api/splits-calendar?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
-        console.log(`Fetched data for ${tabName}:`, response.data);
+        const response = await axios.get(`/api/calendar/splits?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
         this.splitsEvents[tabName] = response.data;
         this.loadedTabs.add(tabName);
       } catch (error) {
@@ -228,6 +225,7 @@ export default {
   },
   mounted() {
     this.fetchSplitsCalendar(this.activeTab);
+    this.contentLoaded = true;
   }
 };
 </script>

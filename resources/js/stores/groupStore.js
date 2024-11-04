@@ -8,6 +8,11 @@ const userGroupModule = {
         groupData: {},
         suggestedChats: [],
         joinedChats: [],
+        currentPage: 1,
+        lastPage: 1,
+        perPage: 9,
+        isLoadingJoinedChats: false,
+        joinedChatsError: null,
         messages: [],
         newMessage: '',
         isLoading: false,
@@ -21,6 +26,24 @@ const userGroupModule = {
         setJoinedStatus(state, payload) {
             state.groupData.isJoined = payload.joined;
             state.groupData.requestPending = payload.requestPending;
+        },
+        setCurrentPage(state, page) {
+            state.currentPage = page;
+            console.log(page);
+        },
+        setLastPage(state, lastPage) {
+            state.lastPage = lastPage;
+            console.log(lastPage);
+        },
+        setPerPage(state, perPage) {
+            state.perPage = perPage;
+            console.log(perPage);
+        },
+        setLoadingJoinedChats(state, isLoading) {
+            state.isLoadingJoinedChats = isLoading;
+        },
+        setJoinedChatsError(state, error) {
+            state.joinedChatsError = error;
         },
         setSuggestedChats(state, chats) {
             state.suggestedChats = chats;
@@ -80,14 +103,22 @@ const userGroupModule = {
                 commit('setLoading', false);
             }
         },
-        async fetchJoinedChats({ commit }, userName = null) {
+        async fetchJoinedChats({ commit, state}, { userName = null, page = 1 }) {
             commit('setLoading', true);
             try {
-                const chats = await GroupService.fetchJoinedChats(userName);
-                commit('setJoinedChats', chats);
+                const per_page = state.perPage;
+                console.log(`UserName: ${userName}`);
+                const chats = await GroupService.fetchJoinedChats(userName, page, per_page);
+                console.log(chats);
+                commit('setJoinedChats', chats.data);
+                commit('setCurrentPage', chats.current_page);
+                commit('setLastPage', chats.last_page);
+                commit('setPerPage', chats.per_page);
+                commit('setJoinedChatsError', null);
             } catch (error) {
-                commit('setError', error.message);
+                commit('setJoinedChatsError', error.response?.data?.error || 'Failed to fetch joined chats');
             } finally {
+                commit('setLoadingJoinedChats', false);
                 commit('setLoading', false);
             }
         },

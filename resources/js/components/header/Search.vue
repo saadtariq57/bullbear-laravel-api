@@ -68,7 +68,7 @@
                                 <span class="col-2 text-end">{{ symbol.exchange }}</span>
                                 <span v-if="activeSymbolCategory === 'All'" class="col-2 text-end">{{ symbol.type }}</span>
                                 <div class="symbol-search-hover-overview position-absolute">
-                                  <a href="" class="text-white">See overview</a>
+                                  <a :href="getSymbolLink(symbol)" @click="handleNavigation" class="text-white">See overview</a>
                                 </div>
                               </a>
                             </li>

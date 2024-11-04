@@ -1,122 +1,109 @@
 <template>
-    <div class="position-relative">
+  <div class="position-relative">
     <ProfileGroupHeader context="profileHeader" ref="ProfileGroupHeader" />
     <div class="user-profile-info d-flex align-items-center" v-if="userProfileData">
-        <div>
+      <div>
         <div class="d-flex align-items-center gap-2">
-            <h1>{{ userProfileData.name }}</h1>
-            <span v-if="userProfileData.subscription_plan != 'free'"><i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i></span>
-            <span class="user-pro text-white px-2 py-1 fs-10 rounded-2" v-if="userProfileData.subscription_plan != 'free'">{{ userProfileData.subscription_plan }}</span>
+          <h1>{{ userProfileData.name }}</h1>
+          <span v-if="userProfileData.subscription_plan != 'free'">
+            <i class="bi bi-patch-check-fill fs-2 user-verified-icon"></i>
+          </span>
+          <span
+            class="user-pro text-white px-2 py-1 fs-10 rounded-2"
+            v-if="userProfileData.subscription_plan != 'free'"
+          >
+            {{ userProfileData.subscription_plan }}
+          </span>
         </div>
-        <p class="text-black fs-5"><span>{{ followersCount }} Followers</span> | <span>{{ followingsCount }} Followings</span></p>
-        </div>
-        <div>
-        <button v-if="!isOwnProfile && !isFollowing" type="button" class="btn btn-primary fs-6 fw-5 px-3" @click="handleFollowUser(userProfileData.id, followersCount)">
-            Follow
-        </button>
-        <button v-if="!isOwnProfile && isFollowing" type="button" class="btn btn-border fs-6 fw-5 px-3" @click="HandleUnfollowUser(userProfileData.id, followersCount)">
-            UnFollow
-        </button>
-            <a :href="'/profile/' + userData.name + '/setting'" class="btn btn-primary fs-6 fw-5 px-3" v-if="isOwnProfile"><i
-                    class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile</a>
+        <p class="text-black fs-5">
+          <span>{{ followersCount }} Followers</span> |
+          <span>{{ followingsCount }} Followings</span>
+        </p>
+      </div>
+      <div>
+        <!-- Use FollowButton Component -->
+        <FollowButton
+          v-if="!isOwnProfile"
+          :userId="userProfileData.id"
+          :initialIsFollowing="isFollowing"
+          :initialFollowersCount="followersCount"
+          @followed="handleFollowed"
+          @unfollowed="handleUnfollowed"
+          :userName="userProfileData.name"
+        />
+        <a
+          :href="'/profile/' + userData.name + '/setting'"
+          class="btn btn-primary fs-6 fw-5 px-3"
+          v-else
+        >
+          <i class="bi bi-pencil-fill fs-6 me-2"></i>Edit Profile
+        </a>
+      </div>
     </div>
-    </div>
-</div>
-    <div class="row user-chat-top-tab mb-3 px-2">
-        <div class="col-12 user-bottom-nav bg-white shadow overflow-auto profile-main-navtab">
-            <ul class="inner-tabs-btn nav justify-content-around flex-nowrap" id="admin-content-tab" role="tablist">
-                <li class="nav-item " role="presentation"> <a href="#"
-                        class="nav-link active user-li-navbtn text-secondary" id="user-Timeline-tab"
-                        data-bs-toggle="tab" data-bs-target="#user-Timeline" type="button" role="tab"
-                        aria-controls="user-Timeline" aria-selected="true">
-                        <span class="split-link d-block text-center"><i class="bi bi-ui-checks fs-18"></i></span>
-                        Timeline
-                    </a>
-                </li>
-                <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                        id="user-chat-tab" data-bs-toggle="tab" data-bs-target="#user-chat" type="button" role="tab"
-                        aria-controls="user-chat" aria-selected="false">
-                        <span class="split-link d-block text-center"><i class="bi bi-chat-right-dots fs-18"></i></span>
-                        Chat Room
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                        id="user-watchlists-tab" data-bs-toggle="tab" data-bs-target="#user-watchlists" type="button"
-                        role="tab" aria-controls="user-watchlists" aria-selected="false">
-                        <span class="split-link d-block text-center"><i class="bi bi-star-fill fs-18"></i></span>
-                        Watchlists
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                        id="user-photos-tab" data-bs-toggle="tab" data-bs-target="#user-photos" type="button" role="tab"
-                        aria-controls="user-photos" aria-selected="false">
-                        <span class="split-link d-block text-center"><i class="bi bi-image-fill fs-18"></i></span>
-                        Photos
-                    </a>
-                </li>
-
-                <li class="nav-item " role="presentation"> <a href="#" class="nav-link text-secondary user-li-navbtn"
-                        id="user-followers-tab" data-bs-toggle="tab" data-bs-target="#user-followers" type="button"
-                        role="tab" aria-controls="user-followers" aria-selected="false">
-                        <span class="split-link d-block text-center"><i class="bi bi-person-plus-fill fs-18"></i></span>
-                        Followers
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+  </div>
 </template>
+
 <script>
 import { mapState, mapActions } from 'vuex';
 import ProfileGroupHeader from '../header/ProfileGroupHeader.vue';
+import FollowButton from './FollowButton.vue';
+
 export default {
-    components: {
-        ProfileGroupHeader
+  components: {
+    ProfileGroupHeader,
+    FollowButton,
+  },
+  computed: {
+    ...mapState(['userData']),
+    ...mapState('userProfile', [
+      'userProfileData',
+      'message',
+      'success',
+      'isOwnProfile',
+      'isFollowing',
+      'followersCount',
+      'followingsCount',
+    ]),
+  },
+  methods: {
+    
+    // Handlers for FollowButton events
+    handleFollowed({ userId, followersCount }) {
+      console.log(`Followed user ${userId}. Total Followers: ${followersCount}`);
     },
-    computed: {
-        ...mapState(['userData']),
-        ...mapState('userProfile',['userProfileData', 'message', 'success', 'isOwnProfile', 'isFollowing', 'followersCount', 'followingsCount']),
+    
+    handleUnfollowed({ userId, followersCount }) {
+      // Similar to handleFollowed
+      console.log(`Unfollowed user ${userId}. Total Followers: ${followersCount}`);
     },
-    data() {
-        return {}
-    },
-    created() {
-        const context = 'profileHeader';
-    },
-    methods: {
-        ...mapActions('userProfile',['followUser', 'unfollowUser']),
-        handleFollowUser(userId, followersCount){
-            this.followUser({userId, followersCount});
-        },
-        HandleUnfollowUser(userId, followersCount){
-            this.unfollowUser({userId, followersCount});
-        }
-    },
-    mounted() {
-    }
-}
+  },
+  created() {
+    const context = 'profileHeader';
+  },
+};
 </script>
+
 <style>
-.user-profile-info{
-    position: absolute;
-    bottom: 45px;
-    left: 210px;
-    width: calc(100% - 230px);
-    justify-content: space-between;
-    flex-wrap: wrap;
+.user-profile-info {
+  position: absolute;
+  bottom: 45px;
+  left: 210px;
+  width: calc(100% - 230px);
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 @media (max-width: 767px) {
-    .inner-tabs-btn {
-        min-width: 660px;
-    }
-    .user-profile-info{
-        /* bottom: 110px; */
-        flex-direction: column;
-        position: relative;
-        justify-content: center;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-    }
+  .inner-tabs-btn {
+    min-width: 660px;
+  }
+  .user-profile-info {
+    /* bottom: 110px; */
+    flex-direction: column;
+    position: relative;
+    justify-content: center;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+  }
 }
 </style>

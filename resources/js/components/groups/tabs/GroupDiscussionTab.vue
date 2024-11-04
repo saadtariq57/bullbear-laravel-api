@@ -1,8 +1,8 @@
 <template>
   <div class="container pt-4" id="groupdiscussion-tab-pane">
-    <CreatePost context="group" :groupId="group_id" ref="createPost" />
+    <CreatePost context="group" :groupId="group_id" :groupName="group_name" ref="createPost" @post-created="handlePostCreated" @post-updated="handlePostUpdated" />
     <div class="pt-2 pb-1">
-      <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group" @show-post-modal="handleShowPostModal" />
+      <PostItems :posts="posts" :reactionTypes="reactionTypes" context="group" :groupName="group_name" @show-post-modal="handleShowPostModal" @show-edit-model="handleShowPostEditModal" @post-deleted="handlePostDeleted" />
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ export default {
   data() {
     return {
       group_id: this.$route.params.group_id,
+      group_name: this.$route.params.group_name,
       moduleRegistered: false
     };
   },
@@ -30,9 +31,22 @@ export default {
     ...mapState('userFeed', ['posts', 'isLoading', 'error', 'reactionTypes']),
   },
   methods: {
-    ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
-    handleShowPostModal(post) {
-      this.$refs.createPost.sharePostModal(post);
+    ...mapActions('userFeed', ['fetchPosts', 'addPost', 'updatePost', 'removePost', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+    handleShowPostModal(payload) {
+      const { post, groupId, groupName } = payload;
+      this.$refs.createPost.sharePostModal({post:post, groupId:groupId, groupName:groupName});
+    },
+    handlePostCreated(post){
+      this.addPost(post);
+    },
+    handlePostUpdated(post){
+      this.updatePost(post);
+    },
+    handlePostDeleted(postId){
+      this.removePost(postId);
+    },
+    handleShowPostEditModal(post){
+      this.$refs.createPost.showEditPostModal(post);
     }
   },
   watch: {

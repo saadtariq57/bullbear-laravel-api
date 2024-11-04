@@ -74,7 +74,14 @@
             tabindex="0"
           >
             <template v-if="joinedChats && joinedChats.length">
-              <ActiveChatRooms :chats="joinedChats" :joined="true" />
+              <ActiveChatRooms
+                :chats="joinedChats"
+                :joined="true"
+                :currentPage="currentPage"
+                :lastPage="lastPage"
+                @page-changed="handleJoinedChatsPageChange"
+                @chat-joined="onChatJoined"
+              />
             </template>
             <template v-else>
               <div class="text-center my-5 py-5">
@@ -151,7 +158,14 @@ export default {
     };
   },
   computed: {
-    ...mapState('UserGroups', ['suggestedChats', 'joinedChats', 'isLoading', 'error']),
+      ...mapState('UserGroups', [
+        'suggestedChats',
+        'joinedChats',
+        'isLoading',
+        'error',
+        'currentPage',
+        'lastPage',
+      ]),
   },
   created() {
     if (!this.$store.hasModule('UserGroups')) {
@@ -169,7 +183,7 @@ export default {
     async checkLoginStatus() {
       this.loggedIn = await isLoggedIn();
       if (this.loggedIn) {
-        this.fetchJoinedChats();
+        this.fetchJoinedChats({});
       }
     },
     handleSignIn() {
@@ -177,7 +191,10 @@ export default {
       this.$store.dispatch('setRedirectPath', '/groups');
     },
     onChatJoined() {
-      this.fetchJoinedChats();
+      this.fetchJoinedChats({});
+    },
+    handleJoinedChatsPageChange(page) {
+        this.fetchJoinedChats({ page });
     },
     initializeTooltips() {
       if (typeof bootstrap !== 'undefined') {
