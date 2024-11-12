@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div class="ownership-tab container-fluid tabContentMain">
     <div class="tab-content mt-4">
       <div 
         class="tab-pane fade show active" 

@@ -467,7 +467,7 @@ export default {
      * @param {String} category - The category name.
      */
     toggleSeeMore(category) {
-      this.$set(this.showAllExams, category, !this.showAllExams[category]);
+      this.showAllExams[category] = !this.showAllExams[category];
     },
 
     /**

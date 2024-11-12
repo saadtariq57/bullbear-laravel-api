@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div class="financials-tab container-fluid tabContentMain">
     <ul class="inner-tabs-btn nav border-0 nav-tabs justify-content-between" id="course-content-tab" role="tablist">
       <li class="nav-item" role="presentation" v-for="tab in tabs" :key="tab.id">
         <button 

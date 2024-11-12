@@ -1,5 +1,5 @@
 <template>
-  <div class="container pt-5 overflow-auto">
+  <div class="options-tab container-fluid tabContentMain overflow-auto">
     <h4 class="fs-6 fw-bold text-black text-capitalize">PRICE PERFORMANCE</h4>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error }}</div>
