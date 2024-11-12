@@ -725,8 +725,8 @@ export default {
 }
 
 .period-selector button {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 6px 10px;
+    font-size: 12px;
     border: none;
     border-radius: 4px;
     background-color: #f3f3f3; /* Light Grey */
@@ -753,8 +753,8 @@ export default {
 
 /* Interval Selector Styles */
 .interval-selector select {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 6px 10px;
+    font-size: 12px;
     border: 1px solid #f3f3f3; /* Light Grey */
     border-radius: 4px;
     background-color: #ffffff; /* White */
@@ -807,19 +807,18 @@ export default {
 
 /* Stock Control Icons */
 .am5stock-control-icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .am5stock-control-button {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 6px 10px;
+    font-size: 12px;
     background-color: #f3f3f3; /* Light Grey */
     color: #555961; /* Dark Grey */
     border: none;
@@ -827,7 +826,9 @@ export default {
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
-
+.am5stock-control-list li div, .am5stock-control-list li label{
+  font-size: 12px;
+}
 .am5stock-control-button:hover {
     background-color: #003566; /* CTA Hover */
     color: #ffffff; /* White */
@@ -850,10 +851,13 @@ export default {
     border-radius: 50%;
     opacity: 0.7;
 }
-
+.am5stock-control-label {
+    margin: 0px 5px 0px 5px;
+    font-size: 12px;
+}
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .chart-controls {
+    /* .chart-controls {
         flex-direction: column;
         align-items: stretch;
     }
@@ -869,7 +873,7 @@ export default {
     .am5stock-control-button {
         width: 100%;
         justify-content: center;
-    }
+    } */
 }
 
 /* Loader Styles */

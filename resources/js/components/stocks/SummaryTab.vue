@@ -1,5 +1,5 @@
 <template>
-  <div class="summary-tab container-fluid">
+  <div class="summary-tab container-fluid tabContentMain">
       <div class="ohlc-chart mt-4">
         <OHLCChart :symbol="symbol" :key="symbol" ref="ohlcChartRef" />
       </div>
@@ -12,7 +12,7 @@
         </h2>
         <div class="row g-4">
           <div class="col-lg-4 col-md-6" v-for="(stats, index) in keyStatsGroups" :key="index">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li
                   v-for="(item, itemIndex) in stats"
@@ -47,7 +47,7 @@
         </h2>
         <div class="row g-4">
           <div class="col-lg-4 col-md-6" v-for="(ratios, index) in ratiosGroups" :key="index">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li
                   v-for="(item, itemIndex) in ratios"
@@ -82,7 +82,7 @@
         </h2>
         <div class="row g-4">
           <div class="col-lg-4 col-md-6" v-for="(column, colIndex) in events" :key="colIndex">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li
                   v-for="(item, index) in column"
@@ -124,9 +124,9 @@
         <h2 class="text-black">
           <Skeletor width="100px" height="24px" />
         </h2>
-        <div class="row g-4">
+        <div class="row g-4 align-items-stretch">
           <div v-for="i in 3" :key="i" class="col-lg-4 col-md-6">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li v-for="j in 5" :key="j" class="list-group-item">
                   <Skeletor width="100%" height="20px" />
@@ -142,9 +142,9 @@
         <h2 class="text-black">
           <Skeletor width="180px" height="24px" />
         </h2>
-        <div class="row g-4">
+        <div class="row g-4 align-items-stretch">
           <div v-for="i in 3" :key="i" class="col-lg-4 col-md-6">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li v-for="j in 3" :key="j" class="list-group-item">
                   <Skeletor width="100%" height="20px" />
@@ -160,9 +160,9 @@
         <h2 class="text-black">
           <Skeletor width="80px" height="24px" />
         </h2>
-        <div class="row g-4">
+        <div class="row g-4 align-items-stretch">
           <div v-for="i in 3" :key="i" class="col-lg-4 col-md-6">
-            <div class="stats-card shadow-sm">
+            <div class="stats-card shadow">
               <ul class="list-group list-group-flush">
                 <li v-for="j in 2" :key="j" class="list-group-item">
                   <Skeletor width="100%" height="20px" />
@@ -477,20 +477,18 @@ export default {
 </script>
 
 <style scoped>
-.summary-tab {
-  padding: 20px;
-}
 
 .section-title {
-  font-size: 1.55rem;
+  font-size: 1.34rem;
   font-weight: 600;
   color: #343a40;
 }
 
 .stats-card {
   border-radius: 8px;
-  background-color: #ffffff;
   transition: transform 0.2s;
+  height: 100%;
+  background-color: #f8f9fa;
 }
 
 .stats-card:hover {

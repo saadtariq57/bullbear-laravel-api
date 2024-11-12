@@ -1,5 +1,5 @@
 <template>
-  <div class="container pt-5 px-3">
+  <div class="profile-tab container-fluid tabContentMain">
     <!-- Skeleton Loader -->
     <template v-if="isLoading">
       <div class="skeleton-loader">

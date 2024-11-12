@@ -1,5 +1,5 @@
 <template>
-  <div class="news-tab container">
+  <div class="news-tab container-fluid tabContentMain">
     <!-- Header Section -->
     <header class="header-divider mt-4 pt-2 d-flex justify-content-between align-items-center">
       <h3 class="text-black">Latest Updates for {{ symbol }}</h3>
