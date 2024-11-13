@@ -484,7 +484,7 @@ export default {
         if (this.groupData.isJoined || this.groupData.requestPending) return;
 
         axios
-            .post(`/api/groups/join/${this.groupData.group_id}`)
+            .post(`/api/groups/join/${this.groupData.id}`)
             .then((response) => {
                 this.$store.commit('userGroup/setJoinedStatus', {
                     joined: response.data.joined,
