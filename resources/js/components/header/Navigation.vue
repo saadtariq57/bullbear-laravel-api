@@ -139,9 +139,9 @@
                               <li><a class="dropdown-item nav-link" href="/markets/indices/indices-realtime">Indices Real-Time</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/indices/world-indices">World Indices</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/indices/global-indices">Global Indices</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/indices/dow-jones-futures">Dow Jones Futures</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/indices/s&p-500-futures">S&P 500 Futures</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/indices/nasdaq-futures">Nasdaq Futures</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/^DJI">Dow Jones Futures</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/^SPX">S&P 500 Futures</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/^NDX">Nasdaq Futures</a></li>
                             </ul>
                           </div>
                         </li>
@@ -152,7 +152,6 @@
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/trading-stocks">Trending Stocks</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/united-states">United States</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/stocks/europe">Europe</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/most-active">Most Active</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/top-gainers">Top Gainers</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/top-losers">Top Losers</a></li>
@@ -181,14 +180,13 @@
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
                             <a href="/markets/cryptocurrency" class="nav-link nested-nav-dropdown fw-4">Cryptocurrency</a>
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/cryptocurrency-pairs">Cryptocurrency Pairs</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin ETFs</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/bitcoin">Bitcoin</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/ethereum">Ethereum</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/cardano">Cardano</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/solana">Solana</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/dogecoin">Dogecoin</a></li>
-                              <li><a class="dropdown-item nav-link" href="/markets/cryptocurrency/shiba-inu">SHIBA INU</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/BTC-USD">Bitcoin</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/ETH-USD">Ethereum</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/ADA-USD">Cardano</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/SOL-USD">Solana</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/DOGE-USD">Dogecoin</a></li>
+                              <li><a class="dropdown-item nav-link" href="/quotes/SHIB-USD">SHIBA INU</a></li>
                             </ul>
                           </div>
                         </li>
@@ -197,7 +195,6 @@
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
                             <a href="/markets/etfs" class="nav-link nested-nav-dropdown fw-4">ETFs</a>
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
-                              <li><a class="dropdown-item nav-link" href="/markets/etfs/world-etfs">World ETFs</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/etfs/usa-etfs">USA ETFs</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/etfs/marijuana-etfs">Marijuana ETFs</a></li>
                             </ul>
@@ -463,15 +460,9 @@
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/indices/global-indices">Global Indices</a>
                                             </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/dow-jones-futures">Dow Jones Futures</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/s&p-500-futures">S&P 500 Futures</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/nasdaq-futures">Nasdaq Futures</a>
-                                            </li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^DJI">Dow Jones Futures</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
                                           </ul>
                                         </div>
                                       </div>
@@ -504,9 +495,6 @@
                                             </li>
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/stocks/united-states">United States</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/europe">Europe</a>
                                             </li>
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/stocks/most-active">Most Active</a>
@@ -599,29 +587,14 @@
                                         <div class="accordion-body pt-0">
                                           <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/cryptocurrency-pairs">Cryptocurrency Pairs</a>
-                                            </li>
-                                            <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin ETFs</a>
                                             </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/bitcoin">Bitcoin</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/ethereum">Ethereum</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/cardano">Cardano</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/solana">Solana</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/dogecoin">Dogecoin</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/shiba-inu">SHIBA INU</a>
-                                            </li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/BTC-USD">Bitcoin</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ETH-USD">Ethereum</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ADA-USD">Cardano</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SOL-USD">Solana</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/DOGE-USD">Dogecoin</a></li>
+                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SHIB-USD">SHIBA INU</a></li>
                                           </ul>
                                         </div>
                                       </div>
@@ -650,9 +623,6 @@
                                         <div class="accordion-body pt-0">
                                           <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/etfs/world-etfs">World ETFs</a>
-                                            </li>
-                                            <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/etfs/usa-etfs">USA ETFs</a>
                                             </li>
                                             <li>
@@ -668,9 +638,6 @@
                                 <!-- Additional Markets Links -->
                                 <li>
                                   <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency">Cryptocurrency</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/markets/currencies">Currencies</a>
                                 </li>
                                 <li>
                                   <a class="dropdown-item nav-link py-1" href="/markets/etfs">ETFs</a>
