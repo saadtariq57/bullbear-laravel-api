@@ -64,7 +64,7 @@ class SymbolController extends Controller
         return view('admin.symbols.index', compact('symbols'));
     }
 
-    public function search(Request $request)
+    /*public function search(Request $request)
     {
         $search = $request->input('query');
 
@@ -85,7 +85,39 @@ class SymbolController extends Controller
         }
 
         return response()->json($symbols);
+    }*/
+
+    public function search(Request $request)
+    {
+        $search = $request->input('query');
+
+        if ($search) {
+            $symbols = Symbol::select(['id', 'symbol', 'name', 'country', 'exchange', 'type', 'cik_code'])
+                            ->where('active', 1)
+                            ->where(function ($query) use ($search) {
+                                $query->where('symbol', 'LIKE', "%{$search}%")
+                                      ->orWhere('exchange', 'LIKE', "%{$search}%")
+                                      ->orWhere('name', 'LIKE', "%{$search}%")
+                                      ->orWhere('cik_code', 'LIKE', "%{$search}%");
+                            })
+                            ->orderByRaw("
+                                CASE 
+                                    WHEN symbol = '{$search}' THEN 1 
+                                    WHEN name = '{$search}' THEN 2 
+                                    WHEN symbol LIKE '{$search}%' THEN 3
+                                    WHEN name LIKE '{$search}%' THEN 4
+                                    ELSE 5 
+                                END
+                            ")
+                            ->limit(10)
+                            ->get();
+        } else {
+            $symbols = [];
+        }
+
+        return response()->json($symbols);
     }
+
 
     public function create()
     {
