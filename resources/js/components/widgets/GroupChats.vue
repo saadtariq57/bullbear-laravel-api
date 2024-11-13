@@ -77,7 +77,7 @@
             <a 
               v-for="group in filteredGroups" 
               :key="group.id"
-              @click="handleGroup(group.group_id, group.group_name)"
+              @click="handleGroup(group.id, group.group_name)"
               class="group-item d-flex justify-content-between align-items-center p-3 mb-3 bg-white rounded shadow-sm"
               data-bs-toggle="tooltip"
               data-bs-placement="right"

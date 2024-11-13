@@ -1313,14 +1313,133 @@ class WidgetController extends Controller
                 return null;
             })->filter(); // Remove null values (symbols without data)
             
-            $widget->makeHidden('widgetSymbols'); // Hide unnecessary widgetSymbols relation
+            $widget->makeHidden('widgetSymbols');
         });
 
         // Return the widgets data
         return response()->json($widgets);
     }
 
+    /*public function getWidgetsByCategory(Request $request)
+    {
+        $categoryName = strtolower($request->input('category'));
+        $subCategoryName = strtolower($request->input('subCategory'));
 
+        // Define mappings for subCategories to API types
+        $subCategoryApiTypeMap = [
+            'top-gainers'     => 'day_gainers',
+            'top-losers'      => 'day_losers',
+            'most-active'     => 'most_actives',
+            'trending-stocks' => 'undervalued_growth_stocks',
+        ];
 
+        // Check if the category is 'stocks' and a valid subcategory is provided
+        if ($categoryName === 'stocks' && array_key_exists($subCategoryName, $subCategoryApiTypeMap)) {
+            $apiType = $subCategoryApiTypeMap[$subCategoryName];
+
+            // Construct the API URL
+            $apiUrl = env('STOCKS_API_URL') . "/api/market-collections/{$apiType}";
+
+            try {
+                // Make the HTTP request to the external API
+                $response = Http::timeout(15)->get($apiUrl);
+
+                // Check if the response was successful
+                if ($response->failed()) {
+                    return response()->json(['message' => 'Failed to fetch stock data from external API'], 500);
+                }
+
+                $apiData = $response->json();
+
+                // If the API returns an empty array, respond accordingly
+                if (empty($apiData)) {
+                    return response()->json(['message' => 'No stock data found for the specified type'], 404);
+                }
+
+                // Transform the API data to match the widgets format
+                $widgets = collect([
+                    [
+                        'id' => null, // External data; no widget ID
+                        'category_id' => null, // External data; no category ID
+                        'display_order' => 1, // Default display order
+                        'symbols' => collect($apiData)->map(function ($stock) {
+                            return [
+                                'symbol_id'       => $stock['id'] ?? null,
+                                'symbol'          => $stock['symbol'] ?? null,
+                                'name'            => $stock['short_name'] ?? $stock['name'] ?? null,
+                                'type'            => $stock['quote_type'] ?? null,
+                                'price'           => $stock['regular_market_price'] ?? null,
+                                'added_date'      => isset($stock['created_at']) ? date('Y-m-d H:i:s', strtotime($stock['created_at'])) : null,
+                                'peak_price'      => $stock['fifty_two_week_high'] ?? null,
+                            ];
+                        })->filter()->values(), // Remove any null or invalid symbols and reindex
+                    ]
+                ]);
+
+                // Return the transformed widgets data
+                return response()->json($widgets);
+            } catch (\Exception $e) {
+                // Log the exception for debugging purposes
+                \Log::error('Error fetching stock data: ' . $e->getMessage());
+
+                // Return a generic error message
+                return response()->json(['message' => 'An error occurred while fetching stock data'], 500);
+            }
+        }
+
+        // Existing logic for non-stock categories or when subCategory is not specified
+        $query = Widget::query();
+
+        // Handle subCategory filtering first, if provided
+        if ($subCategoryName) {
+            $subCategory = WidgetCategory::where('name', $subCategoryName)->first();
+            if (!$subCategory) {
+                // Return early if subCategory is provided but not found
+                return response()->json(['message' => 'Subcategory not found'], 404);
+            }
+            $query->where('category_id', $subCategory->id);
+        } 
+        // Fallback to category if no subCategory is provided
+        else if ($categoryName) {
+            $category = WidgetCategory::where('name', $categoryName)->first();
+            if (!$category) {
+                // Return early if category is provided but not found
+                return response()->json(['message' => 'Category not found'], 404);
+            }
+            $query->where('category_id', $category->id);
+        }
+
+        // Load widgets with symbols, including symbol details
+        $widgets = $query->with(['widgetSymbols.symbol'])->orderBy('display_order')->get();
+
+        // If no widgets were found, return an appropriate message
+        if ($widgets->isEmpty()) {
+            return response()->json(['message' => 'No widgets found for the specified category or subcategory'], 404);
+        }
+
+        // Transform the data to include only necessary fields
+        $widgets->each(function ($widget) {
+            $widget->symbols = $widget->widgetSymbols->map(function ($widgetSymbol) {
+                // Check if the symbol exists
+                if ($widgetSymbol->symbol) {
+                    return [
+                        'symbol_id'       => $widgetSymbol->symbol_id,
+                        'symbol'          => $widgetSymbol->symbol->symbol,
+                        'name'            => $widgetSymbol->symbol->name,
+                        'type'            => $widgetSymbol->symbol->type,
+                        'price'           => $widgetSymbol->price,
+                        'added_date'      => $widgetSymbol->added_date,
+                        'peak_price'      => $widgetSymbol->peak_price,
+                    ];
+                }
+                return null;
+            })->filter()->values(); // Remove null values and reindex
+            
+            $widget->makeHidden('widgetSymbols'); // Hide unnecessary widgetSymbols relation
+        });
+
+        // Return the widgets data
+        return response()->json($widgets);
+    }*/
 
 }

@@ -24,17 +24,15 @@ class UserController extends Controller
         if($search) {
             $users = User::where('name', 'LIKE', "%{$search}%")
                              ->orWhere('email', 'LIKE', "%{$search}%")
-                             // ... add other fields if needed
                              ->paginate(15);
         } else {
             $users = User::paginate(15);
         }
-        if ($request->route()->named('admin.groups.*')) {
+        if ($request->route()->named('admin.groups.*') || $request->route()->named('admin.users.*')) {
             return view('admin.users.index', compact('users'));
         } else {
             return response()->json($users);
         }
-        
     }
 
     public function siteUserSearch(Request $request)

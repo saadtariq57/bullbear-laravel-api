@@ -66,7 +66,7 @@
                                                 </div>
                                             </th>
                                             <td>
-                                                <img src="{{ URL::asset($user->avatar) }}" alt="" class="avatar-xs rounded-circle me-2">
+                                                <img src="{{ URL::asset('uploads/' . $user->avatar) }}" alt="" class="avatar-xs rounded-circle me-2">
                                                 <a href="#" class="text-body">{{ $user->name }}</a>
                                             </td>
                                             <td>{{ $user->email }}</td>
