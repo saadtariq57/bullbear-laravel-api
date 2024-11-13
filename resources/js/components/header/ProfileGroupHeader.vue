@@ -120,7 +120,7 @@
                                     class="user-cover-wrapper position-relative bg-white d-flex justify-content-center align-items-center">
                                     <vue-cropper ref="covercropper" :src="selectedImage.preview" :view-mode="1"
                                         :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
-                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="16 / 9"
+                                        :crop-box-movable="true" :crop-box-resizable="true"
                                         @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
@@ -191,7 +191,7 @@
                                     class="user-avatar-wrapper position-relative bg-white rounded-circle d-flex justify-content-center align-items-center">
                                     <vue-cropper ref="cropper" :src="selectedImage.preview" :view-mode="1"
                                         :drag-mode="'move'" :guides="true" :zoomable="true" :scalable="true"
-                                        :crop-box-movable="true" :crop-box-resizable="true" :aspect-ratio="1"
+                                        :crop-box-movable="true" :crop-box-resizable="true"
                                         @cropmove="updatePreview" class="w-100 img-preview"></vue-cropper>
                                 </div>
                                 <!-- Zoom Controls -->
@@ -605,7 +605,7 @@ export default {
 
 .profile-cover-photo {
     width: 100%;
-    height: auto;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
