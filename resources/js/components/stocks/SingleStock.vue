@@ -238,7 +238,7 @@
       </div>
       
       <!-- Sidebar Widgets -->
-      <div class="col-lg-4">
+      <div class="col-lg-4 mb-5">
         <Markets v-if="this.contentLoaded"/>
         <GroupChats v-if="this.contentLoaded"/>
         <MarketMovers v-if="this.contentLoaded"/>

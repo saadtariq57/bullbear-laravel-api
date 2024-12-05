@@ -415,7 +415,7 @@ export default {
 /* Responsive Adjustments */
 @media (max-width: 767.98px) {
   .info-item {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: flex-start;
   }
 

@@ -51,7 +51,7 @@
                     <div>Post to Anyone</div>
                   </div>
                 </button>
-                <button type="button" class="btn-close align-self-baseline" @click="hidePostModal" aria-label="Close"></button>
+                <button type="button" class="btn-close align-self-baseline" @click="hidePostModalAndClearPost" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <div class="write-post-wrapper">
@@ -121,7 +121,7 @@
                   <div v-if="showLinkPreview && currentPostType === 'link'" class="link-preview-container px-sm-4 position-relative">
                     <div class="card preview-wrapper shadow mb-3">
                       <div class="link-preview-wrapper text-center rounded-top">
-                        <img :src="`/${linkData.image}`" alt="Link preview" class="link-image img-fluid rounded-top">
+                        <img :src="`${linkData.image}`" alt="Link preview" class="link-image img-fluid rounded-top">
                       </div>
                       <div class="link-details card-body">
                         <h3 class="link-title fs-5">{{ linkData.title }}</h3>
@@ -297,7 +297,7 @@
                   v-if="isEditing"
                   type="button"
                   class="btn btn-secondary"
-                  @click="hidePostModal"
+                  @click="hidePostModalAndClearPost"
                 >
                   Cancel
                 </button>
@@ -454,6 +454,7 @@ export default {
     isPublishable() {
       const hasContent = this.textContent.trim().length > 0;
       const isSpecialType = ['color', 'poll', 'photo', 'link'].includes(this.currentPostType);
+      console.log(hasContent);
       return hasContent || isSpecialType;
     },
   },
@@ -491,12 +492,27 @@ export default {
     hidePostModal() {
       this.postModalInstance.hide();
       setTimeout(() => this.removeBackdrop('postModal'), 150);
-      if(!this.isEditing){
+      if(!this.isPublishable){
         this.clearPostType();
         this.isEditing = false;
         this.$refs.uploadMediaComponent.resetStateParent();
         this.editPostId = null;
+        this.textContent = '';
       }
+      this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
+    },
+    hidePostModalAndClearPost() {
+      this.postModalInstance.hide();
+      setTimeout(() => this.removeBackdrop('postModal'), 150);
+      this.clearPostType();
+      this.$refs.createPollComponent.resetPoll();
+      this.isEditing = false;
+      this.$refs.uploadMediaComponent.resetStateParent();
+      this.editPostId = null;
+      this.textContent = '';
       this.sharePostPreview = null;
       this.shareContext = null;
       this.shareTargetGroupId = null;
@@ -511,7 +527,7 @@ export default {
       setTimeout(() => this.removeBackdrop('mediaPostModal'), 150);
     },
     handleBackFromUpload() {
-      if(!this.isEditing){
+      if(!this.isPublishable){
         console.log('Not Editing');
         this.clearPostType();
         this.$refs.uploadMediaComponent.resetStateParent();
@@ -581,7 +597,9 @@ export default {
       setTimeout(() => this.showPostModal(), 300);
     },
     backFromCreatePoll() {
-      this.clearPostType();
+      if(!this.isPublishable){
+        this.clearPostType();
+      }
       this.$refs.createPollComponent.resetPoll();
       this.hidePollPostModal();
       setTimeout(() => this.showPostModal(), 300);
@@ -717,6 +735,7 @@ export default {
     publishPost() {
       const formData = new FormData();
       this.isPublishing = true;
+      
       formData.append('user_id', this.userData.id);
       formData.append('post_type', this.currentPostType || 'text');
       formData.append('post_privacy', this.post_privacy);
@@ -834,7 +853,7 @@ export default {
       const formData = new FormData();
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       this.isPublishing = true;
-
+      console.log(this.editPostId);
       formData.append('post_id', this.editPostId);
       formData.append('post_type', this.currentPostType || 'text');
       formData.append('post_privacy', this.post_privacy);
@@ -928,7 +947,7 @@ export default {
   height: 240px;
 }
 .post-textarea textarea{
-  height: auto;
+  height: 240px!important;
 }
 .media-preview-container {
   max-height: 500px;

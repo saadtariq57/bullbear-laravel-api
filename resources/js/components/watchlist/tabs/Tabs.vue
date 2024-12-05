@@ -362,7 +362,7 @@ export default {
             watchlists.value = store.state.userWatchlists.watchlists;
             userHasWatchlist.value = store.state.userWatchlists.userHasWatchlist;
             if (watchlists.value.length > 0) {
-              selectedWatchlist.value = watchlists.value[0];
+              // selectedWatchlist.value = watchlists.value[0];
             }
             isLoading.value = false;
           })
@@ -428,13 +428,16 @@ export default {
                 <span>${row.symbol.quote.fiftyTwoWeekHigh}</span>
                 <span>${row.symbol.quote.fiftyTwoWeekLow}</span>
               </div>
-              <meter
-                class="w-100 position-relative"
-                value="${row.symbol.quote.price}"
-                min="${row.symbol.quote.fiftyTwoWeekLow}"
-                max="${row.symbol.quote.fiftyTwoWeekHigh}"
-                style="--caret-position: ${calculateCaretPosition(row)}%;">
-              </meter>
+              <div class="position-relative">
+                <meter
+                  class="w-100 position-relative"
+                  value="${row.symbol.quote.price}"
+                  min="${row.symbol.quote.fiftyTwoWeekLow}"
+                  max="${row.symbol.quote.fiftyTwoWeekHigh}">
+                  
+                </meter>  
+                <i class="bi bi-caret-up-fill" style="left: ${calculateCaretPosition(row)}; bottom: -10px; position: absolute;"></i>
+              </div>
             `;
           }
           return '';
@@ -535,7 +538,7 @@ export default {
       const low = parseFloat(row.symbol.quote.fiftyTwoWeekLow);
       const high = parseFloat(row.symbol.quote.fiftyTwoWeekHigh);
       const currentValue = parseFloat(row.symbol.quote.price);
-      const positionPercentage = ((currentValue - low) / (high - low)) * 100;
+      const positionPercentage = ((currentValue - low) / (high - low)) * 100 + 0.3;
       return `${positionPercentage - 3}%`;
     };
 
@@ -571,7 +574,7 @@ export default {
     const textChangeClasses = (row) => {
       const percentChange = parseFloat(row.symbol.quote.change_percent);
       const marketChange = parseFloat(row.symbol.quote.change);
-      const extraClasses = 'd-flex gap-3 justify-content-end';
+      const extraClasses = 'd-flex gap-3 justify-content-end txtCl';
       if (percentChange > 0 && marketChange > 0) {
         return 'green ' + extraClasses;
       } else {
@@ -620,6 +623,12 @@ export default {
 
 
 <style scoped>
+.txtCl.red span{
+  color:#ed5e49;
+}
+.txtCl.green span{
+  color:#38c786;
+}
 .fs-22 {
     font-size: 22px;
     text-align: center;

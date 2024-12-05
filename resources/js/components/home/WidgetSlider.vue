@@ -89,7 +89,7 @@ export default {
                 infinite: true,
                 speed: 1000,
                 autoplay: true,
-                slidesToShow: 5,
+                slidesToShow: 4,
                 slidesToScroll: 1,
                 responsive: [
                     {

@@ -26,7 +26,7 @@
                 </div>
                 <div class="user-info text-start">
                     <a :href="`/profile/${post.user.name}`" class="text-black fw-bold">{{ post.user.name }}</a>
-                    <a v-if="post.group_name && !post.originalPost" :href="`/${post.group_id}/${post.group_name}/discussion`" class="text-black fw-bold">
+                    <a v-if="post.group_name && !post.originalPost" :href="`/groups/${post.group_id}/${post.group_name}/discussion`" class="text-black fw-bold">
                     <i class="bi bi-caret-right-fill clr-primary"></i>
                     <span class="fw-semibold">
                       {{ formatGroupName(post.group_name) }} 
@@ -229,7 +229,7 @@
           <div v-if="post.post_type === 'link'" class="link-file">
             <a :href="post.post_link" target="_blank">
               <img
-                :src="'/uploads/' + post.post_link_image"
+                :src="post.post_link_image"
                 alt="Post image"
                 class="img-fluid w-100"
               />
@@ -255,7 +255,7 @@
                   {{ post.originalPost.user.name }}
                 </span>
                 </a>
-                <a v-if="post.originalPost.group_name" :href="`/${post.originalPost.group_id}/${post.originalPost.group_name}/discussion`">
+                <a v-if="post.originalPost.group_name" :href="`/groups/${post.originalPost.group_id}/${post.originalPost.group_name}/discussion`">
                 <i class="bi bi-caret-right-fill clr-primary"></i>
                 <span class="fw-semibold">
                   {{ formatGroupName(post.originalPost.group_name) }} 
@@ -417,7 +417,7 @@
                 <div class="link-file">
                   <a :href="post.originalPost.post_link" target="_blank">
                     <img
-                      :src="'/uploads/' + post.originalPost.post_link_image"
+                      :src="post.originalPost.post_link_image"
                       alt="Post image"
                       class="img-fluid w-100"
                     />
@@ -1419,5 +1419,8 @@ export default {
 .shared-post-preview .follow-button,
 .shared-post-preview .join-group-button {
   margin-left: auto;
+}
+.post-description {
+  white-space: pre-wrap;
 }
 </style>
