@@ -38,20 +38,29 @@ class FetchYouTubePlaylist extends Command
             ]);
 
             if ($response->successful()) {
-                $videos = collect($response->json()['items'])->map(function ($item) use ($playlistId) {
-                    return [
-                        'id' => $item['id'],
-                        'title' => $item['snippet']['title'],
-                        'description' => $item['snippet']['description'],
-                        'thumbnail_url' => $item['snippet']['thumbnails']['high']['url'],
-                        'youtube_id' => $item['snippet']['resourceId']['videoId'],
-                        'playlist_id' => $playlistId,
-                        'channel_title' => $item['snippet']['channelTitle'] ?? null,
-                        'published_at' => isset($item['snippet']['publishedAt'])
-                            ? Carbon::parse($item['snippet']['publishedAt'])->format('Y-m-d H:i:s')
-                            : null,
-                    ];
-                });
+                $videos = collect($response->json()['items'])
+                    ->filter(function ($item) {
+                        // Ensure at least one thumbnail is available
+                        return isset($item['snippet']['thumbnails']['high']['url']) 
+                            || isset($item['snippet']['thumbnails']['medium']['url']) 
+                            || isset($item['snippet']['thumbnails']['default']['url']);
+                    })
+                    ->map(function ($item) use ($playlistId) {
+                        return [
+                            'id' => $item['id'],
+                            'title' => $item['snippet']['title'],
+                            'description' => $item['snippet']['description'],
+                            'thumbnail_url' => $item['snippet']['thumbnails']['high']['url'] 
+                                    ?? $item['snippet']['thumbnails']['medium']['url'] 
+                                    ?? $item['snippet']['thumbnails']['default']['url'],
+                            'youtube_id' => $item['snippet']['resourceId']['videoId'],
+                            'playlist_id' => $playlistId,
+                            'channel_title' => $item['snippet']['channelTitle'] ?? null,
+                            'published_at' => isset($item['snippet']['publishedAt'])
+                                ? Carbon::parse($item['snippet']['publishedAt'])->format('Y-m-d H:i:s')
+                                : null,
+                        ];
+                    });
 
                 // Remove existing videos for this playlist
                 Video::where('playlist_id', $playlistId)->delete();
