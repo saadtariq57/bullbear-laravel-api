@@ -7,8 +7,7 @@
         <div class="col-lg-7 px-0">
           <div class="main-heading">
             <h1 class="text-black fw-bolder mb-3">NAVIGATE MARKETS <br>TOGETHER!</h1>
-            <p class="mb-5 lh-base text-black">CONQUER MARKET LABYRINTHS: SAVVY INSIGHTS &amp; DYNAMIC
-              CHATS.
+            <p class="mb-5 lh-base text-black">JOIN THE BEST NEWSLETTER: SAVVY INSIGHTS AND DYNAMIC CHATS
             </p>
           </div>
           

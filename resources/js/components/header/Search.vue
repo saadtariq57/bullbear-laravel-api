@@ -190,7 +190,22 @@ export default {
     ...mapState('searchResults', ['symbolResults', 'groupsResults', 'membersResults', 'defaultGroupsResults', 'defaultMembersResults']),
     filteredSymbols() {
       if (this.search) {
-        return this.symbolResults;
+        // console.log(this.symbolResults);
+        if (this.activeSymbolCategory === 'All') {
+          return this.symbolResults;
+        } else {
+            // Categorize the data based on type
+            const categorizedData = {
+                ETF: this.symbolResults.filter(item => item.type.toLowerCase() === 'etf'),
+                Stocks: this.symbolResults.filter(item => item.type.toLowerCase() === 'stocks'),
+                Indices: this.symbolResults.filter(item => item.type.toLowerCase() === 'indices'),
+                Crypto: this.symbolResults.filter(item => item.type.toLowerCase() === 'crypto'),
+            };
+
+            // Return data matching the active category
+            return categorizedData[this.activeSymbolCategory] || [];
+        }
+        // return this.symbolResults;
       } else {
         if (this.activeSymbolCategory === 'All') {
           return Object.values(this.defaultSymbols).flat();

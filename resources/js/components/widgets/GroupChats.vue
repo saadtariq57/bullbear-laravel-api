@@ -1,6 +1,6 @@
 <template>
   <div class="col-xl-4 col-lg-6">
-    <div class="groups-widget mb-4 shadow-lg rounded-lg overflow-hidden border-grey border border-top border-2 border-warning widgets-border">
+    <div class="groups-widget mb-4 shadow-lg rounded-lg overflow-hidden border-grey border border-top border-2 border-warning widgets-border rounded">
       
       <!-- Updated Header to Match Old Design -->
       <div class="widget-header d-flex justify-content-between align-items-center p-3 border-bottom border-grey">
@@ -322,7 +322,6 @@ a:hover{
 .groups-widget {
   background-color: #ffffff;
   border: 1px solid #dee2e6;
-  border-radius: 1rem;
 }
 
 .widget-header {

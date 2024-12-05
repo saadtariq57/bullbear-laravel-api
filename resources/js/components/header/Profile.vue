@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex gap-3">
         <!-- Followers -->
-        <div class="btn-group dropdown-hover">
+        <div class="btn-group dropdown-hover btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
                 <span class="notification-count">{{ followers.length }}</span>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- Messages -->
-        <div class="btn-group dropdown-hover">
+        <div class="btn-group dropdown-hover btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-dots fs-4"></i>
                 <span class="notification-count">{{ messages.length }}</span>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- General Notifications -->
-        <div class="btn-group dropdown-hover">
+        <div class="btn-group dropdown-hover btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill fs-4"></i>
                 <span class="notification-count">{{ notifications.length }}</span>
@@ -63,7 +63,7 @@
             </ul>
         </div>
     <!-- Profile Links -->
-    <div class="dropdown-center dropdown-hover">
+    <div class="dropdown-center dropdown-hover btn-drps">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div class="img">
@@ -82,6 +82,7 @@
             <li class="px-4 pb-4">
                 <div class="bg-white rounded-3 px-3 py-3 w180">
                     <!-- <a class="dropdown-item text-black ps-0 fw-6" href="/profile/`${ userData.id }`">My Profile</a> -->
+                    <a class="dropdown-item text-black ps-0 fw-6" href="/feed/">My Feed</a>
                     <a class="dropdown-item text-black ps-0 fw-6" :href="'/profile/'+userData.name">My Profile</a>
                     <a class="dropdown-item text-black ps-0 fw-6" href="/pricing">Upgrade To Pro</a>
                     <!-- <a class="dropdown-item text-black ps-0 fw-6" href="#">Find Friend</a> -->
@@ -158,6 +159,9 @@ export default {
 };
 </script>
 <style>
+.btn-drps{
+    padding: 10px 5px;
+}
 .header_notification{
     max-height: 316px;
     overflow: auto;
