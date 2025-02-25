@@ -287,6 +287,7 @@
                         <li><a class="dropdown-item nav-link" href="/richtv-live">RichTv Live</a></li>
                         <li><a class="dropdown-item nav-link" href="/glossary/">Glossary</a></li>
                         <li><a class="dropdown-item nav-link" href="/blog/trading-strategies/">Trading Strategies</a></li>
+                        <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
                       </ul>
                     </div>
                   </li>
@@ -768,6 +769,7 @@
                                 <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/glossary/">Glossary</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
+                                <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
                               </ul>
                             </div>
                           </div>
