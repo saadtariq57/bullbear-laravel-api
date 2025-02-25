@@ -300,6 +300,11 @@ const routes = [
         path: '/quotes/:symbol',
         name: 'quote',
         component: () => import('./components/stocks/SingleStock.vue'),
+    },
+    {
+        path: '/academy/how-to-buy-cryptocurrency',
+        name: 'quote',
+        component: () => import('./components/academy/BuyCrypto.vue'),
     }
 ];
 

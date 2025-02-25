@@ -355,7 +355,7 @@ a:hover{
 }
 
 .widget-content {
-  max-height: 39vh;
+  max-height: 424px;
   overflow-y: auto;
 }
 
