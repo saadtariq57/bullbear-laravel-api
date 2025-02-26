@@ -2,7 +2,7 @@
 <main class="buy_crypto_main">
     <div class="header">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center test">
               <div class="col-lg-6">
               <img src="/build/images/buy_crypto_hero.jpg" alt="guide image" class="img-fluid rounded-3">
             </div>
