@@ -2,7 +2,7 @@
 <main class="buy_crypto_main">
     <div class="header">
         <div class="container">
-            <div class="row align-items-center test">
+            <div class="row align-items-center">
               <div class="col-lg-6">
               <img src="/build/images/buy_crypto_hero.jpg" alt="guide image" class="img-fluid rounded-3">
             </div>
@@ -15,8 +15,9 @@
         </div>
     </div>
     <!-- Introduction Section -->
-    <section class="intro container">
-      <div class=" row align-items-center flex-column-reverse flex-lg-row ">
+    <section class="intro">
+      <div class="container">
+        <div class=" row align-items-center flex-column-reverse flex-lg-row ">
         <div class="intro__content col-lg-6">
           <h2 class="intro__title">Introduction</h2>
           <p class="intro__text">Cryptocurrency exchanges are the backbone of the crypto ecosystem, offering users the ability to buy, sell, and trade digital assets. In this guide, we’ll cover the registration process and buying methods for five popular exchanges: Binance, MEXC, KuCoin, Hotbit, and Bitget. Whether you're a beginner or a seasoned trader, these platforms offer unique features and benefits to help you start your crypto journey.</p>
@@ -25,11 +26,14 @@
           <img src="/build/images/buy_crypto_1.png" alt="Cryptocurrency Introduction" class="intro__image mb-4 mb-lg-0">
         </div>
       </div>
+      </div>
+      
     </section>
 
     <!-- What is a Cryptocurrency Exchange? -->
-    <section class="what-is-exchange container">
-      <div class=" row align-items-center">
+    <section class="what-is-exchange">
+      <div class="container">
+        <div class=" row align-items-center">
         <div class="col-lg-6">
           <img src="/build/images/buy_crypto_2.png" alt="Cryptocurrency Exchange" class="what-is-exchange__image mb-4 mb-lg-0">
         </div>
@@ -39,6 +43,8 @@
           <p class="what-is-exchange__text">These platforms offer a range of tools for different types of traders, from beginners who want simple buy/sell functionality to advanced traders who use margin trading, futures, and staking options.</p>
         </div>
       </div>
+      </div>
+     
     </section>
 
     <!-- How to Open an Account -->
@@ -51,9 +57,9 @@
               <h3 class="step__title">Step 1: Visit the Website</h3>
               <p class="step__text">Opening an account on popular cryptocurrency exchanges like Binance, MXC, KuCoin, Hotbit, and Bitget is a straightforward process. Each platform has its own registration procedure, but the general steps are quite similar. Follow this guide to learn how to sign up and secure your account on these exchanges, so you can start trading cryptocurrencies with ease.</p>
               <div class="exchange-links">
-                <a href="https://www.binance.com" class="exchange-link" target="_blank">Binance</a>
-                <a href="https://www.mxc.com" class="exchange-link" target="_blank">MXC</a>
-                <a href="https://www.kucoin.com" class="exchange-link" target="_blank">KuCoin</a>
+                <a href="https://www.binance.info/activity/referral-entry/CPA?ref=CPA_00AS5N1V4F&utm_medium=app_share_link_whatsapp" class="exchange-link" target="_blank">Binance</a>
+                <a href="https://refer.ndax.io/Q2ZY" class="exchange-link" target="_blank">Ndax</a>
+                <a href="https://crypto.com/app/jsz6yretvh" class="exchange-link" target="_blank">Crypto</a>
                 <a href="https://www.hotbit.io" class="exchange-link" target="_blank">Hotbit</a>
                 <a href="https://www.bitget.com" class="exchange-link" target="_blank">Bitget</a>
               </div>
@@ -304,5 +310,22 @@
     .step--with-image .step__image {
       max-width: 100%;
     }
+  }
+  @media (max-width: 576px) {
+    .buy_crypto_main  h2 {
+    font: 700 24px / 33px Poppins;
+}
+.buy_crypto_main .step {
+    padding: 0;
+}
+.buy_crypto_main section h2 {
+    margin-bottom: 10px;
+}
+.header__title {
+    font-size: 1.5rem;
+}
+.buy_crypto_main section {
+    padding: 20px 0;
+}
   }
 </style>
