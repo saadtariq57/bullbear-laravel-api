@@ -105,46 +105,59 @@
                         <div id="mauticform_wrapper_richtvleadmagnetfooter" class="mauticform_wrapper">
                             <form autocomplete="false" role="form" method="post" action="https://mailer.servicesground.com/form/submit?formId=64" id="mauticform_richtvleadmagnetfooter" data-mautic-form="richtvleadmagnetfooter" enctype="multipart/form-data">
                                 <div class="mauticform-innerform">
-                                <div class="mauticform-page-wrapper mauticform-page-1" data-mautic-form-page="1">
-                                    <div id="mauticform_richtvleadmagnetfooter_email" data-validate="email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required">
-                                        <input id="mauticform_input_richtvleadmagnetfooter_email" name="mauticform[email]" value="" placeholder="Enter your email" class="mauticform-input" type="email">
-                                        <div id="mauticform_richtvleadmagnetfooter_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-3">
-                                            <button type="submit" name="mauticform[submit]" id="mauticform_input_richtvleadmagnetfooter_submit" value="" class="mauticform-button btn btn-default">
-                                                <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
-                                            </button>
+                                    <div class="mauticform-page-wrapper mauticform-page-1" data-mautic-form-page="1">
+                                        <!-- Email Input -->
+                                        <div id="mauticform_richtvleadmagnetfooter_email" data-validate="email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required">
+                                            <input id="mauticform_input_richtvleadmagnetfooter_email" name="mauticform[email]" value="" placeholder="Enter your email" class="mauticform-input" type="email">
+                                            <!-- Honeypot Field -->
+                                            <input type="text" name="mauticform[honeypot]" id="mauticform_honeypot" style="display:none;">
+                                            
+                                            <div id="mauticform_richtvleadmagnetfooter_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-3">
+                                                <button type="submit" name="mauticform[submit]" id="mauticform_input_richtvleadmagnetfooter_submit" value="" class="mauticform-button btn btn-default" disabled>
+                                                    <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span class="mauticform-errormsg" style="display: none;">Enter Correct Email</span>
-                                    <div class="mauticform-error" id="mauticform_richtvleadmagnetfooter_error"></div>
-                                    <div class="mauticform-message" id="mauticform_richtvleadmagnetfooter_message"></div>
-                                    <div id="mauticform_richtvleadmagnetfooter_consent_box" data-validate="consent_box" data-validation-type="checkboxgrp" class="mauticform-row mauticform-checkboxgrp mauticform-field-2 mauticform-required">
-                                        <div class="mauticform-checkboxgrp-row">                    <input class="mauticform-checkboxgrp-checkbox" name="mauticform[consent_box][]" id="mauticform_checkboxgrp_checkbox_consent_box_00" type="checkbox" value="0">
-                                            <label id="mauticform_checkboxgrp_label_consent_box_00" for="mauticform_checkboxgrp_checkbox_consent_box_00" class="mauticform-checkboxgrp-label">I agree to receive newsletter and email alerts.</label>
+                                        <span class="mauticform-errormsg" id="mauticform_email_error" style="display: none;">Enter a valid email</span>
+                        
+                                        <!-- Consent Checkbox -->
+                                        <div id="mauticform_richtvleadmagnetfooter_consent_box" data-validate="consent_box" data-validation-type="checkboxgrp" class="mauticform-row mauticform-checkboxgrp mauticform-field-2 mauticform-required">
+                                            <div class="mauticform-checkboxgrp-row">
+                                                <input class="mauticform-checkboxgrp-checkbox" name="mauticform[consent_box][]" id="mauticform_checkboxgrp_checkbox_consent_box_00" type="checkbox" value="0">
+                                                <label id="mauticform_checkboxgrp_label_consent_box_00" for="mauticform_checkboxgrp_checkbox_consent_box_00" class="mauticform-checkboxgrp-label">I agree to receive newsletters and email alerts.</label>
+                                            </div>
                                         </div>
-                                        <span class="mauticform-errormsg" style="display: none;">please check the consent box</span>
-                                    </div>
                                     </div>
                                 </div>
-
+                        
                                 <input type="hidden" name="mauticform[formId]" id="mauticform_richtvleadmagnetfooter_id" value="64">
                                 <input type="hidden" name="mauticform[return]" id="mauticform_richtvleadmagnetfooter_return" value="">
                                 <input type="hidden" name="mauticform[formName]" id="mauticform_richtvleadmagnetfooter_name" value="richtvleadmagnetfooter">
-
                             </form>
                         </div>
-                             <!-- <form id="f_contactform" method="post" action="" class="footeremlcollector">
-                                 <input type="email" placeholder="Enter your email" class="footer-serch" name="f_email"
-                                     id="f_email" fdprocessedid="31it58">
-                                 <input type="text" id="hiddenspm-footer1" class="mauticform-input"
-                                     style="display:none;">
-                                 <button class="position-absolute btn-primary" type="submit" id="sub_footer"
-                                     aria-label="Newsletter Button" fdprocessedid="d97vyg">
-                                     <div class="d-inline-block">
-                                         <i class="bi bi-arrow-right fw-6 footer-newsletter-icon"></i>
-                                     </div>
-                                 </button>
-                             </form> -->
                         
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const emailInput = document.getElementById("mauticform_input_richtvleadmagnetfooter_email");
+                                const submitButton = document.getElementById("mauticform_input_richtvleadmagnetfooter_submit");
+                                const errorMessage = document.getElementById("mauticform_email_error");
+                                const honeypot = document.getElementById("mauticform_honeypot");
+                        
+                                function validateEmail() {
+                                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    if (emailInput.value.trim() === "" || !emailPattern.test(emailInput.value)) {
+                                        errorMessage.style.display = "block";
+                                        submitButton.disabled = true;
+                                    } else {
+                                        errorMessage.style.display = "none";
+                                        submitButton.disabled = honeypot.value ? true : false;
+                                    }
+                                }
+                        
+                                emailInput.addEventListener("input", validateEmail);
+                                honeypot.addEventListener("input", () => submitButton.disabled = true);
+                            });
+                        </script>                                                
                          <div class="err" id="err-f_email" style="display: none;"></div>
                          <div class="formsubmission" id="f_formsubmission">
                              <p class="formsubmission-text"></p>
