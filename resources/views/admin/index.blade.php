@@ -278,7 +278,7 @@
                         @foreach($latestWatchlists as $watchlist)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="mb-0">{{ $watchlist->user->name }} added a new watchlist</h6>
+                                    <h6 class="mb-0">{{ $watchlist->user->name ?? 'N/A' }} added a new watchlist</h6>
                                     <p class="mb-0 text-muted">{{ \Carbon\Carbon::parse($watchlist->created_at)->diffForHumans() }}</p>
                                 </div>
                                 <span class="badge bg-primary rounded-pill">Watchlist #{{ $watchlist->id }}</span>

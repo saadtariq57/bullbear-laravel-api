@@ -14,7 +14,6 @@
 
         <!-- Embedded Stream -->
         <div v-else-if="embeddedStream">
-          <h2 class="mb-4 fs-2 fw-bold icon-heading">{{ embeddedStream.title }}</h2>
           <div class="frame_embeded">
             <iframe
               :src="embeddedStream.src"
@@ -36,17 +35,17 @@
         <!-- Not Live at the Moment -->
         <div v-else class="not_live">
           <p>
-            We are not live at the moment. Check out our latest videos.
+            We are not live at the moment. Check out our previous live sessions.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Latest Videos Section -->
+    <!-- previous live session Section -->
     <div class="latest_videos mt-5 pt-2">
       <div class="my-4 position-relative">
         <div class="text-center">
-          <h1 class="fw-bold fs-1 text-uppercase">Latest Videos</h1>
+          <h1 class="fw-bold fs-1 text-uppercase">Previous Live Sessions</h1>
           <div class="border-heading d-inline-block mt-4 mb-5"></div>
         </div>
 
@@ -156,7 +155,7 @@ export default {
     return {
       embeddedStream: null,
       liveError: false,
-      liveErrorMessage: "We are not live at the moment. Check out our latest videos.",
+      liveErrorMessage: "We are not live at the moment. Check out our Live Sessions.",
       loadingLive: true,
       videos: [],
       displayedVideos: [],
@@ -302,6 +301,19 @@ export default {
 </script>
 
 <style scoped>
+.frame_embeded{
+  position: relative;
+    height: 0;
+    overflow: hidden;
+    padding-bottom: 56.25%;
+}
+.frame_embeded iframe{
+  position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 /* Skeleton Loader Styles */
 .skeleton {
   background-color: #e0e0e0;
