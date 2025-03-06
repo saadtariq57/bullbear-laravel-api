@@ -39,7 +39,7 @@ class InjectSeoMeta
                     'twitter:image' => url('/build/images/OG/richtv.jpg'),
                 ];
                 break;
-                case '/how-to-buy-cryptocurrency':
+                case 'buy-crypto':
                     $meta = [
                         'title' => 'Step-by-Step Guide to Buying Cryptocurrency Safely',
                         'description' => 'Learn how to buy cryptocurrency securely with our easy-to-follow guide. Discover trusted exchanges, wallet setup, and safety tips.',
@@ -55,7 +55,7 @@ class InjectSeoMeta
                         'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
                     ];
                     break;
-                    case '/previous-performance':
+                    case 'previous-performence':
                         $meta = [
                             'title' => 'RichTv Monthly Trading Performance Reports',
                             'description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
