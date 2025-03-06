@@ -11,6 +11,7 @@ use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\TradingReportController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -223,6 +224,32 @@ Route::middleware(['auth'])->group(function () {
             Route::put('{subscription_plan}', [SubscriptionPlanController::class, 'update'])->name('update');
             Route::delete('{subscription_plan}', [SubscriptionPlanController::class, 'destroy'])->name('destroy');
             // Additional routes for subscription plan management can be added here
+        });
+        // previous performence
+        Route::prefix('admin/trading-reports')->name('admin.trading_reports.')->group(function () {
+            // Reports Routes
+            Route::get('/', [TradingReportController::class, 'index'])->name('index');
+            Route::get('create', [TradingReportController::class, 'create'])->name('create');
+            Route::post('/', [TradingReportController::class, 'store'])->name('store');
+            Route::get('{tradingReport}/edit', [TradingReportController::class, 'edit'])->name('edit');
+            Route::put('{tradingReport}', [TradingReportController::class, 'update'])->name('update');
+            Route::delete('{tradingReport}', [TradingReportController::class, 'destroy'])->name('destroy');
+
+            // Profits Routes
+            Route::get('{tradingReport}/profits', [TradingReportController::class, 'profitsIndex'])->name('profits.index');
+            Route::post('{tradingReport}/profits', [TradingReportController::class, 'profitsStore'])->name('profits.store');
+            Route::put('profits/{tradingProfit}', [TradingReportController::class, 'profitsUpdate'])->name('profits.update');
+            Route::delete('profits/{tradingProfit}', [TradingReportController::class, 'profitsDestroy'])->name('profits.destroy');
+
+            // Categories Routes
+            Route::prefix('performance-categories')->name('performance_categories.')->group(function () {
+                Route::get('/', [TradingReportController::class, 'categoriesIndex'])->name('index');
+                Route::get('create', [TradingReportController::class, 'categoriesCreate'])->name('create');
+                Route::post('/', [TradingReportController::class, 'categoriesStore'])->name('store');
+                Route::get('{tradingPerformanceCategory}/edit', [TradingReportController::class, 'categoriesEdit'])->name('edit');
+                Route::put('{tradingPerformanceCategory}', [TradingReportController::class, 'categoriesUpdate'])->name('update');
+                Route::delete('{tradingPerformanceCategory}', [TradingReportController::class, 'categoriesDestroy'])->name('destroy');
+            });
         });
     });
 });

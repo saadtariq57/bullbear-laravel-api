@@ -39,6 +39,38 @@ class InjectSeoMeta
                     'twitter:image' => url('/build/images/OG/richtv.jpg'),
                 ];
                 break;
+                case '/how-to-buy-cryptocurrency':
+                    $meta = [
+                        'title' => 'Step-by-Step Guide to Buying Cryptocurrency Safely',
+                        'description' => 'Learn how to buy cryptocurrency securely with our easy-to-follow guide. Discover trusted exchanges, wallet setup, and safety tips.',
+                        'keywords' => 'Buy Cryptocurrency, Crypto Purchasing Guide, Secure Crypto Transactions, Crypto Wallets, Exchange Platforms',
+                        'og:title' => 'Step-by-Step Guide to Buying Cryptocurrency Safely',
+                        'og:description' => 'Learn how to buy cryptocurrency securely with our easy-to-follow guide. Discover trusted exchanges, wallet setup, and safety tips.',
+                        'og:type' => 'website',
+                        'og:url' => url('/how-to-buy-cryptocurrency'),
+                        'og:image' => url('/build/images/OG/default-og-image.jpg'), 
+                        'twitter:card' => 'summary_large_image',
+                        'twitter:title' => 'Step-by-Step Guide to Buying Cryptocurrency Safely',
+                        'twitter:description' => 'Learn how to buy cryptocurrency securely with our easy-to-follow guide. Discover trusted exchanges, wallet setup, and safety tips.',
+                        'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
+                    ];
+                    break;
+                    case '/previous-performance':
+                        $meta = [
+                            'title' => 'RichTv Monthly Trading Performance Reports',
+                            'description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
+                            'keywords' => 'Trading Performance, Monthly Profit Reports, Crypto Returns, Market Analysis, Investment Results',
+                            'og:title' => 'RichTv Monthly Trading Performance Reports',
+                            'og:description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
+                            'og:type' => 'website',
+                            'og:url' => url('/previous-performance'),
+                            'og:image' => url('/build/images/OG/default-og-image.jpg'),
+                            'twitter:card' => 'summary_large_image',
+                            'twitter:title' => 'RichTv Monthly Trading Performance Reports',
+                            'twitter:description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
+                            'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
+                    ];
+                    break;
 
             case 'about-us':
                 $meta = [

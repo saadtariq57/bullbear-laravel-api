@@ -24,7 +24,8 @@ use App\Http\Controllers\{
     WatchlistController,
     WidgetController,
     StockScreenerController,
-    ContactController
+    ContactController,
+    TradingReportController
 };
 
 /*
@@ -43,7 +44,9 @@ use App\Http\Controllers\{
 | Non-Authenticated Routes
 |--------------------------------------------------------------------------
 */
-
+// Performence routes
+Route::get('/categories-with-reports', [TradingReportController::class, 'getCategoriesWithReports']);
+Route::get('/report-profits/{reportId}', [TradingReportController::class, 'getReportProfits']);
 // Authentication & User Registration
 Route::get('/check-login', function () {
     if (auth()->check()) {
