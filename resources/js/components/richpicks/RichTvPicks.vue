@@ -270,10 +270,6 @@ export default {
 </script>
 
 <style scoped>
-.market-table-wrapper {
-  /* Optional: Add custom styles for table wrapper */
-}
-
 /* Skeleton Loader Styles */
 .skeleton {
   background-color: #e0e0e0;

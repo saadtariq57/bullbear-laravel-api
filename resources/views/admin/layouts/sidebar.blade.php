@@ -111,6 +111,17 @@
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
+                        <i class="ri-line-chart-fill font-size-18"></i>
+                        <span>Previous Performance</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="{{ route('admin.trading_reports.index') }}">All Reports</a></li>
+                        <li><a href="{{ route('admin.trading_reports.create') }}">Add New Report</a></li>
+                        <li><a href="{{ route('admin.trading_reports.performance_categories.index') }}">All Reports Categories</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
                         <i class="fas fa-user-clock me-2 menu-icon"></i>
                         <span>User Sessions</span>
                     </a>

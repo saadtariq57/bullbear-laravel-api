@@ -44,14 +44,10 @@
                      <div class="footer-links">
                          <div class="menu-footer-navigation-two-container">
                              <ul id="menu-footer-navigation-two" class="menu list-unstyled">
-                                 <li class="pb-3"><a href="/rich-picks/" aria-label="Rich picks">Rich Picks</a></li>
-                                 <li class="pb-3"><a href="https://richtv.io/penny-stocks/"
-                                         aria-label="penny stock">Penny Stocks</a>
-                                 </li>
-                                 <li class="pb-3"><a href="https://richtv.io/financial-news/"
-                                         aria-label="News">News</a></li>
-                                 <li class="pb-3"><a href="/trading-education/" aria-label="trading school">Trading
-                                         School</a></li>
+                                 <li class="pb-3"><a href="/pro-picks" aria-label="Rich picks">Rich Picks</a></li>
+                                 <li class="pb-3"><a href="/blog/investing/"aria-label="News">News</a></li>
+                                 <li class="pb-3"><a href="/trading-education/" aria-label="trading school">Trading School</a></li>
+                                 <li class="pb-3"><a href="/previous-performence" aria-label="penny stock">Previous Performence</a></li>
                              </ul>
                          </div>
                      </div>
