@@ -55,22 +55,22 @@ class InjectSeoMeta
                         'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
                     ];
                     break;
-                    case 'previous-performence':
+                    case '/trading-history':
                         $meta = [
-                            'title' => 'RichTv Monthly Trading Performance Reports',
-                            'description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
-                            'keywords' => 'Trading Performance, Monthly Profit Reports, Crypto Returns, Market Analysis, Investment Results',
-                            'og:title' => 'RichTv Monthly Trading Performance Reports',
-                            'og:description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
+                            'title' => 'RichTv Trading History Reports',
+                            'description' => 'Review our verified monthly trading history with profit percentages. Track historical returns, market trends, and strategy performance.',
+                            'keywords' => 'Trading History, Monthly Profit Reports, Crypto Returns, Market Analysis, Investment Performance',
+                            'og:title' => 'RichTv Monthly Trading History Reports',
+                            'og:description' => 'Review our verified monthly trading history with profit percentages. Track historical returns, market trends, and strategy performance.',
                             'og:type' => 'website',
-                            'og:url' => url('/previous-performance'),
+                            'og:url' => url('/trading-history'),
                             'og:image' => url('/build/images/OG/default-og-image.jpg'),
                             'twitter:card' => 'summary_large_image',
-                            'twitter:title' => 'RichTv Monthly Trading Performance Reports',
-                            'twitter:description' => 'Review our verified monthly trading performance reports with profit percentages. Track historical returns and market insights.',
+                            'twitter:title' => 'RichTv Monthly Trading History Reports',
+                            'twitter:description' => 'Review our verified monthly trading history with profit percentages. Track historical returns, market trends, and strategy performance.',
                             'twitter:image' => url('/build/images/OG/default-og-image.jpg'),
-                    ];
-                    break;
+                        ];
+                        break;
 
             case 'about-us':
                 $meta = [
