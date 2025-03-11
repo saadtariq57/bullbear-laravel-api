@@ -4,6 +4,12 @@
 /public/hot
 /public/storage
 /public/uploads
+/public/sitemap.xml
+/public/quotes-sitemap.xml
+/public/markets-sitemap.xml
+/public/blog-posts-sitemap.xml
+/public/blog-categories-sitemap.xml
+/public/pages-sitemap.xml
 /storage/*.key
 /vendor
 .env
