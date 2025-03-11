@@ -14,6 +14,15 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('youtube:fetch-playlists')->daily();
+
+        // sitemap
+
+        $schedule->command('sitemap:generate-quotes')->daily();
+        $schedule->command('sitemap:generate-blog-categories')->weekly();
+        $schedule->command('sitemap:generate-blog-posts')->weekly();
+        $schedule->command('sitemap:generate-markets')->daily();
+        $schedule->command('sitemap:generate-pages')->monthly();
+        $schedule->command('sitemap:generate-index')->daily();
     }
 
     /**

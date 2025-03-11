@@ -1,3 +1,4 @@
+Sitemap: https://richtv.io/sitemap.xml
 User-agent: *
 Disallow: /blog/press-release/
 Disallow: /admin/
