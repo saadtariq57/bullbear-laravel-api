@@ -3,8 +3,6 @@ User-agent: *
 Disallow: /blog/press-release/
 Disallow: /admin/
 Disallow: /profile/
-Disallow: /account/
-Disallow: /login/
 Disallow: /wp-admin/
 
 # Allow everything else
