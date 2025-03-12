@@ -133,28 +133,58 @@
       this.fetchCategoriesWithReports();
     },
     computed: {
-    // Calculate the total profit percentage
-    totalProfitPercentage() {
-      return this.reportProfits.reduce((total, profit) => {
-        return total + parseFloat(profit.profit_percentage);
-      }, 0).toFixed(2); // Round to 2 decimal places
+      // Calculate the total profit percentage
+      totalProfitPercentage() {
+        return this.reportProfits.reduce((total, profit) => {
+          return total + parseFloat(profit.profit_percentage);
+        }, 0).toFixed(2); // Round to 2 decimal places
+      },
     },
-  },
     methods: {
       // Fetch all categories with their reports
       async fetchCategoriesWithReports() {
         const response = await axios.get('/api/categories-with-reports');
-        this.categories = response.data;
+        // Sort categories by latest year
+        this.categories = this.sortCategoriesByLatestYear(response.data);
         if (this.categories.length > 0) {
+          // Set the latest year category as active by default
           this.setActiveCategory(this.categories[0].id);
         }
+      },
+      // Sort categories by latest year
+      sortCategoriesByLatestYear(categories) {
+        return categories.sort((a, b) => {
+          const yearA = this.extractYearFromCategory(a.name);
+          const yearB = this.extractYearFromCategory(b.name);
+          return yearB - yearA; // Sort in descending order (latest year first)
+        });
+      },
+      // Extract year from category name (assuming category name is in format "Year X")
+      extractYearFromCategory(categoryName) {
+        const yearMatch = categoryName.match(/\d{4}/); // Extract 4-digit year
+        return yearMatch ? parseInt(yearMatch[0]) : 0;
+      },
+      // Sort reports by latest month
+      sortReportsByLatest(reports) {
+        return reports.sort((a, b) => {
+          const dateA = this.extractDateFromTitle(a.title);
+          const dateB = this.extractDateFromTitle(b.title);
+          return dateB - dateA; // Sort in descending order (latest first)
+        });
+      },
+      // Extract date from report title (assuming title is in format "Month Year")
+      extractDateFromTitle(title) {
+        const [month, year] = title.split(' ');
+        const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
+        return new Date(year, monthIndex);
       },
       // Set the active category and update the reports list
       setActiveCategory(categoryId) {
         this.activeCategory = categoryId;
         const category = this.categories.find((cat) => cat.id === categoryId);
-        this.activeReports = category ? category.reports : [];
+        this.activeReports = category ? this.sortReportsByLatest(category.reports) : [];
         if (this.activeReports.length > 0) {
+          // Set the latest report as active by default
           this.fetchReportProfits(this.activeReports[0].id);
         }
       },
@@ -162,7 +192,25 @@
       async fetchReportProfits(reportId) {
         this.activeReport = reportId;
         const response = await axios.get(`/api/report-profits/${reportId}`);
-        this.reportProfits = response.data;
+        let profits = response.data;
+  
+        // Filter out profits that belong to different months
+        if (profits.length > 0) {
+          const firstProfitMonth = new Date(profits[0].date).getMonth();
+          profits = profits.filter(profit => {
+            const profitMonth = new Date(profit.date).getMonth();
+            return profitMonth === firstProfitMonth;
+          });
+  
+          // Sort profits by date (1 to 30)
+          profits.sort((a, b) => {
+            const dateA = new Date(a.date).getDate();
+            const dateB = new Date(b.date).getDate();
+            return dateA - dateB; // Sort in ascending order (1 to 30)
+          });
+        }
+  
+        this.reportProfits = profits;
       },
     },
   };

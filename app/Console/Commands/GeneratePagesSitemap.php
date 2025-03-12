@@ -39,13 +39,15 @@ class GeneratePagesSitemap extends Command
             '/contact-us',
             '/pro-picks',
             '/trading-history',
+            '/login',
+            '/register',
         ];
 
         // Add each page URL to the sitemap
         foreach ($pageUrls as $url) {
             $sitemap->add(Url::create($url)
                 ->setLastModificationDate(now()) // Use the current date as lastmod
-                ->setChangeFrequency('yearly') // Set change frequency to yearly
+                ->setChangeFrequency('monthly') // Set change frequency to yearly
                 ->setPriority(0.5)); // Set priority
         }
 
