@@ -11,19 +11,14 @@ class Kernel extends ConsoleKernel
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
-    {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command('youtube:fetch-playlists')->daily();
+{
+    // YouTube Playlist Fetch Command
+    $schedule->command('youtube:fetch-playlists')->dailyAt('03:00');
 
-        // sitemap
-
-        $schedule->command('sitemap:generate-quotes')->daily();
-        $schedule->command('sitemap:generate-blog-categories')->weekly();
-        $schedule->command('sitemap:generate-blog-posts')->weekly();
-        $schedule->command('sitemap:generate-markets')->daily();
-        $schedule->command('sitemap:generate-pages')->monthly();
-        $schedule->command('sitemap:generate-index')->daily();
-    }
+    // Sitemap Commands
+    $schedule->command('sitemap:generate-quotes')->dailyAt('04:00');
+    $schedule->command('sitemap:generate-blog-posts')->weeklyOn(1, '05:00'); // Runs every Monday at 5:00 AM
+}
 
     /**
      * Register the commands for the application.
