@@ -21,7 +21,7 @@ class GenerateQuotesSitemap extends Command
 
         // Add each symbol URL to the sitemap
         foreach ($symbols as $symbol) {
-            $sitemap->add(Url::create("/quotes/{$symbol->name}")
+            $sitemap->add(Url::create("/quotes/{$symbol->symbol}")
                 ->setLastModificationDate($symbol->updated_at)
                 ->setChangeFrequency('daily')
                 ->setPriority(0.8));
