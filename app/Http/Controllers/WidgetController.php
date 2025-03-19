@@ -769,13 +769,24 @@ class WidgetController extends Controller
                             // Add more fields as needed
                         ];
                     }
-
+                    $categories = isset($post['_embedded']['wp:term']) ? 
+                    array_filter($post['_embedded']['wp:term'][0] ?? [], function($term) {
+                        return $term['taxonomy'] === 'category';
+                    }) : [];
                     $processedPost = [
                         'id' => $post['id'],
                         'slug' => $post['slug'] ?? '',
                         'title' => $post['title']['rendered'] ?? '',
                         'link' => $post['link'] ?? '',
                         'date' => $post['date'] ?? '',
+                        'categories' => array_map(function($category) {
+                            return [
+                                'id' => $category['id'] ?? null,
+                                'name' => $category['name'] ?? '',
+                                'slug' => $category['slug'] ?? '',
+                                'link' => $category['link'] ?? ''
+                            ];
+                        }, array_values($categories)),
                         'author_info' => [
                             'id' => $authorInfo ? ($authorInfo['id'] ?? 'Null') : 'Null',
                             'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',
@@ -798,7 +809,10 @@ class WidgetController extends Controller
                     $processedPosts = array_map(function ($post) {
                         $authorInfo = isset($post['_embedded']['author'][0]) ? $post['_embedded']['author'][0] : null;
                         $featuredMedia = isset($post['_embedded']['wp:featuredmedia'][0]) ? $post['_embedded']['wp:featuredmedia'][0] : null;
-
+                        $categories = isset($post['_embedded']['wp:term']) ? 
+                        array_filter($post['_embedded']['wp:term'][0] ?? [], function($term) {
+                            return $term['taxonomy'] === 'category';
+                        }) : [];
                         // Remove 'Read more' links from excerpt
                         $cleanExcerpt = preg_replace('/<a[^>]*>Read more<\/a>/i', '', $post['excerpt']['rendered'] ?? '');
 
@@ -808,6 +822,14 @@ class WidgetController extends Controller
                             'title' => $post['title']['rendered'] ?? '',
                             'link' => $post['link'] ?? '',
                             'date' => $post['date'] ?? '',
+                            'categories' => array_map(function($category) {
+                                return [
+                                    'id' => $category['id'] ?? null,
+                                    'name' => $category['name'] ?? '',
+                                    'slug' => $category['slug'] ?? '',
+                                    'link' => $category['link'] ?? ''
+                                ];
+                            }, array_values($categories)),
                             'author_info' => [
                                 'id' => $authorInfo ? ($authorInfo['id'] ?? 'Null') : 'Null',
                                 'name' => $authorInfo ? ($authorInfo['name'] ?? 'Unknown') : 'Unknown',

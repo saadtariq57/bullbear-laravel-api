@@ -78,6 +78,7 @@ import LatestArticles from '../widgets/LatestArticles.vue';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userWidgetsModule from '@/stores/widgetsStore';
 
+
 export default {
   components: {
     Skeletor,

@@ -16,33 +16,40 @@
           <!-- Post Title and Listen Feature -->
           <div class="d-flex justify-content-between align-items-center">
             <h1 class="fs-1 fw-bold mb-3">{{ cleanTitle }}</h1>
-            <button class="btn btn-outline-secondary" @click="toggleListen">
+            <button class="btn btn-outline-secondary" @click="toggleListen" v-if="!specializedreportcheck">
               <i :class="isSpeaking ? 'bi bi-stop-circle' : 'bi bi-volume-up'"></i>
               {{ isSpeaking ? 'Stop Listening' : 'Listen' }}
             </button>
           </div>
 
           <!-- Post Meta Information -->
-          <p class="text-muted">
+          <!-- <p class="text-muted">
             By 
             <a :href="`/author/${post.author_info.id}/${formatAuthorName}`" target="_blank">{{ post.author_info.name }}</a>
             on {{ formattedDate }}
-          </p>
-
+          </p> -->
           <!-- Author Profile Card -->
-          <div class="card mb-4">
-            <div class="card-body d-flex">
-              <img 
-                :src="post.author_info.avatar_url" 
-                alt="Author Avatar" 
-                class="rounded-circle me-3" 
-                width="60" 
-                height="60"
-              >
-              <div>
-                <h5 class="card-title">{{ post.author_info.name }}</h5>
-                <p class="card-text">{{ post.author_info.description }}</p>
+          <div class="card mb-5 mt-1 authorbtn mx-0 border-none" @click="toggledrp">
+            <div class="card-body border-none">
+              <div class="d-flex align-items-center justify-content-between">
+                
+                <div class="d-flex align-items-center ">
+                  <img 
+                    :src="post.author_info.avatar_url" 
+                    alt="Author Avatar" 
+                    class="rounded-circle me-3" 
+                    width="30" 
+                    height="30"
+                  >
+                  <h6 class="card-title mb-0 fw-bold fs-6">By <a :href="`/author/${post.author_info.id}/${formatAuthorName}`" target="_blank">{{ post.author_info.name }}</a> on {{ formattedDate }}</h6>
+                  
+                </div>
+                <i class="bi bi-caret-down-fill fs-4" :class="{ 'rotate-180': isCaretRotated }"></i>
+                
               </div>
+              <div class="collapse mt-2" id="authorInfoCollapse">
+                    <p class="card-text authorinfo">{{ post.author_info.description }}</p>
+                  </div>
             </div>
           </div>
 
@@ -144,9 +151,77 @@
       </div>
 
       <!-- Right Column: Widgets -->
-      <div class="col-lg-4">
-        <Markets />
-        <LatestArticles />
+      <div class="col-lg-4" ref="sidebarContainer">
+        <div v-if="loading" class="skeleton-loader">
+        <!-- Skeleton structure -->
+          <div class="skeleton-content"></div>
+        </div>
+        <div v-else>
+          <div v-if="specializedreportcheck" ref="stickySidebar" class="smooth-transition">
+            <div class="markets-widget-wrapper pt-2 mt-3 rounded border-top border-2 border-warning widgets-border mb-3">
+              <specializedWidget />
+              <div>
+                <h5 class="fs-5 fw-6 px-3 pt-4 d-flex align-items-center"> Download The Corporate Presentation</h5>
+                <div class="px-3 py-2 pb-3 text-center">
+                  <button class="btn btn-primary fs-5 w-100" @click="showDownloadModal">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download Here
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div v-else>
+            <Markets />
+            <LatestArticles />
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div v-if="specializedreportcheck" class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-3" id="downloadModalLabel">Download Corporate Presentation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Stay Ahead of the Market with Real-Time Alerts on Trending Stocks—Absolutely FREE! Sign up now to receive 100% FREE email and text alerts, keeping you informed about the hottest stock trends as they happen!</p>
+            <!-- Mautic form will be loaded here -->
+            <div id="mauticform_wrapper_jackpotdigitalincreport" class="mauticform_wrapper">
+              <form autocomplete="false" role="form" method="post" action="https://mailer.servicesground.com/form/submit?formId=92" id="mauticform_jackpotdigitalincreport" data-mautic-form="jackpotdigitalincreport" enctype="multipart/form-data">
+                <div class="mauticform-error text-danger" id="mauticform_jackpotdigitalincreport_error"></div>
+                <div class="mauticform-message text-success mb-3" id="mauticform_jackpotdigitalincreport_message"></div>
+                <div class="mauticform-innerform">
+                  <div class="mauticform-page-wrapper mauticform-page-1" data-mautic-form-page="1">
+                    <div id="mauticform_jackpotdigitalincreport_enter_your_email" data-validate="enter_your_email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required">
+                      <input id="mauticform_input_jackpotdigitalincreport_enter_your_email" name="mauticform[enter_your_email]" value="" placeholder="Enter Your Email" class="mauticform-input" type="email">
+                      <span class="mauticform-errormsg text-danger" style="display: none;">Email field is required</span>
+                    </div>
+
+                    <div id="mauticform_jackpotdigitalincreport_you_consent_to_receive_em" data-validate="you_consent_to_receive_em" data-validation-type="checkboxgrp" class="mauticform-row mauticform-checkboxgrp mauticform-field-2 mauticform-required">
+                      
+                      <div class="mauticform-checkboxgrp-row d-flex align-items-start my-3 gap-2">
+                        <input class="mauticform-checkboxgrp-checkbox mt-1" name="mauticform[you_consent_to_receive_em][]" id="mauticform_checkboxgrp_checkbox_you_consent_to_receive_em_00" type="checkbox" value="0">
+                        <label id="mauticform_checkboxgrp_label_you_consent_to_receive_em_00" for="mauticform_checkboxgrp_checkbox_you_consent_to_receive_em_00" class="mauticform-checkboxgrp-label2">You consent to receive emails from Rich Tv and agree to our Terms and Privacy Policy</label>
+                      </div>
+                      <span class="mauticform-errormsg text-danger" style="display: none;">please check the consent box</span>
+                    </div>
+                    <input id="mauticform_input_jackpotdigitalincreport_honeypot" name="mauticform[honeypot]" value="" type="hidden">
+                    <div id="mauticform_jackpotdigitalincreport_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-3 text-center">
+                      <button type="submit" name="mauticform[submit]" id="mauticform_input_jackpotdigitalincreport_submit" value="" class="btn-lg mauticform-button btn btn-primary">Get Access</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <input type="hidden" name="mauticform[formId]" id="mauticform_jackpotdigitalincreport_id" value="92">
+                <input type="hidden" name="mauticform[return]" id="mauticform_jackpotdigitalincreport_return" value="">
+                <input type="hidden" name="mauticform[formName]" id="mauticform_jackpotdigitalincreport_name" value="jackpotdigitalincreport">
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -156,15 +231,18 @@
 import axios from 'axios';
 import Markets from '../widgets/Markets.vue';
 import LatestArticles from '../widgets/LatestArticles.vue';
+import specializedWidget from '../widgets/specializedWidget.vue';
 import { decode } from 'html-entities';
 import { mapState } from 'vuex';
 import { isLoggedIn } from '@/stores';
 import Swal from 'sweetalert2';
+import { Modal, Collapse } from 'bootstrap';
 
 export default {
   components: {
     Markets,
     LatestArticles,
+    specializedWidget
   },
   props: {
     categorySlug: {
@@ -189,9 +267,18 @@ export default {
       isSpeaking: false,
       utterance: null,
       loggedIn: false,
+      sidebarOriginalTop: 0,
+      sidebarOriginalWidth: 0,
+      sidebarPlaceholder: null,
+      mauticLoaded: false,
+      modal: null,
+      isCaretRotated: false,
     };
   },
   computed: {
+    specializedreportcheck() {
+      return this.hasCategoryId(12800) && this.post && this.post.id === 433883;
+    },
     /**
      * Formats the post date to a readable format.
      */
@@ -216,6 +303,192 @@ export default {
     },
   },
   methods: {
+    toggledrp() {
+      this.isCaretRotated = !this.isCaretRotated;
+      const collapseElement = document.getElementById('authorInfoCollapse');
+      const bsCollapse = new bootstrap.Collapse(collapseElement);
+      bsCollapse.toggle();
+    },
+    showDownloadModal() {
+      if (this.loggedIn) {
+        const fileUrl = 'https://mailer.servicesground.com/asset/21:jackpot-digital-investor-presentation-q1-20250pdf';
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileUrl;
+        downloadLink.download = 'Corporate-Presentation.pdf';
+        document.body.appendChild(downloadLink);
+      
+        downloadLink.click();
+        
+        document.body.removeChild(downloadLink);
+        return;
+      }
+      if (!this.mauticLoaded && this.shouldMakeSidebarSticky) {
+        this.loadMauticScript();
+      }
+      
+      if (!this.modal) {
+        // Initialize Bootstrap modal
+        this.modal = new bootstrap.Modal(document.getElementById('downloadModal'));
+      }
+      
+      this.modal.show();
+    },
+    
+    loadMauticScript() {
+      if (this.mauticLoaded) return;
+      
+      // Only load Mautic if we have the right category and post ID
+      if (!this.shouldMakeSidebarSticky) return;
+      
+      // Load Mautic script
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://mailer.servicesground.com/media/js/mautic-form.js?v592b194e';
+      script.onload = () => {
+        window.MauticSDK.onLoad();
+        this.mauticLoaded = true;
+      };
+      
+      // Set Mautic global variables
+      window.MauticDomain = 'https://mailer.servicesground.com';
+      window.MauticLang = {
+        'submittingMessage': "Please wait..."
+      };
+      
+      document.head.appendChild(script);
+    },
+    setupHoneypot() {
+      const form = document.getElementById('mauticform_jackpotdigitalincreport');
+      if (form) {
+        form.addEventListener('submit', this.checkHoneypot);
+      }
+    },
+    checkHoneypot(event) {
+      const honeypotField = document.getElementById('mauticform_input_jackpotdigitalincreport_honeypot');
+      if (honeypotField && honeypotField.value.trim() !== '') {
+        event.preventDefault();
+        console.log('Honeypot triggered - form submission blocked');
+        return false;
+      }
+    },
+    setupSticky() {
+      this.$nextTick(() => {
+        if (!this.specializedreportcheck) return;
+        
+        if (window.innerWidth < 992) {
+          return;
+        }
+        
+        const sidebar = this.$refs.stickySidebar;
+        const container = this.$refs.sidebarContainer;
+        
+        if (!sidebar || !container) {
+          console.error('Sidebar or container refs not found');
+          return;
+        }
+        
+        const rect = sidebar.getBoundingClientRect();
+        this.sidebarOriginalTop = rect.top + window.pageYOffset;
+        this.sidebarOriginalWidth = rect.width;
+        
+        if (this.sidebarPlaceholder) {
+          this.sidebarPlaceholder.parentNode.removeChild(this.sidebarPlaceholder);
+        }
+        
+        this.sidebarPlaceholder = document.createElement('div');
+        
+        const styles = window.getComputedStyle(sidebar);
+        this.sidebarPlaceholder.style.height = styles.height;
+        this.sidebarPlaceholder.style.width = styles.width;
+        this.sidebarPlaceholder.style.margin = styles.margin;
+        this.sidebarPlaceholder.style.padding = styles.padding;
+        this.sidebarPlaceholder.style.border = styles.border;
+        this.sidebarPlaceholder.style.display = 'none';
+        
+        sidebar.parentNode.insertBefore(this.sidebarPlaceholder, sidebar);
+        
+        window.addEventListener('scroll', this.handleFixedScroll);
+        window.addEventListener('resize', this.handleResize);
+        
+        this.handleFixedScroll();
+      });
+    },
+    
+    handleFixedScroll() {
+      if (!this.specializedreportcheck) return;
+      
+      if (window.innerWidth < 992) {
+        this.resetSidebarPosition();
+        return;
+      }
+      
+      const sidebar = this.$refs.stickySidebar;
+      if (!sidebar) return;
+      
+      const scrollY = window.pageYOffset;
+      const footer = document.querySelector('footer');
+      const headerHeight = 133;
+      
+      if (scrollY > this.sidebarOriginalTop - headerHeight) {
+        if (sidebar.style.position !== 'fixed') {
+          if (this.sidebarPlaceholder) {
+            this.sidebarPlaceholder.style.height = `${sidebar.offsetHeight}px`;
+            this.sidebarPlaceholder.style.display = 'block';
+          }
+          
+          sidebar.style.position = 'fixed';
+          sidebar.style.top = `${headerHeight + 24}px`;
+          sidebar.style.width = `${this.sidebarOriginalWidth}px`;
+        }
+        if (footer) {
+          const footerTop = footer.getBoundingClientRect().top;
+          const sidebarHeight = sidebar.offsetHeight;
+          
+          if (footerTop < sidebarHeight + headerHeight + 20) {
+            const newTop = footerTop - sidebarHeight;
+            sidebar.style.top = `${newTop}px`;
+          } else if (sidebar.style.top !== `${headerHeight + 20}px`) {
+            sidebar.style.top = `${headerHeight + 20}px`;
+          }
+        }
+      } else {
+        this.resetSidebarPosition();
+      }
+    },
+    resetSidebarPosition() {
+      const sidebar = this.$refs.stickySidebar;
+      if (!sidebar) return;
+      
+      sidebar.style.position = '';
+      sidebar.style.top = '';
+      sidebar.style.width = '';
+      
+      if (this.sidebarPlaceholder) {
+        this.sidebarPlaceholder.style.display = 'none';
+      }
+    },
+    
+    handleResize() {
+      if (!this.specializedreportcheck) return;
+      if (window.innerWidth < 992) {
+        this.resetSidebarPosition();
+        return;
+      }
+      const sidebar = this.$refs.stickySidebar;
+      if (!sidebar) return;
+      const container = this.$refs.sidebarContainer;
+      if (container) {
+        this.sidebarOriginalWidth = container.offsetWidth;
+        if (sidebar.style.position === 'fixed') {
+          sidebar.style.width = `${this.sidebarOriginalWidth}px`;
+        }
+      }
+      if (sidebar.style.position !== 'fixed') {
+        const rect = sidebar.getBoundingClientRect();
+        this.sidebarOriginalTop = rect.top + window.pageYOffset;
+      }
+      this.handleFixedScroll();
+    },
     /**
      * Fetches a single post based on the category slug and post slug.
      */
@@ -243,6 +516,7 @@ export default {
         this.loading = false;
       }
     },
+    
     /**
      * Fetches comments for the current post.
      */
@@ -268,6 +542,13 @@ export default {
       } finally {
         this.commentsLoading = false;
       }
+    },
+    hasCategoryId(categoryId) {
+      if (!this.post || !this.post.categories || !Array.isArray(this.post.categories)) {
+        return false;
+      }
+      
+      return this.post.categories.some(category => category.id === categoryId);
     },
     /**
      * Submits a new comment.
@@ -384,6 +665,7 @@ export default {
     /**
      * Handles the "Listen to Post" feature with improved UX.
      */
+
     toggleListen() {
       if (!this.post || !this.post.content) return;
 
@@ -445,12 +727,34 @@ export default {
   },
   async mounted() {
     this.loggedIn = await isLoggedIn();
+    this.$watch('post', (newVal) => {
+      if (newVal && this.specializedreportcheck) {
+        this.$nextTick(() => {
+          this.setupSticky();
+        });
+      }
+    }, { immediate: true });
+    this.setupHoneypot();
+  },
+  beforeDestroy() {
+  // Clean up event listener
+    if (this.modal) {
+      this.modal.dispose();
+    }
+    window.removeEventListener('scroll', this.handleFixedScroll);
+    window.removeEventListener('resize', this.handleResize);
+    
+    // Remove placeholder if it exists
+    if (this.sidebarPlaceholder && this.sidebarPlaceholder.parentNode) {
+      this.sidebarPlaceholder.parentNode.removeChild(this.sidebarPlaceholder);
+    }
   },
   created() {
     this.fetchPost();
   },
 };
 </script>
+
 
 <style scoped>
 /* 8. Custom Skeleton Loader Styles */
@@ -488,7 +792,9 @@ export default {
   width: 100%;
   height: 200px;
 }
-
+.border-none{
+  border:none!important;
+}
 @keyframes pulse {
   0% {
     background-color: #e0e0e0;
@@ -546,6 +852,28 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+.smooth-transition {
+  transition: top 0.6s ease, position 0.5s ease;
+}
+.mauticform-input{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+.modal-dialog{
+  max-width: 800px;
+}
+.authorbtn{
+  cursor:pointer
+}
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.bi-caret-down-fill {
+  transition: transform 0.3s ease;
 }
 
 /* Responsive Adjustments */
