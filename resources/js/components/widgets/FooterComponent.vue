@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="border-bottom">
-      <p class="fs-13 text-secondary my-1">© 2024 Rich Tv</p>
+      <p class="fs-13 text-secondary my-1">© 2025 Rich Tv</p>
     </div>
     <ul class="d-flex justify-content-between align-items-center list-unstyled mt-2">
       <li><a href="/about-us" class="fs-13 text-secondary">About</a></li>

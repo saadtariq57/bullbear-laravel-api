@@ -1,0 +1,182 @@
+<template>
+    
+        <div v-if="widgets.length">
+            <div v-for="widget in widgets" :key="widget.id">
+                <h4 class="fs-4 fw-6 px-2 mb-2 icon-short-heading d-flex align-items-center">{{ widget.widget_title }}</h4>
+                <div class="mt-3 overflow-auto market-table-wrapper">
+                    <table class="table border mb-0">
+                        <thead>
+                        <tr>
+                            <th class="fw-6">Symbol</th>
+                            <th class="text-end fw-6">Last</th>
+                        </tr>
+                        </thead>
+                        <tbody v-if="widget.symbols">
+                        <tr v-for="(widgetData, key) in widget.symbols" :key="key" class="stockrow">
+                            <td class="fw-5">
+                                <span v-if="!widgetData.symbol">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span v-else>{{ widgetData.symbol }}</span>
+                                <br>
+                                <span v-if="!widgetData.name">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span v-else>{{ widgetData.name }}</span>
+                                <div class="StockInfoBtn">
+                                    <a :href="'/quotes/' + widgetData.symbol" class="btn btn-primary fs-14 px-3" aria-label="Stock Quote">
+                                        More About {{ widgetData.name }}
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="text-end fw-5">
+                                <span v-if="!widgetData.price">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span v-else>{{ widgetData.price }}</span>
+                                <br>
+                                <span class="me-2" v-if="!widgetData.change">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span v-else :class="widgetData.change > 0 ? 'Green me-2' : 'Red me-2'">
+                                    {{ widgetData.change }}
+                                </span>
+
+                                <span v-if="!widgetData.change_percent">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span v-else :class="widgetData.change_percent > 0 ? 'Green positive-arrow-icon-after' : 'Red negative-arrow-icon-after'">
+                                    {{ widgetData.change_percent }}
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="isLoading" class="text-center">
+            <h4 class="fs-5 fw-6 px-2 mb-2 icon-short-heading d-flex align-items-center"><Skeletor width="100px" /></h4>
+                <div class="mt-3 overflow-auto market-table-wrapper">
+                    <table class="table border">
+                        <thead>
+                        <tr>
+                            <th class="fw-6 text-start"><Skeletor width="80px" /></th>
+                            <th class="text-end fw-6"><Skeletor width="70px" /></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="fw-5  text-start">
+                                <Skeletor width="40px" />
+                                <br>
+                                <Skeletor width="40px" />
+                            </td>
+                            <td class="text-end fw-5">
+                                <Skeletor width="40px" />
+                                <br>
+                                <span class="me-2">
+                                    <Skeletor width="40px" />
+                                </span>
+                                <span>
+                                    <Skeletor width="40px" />
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        <div v-else class="text-center">
+            <p>No data available.</p>
+        </div>
+    
+  </template>
+  
+  <script>
+  import { mapState, mapActions } from 'vuex';
+  import "vue-skeletor/dist/vue-skeletor.css";
+  import { Skeletor } from "vue-skeletor";
+  import TopMovers from '../widgets/TopMovers.vue';
+  import LatestArticles from '../widgets/LatestArticles.vue';
+  import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
+  import userWidgetsModule from '@/stores/widgetsStore';
+  
+  
+  export default {
+    components: {
+      Skeletor,
+      TopMovers,
+      LatestArticles,
+    },
+    props: {
+      category: String,
+      subCategory: String,
+    },
+    data() {
+      return {
+        moduleRegistered: false,
+      };
+    },
+    computed: {
+      ...mapState('userWidgets', ['widgets', 'isLoading']),
+      categoryTitle() {
+        return this.subCategory || this.category;
+      },
+    },
+    created() {
+      this.registerModuleAndFetchWidgets();
+  
+    },
+    beforeDestroy() {
+      this.unregisterModule();
+    },
+    methods: {
+      ...mapActions('userWidgets', ['getWidgetsByCategory']),
+      
+      registerModuleAndFetchWidgets() {
+        if (!this.$store.hasModule('userWidgets')) {
+          registerVuexModule('userWidgets', userWidgetsModule);
+          this.moduleRegistered = true;
+        }
+        this.fetchWidgets();
+      },
+  
+      unregisterModule() {
+        if (this.moduleRegistered) {
+          unregisterVuexModule('userWidgets');
+        }
+      },
+  
+      fetchWidgets() {
+        const { category, subCategory } = this.$route.params;
+        this.getWidgetsByCategory({ category: 'Specialized Reports', subCategory });
+      },
+    },
+  };
+  </script>
+  
+  <style>
+  tr{position: relative;}
+  .StockInfoBtn{
+    display:none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    padding: 13px;
+    text-align: end;
+    bottom: 0;
+  }
+  .stockrow:hover .StockInfoBtn{
+    display: inline-block;
+  }
+  .dividers {
+    width: 1px;
+    background-color: var(--Blue-Koi);
+    height: 15px;
+  }
+  
+  .market-table-wapper::-webkit-scrollbar {
+    height: 6px;
+  }
+  </style>
