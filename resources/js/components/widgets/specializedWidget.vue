@@ -39,14 +39,7 @@
                                     <Skeletor width="40px" />
                                 </span>
                                 <span v-else>
-                                    vol: {{ widgetData.volume }}
-                                </span>
-
-                                <span v-if="!widgetData.market_cap">
-                                    <Skeletor width="40px" />
-                                </span>
-                                <span v-else>
-                                    MC: {{ widgetData.market_cap }}
+                                    {{ widgetData.volume }}
                                 </span>
                             </td>
                         </tr>
