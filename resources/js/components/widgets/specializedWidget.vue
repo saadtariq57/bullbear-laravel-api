@@ -35,18 +35,18 @@
                                 </span>
                                 <span v-else>{{ widgetData.price }}</span>
                                 <br>
-                                <span class="me-2" v-if="!widgetData.change">
+                                <span class="me-2" v-if="!widgetData.volume">
                                     <Skeletor width="40px" />
                                 </span>
-                                <span v-else :class="widgetData.change > 0 ? 'Green me-2' : 'Red me-2'">
-                                    {{ widgetData.change }}
+                                <span v-else>
+                                    vol: {{ widgetData.volume }}
                                 </span>
 
-                                <span v-if="!widgetData.change_percent">
+                                <span v-if="!widgetData.market_cap">
                                     <Skeletor width="40px" />
                                 </span>
-                                <span v-else :class="widgetData.change_percent > 0 ? 'Green positive-arrow-icon-after' : 'Red negative-arrow-icon-after'">
-                                    {{ widgetData.change_percent }}
+                                <span v-else>
+                                    MC: {{ widgetData.market_cap }}
                                 </span>
                             </td>
                         </tr>
