@@ -425,6 +425,16 @@ export default {
           }, 3000);
       }
     },
+    scrollToDisclosureSection() {
+      if (window.location.hash && window.location.hash.toLowerCase() === "#disclosure") {
+        const disclosureEl = document.getElementById("Disclosure") || document.getElementById("disclosure");
+        if (disclosureEl) {
+          disclosureEl.scrollIntoView({ behavior: "smooth" });
+        } else {
+          console.warn("Disclosure element not found.");
+        }
+      }
+    },
     setupSticky() {
       this.$nextTick(() => {
         if (!this.specializedreportcheck) return;
@@ -560,6 +570,11 @@ export default {
         if (response.data.post) {
           this.post = response.data.post;
           this.fetchComments(); // Fetch comments after post is loaded
+
+          // Wait for the DOM update so v-html content is rendered
+          this.$nextTick(() => {
+            this.scrollToDisclosureSection();
+          });
         } else {
           this.post = null;
         }
