@@ -426,12 +426,15 @@ export default {
       }
     },
     scrollToDisclosureSection() {
-      if (window.location.hash && window.location.hash.toLowerCase() === "#disclosure") {
-        const disclosureEl = document.getElementById("Disclosure") || document.getElementById("disclosure");
-        if (disclosureEl) {
-          disclosureEl.scrollIntoView({ behavior: "smooth" });
-        } else {
-          console.warn("Disclosure element not found.");
+      if (window.location.hash) {
+        const [cleanHash] = window.location.hash.split('?');
+        if (cleanHash.toLowerCase() === "#disclosure") {
+          const disclosureEl = document.getElementById("Disclosure") || document.getElementById("disclosure");
+          if (disclosureEl) {
+            disclosureEl.scrollIntoView({ behavior: "smooth" });
+          } else {
+            console.warn("Disclosure element not found.");
+          }
         }
       }
     },
