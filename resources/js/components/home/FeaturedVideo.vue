@@ -127,15 +127,17 @@ export default {
           {
             breakpoint: 1200,
             settings: {
-              slidesToShow: 2,
+              slidesToShow: 1,
               swipeToSlide: true,
+              centerPadding: '120px',
             },
           },
           {
             breakpoint: 1025,
             settings: {
-              slidesToShow: 3,
+              slidesToShow: 1,
               swipeToSlide: true,
+              centerPadding: '60px',
             },
           },
           {
@@ -144,13 +146,14 @@ export default {
               slidesToShow: 1,
               swipeToSlide: true,
               centerMode: true,
-              centerPadding: '120px',
+              centerPadding: '20px',
             },
           },
           {
             breakpoint: 430,
             settings: {
               slidesToShow: 1,
+              centerPadding: '0px',
             },
           },
           {
