@@ -777,7 +777,7 @@ class WidgetController extends Controller
                         'id' => $post['id'],
                         'slug' => $post['slug'] ?? '',
                         'title' => $post['title']['rendered'] ?? '',
-                        'link' => $post['link'] ?? '',
+                        'link' => str_replace('https://richtv.io/', 'https://richtv.io/blog/', $post['link'] ?? ''),
                         'date' => $post['date'] ?? '',
                         'categories' => array_map(function($category) {
                             return [
@@ -820,7 +820,7 @@ class WidgetController extends Controller
                             'id' => $post['id'],
                             'slug' => $post['slug'] ?? '',
                             'title' => $post['title']['rendered'] ?? '',
-                            'link' => $post['link'] ?? '',
+                            'link' => str_replace('https://richtv.io/', 'https://richtv.io/blog/', $post['link'] ?? ''),
                             'date' => $post['date'] ?? '',
                             'categories' => array_map(function($category) {
                                 return [
