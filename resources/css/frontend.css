@@ -683,13 +683,13 @@ td {
 }
 
 section.featured-video {
-    max-height: 610px;
+    max-height: 710px;
     overflow: hidden;
 }
 
-.thumbnail-card {
+/* .thumbnail-card {
     max-width: 455px;
-}
+} */
 
 .video-featured .video-play-icon-small span {
     width: 70px;
@@ -716,11 +716,15 @@ section.featured-video {
 .video-slider .slick-slide .video-card .featured-video-1 .video-featured img {
     filter: blur(2px);
     transition: all 0.5s;
+    max-height: 320px;
+    object-fit: cover;
 }
 
 .video-slider .slick-slide.slick-center .video-card .featured-video-1 .video-featured img {
     filter: blur(0px);
     transition: all 1s;
+    max-height: 320px;
+    object-fit: cover;
 }
 
 .video-slider .slick-slide {
@@ -3257,6 +3261,9 @@ span.marketOpen {
 }
 
 @media (max-width: 767.98px) {
+    .video-slider .slick-slide .video-card .featured-video-1 .video-featured img, .video-slider .slick-slide.slick-center .video-card .featured-video-1 .video-featured img{
+        max-height: 220px;
+    }
     .card .img-wrapper {
         height: 17em;
     }
