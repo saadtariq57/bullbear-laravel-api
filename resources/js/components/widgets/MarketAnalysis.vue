@@ -5,6 +5,7 @@
         <h3 class="fs-6 fw-bolder lh-base icon-short-heading">IN-DEPTH MARKET ANALYSIS</h3>
       </div>
 
+
       <div class="chat_output">
         <div class="border-1 border-grey">
           <div v-if="wordpressPosts.length > 0">
@@ -15,7 +16,7 @@
                 </div>
               </div>
               <div class="stock-post-content ms-3">
-                <h4 class="lh-0 mb-0"><a :href="post.link" target="_blank" rel="noopener noreferrer" aria-label="title">{{ truncate(post.title) }}</a></h4>
+                <h4 class="lh-0 mb-0"><a :href="'/blog'+post.link" target="_blank" rel="noopener noreferrer" aria-label="title">{{ truncate(post.title) }}</a></h4>
                 <a class="stock-author-meta border-end border-1 border-grey" :href="post.author_info.link" target="_blank" rel="noopener noreferrer" aria-label="author_link">{{ post.author_info.name }}</a>
                 <span>{{ formatDate(post.date) }}</span>
               </div>
