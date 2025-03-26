@@ -137,7 +137,7 @@ export default {
             settings: {
               slidesToShow: 1,
               swipeToSlide: true,
-              centerPadding: '60px',
+              centerPadding: '90px',
             },
           },
           {
@@ -146,7 +146,7 @@ export default {
               slidesToShow: 1,
               swipeToSlide: true,
               centerMode: true,
-              centerPadding: '20px',
+              centerPadding: '70px',
             },
           },
           {
