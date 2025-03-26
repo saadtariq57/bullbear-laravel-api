@@ -16,7 +16,7 @@
                 </div>
               </div>
               <div class="stock-post-content ms-3">
-                <h4 class="lh-0 mb-0"><a :href="'/blog'+post.link" target="_blank" rel="noopener noreferrer" aria-label="title">{{ truncate(post.title) }}</a></h4>
+                <h4 class="lh-0 mb-0"><a :href="'/blog' + post.link" target="_blank" rel="noopener noreferrer" aria-label="title" v-html="truncate(post.title)"></a></h4>
                 <a class="stock-author-meta border-end border-1 border-grey" :href="post.author_info.link" target="_blank" rel="noopener noreferrer" aria-label="author_link">{{ post.author_info.name }}</a>
                 <span>{{ formatDate(post.date) }}</span>
               </div>
