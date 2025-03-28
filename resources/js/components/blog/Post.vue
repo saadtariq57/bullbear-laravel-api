@@ -159,15 +159,16 @@
         <div v-else>
           <div v-if="specializedreportcheck" ref="stickySidebar" class="smooth-transition">
             <div class="markets-widget-wrapper pt-2 mt-3 rounded border-top border-2 border-warning widgets-border mb-3">
-              <specializedWidget />
-              <div>
+              <specializedWidget :postId="post.id" />
+              <DownloadPresentation :postId="post.id" :loggedIn="loggedIn" />
+              <!-- <div>
                 <h5 class="fs-5 fw-6 px-3 pt-4 d-flex align-items-center"> Download The Corporate Presentation</h5>
                 <div class="px-3 py-2 pb-3 text-center">
                   <button class="btn btn-primary fs-5 w-100" @click="showDownloadModal">
                     <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download Here
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
           
@@ -203,7 +204,7 @@
                     <div class="form-group d-flex flex-wrap gap-3">
                       <div class="flex-fill position-relative mauticform-required" id="mauticform_jackpotdigitalincreport_enter_your_email" data-validate="enter_your_email" data-validation-type="email">
                         <input id="mauticform_input_jackpotdigitalincreport_enter_your_email" name="mauticform[enter_your_email]" value="" placeholder="Enter Your Email" class="form-control form-control-lg px-3 py-3 fs-6 newsletter-input border" type="email">
-                        <div id="mauticform_jackpotdigitalincreport_submit">
+                        <div id="mauticform_jackpotdigitalincreport_submit" class="msubmitbutton">
                           <button type="submit" name="mauticform[submit]" id="mauticform_input_jackpotdigitalincreport_submit" value="" class="btn btn-primary fw-5 newsletter-btn position-absolute">Get Access</button>
                         </div>
                         
@@ -242,17 +243,19 @@ import axios from 'axios';
 import Markets from '../widgets/Markets.vue';
 import LatestArticles from '../widgets/LatestArticles.vue';
 import specializedWidget from '../widgets/specializedWidget.vue';
+import DownloadPresentation from './DownloadPresentation.vue';
 import { decode } from 'html-entities';
 import { mapState } from 'vuex';
 import { isLoggedIn } from '@/stores';
 import Swal from 'sweetalert2';
-import { Modal, Collapse } from 'bootstrap';
+import { Collapse } from 'bootstrap';
 
 export default {
   components: {
     Markets,
     LatestArticles,
-    specializedWidget
+    specializedWidget,
+    DownloadPresentation
   },
   props: {
     categorySlug: {
@@ -280,15 +283,15 @@ export default {
       sidebarOriginalTop: 0,
       sidebarOriginalWidth: 0,
       sidebarPlaceholder: null,
-      mauticLoaded: false,
+      // mauticLoaded: false,
       modal: null,
       isCaretRotated: false,
-      isSubmitting: false,
+      // isSubmitting: false,
     };
   },
   computed: {
     specializedreportcheck() {
-      return this.hasCategoryId(12800) && this.post && this.post.id === 433883;
+      return this.hasCategoryId(12800) && this.post && this.post.id === 433883 || this.hasCategoryId(12800) && this.post && this.post.id === 434025;
     },
     /**
      * Formats the post date to a readable format.
@@ -319,111 +322,6 @@ export default {
       const collapseElement = document.getElementById('authorInfoCollapse');
       const bsCollapse = new bootstrap.Collapse(collapseElement);
       bsCollapse.toggle();
-    },
-    showDownloadModal() {
-      if (this.loggedIn) {
-        const fileUrl = 'https://mailer.servicesground.com/asset/21:jackpot-digital-investor-presentation-q1-20250pdf';
-        const downloadLink = document.createElement('a');
-        downloadLink.href = fileUrl;
-        downloadLink.download = 'Corporate-Presentation.pdf';
-        document.body.appendChild(downloadLink);
-      
-        downloadLink.click();
-        
-        document.body.removeChild(downloadLink);
-        return;
-      }
-      if (!this.mauticLoaded && this.shouldMakeSidebarSticky) {
-        this.loadMauticScript();
-      }
-      
-      if (!this.modal) {
-        this.modal = new bootstrap.Modal(document.getElementById('downloadModal'));
-      }
-      
-      this.modal.show();
-
-      this.isSubmitting = false;
-      this.$nextTick(() => {
-        this.setupMauticForm();
-      });
-    },
-    
-    loadMauticScript() {
-      if (this.mauticLoaded) return;
-      
-      // Only load Mautic if we have the right category and post ID
-      if (!this.shouldMakeSidebarSticky) return;
-      
-      // Load Mautic script
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://mailer.servicesground.com/media/js/mautic-form.js?v592b194e';
-      script.onload = () => {
-        window.MauticSDK.onLoad();
-        this.mauticLoaded = true;
-      };
-      
-      // Set Mautic global variables
-      window.MauticDomain = 'https://mailer.servicesground.com';
-      window.MauticLang = {
-        'submittingMessage': "Please wait..."
-      };
-      
-      document.head.appendChild(script);
-    },
-    setupHoneypot() {
-      const form = document.getElementById('mauticform_jackpotdigitalincreport');
-      if (form) {
-        const returnInput = document.getElementById('mauticform_jackpotdigitalincreport_return');
-        if (returnInput) {
-          returnInput.value = '';
-        }
-        form.addEventListener('submit', this.handleMauticSubmit);
-        form.addEventListener('submit', this.checkHoneypot);
-      }
-    },
-    checkHoneypot(event) {
-      const honeypotField = document.getElementById('mauticform_input_jackpotdigitalincreport_honeypot');
-      if (honeypotField && honeypotField.value.trim() !== '') {
-        event.preventDefault();
-        console.log('Honeypot triggered - form submission blocked');
-        return false;
-      }
-    },
-    setupMauticForm() {
-      this.$nextTick(() => {
-        const form = document.getElementById('mauticform_jackpotdigitalincreport');
-        if (form) {
-          form.addEventListener('submit', this.handleMauticSubmit);
-        }
-      });
-    },
-    
-    handleMauticSubmit(event) {
-      if (this.isSubmitting) {
-        event.preventDefault();
-        return;
-      }
-      this.isSubmitting = true;
-      const submitButton = document.getElementById('mauticform_input_jackpotdigitalincreport_submit');
-      if (submitButton) {
-          const originalText = submitButton.innerHTML;
-          submitButton.disabled = true;
-          submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-          setTimeout(() => {
-            try {
-              const buttonElement = document.getElementById('mauticform_input_jackpotdigitalincreport_submit');
-              if (buttonElement) {
-                buttonElement.disabled = false;
-                buttonElement.innerHTML = originalText;
-              }
-              this.isSubmitting = false;
-            } catch (e) {
-              console.log('Button reset attempted after form submission');
-            }
-          }, 3000);
-      }
     },
     scrollToDisclosureSection() {
       if (window.location.hash) {
@@ -806,13 +704,13 @@ export default {
         });
       }
     }, { immediate: true });
-    this.setupHoneypot();
+    // this.setupHoneypot();
   },
   beforeDestroy() {
   // Clean up event listener
-    if (this.modal) {
-      this.modal.dispose();
-    }
+    // if (this.modal) {
+    //   this.modal.dispose();
+    // }
     window.removeEventListener('scroll', this.handleFixedScroll);
     window.removeEventListener('resize', this.handleResize);
     
@@ -928,15 +826,7 @@ export default {
 .smooth-transition {
   transition: top 0.6s ease, position 0.5s ease;
 }
-.mauticform-input{
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-.modal-dialog{
-  max-width: 992px;
-  transform: translateY(50%)!important;
-}
+
 .authorbtn{
   cursor:pointer
 }
@@ -961,11 +851,7 @@ export default {
   border-radius: 25px;
   border-color: #dddcdc!important;
 }
-#mauticform_jackpotdigitalincreport_submit + .mauticform-errormsg{
-  position: absolute;
-    bottom: 0px;
-    left: 16px;
-}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .share-buttons .btn {

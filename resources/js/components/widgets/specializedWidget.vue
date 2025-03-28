@@ -1,8 +1,8 @@
 <template>
     
-        <div v-if="widgets.length">
-            <div v-for="widget in widgets" :key="widget.id">
-                <h4 class="fs-4 fw-6 px-2 mb-2 icon-short-heading d-flex align-items-center">{{ widget.widget_title }}</h4>
+        <div v-if="filteredWidgets.length">
+            <div v-for="widget in filteredWidgets" :key="widget.id">
+                <h4 class="fs-4 fw-6 px-2 mb-2 icon-short-heading d-flex align-items-center">Stock Information</h4>
                 <div class="mt-3 overflow-auto market-table-wrapper">
                     <table class="table border mb-0">
                         <thead>
@@ -90,8 +90,6 @@
   import { mapState, mapActions } from 'vuex';
   import "vue-skeletor/dist/vue-skeletor.css";
   import { Skeletor } from "vue-skeletor";
-  import TopMovers from '../widgets/TopMovers.vue';
-  import LatestArticles from '../widgets/LatestArticles.vue';
   import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
   import userWidgetsModule from '@/stores/widgetsStore';
   
@@ -99,12 +97,11 @@
   export default {
     components: {
       Skeletor,
-      TopMovers,
-      LatestArticles,
     },
     props: {
       category: String,
       subCategory: String,
+      postId: Number,
     },
     data() {
       return {
@@ -116,6 +113,22 @@
       categoryTitle() {
         return this.subCategory || this.category;
       },
+      filteredWidgets() {
+        if (!this.postId || !this.widgets.length) return this.widgets;
+        
+        const widgetMappings = {
+          433883: [35], // Widget ID 35 for post ID 433883
+          434025: [36]  // Widget ID 36 for post ID 434025
+        };
+      
+        const allowedWidgetIds = widgetMappings[this.postId] || [];
+        
+        if (allowedWidgetIds.length) {
+          return this.widgets.filter(widget => allowedWidgetIds.includes(widget.id));
+        }
+        
+        return this.widgets;
+      }
     },
     created() {
       this.registerModuleAndFetchWidgets();
