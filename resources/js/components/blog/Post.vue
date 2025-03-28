@@ -161,14 +161,6 @@
             <div class="markets-widget-wrapper pt-2 mt-3 rounded border-top border-2 border-warning widgets-border mb-3">
               <specializedWidget :postId="post.id" />
               <DownloadPresentation :postId="post.id" :loggedIn="loggedIn" />
-              <!-- <div>
-                <h5 class="fs-5 fw-6 px-3 pt-4 d-flex align-items-center"> Download The Corporate Presentation</h5>
-                <div class="px-3 py-2 pb-3 text-center">
-                  <button class="btn btn-primary fs-5 w-100" @click="showDownloadModal">
-                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download Here
-                  </button>
-                </div>
-              </div> -->
             </div>
           </div>
           
@@ -178,61 +170,6 @@
           </div>
         </div>
         
-      </div>
-    </div>
-    <div v-if="specializedreportcheck" class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="text-center w-100">
-              <img class="header-image is-logo-image" alt="Rich TV" src="/build/images/logo.svg" title="Rich TV">
-            </div>
-            
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <h5 class="modal-title fs-1 fw-bolder mb-2 text-center" id="downloadModalLabel">Download Corporate Presentation</h5>
-            <p class="text-center fs-5 fw-bold">Stay Ahead of the Market with Real-Time Alerts on Trending Stocks—Absolutely FREE! Sign up now to receive <span class="themetxtclr">100% FREE</span> email and text alerts, keeping you informed about the <span class="themetxtclr">hottest stock</span> trends as they happen!</p>
-            <!-- Mautic form will be loaded here -->
-            <div id="mauticform_wrapper_jackpotdigitalincreport" class="mauticform_wrapper mt-4">
-              <form autocomplete="false" role="form" method="post" action="https://mailer.servicesground.com/form/submit?formId=92" id="mauticform_jackpotdigitalincreport" data-mautic-form="jackpotdigitalincreport" enctype="multipart/form-data">
-                <div class="mauticform-error text-danger" id="mauticform_jackpotdigitalincreport_error"></div>
-                <div class="mauticform-message text-success mb-3" id="mauticform_jackpotdigitalincreport_message"></div>
-                <div class="mauticform-innerform">
-                  <div class="mauticform-page-wrapper mauticform-page-1" data-mautic-form-page="1">
-    
-                    <div class="form-group d-flex flex-wrap gap-3">
-                      <div class="flex-fill position-relative mauticform-required" id="mauticform_jackpotdigitalincreport_enter_your_email" data-validate="enter_your_email" data-validation-type="email">
-                        <input id="mauticform_input_jackpotdigitalincreport_enter_your_email" name="mauticform[enter_your_email]" value="" placeholder="Enter Your Email" class="form-control form-control-lg px-3 py-3 fs-6 newsletter-input border" type="email">
-                        <div id="mauticform_jackpotdigitalincreport_submit" class="msubmitbutton">
-                          <button type="submit" name="mauticform[submit]" id="mauticform_input_jackpotdigitalincreport_submit" value="" class="btn btn-primary fw-5 newsletter-btn position-absolute">Get Access</button>
-                        </div>
-                        
-                        <span class="mauticform-errormsg text-danger fs-6" style="display: none;">Email field is required</span>
-                      </div>
-                    </div>
-                    
-                    <div id="mauticform_jackpotdigitalincreport_you_consent_to_receive_em" data-validate="you_consent_to_receive_em" data-validation-type="checkboxgrp" class="mauticform-row mauticform-checkboxgrp mauticform-field-2 mauticform-required">
-                      
-                      <div class="mauticform-checkboxgrp-row d-flex align-items-start mt-3 gap-2">
-                        <input data-v-34de2070="" class="mauticform-checkboxgrp-checkbox mt-1" name="mauticform[you_consent_to_receive_em][]" id="mauticform_checkboxgrp_checkbox_you_consent_to_receive_em_00" type="checkbox" value="0">
-                        <label id="mauticform_checkboxgrp_label_you_consent_to_receive_em_00" for="mauticform_checkboxgrp_checkbox_you_consent_to_receive_em_00" class="mauticform-checkboxgrp-label2">You consent to receive emails from Rich Tv and agree to our <a href="https://richtv.io/terms-of-use" target="blank">Terms</a> and <a href="https://richtv.io/privacy-policy" target="_blank">Privacy Policy</a></label>
-                      </div>
-                      <span class="mauticform-errormsg text-danger fs-6" style="display: none;">please check the consent box</span>
-                    </div>
-                    <input id="mauticform_input_jackpotdigitalincreport_honeypot" name="mauticform[honeypot]" value="" type="hidden">
-                    
-                  </div>
-                </div>
-                
-                <input type="hidden" name="mauticform[formId]" id="mauticform_jackpotdigitalincreport_id" value="92">
-                <input type="hidden" name="mauticform[return]" id="mauticform_jackpotdigitalincreport_return" value="">
-                <input type="hidden" name="mauticform[formName]" id="mauticform_jackpotdigitalincreport_name" value="jackpotdigitalincreport">
-                <input type="hidden" name="mauticform[ajax]" id="mauticform_jackpotdigitalincreport_ajax" value="1">
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -283,10 +220,7 @@ export default {
       sidebarOriginalTop: 0,
       sidebarOriginalWidth: 0,
       sidebarPlaceholder: null,
-      // mauticLoaded: false,
-      modal: null,
       isCaretRotated: false,
-      // isSubmitting: false,
     };
   },
   computed: {
@@ -708,9 +642,6 @@ export default {
   },
   beforeDestroy() {
   // Clean up event listener
-    // if (this.modal) {
-    //   this.modal.dispose();
-    // }
     window.removeEventListener('scroll', this.handleFixedScroll);
     window.removeEventListener('resize', this.handleResize);
     
