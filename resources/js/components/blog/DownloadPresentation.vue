@@ -8,7 +8,7 @@
       </div>
       
       <!-- Modal -->
-      <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+      <div class="modal fade" :id="'downloadModal-' + postId" tabindex="-1" :aria-labelledby="'downloadModalLabel-' + postId" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -48,7 +48,7 @@
                         </div>
                         <span class="mauticform-errormsg text-danger fs-6" style="display: none;">please check the consent box</span>
                       </div>
-                      <input :id="'mauticform_input_' + mauticFormId + '_honeypot'" :name="'mauticform[honeypot]'" value="" type="hidden">
+                      <input id="honeytrap" name="mauticform[honeypot]" value="" type="text" style="display: none;">
                       
                     </div>
                   </div>
@@ -84,7 +84,8 @@
       return {
         modal: null,
         mauticLoaded: false,
-        isSubmitting: false
+        isSubmitting: false,
+        previouslyFocusedElement: null
       };
     },
     computed: {
@@ -121,19 +122,61 @@
         if (!this.mauticLoaded) {
           this.loadMauticScript();
         }
-        
-        if (!this.modal) {
-          this.modal = new Modal(document.getElementById('downloadModal'));
+        const modalElement = document.getElementById(`downloadModal-${this.postId}`);
+        if (this.modal) {
+          this.modal.dispose();
+          this.modal = null;
         }
-        
+        this.modal = new Modal(modalElement);
+        const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+        existingBackdrops.forEach(backdrop => {
+          backdrop.parentNode.removeChild(backdrop);
+        });
+        this.previouslyFocusedElement = document.activeElement;
         this.modal.show();
   
         this.isSubmitting = false;
         this.$nextTick(() => {
           this.setupMauticForm();
+          const closeButton = modalElement.querySelector('.btn-close');
+          if (closeButton) {
+            closeButton.focus();
+          }
         });
       },
-      
+      onModalHidden() {
+        const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+        existingBackdrops.forEach(backdrop => {
+          backdrop.parentNode.removeChild(backdrop);
+        });
+        
+        document.body.classList.remove('modal-open');
+        document.body.style.paddingRight = '';
+        
+        if (this.previouslyFocusedElement) {
+          this.previouslyFocusedElement.focus();
+          this.previouslyFocusedElement = null;
+        }
+        
+        const modalElement = document.getElementById(`downloadModal-${this.postId}`);
+        if (modalElement) {
+          const focusableElements = modalElement.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
+          focusableElements.forEach(el => {
+            el.blur();
+          });
+        }
+      },
+      onModalHide() {
+        const modalElement = document.getElementById(`downloadModal-${this.postId}`);
+        if (modalElement) {
+          const focusedElement = modalElement.querySelector(':focus');
+          if (focusedElement) {
+            focusedElement.blur();
+          }
+        }
+      },
       downloadFile() {
         const fileUrl = this.downloadFileUrl;
         const downloadLink = document.createElement('a');
@@ -185,13 +228,33 @@
             returnInput.value = '';
           }
           form.addEventListener('submit', this.checkHoneypot);
+          const honeypotField = document.getElementById('honeytrap');
+          if (honeypotField) {
+            honeypotField.addEventListener('input', this.onHoneypotChange);
+          }
         }
       },
-      
+      onHoneypotChange(event) {
+        const submitButton = document.getElementById(`mauticform_input_${this.mauticFormId}_submit`);
+        if (submitButton) {
+          if (event.target.value.trim() !== '') {
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Submission blocked';
+          } else {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Get Access';
+          }
+        }
+      },
       checkHoneypot(event) {
-        const honeypotField = document.getElementById(`mauticform_input_${this.mauticFormId}_honeypot`);
+        const honeypotField = document.getElementById('honeytrap');
+        const submitButton = document.getElementById(`mauticform_input_${this.mauticFormId}_submit`);
         if (honeypotField && honeypotField.value.trim() !== '') {
           event.preventDefault();
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Submission blocked';
+          }
           console.log('Honeypot triggered - form submission blocked');
           return false;
         }
@@ -225,10 +288,21 @@
     },
     mounted() {
       this.setupHoneypot();
+      const modalElement = document.getElementById(`downloadModal-${this.postId}`);
+      if (modalElement) {
+        modalElement.addEventListener('hidden.bs.modal', this.onModalHidden);
+        modalElement.addEventListener('hide.bs.modal', this.onModalHide);
+      }
     },
     beforeDestroy() {
       if (this.modal) {
+        this.modal.hide();
         this.modal.dispose();
+        this.modal = null;
+        const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+          existingBackdrops.forEach(backdrop => {
+            backdrop.parentNode.removeChild(backdrop);
+        });
       }
     }
   };
