@@ -199,7 +199,7 @@
                 <div class="disclaimer-icon-name d-flex align-items-end mb-4 gap-3">
                   <div>
                     <img
-                      src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png"
+                      src="/build/images/alert-icon.png"
                       alt="Risk Icon"
                     />
                   </div>

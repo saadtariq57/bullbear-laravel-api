@@ -26,7 +26,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="user-profile">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/03/mPXgeZZ9N3MG6sWGbF1q_14_0fede927c01608fd9feeb21d269d5173_avatar.png"
+                                    <img src="/build/images/mPXgeZZ9N3MG6sWGbF1q_14_0fede927c01608fd9feeb21d269d5173_avatar.png"
                                         alt="profile-image" class="border-primary rounded-circle border">
                                 </div>
 
@@ -45,7 +45,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="user-profile">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                                    <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                         alt="profile-image" class="border-primary rounded-circle border">
                                 </div>
 
@@ -105,7 +105,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="user-profile">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/03/fv9VoMRMLtpL1HqYPFdO_14_595b0c3defe3bd970fc66f43e1ac4fe7_avatar.png"
+                                    <img src="/build/images/fv9VoMRMLtpL1HqYPFdO_14_595b0c3defe3bd970fc66f43e1ac4fe7_avatar.png"
                                         alt="profile-image" class="border-primary rounded-circle border">
                                 </div>
 

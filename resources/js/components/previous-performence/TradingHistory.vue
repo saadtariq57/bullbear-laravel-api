@@ -110,7 +110,7 @@
       </div>
       <div class="disclaimer my-5 px-4 py-5 rounded-3 text-center">
         <div class="disclaimer-icon-name d-flex align-items-end mb-4 gap-3">
-          <div class=""><img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="icon" height="35"></div>
+          <div class=""><img src="/build/images/alert-icon.png" alt="icon" height="35"></div>
           <div><h2 class="fw-bolder fs-1 mb-0"> Disclaimer</h2></div>
         </div>
             <p class="margin-24 fs-18 lh-base"> <q>The information provided on this page is for educational and informational purposes only. Past performance is not a guarantee of future results. Trading involves risk, and you should always do your own research before making any financial decisions.</q> </p>

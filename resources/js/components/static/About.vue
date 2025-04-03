@@ -55,7 +55,7 @@
         <div class="row align-items-center">
           <div class="col-md-6 mb-4">
             <img
-              src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/our-story-img.webp"
+              src="/build/images/our-story-img.webp"
               alt="Our Story"
               class="img-fluid rounded shadow"
               loading="lazy"

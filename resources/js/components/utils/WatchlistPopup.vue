@@ -5,7 +5,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title fs-5">
-            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/watchlist/edit-blue.svg" alt="Edit"
+            <img src="/build/images/watchlist/edit-blue.svg" alt="Edit"
               width="20px" height="20px"> ADD TO WATCHLIST
           </h3>
           <button type="button" class="btn-close" @click="$emit('close')"></button>

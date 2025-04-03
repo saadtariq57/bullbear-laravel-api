@@ -215,7 +215,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -238,7 +238,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -261,7 +261,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -284,7 +284,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -307,7 +307,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -330,7 +330,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -353,7 +353,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -376,7 +376,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -399,7 +399,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -422,7 +422,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -445,7 +445,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -468,7 +468,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -491,7 +491,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -514,7 +514,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -537,7 +537,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -560,7 +560,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -583,7 +583,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -606,7 +606,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -629,7 +629,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -652,7 +652,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -676,7 +676,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -699,7 +699,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -722,7 +722,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -745,7 +745,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -768,7 +768,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -791,7 +791,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -814,7 +814,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -837,7 +837,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -860,7 +860,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -883,7 +883,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -906,7 +906,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -929,7 +929,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -952,7 +952,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -975,7 +975,7 @@
                                         <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                             alt="thumbnail-img" class="rounded-0">
                                         <a href="" class="position-absolute video-play-btn">
-                                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                            <img src="/build/images/play_icon.png"
                                                 class="w-75 h-50">
                                         </a>
                                     </div>
@@ -1037,7 +1037,7 @@
                         <div class="risk-heading">
                             <div class="disclaimer-icon-name d-flex align-items-end mb-4 gap-3">
                                 <div class="">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png"
+                                    <img src="/build/images/alert-icon.png"
                                         alt="icon">
                                 </div>
                                 <div>

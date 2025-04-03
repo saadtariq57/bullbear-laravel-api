@@ -435,12 +435,6 @@ td {
     height: 5px !important;
 }
 
-/* .icon-heading::before {
-    content: url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon.png);
-    display: inline-block;
-    vertical-align: middle;
-} */
-
 .postive-arrow-icon::before {
     content: "▲";
 }
@@ -2012,14 +2006,10 @@ p.user-message {
 
 .icon-heading::before,
 .icon-short-heading::before {
-    content: url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon.png);
+    content: url(/build/images/aside-heading-icon.png);
     display: inline-block;
     vertical-align: middle;
 }
-
-/* .icon-short-heading::before {
-    content: url("https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/aside-heading-icon-2.png");
-} */
 
 /* stock css end */
 /* feed page CSS Start */
@@ -2878,7 +2868,7 @@ p.user-message {
     width: 100vw;
     height: 100vh;
     z-index: 999;
-    background: rgba(255, 255, 255) url(https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/ajax-loader.gif) center no-repeat;
+    background: rgba(255, 255, 255) url(/build/images/ajax-loader.gif) center no-repeat;
     /* display: block; */
 }
 

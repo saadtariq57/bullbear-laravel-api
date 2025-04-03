@@ -1,7 +1,7 @@
 <template>
     <div class="border-primary pt-4 pb-2 px-3 border my-3 rounded-1">
         <h1 class="fw-6 fs-5 text-secondary"><img
-                src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20"
+                src="/build/images/alert-icon.png" alt="" width="20"
                 height="20">
             RISK DISCLAIMER!</h1>
         <p class="fs-14 text-black">Stock market investing is inherently risky. Rich TV is not
