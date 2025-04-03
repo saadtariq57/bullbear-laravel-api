@@ -1,7 +1,7 @@
 <template>
   <div class="border-primary pt-4 pb-2 px-3 border mb-2 rounded-1" style="background-color: #ffb8001a">
     <h1 class="fw-6 fs-5 text-secondary">
-      <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="" width="20" height="20"
+      <img src="/build/images/alert-icon.png" alt="" width="20" height="20"
         class="align-top">
       RISK DISCLAIMER!
     </h1>

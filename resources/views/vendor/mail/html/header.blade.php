@@ -7,7 +7,7 @@
 @else
 {{ $slot }}
 @endif --}}
-<img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/logo.svg" alt="Rich Tv logo" width="150" class="auth-logo logo-dark mx-auto">
+<img src="/build/images/logo.svg" alt="Rich Tv logo" width="150" class="auth-logo logo-dark mx-auto">
 </a>
 </a>
 </td>

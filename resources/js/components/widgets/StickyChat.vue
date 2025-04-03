@@ -31,7 +31,7 @@
                 <h4 class="text-white mb-0 fs-5">Chat Rooms</h4>
             </div>
             <div class="chatrooms-widget-header bg-cta px-3 py-2 rounded-top d-flex align-items-center gap-2" v-else>
-                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                     alt="" width="30px" class="rounded-circle">
                 <h4 class="text-white mb-0 fs-6">ProMembers</h4>
                 <div data-bs-theme="dark" class="ms-auto">
@@ -44,7 +44,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -55,7 +55,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -66,7 +66,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -77,7 +77,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -88,7 +88,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -100,7 +100,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -111,7 +111,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">
@@ -122,7 +122,7 @@
                     <li class="list-group-item d-flex gap-2 align-items-center px-3 cursor-pointer"
                         @click="openChatRoom">
                         <div class="chatroom-img rounded-circle">
-                            <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                            <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                 alt="" width="48px" class="rounded-circle">
                         </div>
                         <div class="chatroom-title">

@@ -618,7 +618,7 @@
                                 <div class="row gx-2 gy-2">
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -640,7 +640,7 @@
                                 <div class="row gx-2 gy-2">
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -650,7 +650,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -660,7 +660,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -681,7 +681,7 @@
                                 <div class="row gx-2 gy-2">
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -691,7 +691,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -701,7 +701,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -711,7 +711,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -721,7 +721,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -731,7 +731,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -741,7 +741,7 @@
                                     </a>
                                     <a href="#" class="col-lg-4 col-md-4 col-sm-4 col-4">
                                         <div class="position-relative"><img
-                                                src="	https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                                src="	/build/images/d-avatar.jpg?cache=0"
                                                 alt="" class="w-100">
                                             <div class="position-absolute bottom-0 start-0 text-white ps-1 img-text w-100">
                                                 dev123
@@ -831,7 +831,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="d-flex align-items-center">
                                                     <div class="user-profile">
-                                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/03/mPXgeZZ9N3MG6sWGbF1q_14_0fede927c01608fd9feeb21d269d5173_avatar.png"
+                                                        <img src="/build/images/mPXgeZZ9N3MG6sWGbF1q_14_0fede927c01608fd9feeb21d269d5173_avatar.png"
                                                             alt="profile-image"
                                                             class="border-primary rounded-circle border">
                                                     </div>
@@ -851,7 +851,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="d-flex align-items-center">
                                                     <div class="user-profile">
-                                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/06/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
+                                                        <img src="/build/images/gHpBmXswJ9TT3xusscF1_01_d6b25f924145c88a4ef11baf5b41ff94_avatar.png"
                                                             alt="profile-image"
                                                             class="border-primary rounded-circle border">
                                                     </div>
@@ -912,7 +912,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="d-flex align-items-center">
                                                     <div class="user-profile">
-                                                        <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2022/03/fv9VoMRMLtpL1HqYPFdO_14_595b0c3defe3bd970fc66f43e1ac4fe7_avatar.png"
+                                                        <img src="/build/images/fv9VoMRMLtpL1HqYPFdO_14_595b0c3defe3bd970fc66f43e1ac4fe7_avatar.png"
                                                             alt="profile-image"
                                                             class="border-primary rounded-circle border">
                                                     </div>
@@ -1062,7 +1062,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1083,7 +1083,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1104,7 +1104,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1125,7 +1125,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1146,7 +1146,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1167,7 +1167,7 @@
                                             <img src="https://richtv.io/wp-content/uploads/2023/09/LYNXMPEB470KQ_L-150x150.jpg"
                                                 alt="thumbnail-img">
                                             <a href="" class="position-absolute video-play-btn">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="w-75 h-50">
                                             </a>
                                         </div>
@@ -1185,14 +1185,14 @@
                         <div class="wow_content wow_side_loggd_usr bg-white p-3 mb-3">
                             <div class="wow_side_loggd_usr_cvr">
                                 <img class="width-100 height-100 object-fit-cover"
-                                    src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/06/7PXzviNVMJTCho6DpY6k_07_6fb286bb37958c93d0070f66161a8a15_cover.jpg?cache=1686159258"
+                                    src="/build/images/7PXzviNVMJTCho6DpY6k_07_6fb286bb37958c93d0070f66161a8a15_cover.jpg"
                                     alt="Rich TV Cover Image">
                             </div>
                             <div class="wow_side_loggd_usr_hdr">
                                 <div class="avatar">
                                     <img id="updateImage-1" class="width-100 rounded-circle"
                                         alt="Rich TV Profile Picture"
-                                        src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/06/oOAjH6QnKWn3guFugJSI_07_c83f8e518f67ef583d3b53936abb7cd8_avatar.jpg?cache=0">
+                                        src="/build/images/oOAjH6QnKWn3guFugJSI_07_c83f8e518f67ef583d3b53936abb7cd8_avatar.jpg">
                                 </div>
                                 <div class="title text-center">
                                     <a id="user-full-name" class="text-black fw-bold"
@@ -1355,7 +1355,7 @@
                                             <div class="position-relative">
                                                 <img src="https://i.ytimg.com/vi/MKdto5IGcXA/default.jpg"
                                                     class="card-img-top w-100">
-                                                <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/edu-pdf-icons/play_icon.png"
+                                                <img src="/build/images/edu-pdf-icons/play_icon.png"
                                                     class="play-btn w-50 position-absolute">
                                             </div>
                                         </div>
@@ -1401,7 +1401,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1420,7 +1420,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1439,7 +1439,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1458,7 +1458,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1477,7 +1477,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1496,7 +1496,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1527,7 +1527,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1546,7 +1546,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1565,7 +1565,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1584,7 +1584,7 @@
                             </div>
                             <div class="px-2 py-2 user-feed-card bg-white border border-1 d-flex gap-2 rounded-2">
                                 <div class="avatar user-chat-avatar-feed">
-                                    <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/d-avatar.jpg?cache=0"
+                                    <img src="/build/images/d-avatar.jpg?cache=0"
                                         alt="Water Ways Technologies Inc Profile Picture" class="rounded-circle"
                                         width="50px">
                                 </div>
@@ -1606,7 +1606,7 @@
                         <div class="border-primary pt-4 pb-2 px-3 border my-3 rounded-1"
                             style="background-color: #ffb8001a">
                             <h1 class="fw-6 fs-5 text-secondary"><img
-                                    src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png"
+                                    src="/build/images/alert-icon.png"
                                     alt="" width="20" height="20">
                                 RISK DISCLAIMER!</h1>
                             <p class="fs-14 text-black">Stock market investing is inherently risky. Rich TV is not

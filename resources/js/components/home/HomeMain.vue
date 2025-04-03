@@ -15,7 +15,7 @@
         <div class="col-xl-3 col-lg-6 col-12">
           <div class="feature text-center h-100 px-1">
             <div class="d-flex flex-column">
-              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/richtv-personalized.png" width="40"
+              <img src="/build/images/richtv-personalized.png" width="40"
                 alt="icon" class="d-block mb-2 mx-auto">
               <h3 class="fs-18 fw-bolder lh-base m-0">Personalized Watchlists</h3>
               <p class="">Tailor your trading journey! Create and customize watchlists to track
@@ -28,7 +28,7 @@
         <div class="col-xl-3 col-lg-6 col-12">
           <div class="feature text-center h-100 px-1">
             <div class="d-flex flex-column">
-              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/rictv-expert.png" width="40" alt="icon"
+              <img src="/build/images/rictv-expert.png" width="40" alt="icon"
                 class="d-block mb-2 mx-auto">
               <h3 class="fs-18 fw-bolder lh-base m-0">Expert Top Picks</h3>
               <p class="">Navigate the market with confidence! Our seasoned experts handpick
@@ -42,7 +42,7 @@
         <div class="col-xl-3 col-lg-6 col-12">
           <div class="feature text-center h-100 px-1">
             <div class="d-flex flex-column">
-              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/richtv-groupchat.png" width="40"
+              <img src="/build/images/richtv-groupchat.png" width="40"
                 alt="icon" class="d-block mb-2 mx-auto">
               <h3 class="fs-18 fw-bolder lh-base m-0">Vibrant Group Chats</h3>
               <p class="">Connect, discuss, and strategize! Join our dynamic chat rooms where
@@ -56,7 +56,7 @@
         <div class="col-xl-3 col-lg-6 col-12">
           <div class="feature text-center h-100 px-1">
             <div class="d-flex flex-column">
-              <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/richtv-training.png" width="40" alt="icon"
+              <img src="/build/images/richtv-training.png" width="40" alt="icon"
                 class="d-block mb-2 mx-auto">
               <h3 class="fs-18 fw-bolder lh-base m-0">Interactive Live Trainings</h3>
               <p class="">Learn from the best! Attend live sessions with industry
@@ -190,7 +190,7 @@
             <div class="risk-heading">
               <div class="disclaimer-icon-name d-flex align-items-end mb-4 gap-3">
                 <div class="">
-                  <img src="https://s3.wasabisys.com/rpdapp1/upload/photos/2023/img/alert-icon.png" alt="icon">
+                  <img src="/build/images/alert-icon.png" alt="icon">
                 </div>
                 <div>
                   <h2 class="fw-bolder fs-1 mb-0">Risk Disclaimer</h2>
