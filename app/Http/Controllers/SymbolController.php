@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Symbol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http; // Added for API calls
+use Illuminate\Support\Facades\Log; // Added for logging API errors
 
 class SymbolController extends Controller
 {
@@ -190,6 +192,60 @@ class SymbolController extends Controller
 
         // Redirect to the symbols index with a success message
         return redirect()->route('admin.symbols.index')->with('success', 'Symbol deleted successfully.');
+    }
+
+    /**
+     * Display a listing of the symbol profiles.
+     */
+    public function profileIndex()
+    {
+        // Paginate symbols first (e.g., 20 per page)
+        $symbols = Symbol::where('active', 1)->orderBy('name')->paginate(20); // Order by name instead of symbol
+        $apiBaseUrl = 'https://stocks.richtv.io/api/profiles/';
+
+        // Loop through only the symbols on the current page to fetch profile data
+        foreach ($symbols as $symbol) {
+            try {
+                $response = Http::timeout(10)->get($apiBaseUrl . $symbol->symbol); // Added timeout
+
+                if ($response->successful()) {
+                    $profileData = $response->json();
+                    // Ensure profileData is an array
+                    if (is_array($profileData)) {
+                        // Add profile data directly to the symbol object
+                        // Use the first element if the API returns an array of profiles
+                        $symbol->profile = $profileData[0] ?? $profileData;
+                        // Prefer API name if available, otherwise use DB name
+                        $symbol->profile['name'] = $symbol->profile['companyName'] ?? $symbol->name;
+                        $symbol->profile_error = null; // Indicate success
+                    } else {
+                        Log::warning("Received non-array profile data for symbol: " . $symbol->symbol);
+                        $symbol->profile = null; // Set profile to null or empty array
+                        $symbol->profile_error = 'Invalid data format from API';
+                    }
+                } else {
+                    Log::error("Failed to fetch profile for symbol: " . $symbol->symbol . " - Status: " . $response->status());
+                    $symbol->profile = null; // Set profile to null or empty array
+                    $symbol->profile_error = 'Failed to load profile data (Status: ' . $response->status() . ')';
+                }
+            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+                Log::error("Connection error fetching profile for symbol: " . $symbol->symbol . " - Error: " . $e->getMessage());
+                $symbol->profile = null;
+                $symbol->profile_error = 'Connection error fetching profile data';
+            } catch (\Exception $e) {
+                Log::error("General error fetching profile for symbol: " . $symbol->symbol . " - Error: " . $e->getMessage());
+                $symbol->profile = null;
+                $symbol->profile_error = 'Error fetching profile data';
+            }
+
+            // Ensure profile property exists even on error, to avoid issues in the view
+            if (!isset($symbol->profile)) {
+                 $symbol->profile = null;
+            }
+        }
+
+        // Pass the paginated symbols collection (now with profile data/errors attached)
+        return view('admin.symbols.profile', compact('symbols'));
     }
 
     // Grops data

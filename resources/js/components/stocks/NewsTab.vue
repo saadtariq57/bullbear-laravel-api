@@ -42,12 +42,12 @@
           <template v-else>
             <li v-for="analysis in technicalAnalysis" :key="analysis.id" class="mb-3 d-flex align-items-start">
               <img :src="analysis.featured_media_url" alt="Featured Image" class="me-3 rounded" style="width: 100px; height: 60px; object-fit: cover;">
-              <div>
+              <div class="w-100">
                 <a :href="`/blog/${analysis.link}`" target="_blank" class="text-black text-decoration-none fs-5">
                   {{ cleanTitle(analysis) }}
                 </a>
-                <div class="text-muted fs-6">
-                  <time>{{ formatDate(analysis.date) }}</time> - <a href="#" target="_blank">{{ analysis.author_info.name }}</a>
+                <div class="text-muted fs-6 dateName">
+                  <time>{{ formatDate(analysis.date) }}</time>  <a href="#" target="_blank">{{ analysis.author_info.name }}</a>
                 </div>
               </div>
             </li>
@@ -82,8 +82,8 @@
               <a :href="`/blog/${post.link.replace(/^\/+/, '')}`" target="_blank" class="text-black text-decoration-none fs-5">
                 {{ cleanTitle(post) }}
               </a>
-              <div class="text-muted fs-6">
-                <time>{{ formatDate(post.date) }}</time> - <a href="#" target="_blank">{{ post.author_info.name }}</a>
+              <div class="text-muted fs-6 dateName">
+                <time>{{ formatDate(post.date) }}</time>  <a href="#" target="_blank">{{ post.author_info.name }}</a>
               </div>
             </li>
           </template>
@@ -116,14 +116,14 @@
           <template v-else>
             <li v-for="news in externalNews" :key="news.url" class="mb-3 d-flex align-items-start">
               <img :src="news.image" alt="Featured Image" class="me-3 rounded" style="width: 100px; height: 60px; object-fit: cover;">
-              <div>
+              <div class="w-100">
                 <a :href="news.url" target="_blank" class="text-black text-decoration-none fs-5">
                   {{ news.title }}
                 </a>
-                <div class="text-muted fs-6">
-                  <time>{{ formatDate(news.publishedDate) }}</time> - <span>{{ news.site }}</span>
+                <div class="text-muted fs-6 dateName">
+                  <time>{{ formatDate(news.publishedDate) }}</time>  <span>{{ news.site }}</span>
                 </div>
-                <p class="mt-1">{{ truncateText(news.text, 25) }}</p>
+                <p class="mt-1">{{ truncateText(news.text, 15) }}</p>
               </div>
             </li>
           </template>
@@ -264,6 +264,15 @@ export default {
 </script>
 
 <style scoped>
+.dateName time,.dateName span,.dateName a{
+border-bottom:1px solid;
+}
+.dateName{
+display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 500;
+}
 .news-tab {
   /* Container styling */
 }
