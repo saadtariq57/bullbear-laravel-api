@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('update/{symbol}', [SymbolController::class, 'update'])->name('update');
             Route::delete('delete/{symbol}', [SymbolController::class, 'destroy'])->name('destroy');
             Route::get('search', [SymbolController::class, 'search'])->name('search');
+            Route::get('profiles', [SymbolController::class, 'profileIndex'])->name('profiles'); 
         });
 
         

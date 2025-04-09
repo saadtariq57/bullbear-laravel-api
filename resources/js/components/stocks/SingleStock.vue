@@ -128,10 +128,10 @@
                   :class="['fs-3 ps-3', stockData.regular_market_change >= 0 ? 'text-success' : 'text-danger']"
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
-                  :title="`Change: ${roundToFourDecimals(stockData.regular_market_change)} (${roundToTwoDecimals(stockData.regular_market_change_percent)}%)`"
+                  :title="`Change: ${roundToTwoDecimals(stockData.regular_market_change)} (${roundToTwoDecimals(stockData.regular_market_change_percent)}%)`"
                 >
                   <i :class="stockData.regular_market_change >= 0 ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
-                  {{ roundToTwoDecimals(stockData.regular_market_change) }}
+                  {{ roundToFourDecimals(stockData.regular_market_change) }}
                   ({{ roundToTwoDecimals(stockData.regular_market_change_percent) }}%)
                 </span>
               </div>
@@ -375,7 +375,7 @@ export default defineComponent({
      const fetchStockData = async () => {
         isLoading.value = true;
         try {
-          const response = await axios.get(`/api/quotes/${symbol.value}`);
+          const response = await axios.get(`https://richtv.io/api/quotes/${symbol.value}`);
           
           if (response.data && response.data.quote && response.data.quote[symbol.value]) {
             stockData.value = response.data.quote[symbol.value];

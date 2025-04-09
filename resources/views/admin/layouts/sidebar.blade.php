@@ -43,12 +43,22 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('admin.symbols.index') }}" class="waves-effect d-flex align-items-center">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
                         <i class="fas fa-database me-2 menu-icon"></i>
                         <span>Stock Database</span>
                     </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="{{ route('admin.symbols.index') }}" class="waves-effect d-flex align-items-center">
+                                <span>Symbols</span>
+                            </a>
+                        <li>
+                            <a href="{{ route('admin.symbols.profiles') }}" class="waves-effect d-flex align-items-center">
+                                <span>Symbol Profiles</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
                         <i class="fas fa-layer-group me-2 menu-icon"></i>
