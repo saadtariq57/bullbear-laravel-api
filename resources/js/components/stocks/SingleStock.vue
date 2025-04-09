@@ -123,12 +123,12 @@
                 <span class="text-secondary fs-12">Last Updated | {{ formatTime(stockData.regular_market_time) }}</span>
               </div>
               <div class="d-flex align-items-center mt-2">
-                <span class="fs-1 fw-6">{{ roundToTwoDecimals(stockData.regular_market_price) }}</span>
+                <span class="fs-1 fw-6">{{ roundToFourDecimals(stockData.regular_market_price) }}</span>
                 <span 
                   :class="['fs-3 ps-3', stockData.regular_market_change >= 0 ? 'text-success' : 'text-danger']"
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
-                  :title="`Change: ${roundToTwoDecimals(stockData.regular_market_change)} (${roundToTwoDecimals(stockData.regular_market_change_percent)}%)`"
+                  :title="`Change: ${roundToFourDecimals(stockData.regular_market_change)} (${roundToTwoDecimals(stockData.regular_market_change_percent)}%)`"
                 >
                   <i :class="stockData.regular_market_change >= 0 ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
                   {{ roundToTwoDecimals(stockData.regular_market_change) }}
@@ -402,6 +402,9 @@ export default defineComponent({
     const roundToTwoDecimals = (value) => {
       return value ? Number(value).toFixed(2) : 'N/A';
     };
+    const roundToFourDecimals = (value) => {
+      return value ? Number(value).toFixed(4) : 'N/A';
+    };
 
     const formatTime = (timestamp) => {
       return timestamp ? new Date(timestamp * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : 'N/A';
@@ -458,6 +461,7 @@ export default defineComponent({
       formatNumber,
       fetchStockData,
       roundToTwoDecimals,
+      roundToFourDecimals,
       SummaryTab,
       summaryTabRef,
       exportChart,

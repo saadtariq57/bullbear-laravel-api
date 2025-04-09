@@ -79,7 +79,7 @@
           <!-- Actual Content -->
           <template v-else>
             <li v-for="post in internalNews" :key="post.id" class="mb-3">
-              <a :href="`/blog/${post.link}`" target="_blank" class="text-black text-decoration-none fs-5">
+              <a :href="`/blog/${post.link.replace(/^\/+/, '')}`" target="_blank" class="text-black text-decoration-none fs-5">
                 {{ cleanTitle(post) }}
               </a>
               <div class="text-muted fs-6">
@@ -123,7 +123,7 @@
                 <div class="text-muted fs-6">
                   <time>{{ formatDate(news.publishedDate) }}</time> - <span>{{ news.site }}</span>
                 </div>
-                <p class="mt-1">{{ news.text }}</p>
+                <p class="mt-1">{{ truncateText(news.text, 25) }}</p>
               </div>
             </li>
           </template>
@@ -173,7 +173,13 @@ export default {
       if (!post.title) return '';
       return decode(post.title);
     },
-
+    truncateText(text, wordLimit) {
+        if (!text) return '';
+        const words = text.split(' ');
+        return words.length > wordLimit
+          ? words.slice(0, wordLimit).join(' ') + '...'
+          : text;
+      },
     /**
      * Helper method to decode post excerpts
      * @param {Object} post - The post object
