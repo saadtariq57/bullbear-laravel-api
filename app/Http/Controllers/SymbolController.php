@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http; // Added for API calls
 use Illuminate\Support\Facades\Log; // Added for logging API errors
-
+use Illuminate\Support\Facades\Cache; // Added for caching API responses
 class SymbolController extends Controller
 {
     public function getUniqueSymbols()
@@ -197,56 +197,228 @@ class SymbolController extends Controller
     /**
      * Display a listing of the symbol profiles.
      */
-    public function profileIndex()
-    {
-        // Paginate symbols first (e.g., 20 per page)
-        $symbols = Symbol::where('active', 1)->orderBy('name')->paginate(20); // Order by name instead of symbol
-        $apiBaseUrl = 'https://stocks.richtv.io/api/profiles/';
 
-        // Loop through only the symbols on the current page to fetch profile data
-        foreach ($symbols as $symbol) {
-            try {
-                $response = Http::timeout(10)->get($apiBaseUrl . $symbol->symbol); // Added timeout
-
-                if ($response->successful()) {
-                    $profileData = $response->json();
-                    // Ensure profileData is an array
-                    if (is_array($profileData)) {
-                        // Add profile data directly to the symbol object
-                        // Use the first element if the API returns an array of profiles
-                        $symbol->profile = $profileData[0] ?? $profileData;
-                        // Prefer API name if available, otherwise use DB name
-                        $symbol->profile['name'] = $symbol->profile['companyName'] ?? $symbol->name;
-                        $symbol->profile_error = null; // Indicate success
-                    } else {
-                        Log::warning("Received non-array profile data for symbol: " . $symbol->symbol);
-                        $symbol->profile = null; // Set profile to null or empty array
-                        $symbol->profile_error = 'Invalid data format from API';
-                    }
-                } else {
-                    Log::error("Failed to fetch profile for symbol: " . $symbol->symbol . " - Status: " . $response->status());
-                    $symbol->profile = null; // Set profile to null or empty array
-                    $symbol->profile_error = 'Failed to load profile data (Status: ' . $response->status() . ')';
-                }
-            } catch (\Illuminate\Http\Client\ConnectionException $e) {
-                Log::error("Connection error fetching profile for symbol: " . $symbol->symbol . " - Error: " . $e->getMessage());
-                $symbol->profile = null;
-                $symbol->profile_error = 'Connection error fetching profile data';
-            } catch (\Exception $e) {
-                Log::error("General error fetching profile for symbol: " . $symbol->symbol . " - Error: " . $e->getMessage());
-                $symbol->profile = null;
-                $symbol->profile_error = 'Error fetching profile data';
-            }
-
-            // Ensure profile property exists even on error, to avoid issues in the view
-            if (!isset($symbol->profile)) {
-                 $symbol->profile = null;
-            }
-        }
-
-        // Pass the paginated symbols collection (now with profile data/errors attached)
-        return view('admin.symbols.profile', compact('symbols'));
+     public function profileIndex(Request $request)
+{
+    // Get filter parameters
+    $sector = $request->get('sector');
+    $exchange = $request->get('exchange');
+    $search = $request->get('search');
+    
+    // Base query
+    $query = Symbol::where('active', 1);
+    
+    // Apply search if provided
+    if ($search) {
+        $query->where(function($q) use ($search) {
+            $q->where('symbol', 'LIKE', "%{$search}%")
+              ->orWhere('name', 'LIKE', "%{$search}%");
+        });
     }
+
+    // Apply exchange filter if provided
+    if ($exchange) {
+        $query->where('exchange', $exchange);
+    }
+    
+    // Get symbols with pagination
+    $symbols = $query->orderBy('name')->paginate(50);
+    $currentPage = $symbols->currentPage();
+    $perPage = $symbols->perPage();
+    $total = $symbols->total();
+    
+    // Use environment variable for API URL
+    $apiBaseUrl = rtrim(env('STOCKS_API_URL', 'https://stocks.richtv.io'), '/') . '/api/profiles/';
+
+    // Get all sectors for filter (from cache if available)
+    $sectors = Cache::remember('all_sectors', now()->addDay(), function() {
+        return collect();
+    });
+
+    // Process each symbol
+    foreach ($symbols as $symbol) {
+        try {
+            $cacheKey = "symbol_profile_{$symbol->symbol}";
+            $profileResult = Cache::remember($cacheKey, now()->addHour(), function() use ($apiBaseUrl, $symbol) {
+                $url = $apiBaseUrl . urlencode($symbol->symbol);
+                
+                try {
+                    $response = Http::withHeaders([
+                        'Accept' => 'application/json',
+                        'User-Agent' => 'RichTV/1.0'
+                    ])
+                    ->timeout(30)
+                    ->get($url);
+
+                    if ($response->successful()) {
+                        $data = $response->json();
+                        
+                        if (empty($data)) {
+                            return [
+                                'error' => "No data available for {$symbol->symbol}",
+                                'status' => $response->status()
+                            ];
+                        }
+
+                        $profileData = is_array($data) ? (isset($data[0]) ? $data[0] : $data) : $data;
+                        return ['data' => $profileData];
+                    } else {
+                        return [
+                            'error' => "API Error: " . $response->status(),
+                            'status' => $response->status()
+                        ];
+                    }
+
+                } catch (\Exception $e) {
+                    Log::error("Error processing {$symbol->symbol}: " . $e->getMessage());
+                    return ['error' => 'API processing error', 'status' => 0];
+                }
+            });
+
+            if (isset($profileResult['data'])) {
+                $normalizedData = $this->normalizeProfileData($profileResult['data'], $symbol);
+                $symbol->profile = $normalizedData;
+                $symbol->profile_error = null;
+                $symbol->has_complete_profile = $this->hasCompleteProfile($normalizedData);
+                
+                // Add sector to sectors collection if it exists and isn't already there
+                if (!empty($normalizedData['sector']) && $normalizedData['sector'] !== 'N/A') {
+                    $sectors->push($normalizedData['sector']);
+                }
+
+                // Additional search in profile data if search term exists
+                if ($search && !$symbol->matches_search) {
+                    $searchLower = strtolower($search);
+                    $symbol->matches_search = 
+                        str_contains(strtolower($normalizedData['name']), $searchLower) ||
+                        str_contains(strtolower($symbol->symbol), $searchLower) ||
+                        str_contains(strtolower($normalizedData['sector'] ?? ''), $searchLower) ||
+                        str_contains(strtolower($normalizedData['industry'] ?? ''), $searchLower);
+                }
+            } else {
+                $symbol->profile = null;
+                $symbol->profile_error = $profileResult['error'] ?? 'Unknown error';
+                $symbol->has_complete_profile = false;
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Fatal error processing symbol {$symbol->symbol}: " . $e->getMessage());
+            $symbol->profile = null;
+            $symbol->profile_error = 'System error occurred';
+            $symbol->has_complete_profile = false;
+        }
+    }
+
+    // Filter by sector if specified
+    if ($sector) {
+        $symbols = $symbols->filter(function($symbol) use ($sector) {
+            return isset($symbol->profile['sector']) && $symbol->profile['sector'] === $sector;
+        });
+    }
+
+    // Additional profile data search filter
+    if ($search) {
+        $symbols = $symbols->filter(function($symbol) {
+            return $symbol->matches_search ?? false;
+        });
+    }
+
+    // Sort the current page items
+    $symbols = $symbols->sortByDesc(function($symbol) {
+        return $symbol->has_complete_profile ?? false;
+    })->values();
+
+    // Get unique sectors and sort them
+    $sectors = $sectors->unique()->sort()->values();
+    $exchanges = Symbol::where('active', 1)->pluck('exchange')->unique()->sort()->values();
+
+    // Create a new LengthAwarePaginator instance
+    $symbols = new \Illuminate\Pagination\LengthAwarePaginator(
+        $symbols,
+        $total,
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    return view('admin.symbols.profile', [
+        'symbols' => $symbols,
+        'sectors' => $sectors,
+        'exchanges' => $exchanges,
+        'currentSector' => $sector,
+        'currentExchange' => $exchange,
+        'search' => $search
+    ]);
+}
+
+/**
+ * Check if a profile has complete essential data
+ */
+private function hasCompleteProfile($profile): bool
+{
+    $essentialFields = ['name', 'sector', 'industry', 'employees'];
+    foreach ($essentialFields as $field) {
+        if (!isset($profile[$field]) || $profile[$field] === 'N/A') {
+            return false;
+        }
+    }
+    return true;
+}
+
+protected function normalizeProfileData(array $profileData, $symbol): array
+{
+    // Enhanced data normalization with fallbacks
+    $normalized = [
+        'name' => $profileData['companyName'] ?? $profileData['name'] ?? $symbol->name ?? 'N/A',
+        'ceo' => $profileData['ceo'] ?? $profileData['CEO'] ?? null,
+        'address' => $profileData['address'] ?? $profileData['hqAddress'] ?? null,
+        'city' => $profileData['city'] ?? null,
+        'state' => $profileData['state'] ?? null,
+        'zip' => $profileData['zip'] ?? null,
+        'country' => $profileData['country'] ?? null,
+        'website' => $profileData['website'] ?? $profileData['url'] ?? null,
+        'sector' => $profileData['sector'] ?? null,
+        'industry' => $profileData['industry'] ?? $profileData['industryName'] ?? null,
+        'employees' => $this->formatEmployees($profileData['employees'] ?? $profileData['fullTimeEmployees'] ?? null),
+        'phone' => $profileData['phone'] ?? null,
+        'cik' => $profileData['cik'] ?? null,
+        'isin' => $profileData['isin'] ?? null,
+        'cusip' => $profileData['cusip'] ?? null,
+        'exchange' => $profileData['exchange'] ?? $profileData['exchangeShortName'] ?? $symbol->exchange ?? 'N/A',
+        'currency' => $profileData['currency'] ?? $symbol->currency ?? 'N/A',
+    ];
+
+    // Filter out null values and replace with 'N/A'
+    return array_map(function($value) {
+        return $value ?? 'N/A';
+    }, $normalized);
+}
+
+/**
+ * Format employee count with proper type checking
+ */
+private function formatEmployees($value): string
+{
+    if (empty($value)) {
+        return 'N/A';
+    }
+
+    // Convert string numbers to float/int
+    if (is_string($value)) {
+        // Remove any commas or spaces
+        $value = str_replace([',', ' '], '', $value);
+        
+        // Check if it's a valid number
+        if (!is_numeric($value)) {
+            return 'N/A';
+        }
+        
+        $value = (float) $value;
+    }
+
+    // Format the number with commas
+    return is_numeric($value) ? number_format((float)$value) : 'N/A';
+}
 
     // Grops data
 
