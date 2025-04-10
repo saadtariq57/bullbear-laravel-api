@@ -205,8 +205,38 @@ class SymbolController extends Controller
     $exchange = $request->get('exchange');
     $search = $request->get('search');
     
+    // Ensure type defaults to 'stock' if not set or empty
+    $type = $request->get('type');
+    $type = !empty($type) ? strtolower($type) : 'stock';
+    
     // Base query
     $query = Symbol::where('active', 1);
+    
+    // Apply type filter if it's not empty
+    if (!empty($type)) {
+        // Handle multiple possible type formats
+        $typeVariations = [
+            $type,
+            strtoupper($type),
+            ucfirst($type),
+            'STOCK' => ['stock', 'stocks', 'equity', 'equities'],
+            'CRYPTO' => ['crypto', 'cryptocurrency', 'cryptocurrencies'],
+            'COMMODITY' => ['commodity', 'commodities'],
+            'FOREX' => ['forex', 'currency', 'currencies'],
+            'INDEX' => ['index', 'indices', 'indexes'],
+        ];
+
+        $query->where(function($q) use ($type, $typeVariations) {
+            $q->where('type', 'LIKE', "%{$type}%");
+            
+            // Add common variations of the type
+            foreach ($typeVariations as $key => $values) {
+                if (is_array($values) && in_array($type, $values)) {
+                    $q->orWhere('type', 'LIKE', "%{$key}%");
+                }
+            }
+        });
+    }
     
     // Apply search if provided
     if ($search) {
@@ -221,8 +251,18 @@ class SymbolController extends Controller
         $query->where('exchange', $exchange);
     }
     
+    // Log the SQL query for debugging
+    \Log::info('Symbol Query:', [
+        'sql' => $query->toSql(),
+        'bindings' => $query->getBindings()
+    ]);
+    
     // Get symbols with pagination
     $symbols = $query->orderBy('name')->paginate(50);
+    
+    // Log the count of results
+    \Log::info('Symbol Count: ' . $symbols->total());
+    
     $currentPage = $symbols->currentPage();
     $perPage = $symbols->perPage();
     $total = $symbols->total();
@@ -285,16 +325,6 @@ class SymbolController extends Controller
                 if (!empty($normalizedData['sector']) && $normalizedData['sector'] !== 'N/A') {
                     $sectors->push($normalizedData['sector']);
                 }
-
-                // Additional search in profile data if search term exists
-                if ($search && !$symbol->matches_search) {
-                    $searchLower = strtolower($search);
-                    $symbol->matches_search = 
-                        str_contains(strtolower($normalizedData['name']), $searchLower) ||
-                        str_contains(strtolower($symbol->symbol), $searchLower) ||
-                        str_contains(strtolower($normalizedData['sector'] ?? ''), $searchLower) ||
-                        str_contains(strtolower($normalizedData['industry'] ?? ''), $searchLower);
-                }
             } else {
                 $symbol->profile = null;
                 $symbol->profile_error = $profileResult['error'] ?? 'Unknown error';
@@ -316,13 +346,6 @@ class SymbolController extends Controller
         });
     }
 
-    // Additional profile data search filter
-    if ($search) {
-        $symbols = $symbols->filter(function($symbol) {
-            return $symbol->matches_search ?? false;
-        });
-    }
-
     // Sort the current page items
     $symbols = $symbols->sortByDesc(function($symbol) {
         return $symbol->has_complete_profile ?? false;
@@ -331,6 +354,11 @@ class SymbolController extends Controller
     // Get unique sectors and sort them
     $sectors = $sectors->unique()->sort()->values();
     $exchanges = Symbol::where('active', 1)->pluck('exchange')->unique()->sort()->values();
+
+    // Get available types and ensure 'stock' is first in the list
+    $availableTypes = Symbol::distinct('type')->pluck('type')->toArray();
+    $availableTypes = array_unique(array_merge(['stock'], $availableTypes));
+    \Log::info('Available Types:', $availableTypes);
 
     // Create a new LengthAwarePaginator instance
     $symbols = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -347,7 +375,9 @@ class SymbolController extends Controller
         'exchanges' => $exchanges,
         'currentSector' => $sector,
         'currentExchange' => $exchange,
-        'search' => $search
+        'currentType' => $type,
+        'search' => $search,
+        'availableTypes' => $availableTypes
     ]);
 }
 

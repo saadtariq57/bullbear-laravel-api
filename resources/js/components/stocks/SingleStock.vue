@@ -375,7 +375,7 @@ export default defineComponent({
      const fetchStockData = async () => {
         isLoading.value = true;
         try {
-          const response = await axios.get(`https://richtv.io/api/quotes/${symbol.value}`);
+          const response = await axios.get(`/api/quotes/${symbol.value}`);
           
           if (response.data && response.data.quote && response.data.quote[symbol.value]) {
             stockData.value = response.data.quote[symbol.value];

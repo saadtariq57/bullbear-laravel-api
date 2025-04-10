@@ -130,6 +130,66 @@
                 color: #a0aec0;
             }
         }
+
+        /* Table cell styles */
+        .table td {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+            padding-right: 30px; /* Space for the copy icon */
+        }
+        
+        /* Copy icon styles */
+        .copy-icon {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .table td:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .table td:hover .copy-icon {
+            opacity: 1;
+        }
+        
+        /* Copy feedback tooltip */
+        .copy-feedback {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .copy-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .copy-feedback i {
+            font-size: 16px;
+        }
     </style>
 @endsection
 @section('body')
@@ -137,6 +197,12 @@
     <body data-sidebar="colored">
 @endsection
 @section('content')
+    <!-- Add this div for the copy feedback -->
+    <div class="copy-feedback" id="copyFeedback">
+        <i class="fas fa-check-circle"></i>
+        <span>Copied to clipboard!</span>
+    </div>
+    
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -146,43 +212,52 @@
                     <!-- Filters -->
                     <div class="filter-section">
                         <form action="{{ route('admin.symbols.profiles') }}" method="GET" class="row g-3">
-                            <div class="col-6">
+                            <div class="col-auto">
                                 <input type="text" 
                                     name="search" 
                                     class="form-control" 
                                     placeholder="Search symbol or company..." 
                                     value="{{ request('search') }}">
                             </div>
-                            <div class="col-6">
-                                <div class="row justify-content-end">
-                                    <div class="col-auto">
-                                        <select name="sector" class="form-select">
-                                        <option value="">All Sectors</option>
-                                        @foreach($sectors as $sectorOption)
-                                            <option value="{{ $sectorOption }}" {{ $currentSector == $sectorOption ? 'selected' : '' }}>
-                                                {{ $sectorOption }}
-                                            </option>
-                                        @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-auto">
-                                        <select name="exchange" class="form-select">
-                                            <option value="">All Exchanges</option>
-                                            @foreach($exchanges as $exchangeOption)
-                                                <option value="{{ $exchangeOption }}" {{ $currentExchange == $exchangeOption ? 'selected' : '' }}>
-                                                    {{ $exchangeOption }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                        <a href="{{ route('admin.symbols.profiles') }}" class="btn btn-secondary">Reset</a>
-                                    </div>
-                                </div>
-                                
+                            <div class="col-auto">
+                                <select name="type" class="form-select">
+                                    @foreach($availableTypes as $availableType)
+                                        @php
+                                            $typeValue = strtolower($availableType);
+                                            // Set default to 'stock' if no type is selected
+                                            $currentType = $currentType ?? 'stock';
+                                        @endphp
+                                        <option value="{{ $typeValue }}" 
+                                            {{ strtolower($currentType) === $typeValue ? 'selected' : '' }}>
+                                            {{ ucfirst($availableType) }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                           
+                            <div class="col-auto">
+                                <select name="sector" class="form-select">
+                                    <option value="">All Sectors</option>
+                                    @foreach($sectors as $sectorOption)
+                                        <option value="{{ $sectorOption }}" {{ $currentSector == $sectorOption ? 'selected' : '' }}>
+                                            {{ $sectorOption }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <select name="exchange" class="form-select">
+                                    <option value="">All Exchanges</option>
+                                    @foreach($exchanges as $exchangeOption)
+                                        <option value="{{ $exchangeOption }}" {{ $currentExchange == $exchangeOption ? 'selected' : '' }}>
+                                            {{ $exchangeOption }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <a href="{{ route('admin.symbols.profiles') }}?type=stock" class="btn btn-secondary">Reset</a>
+                            </div>
                         </form>
                     </div>
 
@@ -221,11 +296,18 @@
                                             <td>{{ $symbol->profile['name'] }}</td>
                                             <td>{{ $symbol->profile['ceo'] }}</td>
                                             <td>
-                                                {{ $symbol->profile['address'] }}
-                                                {{ isset($symbol->profile['city']) ? ', ' . $symbol->profile['city'] : '' }}
-                                                {{ isset($symbol->profile['state']) ? ', ' . $symbol->profile['state'] : '' }}
-                                                {{ isset($symbol->profile['zip']) ? ' ' . $symbol->profile['zip'] : '' }}
-                                                {{ isset($symbol->profile['country']) ? ' (' . $symbol->profile['country'] . ')' : '' }}
+                                                @php
+                                                    $addressParts = array_filter([
+                                                        $symbol->profile['address'] ?? '',
+                                                        $symbol->profile['city'] ?? '',
+                                                        $symbol->profile['state'] ?? '',
+                                                        $symbol->profile['zip'] ?? '',
+                                                        $symbol->profile['country'] ?? ''
+                                                    ], function($part) {
+                                                        return $part && $part !== 'N/A';
+                                                    });
+                                                    echo !empty($addressParts) ? implode(', ', $addressParts) : 'N/A';
+                                                @endphp
                                             </td>
                                             <td>
                                                 @if($symbol->profile['website'] && $symbol->profile['website'] !== 'N/A')
@@ -275,10 +357,72 @@
         </div>
     </div>
 @endsection
-<style>
-    
-</style>
 @section('scripts')
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        
+        <!-- Click to copy functionality -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const table = document.querySelector('.table');
+                const copyFeedback = document.getElementById('copyFeedback');
+                let copyTimeout;
+                
+                if (table) {
+                    // Add copy icons to all td elements
+                    table.querySelectorAll('td').forEach(td => {
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-copy copy-icon';
+                        td.appendChild(icon);
+                    });
+                    
+                    table.addEventListener('click', async function(e) {
+                        const td = e.target.closest('td');
+                        if (!td) return;
+                        
+                        // Get the text content (excluding the icon)
+                        const text = td.textContent.replace('content_copy', '').trim();
+                        
+                        try {
+                            // Use the modern clipboard API
+                            await navigator.clipboard.writeText(text);
+                            
+                            // Show feedback
+                            copyFeedback.classList.add('show');
+                            
+                            // Clear any existing timeout
+                            if (copyTimeout) clearTimeout(copyTimeout);
+                            
+                            // Hide feedback after 2 seconds
+                            copyTimeout = setTimeout(() => {
+                                copyFeedback.classList.remove('show');
+                            }, 2000);
+                            
+                        } catch (err) {
+                            console.error('Failed to copy text:', err);
+                            
+                            // Fallback to the old method
+                            const textarea = document.createElement('textarea');
+                            textarea.value = text;
+                            document.body.appendChild(textarea);
+                            
+                            try {
+                                textarea.select();
+                                document.execCommand('copy');
+                                copyFeedback.classList.add('show');
+                                
+                                if (copyTimeout) clearTimeout(copyTimeout);
+                                copyTimeout = setTimeout(() => {
+                                    copyFeedback.classList.remove('show');
+                                }, 2000);
+                            } catch (err) {
+                                console.error('Fallback copy failed:', err);
+                            } finally {
+                                document.body.removeChild(textarea);
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
 @endsection
