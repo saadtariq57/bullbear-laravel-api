@@ -225,7 +225,7 @@ export default {
   },
   computed: {
     specializedreportcheck() {
-      return this.hasCategoryId(12800) && this.post && this.post.id === 433883 || this.hasCategoryId(12800) && this.post && this.post.id === 434025;
+      return this.hasCategoryId(12800) && this.post && this.post.id === 433883 || this.hasCategoryId(12800) && this.post && this.post.id === 434025 || this.hasCategoryId(12800) && this.post && this.post.id === 434081;
     },
     /**
      * Formats the post date to a readable format.
