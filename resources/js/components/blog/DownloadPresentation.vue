@@ -90,11 +90,22 @@
     },
     computed: {
       formId() {
-        // Return different form IDs based on post ID
-        return this.postId === 433883 ? '92' : '93';
+        if(this.postId === 433883){
+          return '92'
+        }else if(this.postId === 434025){
+          return '93'
+        }else if(this.postId === 434081){
+          return '94'
+        }
       },
       mauticFormName() {
-        return this.postId === 433883 ? 'jackpotdigitalincreport' : 'zefiromethanecorpreport';
+        if(this.postId === 433883){
+          return 'jackpotdigitalincreport'
+        }else if(this.postId === 434025){
+          return 'zefiromethanecorpreport'
+        }else if(this.postId === 434081){
+          return 'prominonutritionalsciencesincreport'
+        }
       },
       mauticFormId() {
         return 'mauticform_' + this.mauticFormName;
@@ -106,10 +117,13 @@
         return `https://mailer.servicesground.com/form/submit?formId=${this.formId}`;
       },
       downloadFileUrl() {
-        // Different download URLs for each post
-        return this.postId === 433883 
-          ? 'https://mailer.servicesground.com/asset/21:jackpot-digital-investor-presentation-q1-20250pdf'
-          : 'https://mailer.servicesground.com/asset/22:zefiro-deck-roadshow-version-v46pdf';
+        if(this.postId === 433883){
+          return 'https://mailer.servicesground.com/asset/21:jackpot-digital-investor-presentation-q1-20250pdf'
+        }else if(this.postId ===434025){
+          return 'https://mailer.servicesground.com/asset/22:zefiro-deck-roadshow-version-v46pdf'
+        }else if(this.postId === 434081){
+          return 'https://mailer.servicesground.com/asset/23:prominoinvestorpresentationfeb202527pdf'
+        }
       }
     },
     methods: {

@@ -118,7 +118,8 @@
         
         const widgetMappings = {
           433883: [35], // Widget ID 35 for post ID 433883
-          434025: [36]  // Widget ID 36 for post ID 434025
+          434025: [36],  // Widget ID 36 for post ID 434025
+          434081: [37]  // Widget ID 37 for post ID 434081
         };
       
         const allowedWidgetIds = widgetMappings[this.postId] || [];
