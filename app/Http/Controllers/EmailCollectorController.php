@@ -46,7 +46,12 @@ class EmailCollectorController extends Controller
                     if (in_array(strtolower($domain), $disposableDomains)) {
                         $fail('Please use a non-disposable email address. We cannot send alerts to temporary email services.');
                     }
-                    if (preg_match('/^[a-z0-9]{10,}@/', $value)) {
+                    if (preg_match('/([a-z0-9])\1{5,}/', $value)) {
+                        $fail('This email address appears to be invalid. Please use your regular email address.');
+                    }
+                    
+                    // Check for sequential patterns
+                    if (preg_match('/abcdef|123456|qwerty/', strtolower($value))) {
                         $fail('This email address appears to be invalid. Please use your regular email address.');
                     }
                 },
@@ -77,56 +82,23 @@ class EmailCollectorController extends Controller
             
             $segmentId = 185;
             
-            $searchParams = [
-                'search' => $email,
-                'limit' => 1
+            // Create or update contact in Mautic
+            $contactData = [
+                'email' => $email,
+                'tags' => ['website_footer_subscription'],
+                'ipAddress' => $request->ip(),
+                'consent' => true
             ];
             
-            // Log::info('Searching for existing contact', [
-            //     'email' => $email
-            // ]);
+            // Log::info('Creating/updating contact', ['email' => $email]);
             
-            $existingContacts = $this->contactApi->getList($searchParams);
-            $contactId = null;
+            // Let Mautic handle duplicate detection
+            $contact = $this->contactApi->create($contactData);
             
-            if (isset($existingContacts['contacts']) && count($existingContacts['contacts']) > 0) {
-                $contactId = key($existingContacts['contacts']);
+            if (isset($contact['contact']['id'])) {
+                $contactId = $contact['contact']['id'];
                 
-                // Log::info('Updating existing contact', [
-                //     'contact_id' => $contactId,
-                //     'email' => $email
-                // ]);
-
-                $contactData = [
-                    'email' => $email,
-                    'tags' => ['website_footer_subscription'],
-                    'overwriteWithBlank' => false
-                ];
-                
-                $this->contactApi->edit($contactId, $contactData);
-            } else {
-                $contactData = [
-                    'email' => $email,
-                    'tags' => ['website_footer_subscription'],
-                    'ipAddress' => $request->ip(),
-                    'consent' => true
-                ];
-                
-                // Log::info('Creating new contact', ['data' => $contactData]);
-                
-                $newContact = $this->contactApi->create($contactData);
-                // Log::info('Create response', ['response' => $newContact]);
-                
-                if (isset($newContact['contact']['id'])) {
-                    $contactId = $newContact['contact']['id'];
-                } else {
-                    Log::error('Contact ID not found in response', ['response' => $newContact]);
-                    throw new \Exception('Failed to create contact in Mautic');
-                }
-            }
-            
-            // Add contact to the segment
-            if ($contactId) {
+                // Add contact to the segment
                 // Log::info('Adding contact to segment', [
                 //     'contact_id' => $contactId,
                 //     'segment_id' => $segmentId
@@ -136,10 +108,11 @@ class EmailCollectorController extends Controller
                 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Thanks for joining us! You\'re all set to receive our latest crypto and stock alerts.'
+                    'message' => 'Email collected successfully!'
                 ]);
             } else {
-                throw new \Exception('Contact ID not found');
+                // Log::error('Contact ID not found in response', ['response' => $contact]);
+                throw new \Exception('Failed to create/update contact in Mautic');
             }
         } catch (\Exception $e) {
             // Log::error('Error adding contact to Mautic', [
