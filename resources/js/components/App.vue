@@ -4,6 +4,7 @@
     <div class="page-content">
       <section class="feed-main container-fluid px-0">
         <router-view></router-view>
+        <email-popup v-if="!isUserLoggedIn"></email-popup>
       </section>
     </div>
     
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useStore } from 'vuex';
 import Navigation from "./header/Navigation.vue";
 import LoginPopup from "./utils/LoginPopup.vue";
@@ -34,6 +35,10 @@ export default {
     const store = useStore();
     const isCheckingAuthState = ref(true);
     const showLoginPopupState = ref(false);
+
+    const isUserLoggedIn = computed(() => {
+      return isLoggedIn();
+    });
 
     onMounted(async () => {
       //await checkLoginStatus();
@@ -51,7 +56,8 @@ export default {
     return {
       isCheckingAuthState,
       showLoginPopupState,
-      closeLoginPopup
+      closeLoginPopup,
+      isUserLoggedIn
     };
   }
 };
