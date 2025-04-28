@@ -4,6 +4,7 @@ import store from './stores/index';
 import App from "./components/App.vue";
 import { VueReCaptcha } from 'vue-recaptcha-v3';
 import axios from 'axios';
+import emailCollector from './components/emailCollector.vue';
 
 // CSRF Token setup
 const token = document.head.querySelector('meta[name="csrf-token"]');
@@ -26,6 +27,9 @@ window.axios = axios;
 
 // Create Vue app
 const app = createApp(App);
+
+//Registering emailCollectorpopup
+app.component('email-popup', emailCollector);
 
 // Use router and store
 app.use(router);

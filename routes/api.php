@@ -25,7 +25,8 @@ use App\Http\Controllers\{
     WidgetController,
     StockScreenerController,
     ContactController,
-    TradingReportController
+    TradingReportController,
+    EmailCollectorController
 };
 
 /*
@@ -169,6 +170,9 @@ Route::get('/exams', [ExamController::class, 'getAllExams'])->name('exams.all');
 
 //Contact Form
 Route::post('/contact', [ContactController::class, 'submit']);
+
+//Email Collector
+Route::post('/email-collector', [EmailCollectorController::class, 'collect']);
 
 /*
 |--------------------------------------------------------------------------
