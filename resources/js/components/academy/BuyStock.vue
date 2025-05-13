@@ -31,7 +31,7 @@
             </ul>
           </div>
           <div class="col-lg-6">
-            <img src="/build/images/BuyStock_intro.PNG" alt="Stock market introduction" class="intro__image mb-4 mb-lg-0">
+            <img src="/build/images/BuyStock_intro.png" alt="Stock market introduction" class="intro__image mb-4 mb-lg-0">
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6">
-            <img src="/build/images/BuyStock_img1.PNG" alt="Brokerage account explanation" class="what-is-brokerage__image mb-4 mb-lg-0">
+            <img src="/build/images/BuyStock_img1.png" alt="Brokerage account explanation" class="what-is-brokerage__image mb-4 mb-lg-0">
           </div>
           <div class="what-is-brokerage__content col-lg-6">
             <h2 class="what-is-brokerage__title">What Is a Stock Brokerage Account?</h2>
@@ -141,7 +141,7 @@
           <!-- Step 2 -->
           <div class="step row align-items-center">
             <div class="col-lg-6">
-              <img src="/build/images/BuyStock_img3.PNG" alt="Register account" class="step__image mb-4 mb-lg-0">
+              <img src="/build/images/BuyStock_img3.png" alt="Register account" class="step__image mb-4 mb-lg-0">
             </div>
             <div class="col-lg-6">
               <h3 class="step__title">Step 2: Register for an Account</h3>
