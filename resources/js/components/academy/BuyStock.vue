@@ -287,12 +287,13 @@
     <section class="resources">
       <div class="container">
         <h2 class="resources__title">📚 Helpful Resources & Tools</h2>
-        <div class="row align-items-center">
+        <div class="row align-items-center flex-column-reverse flex-lg-row">
           <div class="col-lg-6">
+            <p>Here are some useful links to deepen your learning:</p>
             <ul class="resources__list">
               <a href="https://richtv.io/blog/how-to-invest/how-to-invest-in-stocks"><li>Beginner’s Guide to Stocks</li></a>
              <a href="https://richtv.io/blog/investing101/"> <li>Investing101</li></a>
-              <a href="https://in.tradingview.com/u/Richtv_official/#published-charts"><li>Using TradingView for Analysis</li></a>
+              <a href="https://www.tradingview.com/pricing/?share_your_love=Richtv_io" target="_blank"><li>Using TradingView for Analysis</li></a>
               <a href="https://richtv.io/glossary/"><li>Glossary of Stock Market Terms</li></a>
             </ul>
             <div class="explore-more">
@@ -317,7 +318,7 @@
           <div class="col-lg-6">
             <p class="community__text">Investing is better with support and ongoing learning.</p>
             <div class="cta-buttons d-flex gap-3 pb-3">
-              <a href="https://web.telegram.org/a/#-1001399691536" class="btn btn-primary">Join our Telegram Group</a>
+              <a href="https://web.telegram.org/a/#-1001399691536" class="btn btn-primary" target="_blank">Join our Telegram Group</a>
               <a href="https://richtv.io/login" class="btn btn-border">Create Your Account Now</a>
             </div>
             <div class="additional-offers">
@@ -763,7 +764,34 @@
     overflow-x: auto;
   }
 }
-
+@media (max-width: 425px) {
+    .header__title{
+        font-size: 25px;
+        margin-bottom: 15px !important;
+    }
+    .buy_stock_main section{
+          padding-block: 20px;
+    }
+    .buy_stock_main h2{
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+.comparison-table{
+    min-width: 890px;
+}
+.buy_stock_main .steps .step[data-v-b0ebe671] {
+    padding: 15px 5px;
+}
+.community .cta-buttons{
+  flex-direction: column;
+}
+.conclusion_main[data-v-b0ebe671] {
+    padding: 15px 8px;
+}
+.cta-buttons a {
+    width: 100%;
+}
+}
 /* Maintain all original crypto page styles */
 .buy_stock_main .steps .step {
   background: #F9F9F9;

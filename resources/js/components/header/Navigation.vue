@@ -284,11 +284,11 @@
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
                       <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
-                        <li><a class="dropdown-item nav-link" href="/richtv-live">RichTv Live</a></li>
-                        <li><a class="dropdown-item nav-link" href="/glossary/">Glossary</a></li>
-                        <li><a class="dropdown-item nav-link" href="/blog/trading-strategies/">Trading Strategies</a></li>
                         <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-stocks">How to Buy Stocks</a></li>
                         <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
+                        <li><a class="dropdown-item nav-link" href="/glossary/">Trading Glossary</a></li>
+                        <li><a class="dropdown-item nav-link" href="/blog/trading-strategies/">Trading Strategies</a></li>
+                        <li><a class="dropdown-item nav-link" href="/richtv-live">RichTv Live</a></li>
                       </ul>
                     </div>
                   </li>
