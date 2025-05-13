@@ -307,6 +307,11 @@ const routes = [
         component: () => import('./components/academy/BuyCrypto.vue'),
     },
     {
+        path: '/academy/how-to-buy-stocks',
+        name: 'buy-stock',
+        component: () => import('./components/academy/BuyStock.vue'),
+    },
+    {
         path: '/trading-history',
         name: 'trading-history',
         component: () => import('./components/previous-performence/TradingHistory.vue'),
@@ -318,7 +323,7 @@ routes.forEach(route => {
         'pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live',
         'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlist', 'personal-access',
         'stocks-screener', 'trading-education', 'category', 'post', 'NotFound', 'NotFoundPage', 'propicks', 'exams',
-        'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary', 'singlePost', 'ceo-interviews', 'trading-history','buy-crypto'
+        'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary', 'singlePost', 'ceo-interviews', 'trading-history','buy-crypto','buy-stock'
     ];
 
     const routeName = typeof route.name === 'function' ? route.name({ params: { category: '', subCategory: '' } }) : route.name;

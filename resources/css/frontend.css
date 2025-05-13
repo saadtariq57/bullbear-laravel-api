@@ -1193,7 +1193,10 @@ footer {
     background-color: var(--Cinder);
     padding-top: 80px;
 }
-
+.footer-icons img{
+    max-width: 14px;
+    border-radius: 50%;
+}
 .main-foot a,
 .main-foot p,
 .main-foot h2 {

@@ -123,6 +123,14 @@
                              aria-label="Tiktok" rel="nofollow">
                              <i class="bi bi-tiktok"></i>
                          </a>
+                         <a href="https://web.telegram.org/a/#-1001399691536" target="_blank" class="fs-18"
+                             aria-label="Tiktok" rel="nofollow">
+                             <i class="bi bi-telegram"></i>
+                         </a>
+                         <a href="https://in.tradingview.com/u/Richtv_official/" target="_blank" class="fs-18"
+                             aria-label="Tiktok" rel="nofollow">
+                             <img src="{{ URL::asset('build/images/Tradingview_icon.png') }}" alt="">
+                         </a>
                      </div>
                  </div>
                  <div class="col-12 footer-bootem d-flex py-4 mt-5 border-top ">
