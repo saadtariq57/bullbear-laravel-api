@@ -154,6 +154,7 @@ export default {
       activeSymbolCategory: 'All',
       hasClickedSearch: false,
       symbolCategories: ['All', 'Stocks', 'Crypto', 'ETF', 'Indices'],
+      offcanvasInstance: null,
       defaultSymbols: {
         stocks: [
           { symbol: 'AAPL', company_name: 'Apple Inc.', country: 'USA', exchange: 'NASDAQ', type: 'stocks' },
@@ -231,6 +232,13 @@ export default {
         this.fetchDefaultGroups();
         this.fetchDefaultMembers();
       }
+      // Focus the search input
+      this.$nextTick(() => {
+        const searchInput = document.querySelector('.navbar-search input');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      });
     },
     
     setActiveTab(tab) {
@@ -286,22 +294,25 @@ export default {
       this.resetSearchResults();
     },
     
-    hideOffcanvas() {
-      const offcanvasElement = document.getElementById('offcanvasTop');
-      if (offcanvasElement) {
-        const offcanvas = Offcanvas.getInstance(offcanvasElement);
-        if (offcanvas) {
-          offcanvas.hide();
+    handleOutsideClick(event) {
+      // Check if the click was outside the search form
+      const searchForm = document.querySelector('.nav-search-main');
+      if (searchForm && !searchForm.contains(event.target)) {
+        const closeButton = document.querySelector('.btn-search-close');
+        if (closeButton) {
+          closeButton.click();
         }
       }
-      this.removeBackdrop();
+    },
+
+    hideOffcanvas() {
+      const closeButton = document.querySelector('.btn-search-close');
+      if (closeButton) {
+        closeButton.click();
+      }
     },
 
     removeBackdrop() {
-      const backdrop = document.querySelector('.offcanvas-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
       document.body.classList.remove('offcanvas-open');
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
@@ -312,9 +323,19 @@ export default {
     this.$nextTick(() => {
       const offcanvasElement = document.getElementById('offcanvasTop');
       if (offcanvasElement) {
-        const offcanvas = new Offcanvas(offcanvasElement);
+        this.offcanvasInstance = new Offcanvas(offcanvasElement);
         offcanvasElement.addEventListener('shown.bs.offcanvas', this.handleOffcanvasOpen);
-        offcanvasElement.addEventListener('hidden.bs.offcanvas', this.removeBackdrop);
+        offcanvasElement.addEventListener('hidden.bs.offcanvas', () => {
+          document.body.classList.remove('offcanvas-open');
+          document.body.style.overflow = '';
+          document.body.style.paddingRight = '';
+        });
+
+        // Add click event listener to offcanvas body
+        const offcanvasBody = offcanvasElement.querySelector('.offcanvas-body');
+        if (offcanvasBody) {
+          offcanvasBody.addEventListener('click', this.handleOutsideClick);
+        }
       }
     });
   },
@@ -324,9 +345,13 @@ export default {
     if (offcanvasElement) {
       offcanvasElement.removeEventListener('shown.bs.offcanvas', this.handleOffcanvasOpen);
       offcanvasElement.removeEventListener('hidden.bs.offcanvas', this.removeBackdrop);
+      
+      // Remove click event listener from offcanvas body
+      const offcanvasBody = offcanvasElement.querySelector('.offcanvas-body');
+      if (offcanvasBody) {
+        offcanvasBody.removeEventListener('click', this.handleOutsideClick);
+      }
     }
-
-    this.removeBackdrop();
   },
 }
 </script>
