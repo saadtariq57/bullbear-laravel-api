@@ -1,12 +1,12 @@
 <template>
   <div class="container my-4" v-if="widgets.length">
     <div class="text-center">
-      <p class="mb-0 fw-bold text-black text-capitalize" v-if="subCategory">{{ subCategory }}</p>
+      <!-- <p class="mb-0 fw-bold text-black text-capitalize" v-if="subCategory">{{ subCategory }}</p> -->
       <h1 class="fw-bold border-bottom pb-3 text-capitalize">{{ categoryTitle }}</h1>
     </div>
     <div v-for="widget in widgets" :key="widget.id" class="widget-container my-4">
       <div class="text-center">
-        <h2 class="fw-bold text-capitalize">{{ widget.widget_title }}</h2>
+        <!-- <h2 class="fw-bold text-capitalize">{{ widget.widget_title }}</h2> -->
       </div>
       <div class="row">
         <div class="col-lg-8">
