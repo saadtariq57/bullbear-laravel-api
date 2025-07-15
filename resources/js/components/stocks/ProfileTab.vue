@@ -25,13 +25,25 @@
                 <i class="bi bi-info-circle me-3 text-secondary" aria-hidden="true"></i>
                 <div>
                   <h5 class="fw-bold">Description</h5>
+                  <!-- MODIFIED DESCRIPTION BLOCK START -->
                   <p
+                    ref="descriptionRef"
                     class="fw-4 mb-2"
+                    :class="{ 'description-truncated': !isDescriptionExpanded }"
                     data-bs-toggle="tooltip"
                     :title="'Company Description'"
                   >
                     {{ profileData.description || 'No description available.' }}
                   </p>
+                  <a
+                    v-if="descriptionNeedsTruncation"
+                    href="#"
+                    class="text-primary fw-bold text-decoration-none"
+                    @click.prevent="toggleDescription"
+                  >
+                    {{ isDescriptionExpanded ? 'Read Less' : 'Read More' }}
+                  </a>
+                  <!-- MODIFIED DESCRIPTION BLOCK END -->
                 </div>
               </div>
             </div>
@@ -188,7 +200,7 @@
 
 <script>
 import axios from "axios";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, nextTick } from "vue";
 import { Tooltip } from "bootstrap";
 
 export default {
@@ -203,70 +215,104 @@ export default {
     const profileData = ref({});
     const isLoading = ref(true);
     const tooltips = ref([]);
+    const isDescriptionExpanded = ref(false);
+    const descriptionNeedsTruncation = ref(false);
+    const descriptionRef = ref(null);
 
-    const companyInfo = ref([
-      { Sector: null },
-      { Industry: null },
-      { Employees: null },
-      { Phone: null },
-      { CIK: null },
-      { ISIN: null },
-      { CUSIP: null },
-      { Exchange: null },
-      { Currency: null },
-    ]);
+    // These refs will be populated dynamically from the API response
+    const companyInfo = ref([]);
+    const stockInfo = ref([]);
 
-    const stockInfo = ref([
-      { "52 Week Range": null },
-      { "Average Volume": null },
-      { "Last Dividend": null },
-      { "Is ETF": null },
-      { "Is ADR": null },
-      { "Is Fund": null },
-    ]);
-
+    // REFINED AND FIXED fetchProfileData FUNCTION
     const fetchProfileData = async () => {
       isLoading.value = true;
+      // Reset data to prevent showing stale info on re-fetch
+      profileData.value = {};
+      companyInfo.value = [];
+      stockInfo.value = [];
+
       try {
         const baseUrl = import.meta.env.VITE_SYMBOL_LOOKUP_API;
-        const response = await axios.get(`${baseUrl}/profiles/${props.symbol}`);
-        profileData.value = response.data;
+        const apiKey = import.meta.env.VITE_X_API_TOKEN;
 
-        // Populate companyInfo and stockInfo
+        // A quick check to ensure environment variables are loaded
+        if (!baseUrl || !apiKey) {
+          throw new Error("API URL or Token is not configured in your .env file.");
+        }
+
+        const fullUrl = `${baseUrl}/profiles/${props.symbol}`;
+
+        const response = await axios.get(fullUrl, {
+          headers: {
+            'x-api-token': apiKey,
+          },
+        });
+
+        const data = response.data;
+        profileData.value = data; // This populates the main "Company Details"
+
+        // *** FIX: Manually populate the other info sections from the main data object ***
+        // This was the missing part of your logic.
+        
+        // Populate Company Information
+        // Note: The keys (e.g., data.full_time_employees) must match what your API returns.
+        // I have used common snake_case names based on your existing code.
         companyInfo.value = [
-          { Sector: profileData.value.sector },
-          { Industry: profileData.value.industry },
-          { Employees: formatNumber(profileData.value.employees) },
-          { Phone: profileData.value.phone },
-          { CIK: profileData.value.cik },
-          { ISIN: profileData.value.isin },
-          { CUSIP: profileData.value.cusip },
-          { Exchange: profileData.value.exchange },
-          { Currency: profileData.value.currency },
+          { Sector: data.sector },
+          { Industry: data.industry },
+          { Employees: formatNumber(data.full_time_employees) },
+          { Phone: data.phone },
+          { CIK: data.cik },
+          { ISIN: data.isin },
+          { CUSIP: data.cusip },
+          { Exchange: data.exchange_short_name },
+          { Currency: data.currency },
         ];
 
+        // Populate Stock Information
+        // Note: Booleans are converted to 'Yes'/'No' for better display.
         stockInfo.value = [
-          { "52 Week Range": profileData.value.range_value },
-          { "Average Volume": formatNumber(profileData.value.vol_avg) },
-          { "Last Dividend": profileData.value.last_div },
-          { "Is ETF": profileData.value.is_etf ? "Yes" : "No" },
-          { "Is ADR": profileData.value.is_adr ? "Yes" : "No" },
-          { "Is Fund": profileData.value.is_fund ? "Yes" : "No" },
+          { "52 Week Range": data.range },
+          { "Average Volume": data.vol_avg },
+          { "Last Dividend": data.last_div },
+          { "Is ETF": data.is_etf ? 'Yes' : 'No' },
+          { "Is ADR": data.is_adr ? 'Yes' : 'No' },
+          { "Is Fund": data.is_fund ? 'Yes' : 'No' },
         ];
+
       } catch (error) {
-        console.error("Error fetching profile data:", error);
+        console.error(
+          `Failed to fetch profile for ${props.symbol}:`,
+          error.response ? error.response.data : error.message
+        );
+        // You could set an error state here to show a message in the UI
       } finally {
         isLoading.value = false;
-        initializeTooltips();
       }
     };
 
-    const formatNumber = (num) => {
-      return num ? num.toLocaleString() : "-";
+    const toggleDescription = () => {
+      isDescriptionExpanded.value = !isDescriptionExpanded.value;
     };
 
+    const checkTruncation = () => {
+      nextTick(() => {
+        if (descriptionRef.value) {
+          descriptionNeedsTruncation.value =
+            descriptionRef.value.scrollHeight > descriptionRef.value.clientHeight;
+        }
+      });
+    };
+
+    const formatNumber = (num) => {
+      if (num === null || num === undefined) return "N/A";
+      return typeof num === 'number' ? num.toLocaleString() : num;
+    };
+
+
+
     const formatCurrency = (num) => {
-      if (!num) return "-";
+      if (!num) return "N/A";
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -276,14 +322,12 @@ export default {
     };
 
     const formatValue = (key, value) => {
-      switch (key) {
-        case "Average Volume":
-          return formatNumber(value);
-        case "52 Week Range":
-          return value || "N/A";
-        default:
-          return value || "N/A";
+      // The formatting is now handled when populating the arrays,
+      // but this function can be kept for special cases or future use.
+      if (key === "Average Volume") {
+        return formatNumber(value);
       }
+      return value || "N/A";
     };
 
     const truncateURL = (url) => {
@@ -291,20 +335,16 @@ export default {
         const newUrl = new URL(url);
         return newUrl.hostname;
       } catch {
-        return url;
+        return url || "";
       }
     };
 
     const initializeTooltips = () => {
-      // Dispose existing tooltips to prevent duplicates
       tooltips.value.forEach((tooltip) => tooltip.dispose());
       tooltips.value = [];
-
-      // Select all elements with data-bs-toggle="tooltip"
       const tooltipElements = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]'
       );
-
       tooltipElements.forEach((el) => {
         const tooltipInstance = new Tooltip(el, {
           trigger: "hover focus",
@@ -315,15 +355,19 @@ export default {
     };
 
     onMounted(() => {
-      fetchProfileData();
+      // Re-fetch data if the symbol prop changes
+      watch(() => props.symbol, fetchProfileData, { immediate: true });
     });
 
-    // Watch for changes in profileData to reinitialize tooltips
+    // Watch for changes in profileData to re-initialize UI elements
     watch(
       profileData,
       () => {
         if (!isLoading.value) {
-          initializeTooltips();
+          nextTick(() => {
+            initializeTooltips();
+            checkTruncation();
+          });
         }
       },
       { deep: true }
@@ -338,12 +382,25 @@ export default {
       stockInfo,
       formatValue,
       truncateURL,
+      isDescriptionExpanded,
+      descriptionNeedsTruncation,
+      descriptionRef,
+      toggleDescription,
     };
   },
 };
 </script>
 
 <style scoped>
+/* --- 6. ADD NEW STYLE FOR TRUNCATION --- */
+.description-truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Skeleton Loader Styles */
 .skeleton-loader {
   display: flex;

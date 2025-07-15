@@ -6,7 +6,7 @@ import store from './index';
  * @param {object} module - The Vuex module object.
  */
 export const registerVuexModule = (name, module) => {
-    if (!(store.state[name])) {
+    if (!store.hasModule(name)) {
         store.registerModule(name, module);
     }
 };

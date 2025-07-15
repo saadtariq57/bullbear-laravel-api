@@ -302,6 +302,11 @@ const routes = [
         component: () => import('./components/stocks/SingleStock.vue'),
     },
     {
+        path: '/deep-analysis/:symbol',
+        name: 'deep-analysis',
+        component: () => import('./components/stocks/DeepAnalysis.vue'),
+    },
+    {
         path: '/academy/how-to-buy-cryptocurrency',
         name: 'buy-crypto',
         component: () => import('./components/academy/BuyCrypto.vue'),
@@ -320,7 +325,7 @@ const routes = [
 
 routes.forEach(route => {
     const unprotectedRoutes = [
-        'pricing', 'checkout', 'thank-you', 'home', 'quote', 'economic-calendar', 'groups', 'richtv-live',
+        'pricing', 'checkout', 'thank-you', 'home', 'quote', 'deep-analysis', 'economic-calendar', 'groups', 'richtv-live',
         'earning-calendar', 'ipo-calendar', 'dividend-calendar', 'splits-calendar', 'watchlist', 'personal-access',
         'stocks-screener', 'trading-education', 'category', 'post', 'NotFound', 'NotFoundPage', 'propicks', 'exams',
         'PrivacyPolicy', 'ContactUs', 'TermsOfUse', 'About', 'Glossary', 'singlePost', 'ceo-interviews', 'trading-history','buy-crypto','buy-stock'

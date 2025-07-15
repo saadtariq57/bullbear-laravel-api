@@ -10,12 +10,19 @@ const GroupService = {
             throw error;
         }
     },
-    async fetchSuggestedChats() {
+    async fetchSuggestedChats(page = 1, per_page = 9, search = '') {
         try {
-            const response = await axios.get('/api/suggested-chats');
-            // Transform the data as needed
-            const suggestedChats = response.data;
-            return suggestedChats;
+            const params = {
+                page,
+                per_page,
+            };
+            
+            if (search) {
+                params.search = search;
+            }
+            
+            const response = await axios.get('/api/suggested-chats', { params });
+            return response.data;
         } catch (error) {
             console.error('Error fetching suggested chats:', error);
             throw error;
@@ -24,33 +31,16 @@ const GroupService = {
 
     async fetchJoinedChats(userName = null, page = 1, per_page = 9) {
         try {
-            if (userName) {
-                console.log(userName);
-                const response = await axios.get('/api/joined-chats', {
-                    params: {
-                      userName,
-                      page,
-                      per_page: per_page,
-                    }
-                });
-                const joinedChats = response.data;
-                console.log(joinedChats);
-                return joinedChats;
-            }
-            else {
-                console.log('No User Name Supplied');
-                const response = await axios.get('/api/joined-chats', {
-                    params: {
-                      page,
-                      per_page: per_page,
-                    }
-                });
-                const joinedChats = response.data;
-                console.log(joinedChats);
-                return joinedChats;
-            }
+            const response = await axios.get('/api/joined-chats', {
+                params: {
+                  userName,
+                  page,
+                  per_page: per_page,
+                }
+            });
+            return response.data;
         } catch (error) {
-            console.error('Error fetching joined chats:', error.message);
+            console.error('Error fetching joined chats:', error);
             throw error;
         }
     },

@@ -189,17 +189,18 @@ export default {
     };
   },
   created() {
-    console.log('Props:', this.chats, this.joined, this.currentPage, this.lastPage);
     this.checkLoginStatus();
   },
   watch: {
     chats: {
       handler(newChats) {
-        newChats.forEach((chat) => {
-          if (!chat.avatarFailed) {
-            this.checkAvatar(chat);
-          }
-        });
+        if (newChats && Array.isArray(newChats)) {
+          newChats.forEach((chat) => {
+            if (!chat.avatarFailed) {
+              this.checkAvatar(chat);
+            }
+          });
+        }
       },
       immediate: true,
       deep: true,

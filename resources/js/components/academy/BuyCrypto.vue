@@ -67,10 +67,10 @@
                 <h3>Step 1: Visit the Official Website</h3>
                 <p>To ensure security, always use the official website or app of the exchange. Below are the official links for registration:</p>
                 <div class="exchange-links">
+                  <a href="https://coinbase-consumer.sjv.io/Z6EyOX" class="exchange-link" target="_blank">Coinbase</a>
                   <a href="https://www.binance.info/en/activity/referral/offers/claim?ref=CPA_00AS5N1V4F" class="exchange-link" target="_blank">Binance</a>
                   <a href="https://referral.crypto.com/signup?_branch_match_id=1450882626399501831&r=" class="exchange-link" target="_blank">Crypto</a>
                   <a href="https://portal.ndax.io/auth/sign-up/aW1hbjIzMjM" class="exchange-link" target="_blank">Ndax</a>
-                  <a href="https://www.coinbase.com/" class="exchange-link" target="_blank">Coinbase</a>
                   <a href="https://www.kucoin.com/" class="exchange-link" target="_blank">Kucoin</a>
                 </div>
               </div>
