@@ -11,6 +11,13 @@ const userGroupModule = {
         currentPage: 1,
         lastPage: 1,
         perPage: 9,
+        // Suggested chats pagination
+        suggestedChatsCurrentPage: 1,
+        suggestedChatsLastPage: 1,
+        suggestedChatsPerPage: 9,
+        suggestedChatsTotal: 0,
+        suggestedChatsHasMore: false,
+        searchQuery: '',
         isLoadingJoinedChats: false,
         joinedChatsError: null,
         messages: [],
@@ -29,15 +36,12 @@ const userGroupModule = {
         },
         setCurrentPage(state, page) {
             state.currentPage = page;
-            console.log(page);
         },
         setLastPage(state, lastPage) {
             state.lastPage = lastPage;
-            console.log(lastPage);
         },
         setPerPage(state, perPage) {
             state.perPage = perPage;
-            console.log(perPage);
         },
         setLoadingJoinedChats(state, isLoading) {
             state.isLoadingJoinedChats = isLoading;
@@ -47,6 +51,27 @@ const userGroupModule = {
         },
         setSuggestedChats(state, chats) {
             state.suggestedChats = chats;
+        },
+        appendSuggestedChats(state, chats) {
+            state.suggestedChats = [...state.suggestedChats, ...chats];
+        },
+        setSuggestedChatsPage(state, page) {
+            state.suggestedChatsCurrentPage = page;
+        },
+        setSuggestedChatsLastPage(state, lastPage) {
+            state.suggestedChatsLastPage = lastPage;
+        },
+        setSuggestedChatsPerPage(state, perPage) {
+            state.suggestedChatsPerPage = perPage;
+        },
+        setSuggestedChatsTotal(state, total) {
+            state.suggestedChatsTotal = total;
+        },
+        setSuggestedChatsHasMore(state, hasMore) {
+            state.suggestedChatsHasMore = hasMore;
+        },
+        setSearchQuery(state, query) {
+            state.searchQuery = query;
         },
         setJoinedChats(state, chats) {
             state.joinedChats = chats;
@@ -92,24 +117,49 @@ const userGroupModule = {
                 commit('setError', error.message);
             }
         },
-        async fetchSuggestedChats({ commit }) {
+        async fetchSuggestedChats({ commit, state }, { page = 1, search = '', loadMore = false } = {}) {
             commit('setLoading', true);
             try {
-                const chats = await GroupService.fetchSuggestedChats();
-                commit('setSuggestedChats', chats);
+                const response = await GroupService.fetchSuggestedChats(page, state.suggestedChatsPerPage, search);
+                
+                if (loadMore) {
+                    commit('appendSuggestedChats', response.data);
+                } else {
+                    commit('setSuggestedChats', response.data);
+                }
+                
+                commit('setSuggestedChatsPage', response.current_page);
+                commit('setSuggestedChatsLastPage', response.last_page);
+                commit('setSuggestedChatsPerPage', response.per_page);
+                commit('setSuggestedChatsTotal', response.total);
+                commit('setSuggestedChatsHasMore', response.has_more);
+                commit('setSearchQuery', search);
+                commit('setError', null);
             } catch (error) {
                 commit('setError', error.message);
             } finally {
                 commit('setLoading', false);
             }
         },
-        async fetchJoinedChats({ commit, state}, { userName = null, page = 1 }) {
+        async searchSuggestedChats({ dispatch }, searchQuery) {
+            return dispatch('fetchSuggestedChats', { page: 1, search: searchQuery, loadMore: false });
+        },
+        async loadMoreSuggestedChats({ commit, state, dispatch }) {
+            if (!state.suggestedChatsHasMore) return;
+            
+            const nextPage = state.suggestedChatsCurrentPage + 1;
+            return dispatch('fetchSuggestedChats', { 
+                page: nextPage, 
+                search: state.searchQuery, 
+                loadMore: true 
+            });
+        },
+        async fetchJoinedChats({ commit, state}, { userName = null, page = 1 } = {}) {
             commit('setLoading', true);
             try {
                 const per_page = state.perPage;
-                console.log(`UserName: ${userName}`);
                 const chats = await GroupService.fetchJoinedChats(userName, page, per_page);
-                console.log(chats);
+                
                 commit('setJoinedChats', chats.data);
                 commit('setCurrentPage', chats.current_page);
                 commit('setLastPage', chats.last_page);
@@ -199,6 +249,12 @@ const userGroupModule = {
         },
         getError(state) {
             return state.error;
+        },
+        getSuggestedChatsHasMore(state) {
+            return state.suggestedChatsHasMore;
+        },
+        getSearchQuery(state) {
+            return state.searchQuery;
         }
     }
 };

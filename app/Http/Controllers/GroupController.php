@@ -238,6 +238,9 @@ class GroupController extends Controller
     public function suggestedChats(Request $request)
     {
         $userId = $request->user()->id ?? null;
+        $perPage = $request->query('per_page', 9);
+        $page = $request->query('page', 1);
+        $search = $request->query('search');
 
         $query = Group::query();
 
@@ -250,26 +253,41 @@ class GroupController extends Controller
             }]);
         }
 
-        $recentlyActiveGroups = $query->whereHas('messages', function($q) {
-                $q->orderBy('created_at', 'desc');
-            })
-            ->withCount('members')
-            ->withCount('messages')
-            ->orderBy('messages_count', 'desc')
-            ->take(9)
-            ->get();
+        // Add search functionality
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('group_title', 'LIKE', "%{$search}%")
+                  ->orWhere('group_name', 'LIKE', "%{$search}%")
+                  ->orWhere('symbol', 'LIKE', "%{$search}%")
+                  ->orWhere('about', 'LIKE', "%{$search}%");
+            });
+        }
 
-        return response()->json($recentlyActiveGroups->map(function($group) use ($userId) {
-            if ($userId) {
-                $member = $group->members->first();
-                $group->joined = $member && $member->pivot->status === 'active';
-                $group->requestPending = $member && $member->pivot->status === 'pending';
-            } else {
-                $group->joined = false;
-                $group->requestPending = false;
-            }
-            return $group;
-        }));
+        // Get groups with pagination, prioritizing active groups first
+        $groups = $query->withCount('members')
+            ->withCount('messages')
+            ->orderByDesc('messages_count')
+            ->orderByDesc('members_count')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'data' => $groups->map(function($group) use ($userId) {
+                if ($userId) {
+                    $member = $group->members->first();
+                    $group->joined = $member && $member->pivot->status === 'active';
+                    $group->requestPending = $member && $member->pivot->status === 'pending';
+                } else {
+                    $group->joined = false;
+                    $group->requestPending = false;
+                }
+                return $group;
+            }),
+            'current_page' => $groups->currentPage(),
+            'last_page' => $groups->lastPage(),
+            'per_page' => $groups->perPage(),
+            'total' => $groups->total(),
+            'has_more' => $groups->hasMorePages()
+        ]);
     }
 
     public function getGroupById($id)

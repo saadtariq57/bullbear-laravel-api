@@ -105,7 +105,7 @@
               </button>
 
               <button 
-                class="btn btn-success fw-6 fs-12 btn-smaller" 
+                class="btn btn-success fw-6 me-2 fs-12 btn-smaller" 
                 @click="handleAddToWatchlist(stockData.symbol)" 
                 data-bs-toggle="tooltip" 
                 data-bs-placement="top" 
@@ -113,6 +113,17 @@
               >
                 Watchlist
                 <i class="bi bi-plus-lg icon-bold ms-2"></i>
+              </button>
+
+              <button 
+                class="btn btn-info fw-6 fs-12 btn-smaller" 
+                @click="navigateToDeepAnalysis" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="View detailed analysis"
+              >
+                Deep Analysis
+                <i class="bi bi-graph-up icon-bold ms-2"></i>
               </button>
             </div>
           </div>
@@ -257,7 +268,7 @@
 
 <script>
 import { defineComponent, ref, watchEffect, onMounted, computed, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { isLoggedIn } from '../../stores';
 import axios from 'axios';
@@ -306,6 +317,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const stockData = ref({});
     const stockType = ref('');
     const activeTab = ref('SUMMARY');
@@ -355,6 +367,10 @@ export default defineComponent({
       }
     };
 
+    const navigateToDeepAnalysis = () => {
+      router.push(`/deep-analysis/${symbol.value}`);
+    };
+
     // Define tab visibility based on stock type
     const tabVisibility = {
       'stocks': ['SUMMARY', 'NEWS', 'PROFILE', 'EARNINGS', 'FINANCIALS', 'OPTIONS', 'OWNERSHIP'],
@@ -375,7 +391,7 @@ export default defineComponent({
      const fetchStockData = async () => {
         isLoading.value = true;
         try {
-          const response = await axios.get(`/api/quotes/${symbol.value}`);
+          const response = await axios.get(`https://richtv.io/api/quotes/${symbol.value}`);
           
           if (response.data && response.data.quote && response.data.quote[symbol.value]) {
             stockData.value = response.data.quote[symbol.value];
@@ -465,6 +481,7 @@ export default defineComponent({
       SummaryTab,
       summaryTabRef,
       exportChart,
+      navigateToDeepAnalysis,
       isUserLoggedIn,
       showWatchlistModal,
       selectedSymbol,
