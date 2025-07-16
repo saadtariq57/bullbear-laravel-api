@@ -104,6 +104,7 @@
                         <select class="form-control @error('type') is-invalid @enderror" name="type" id="type" required>
                             <option value="user" {{ old('type', 'user') == 'user' ? 'selected' : '' }}>User</option>
                             <option value="admin" {{ old('type') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="bot" {{ old('type') == 'bot' ? 'selected' : '' }}>Bot</option>
                         </select>
                         @error('type')
                             <div class="invalid-feedback">{{ $message }}</div>
