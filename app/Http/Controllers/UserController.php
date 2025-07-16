@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Follower;
 use App\Models\AlbumMedia;
 use App\Models\Post;
+use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +23,12 @@ class UserController extends Controller
         $search = $request->query('search');
 
         if($search) {
-            $users = User::where('name', 'LIKE', "%{$search}%")
-                             ->orWhere('email', 'LIKE', "%{$search}%")
-                             ->paginate(15);
+            $users = User::with('subscriptionPlan')
+                ->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->paginate(15);
         } else {
-            $users = User::paginate(15);
+            $users = User::with('subscriptionPlan')->paginate(15);
         }
         if ($request->route()->named('admin.groups.*') || $request->route()->named('admin.users.*')) {
             return view('admin.users.index', compact('users'));
@@ -74,30 +76,104 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.users.create');
+        $subscriptionPlans = SubscriptionPlan::all();
+        return view('admin.users.create', compact('subscriptionPlans'));
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            // Validation rules based on your schema
-        ]);
-        User::create($validatedData);
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:users',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'first_name' => 'nullable|string|max:100',
+                'last_name' => 'nullable|string|max:32',
+                'type' => 'required|in:user,admin',
+                'status' => 'required|in:active,inactive',
+                'subscription_plan_id' => 'nullable|exists:subscription_plans,id',
+                'gender' => 'nullable|in:male,female,other',
+                'birthday' => 'nullable|date',
+                'phone_number' => 'nullable|string|max:32',
+                'city' => 'nullable|string|max:50',
+                'state' => 'nullable|string|max:50',
+                'zip' => 'nullable|string|max:11',
+                'about' => 'nullable|string',
+            ]);
+
+            // Hash the password
+            $validatedData['password'] = Hash::make($validatedData['password']);
+
+            // Handle empty subscription_plan_id
+            if (empty($validatedData['subscription_plan_id'])) {
+                $validatedData['subscription_plan_id'] = null;
+            }
+
+            User::create($validatedData);
+            return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('error', 'Validation failed: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'An error occurred while creating the user: ' . $e->getMessage());
+        }
     }
 
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $subscriptionPlans = SubscriptionPlan::all();
+        return view('admin.users.edit', compact('user', 'subscriptionPlans'));
     }
 
     public function update(Request $request, User $user)
     {
-        $validatedData = $request->validate([
-            // Validation rules based on your schema
-        ]);
-        $user->update($validatedData);
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:users,name,' . $user->id,
+                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+                'password' => 'nullable|string|min:8',
+                'first_name' => 'nullable|string|max:100',
+                'last_name' => 'nullable|string|max:32',
+                'type' => 'required|in:user,admin',
+                'status' => 'required|in:active,inactive',
+                'subscription_plan_id' => 'nullable|exists:subscription_plans,id',
+                'gender' => 'nullable|in:male,female,other',
+                'birthday' => 'nullable|date',
+                'phone_number' => 'nullable|string|max:32',
+                'city' => 'nullable|string|max:50',
+                'state' => 'nullable|string|max:50',
+                'zip' => 'nullable|string|max:11',
+                'about' => 'nullable|string',
+            ]);
+
+            // Only hash password if it's provided
+            if (!empty($validatedData['password'])) {
+                $validatedData['password'] = Hash::make($validatedData['password']);
+            } else {
+                unset($validatedData['password']);
+            }
+
+            // Handle empty subscription_plan_id
+            if (empty($validatedData['subscription_plan_id'])) {
+                $validatedData['subscription_plan_id'] = null;
+            }
+
+            $user->update($validatedData);
+            return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('error', 'Validation failed: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'An error occurred while updating the user: ' . $e->getMessage());
+        }
     }
 
     public function destroy(User $user)

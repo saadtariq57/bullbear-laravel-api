@@ -52,6 +52,7 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Type</th>
+                                        <th scope="col">Plan</th>
                                         <th scope="col">Status</th>
                                         <th scope="col" style="width: 200px;">Action</th>
                                     </tr>
@@ -70,8 +71,23 @@
                                                 <a href="#" class="text-body">{{ $user->name }}</a>
                                             </td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ ucfirst($user->type) }}</td>
-                                            <td>{{ ucfirst($user->status) }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $user->type === 'admin' ? 'danger' : 'primary' }}">
+                                                    {{ ucfirst($user->type) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if($user->subscriptionPlan)
+                                                    <span class="badge bg-success">{{ $user->subscriptionPlan->name }}</span>
+                                                @else
+                                                    <span class="badge bg-secondary">No Plan</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ $user->status === 'active' ? 'success' : 'warning' }}">
+                                                    {{ ucfirst($user->status) }}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <ul class="list-inline mb-0">
                                                     <li class="list-inline-item">
