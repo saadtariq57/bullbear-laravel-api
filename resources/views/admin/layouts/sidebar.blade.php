@@ -97,6 +97,17 @@
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
+                        <i class="fas fa-robot me-2 menu-icon"></i>
+                        <span>Bots</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="{{ route('admin.bots.index') }}">All Bots</a></li>
+                        <li><a href="{{ route('admin.bots.create') }}">Add New Bot</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect d-flex align-items-center">
                         <i class="fas fa-boxes me-2 menu-icon"></i>
                         <span>Groups</span>
                     </a>

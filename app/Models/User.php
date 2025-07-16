@@ -130,6 +130,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'user.notifications.' . $this->id;
     }
 
+    public function bot()
+    {
+        return $this->hasOne(Bot::class);
+    }
+
     public function subscriptionPlan()
     {
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id');
