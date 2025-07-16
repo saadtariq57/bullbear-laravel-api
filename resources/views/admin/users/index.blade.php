@@ -72,7 +72,7 @@
                                             </td>
                                             <td>{{ $user->email }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $user->type === 'admin' ? 'danger' : 'primary' }}">
+                                                <span class="badge bg-{{ $user->type === 'admin' ? 'danger' : ($user->type === 'bot' ? 'warning' : 'primary') }}">
                                                     {{ ucfirst($user->type) }}
                                                 </span>
                                             </td>

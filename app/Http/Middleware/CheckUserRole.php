@@ -26,9 +26,9 @@ class CheckUserRole
         // Get the authenticated user
         $user = Auth::user();
 
-        // Check if the user's type is 'admin'
-        if ($user->type === 'admin') {
-            return $next($request); // Allow admin users to proceed
+        // Check if the user's type is 'admin' or 'robot'
+        if ($user->type === 'admin' || $user->type === 'robot') {
+            return $next($request); // Allow admin and robot users to proceed
         }
         
 

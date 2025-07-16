@@ -18,6 +18,16 @@ class UserPolicy
         return $user->type === 'admin';
     }
 
+    public function isBot(User $user)
+    {
+        return $user->type === 'bot';
+    }
+
+    public function isAdminOrBot(User $user)
+    {
+        return $user->type === 'admin' || $user->type === 'bot';
+    }
+
     public function isActive(User $user)
     {
         return $user->status === 'active';
