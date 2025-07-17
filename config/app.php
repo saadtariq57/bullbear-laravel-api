@@ -17,6 +17,19 @@ return [
     */
 
     'name' => env('APP_NAME', 'RichTv'),
+   
+
+    /*
+    |--------------------------------------------------------------------------
+    | Automation API Key
+    |--------------------------------------------------------------------------
+    |
+    | This value is used for automation API authentication. It should be set
+    | in your ".env" file for security purposes.
+    |
+    */
+
+    'AUTOMATION_API_KEY' => env('AUTOMATION_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------

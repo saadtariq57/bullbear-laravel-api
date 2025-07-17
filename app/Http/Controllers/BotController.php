@@ -138,4 +138,32 @@ class BotController extends Controller
         return redirect()->route('admin.bots.index')
                         ->with('success', "Bot configuration for '{$userName}' has been deleted. User account remains active.");
     }
+
+    /**
+     * API: Get all active bots for n8n integration
+     */
+    public function apiActiveIndex()
+    {
+        $activeBots = Bot::with('user:id,name,email')
+                        ->where('is_active', true)
+                        ->get()
+                        ->map(function ($bot) {
+                            return [
+                                'id' => $bot->id,
+                                'name' => $bot->user->name,
+                                'email' => $bot->user->email,
+                                'role' => $bot->role,
+                                'style' => $bot->style,
+                                'topics' => $bot->topics,
+                                'instructions' => $bot->instructions,
+                                'created_at' => $bot->created_at->toISOString()
+                            ];
+                        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $activeBots,
+            'count' => $activeBots->count()
+        ]);
+    }
 }

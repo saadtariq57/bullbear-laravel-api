@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AblyController,
+    BotController,
     EducationController,
     ExamController,
     ExamResultController,
@@ -294,3 +295,12 @@ Route::middleware('auth:sanctum')->group(function () {
 | Additional Public Routes
 |--------------------------------------------------------------------------
 */
+
+/*
+|--------------------------------------------------------------------------
+| API Routes with API Key Authentication
+|--------------------------------------------------------------------------
+*/
+Route::middleware('api.key')->group(function () {
+    Route::get('/bots/active', [BotController::class, 'apiActiveIndex'])->name('api.bots.active');
+});
