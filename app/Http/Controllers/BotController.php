@@ -57,6 +57,8 @@ class BotController extends Controller
             'topics' => 'nullable|array',
             'topics.*' => 'string|max:255',
             'instructions' => 'nullable|string',
+            'post_frequency' => 'nullable|in:low,medium,high',
+            'activity_level' => 'nullable|integer|min:1|max:10',
         ]);
 
         // Ensure the selected user is of type 'bot' and doesn't already have a bot record
@@ -111,6 +113,8 @@ class BotController extends Controller
             'topics' => 'nullable|array',
             'topics.*' => 'string|max:255',
             'instructions' => 'nullable|string',
+            'post_frequency' => 'nullable|in:low,medium,high',
+            'activity_level' => 'nullable|integer|min:1|max:10',
         ]);
 
         // Convert topics array to proper format (remove empty values)
@@ -150,12 +154,16 @@ class BotController extends Controller
                         ->map(function ($bot) {
                             return [
                                 'id' => $bot->id,
+                                'bot_user_id' => $bot->user_id,
                                 'name' => $bot->user->name,
                                 'email' => $bot->user->email,
                                 'role' => $bot->role,
                                 'style' => $bot->style,
                                 'topics' => $bot->topics,
                                 'instructions' => $bot->instructions,
+                                'post_frequency' => $bot->post_frequency,
+                                'activity_level' => $bot->activity_level,
+                                'last_active' => $bot->last_active?->toISOString(),
                                 'created_at' => $bot->created_at->toISOString()
                             ];
                         });

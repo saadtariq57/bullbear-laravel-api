@@ -21,6 +21,9 @@ class Bot extends Model
         'topics',
         'instructions',
         'is_active',
+        'post_frequency',
+        'activity_level',
+        'last_active',
     ];
 
     /**
@@ -31,6 +34,8 @@ class Bot extends Model
     protected $casts = [
         'topics' => 'array',
         'is_active' => 'boolean',
+        'activity_level' => 'integer',
+        'last_active' => 'datetime',
     ];
 
     /**

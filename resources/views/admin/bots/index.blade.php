@@ -53,6 +53,8 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Role</th>
                                     <th scope="col">Style</th>
+                                    <th scope="col">Post Frequency</th>
+                                    <th scope="col">Activity Level</th>
                                     <th scope="col">Topics</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Created</th>
@@ -83,6 +85,25 @@
                                         <td>
                                             @if($bot->style)
                                                 <span class="badge bg-info">{{ ucfirst($bot->style) }}</span>
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($bot->post_frequency)
+                                                <span class="badge bg-{{ $bot->post_frequency == 'high' ? 'warning' : ($bot->post_frequency == 'medium' ? 'info' : 'secondary') }}">
+                                                    {{ ucfirst($bot->post_frequency) }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($bot->activity_level)
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge bg-primary me-2">{{ $bot->activity_level }}</span>
+                                                    <small class="text-muted">/10</small>
+                                                </div>
                                             @else
                                                 <span class="text-muted">Not set</span>
                                             @endif

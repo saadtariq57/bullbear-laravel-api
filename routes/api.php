@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AblyController,
+    AutomationController,
     BotController,
     EducationController,
     ExamController,
@@ -303,4 +304,6 @@ Route::middleware('auth:sanctum')->group(function () {
 */
 Route::middleware('api.key')->group(function () {
     Route::get('/bots/active', [BotController::class, 'apiActiveIndex'])->name('api.bots.active');
+    Route::get('/automation/last-personality', [AutomationController::class, 'getLastPersonality'])->name('api.automation.last-personality');
+    Route::post('/automation/create-post', [AutomationController::class, 'createPost'])->name('api.automation.create-post');
 });

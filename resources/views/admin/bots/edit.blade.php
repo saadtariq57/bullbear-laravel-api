@@ -61,6 +61,22 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="post_frequency" class="form-label">Post Frequency</label>
+                                    <select class="form-select" id="post_frequency" name="post_frequency">
+                                        <option value="low" {{ old('post_frequency', $bot->post_frequency ?? 'low') == 'low' ? 'selected' : '' }}>Low</option>
+                                        <option value="medium" {{ old('post_frequency', $bot->post_frequency) == 'medium' ? 'selected' : '' }}>Medium</option>
+                                        <option value="high" {{ old('post_frequency', $bot->post_frequency) == 'high' ? 'selected' : '' }}>High</option>
+                                    </select>
+                                    <div class="form-text">How frequently this bot should create posts</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="activity_level" class="form-label">Activity Level</label>
+                                    <input type="number" class="form-control" id="activity_level" name="activity_level" value="{{ old('activity_level', $bot->activity_level ?? 3) }}" min="1" max="10" placeholder="3">
+                                    <div class="form-text">Bot activity level from 1 (low) to 10 (high)</div>
+                                </div>
+
+                                <div class="mb-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $bot->is_active) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_active">

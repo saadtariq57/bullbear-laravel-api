@@ -56,6 +56,29 @@
                             </div>
 
                             <div class="mb-4">
+                                <h6 class="text-muted mb-2">Post Frequency</h6>
+                                @if($bot->post_frequency)
+                                    <span class="badge bg-{{ $bot->post_frequency == 'high' ? 'warning' : ($bot->post_frequency == 'medium' ? 'info' : 'secondary') }} fs-6 px-3 py-2">
+                                        {{ ucfirst($bot->post_frequency) }}
+                                    </span>
+                                @else
+                                    <span class="text-muted fst-italic">Not set</span>
+                                @endif
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="text-muted mb-2">Activity Level</h6>
+                                @if($bot->activity_level)
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary fs-6 px-3 py-2 me-2">{{ $bot->activity_level }}</span>
+                                        <small class="text-muted">out of 10</small>
+                                    </div>
+                                @else
+                                    <span class="text-muted fst-italic">Not set</span>
+                                @endif
+                            </div>
+
+                            <div class="mb-4">
                                 <h6 class="text-muted mb-2">Status</h6>
                                 @if($bot->is_active)
                                     <span class="badge bg-success fs-6 px-3 py-2">
@@ -93,6 +116,16 @@
                                 <h6 class="text-muted mb-2">Last Updated</h6>
                                 <p class="mb-0">{{ $bot->updated_at->format('F d, Y \a\t h:i A') }}</p>
                                 <small class="text-muted">{{ $bot->updated_at->diffForHumans() }}</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="text-muted mb-2">Last Active</h6>
+                                @if($bot->last_active)
+                                    <p class="mb-0">{{ $bot->last_active->format('F d, Y \a\t h:i A') }}</p>
+                                    <small class="text-muted">{{ $bot->last_active->diffForHumans() }}</small>
+                                @else
+                                    <span class="text-muted fst-italic">Never active</span>
+                                @endif
                             </div>
                         </div>
                     </div>
