@@ -203,6 +203,17 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{bot}', [App\Http\Controllers\BotController::class, 'destroy'])->name('destroy');
         });
 
+        // route group for NewsApiEndpointController
+        Route::prefix('admin/news-api-endpoints')->name('admin.news-api-endpoints.')->group(function () {
+            Route::get('/', [App\Http\Controllers\NewsApiEndpointController::class, 'index'])->name('index');
+            Route::get('create', [App\Http\Controllers\NewsApiEndpointController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\NewsApiEndpointController::class, 'store'])->name('store');
+            Route::get('{newsApiEndpoint}', [App\Http\Controllers\NewsApiEndpointController::class, 'show'])->name('show');
+            Route::get('{newsApiEndpoint}/edit', [App\Http\Controllers\NewsApiEndpointController::class, 'edit'])->name('edit');
+            Route::put('{newsApiEndpoint}', [App\Http\Controllers\NewsApiEndpointController::class, 'update'])->name('update');
+            Route::delete('{newsApiEndpoint}', [App\Http\Controllers\NewsApiEndpointController::class, 'destroy'])->name('destroy');
+        });
+
         // route group for GroupController
         Route::prefix('admin/users')->name('admin.users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');

@@ -23,6 +23,7 @@ class Bot extends Model
         'is_active',
         'post_frequency',
         'activity_level',
+        'group_post_probability',
         'last_active',
     ];
 
@@ -35,6 +36,7 @@ class Bot extends Model
         'topics' => 'array',
         'is_active' => 'boolean',
         'activity_level' => 'integer',
+        'group_post_probability' => 'integer',
         'last_active' => 'datetime',
     ];
 

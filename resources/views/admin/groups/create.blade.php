@@ -40,12 +40,12 @@
 
                         <div class="form-group">
                             <label for="symbol">Group Symbol</label>
-                            <input type="text" class="form-control" name="symbol" id="symbol" required>
+                            <input type="text" class="form-control" name="symbol" id="symbol">
                         </div>
 
                         <div class="form-group">
                             <label for="exchange">Group Exchange</label>
-                            <input type="text" class="form-control" name="exchange" id="exchange" required>
+                            <input type="text" class="form-control" name="exchange" id="exchange">
                         </div>
 
                         <div class="form-group">
@@ -64,15 +64,27 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="checkbox" name="privacy" id="privacy" switch="none" />
-                            <label for="privacy" data-on-label="Private" data-off-label="Public" class="ml-2"></label>
-                            <span>Privacy</span>
+                            <label for="privacy">Privacy</label>
+                            <select class="form-control" name="privacy" id="privacy" required>
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
-                            <input type="checkbox" name="active" id="active" switch="none" />
-                            <label for="active" data-on-label="Active" data-off-label="Inactive" class="ml-2"></label>
-                            <span>Status</span>
+                            <label for="active">Status</label>
+                            <select class="form-control" name="active" id="active" required>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="join_privacy">Join Privacy</label>
+                            <select class="form-control" name="join_privacy" id="join_privacy" required>
+                                <option value="0">Anyone can join</option>
+                                <option value="1">Request to join</option>
+                            </select>
                         </div>
 
                         <!-- Avatar Upload -->

@@ -6,6 +6,9 @@ use App\Models\Bot;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Group;
+use App\Models\GeneralGroupEmbedding;
+use App\Models\NewsApiEndpoint;
+use App\Services\EmbeddingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +39,7 @@ class AutomationController extends Controller
                         'post_type' => 'link',
                         'link_url' => $url,
                         // Optionally, remove the URL from content:
-                        'content' => trim(str_replace($url, '', $request->content)),
+                        //'content' => trim(str_replace($url, '', $request->content)),
                     ]);
                 }
             }
@@ -234,6 +237,261 @@ class AutomationController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Automation API Error (getLastPersonality): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get group by symbol
+     * 
+     * @param string $symbol
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getGroupBySymbol($symbol)
+    {
+        try {
+            // Find group by symbol
+            $group = Group::where('symbol', $symbol)
+                         ->where('active', '1')
+                         ->first();
+                         
+
+            if (!$group) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Group not found',
+                    'code' => 'GROUP_NOT_FOUND'
+                ], 404);
+            }
+
+            // Return group data
+            return response()->json([
+                'success' => true,
+                'message' => 'Group found successfully',
+                'data' => [
+                    'id' => $group->id,
+                    'group_name' => $group->group_name,
+                    'group_title' => $group->group_title,
+                    'symbol' => $group->symbol,
+                    'exchange' => $group->exchange,
+                    'about' => $group->about,
+                    'privacy' => $group->privacy,
+                    'join_privacy' => $group->join_privacy,
+                    'category_id' => $group->category_id,
+                    'member_count' => $group->members()->count(),
+                    'created_at' => $group->created_at?->toISOString(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getGroupBySymbol): ' . $e->getMessage(), [
+                'symbol' => $symbol,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get group recommendations based on post content similarity
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getGroupRecommendations(Request $request)
+    {
+        try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'content' => 'required|string|max:10000',
+                'threshold' => 'nullable|numeric|min:0|max:1',
+                'max_results' => 'nullable|integer|min:1|max:10',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Validation failed',
+                    'details' => $validator->errors()
+                ], 400);
+            }
+
+            $content = $request->input('content');          
+            $threshold = $request->input('threshold', 0.82); // Default threshold
+            $maxResults = $request->input('max_results', 3);  // Default max results
+
+            Log::info('Automation API: Group recommendation request', [
+                'content' => $content,
+                'content_length' => strlen($content),
+                'threshold' => $threshold,
+                'max_results' => $maxResults,
+            ]);
+
+            // Get all group embeddings (optimized query)
+            $groupEmbeddings = GeneralGroupEmbedding::with(['group' => function($query) {
+                $query->select('id', 'group_name', 'group_title', 'symbol', 'about', 'category_id')
+                      ->where('active', '1');
+            }, 'group.category' => function($query) {
+                $query->select('id', 'name');
+            }])
+            ->select('id', 'group_id', 'name', 'embedding')
+            ->get();
+
+            if ($groupEmbeddings->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No group embeddings available for comparison',
+                    'data' => [
+                        'recommendations' => [],
+                        'threshold_used' => $threshold,
+                        'total_groups_analyzed' => 0,
+                    ]
+                ]);
+            }
+
+            // Generate embedding for the post content
+            $embeddingService = app(EmbeddingService::class);
+            $postEmbedding = $embeddingService->generateEmbeddingWithRetry($content);
+
+            if (!$postEmbedding) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Failed to generate embedding for post content',
+                    'code' => 'EMBEDDING_GENERATION_FAILED'
+                ], 500);
+            }
+
+            // Calculate similarities and filter by threshold
+            $recommendations = [];
+            $totalAnalyzed = 0;
+
+            foreach ($groupEmbeddings as $groupEmbedding) {
+                // Skip if group is not active or doesn't exist
+                if (!$groupEmbedding->group) {
+                    continue;
+                }
+
+                $totalAnalyzed++;
+                
+                $similarity = $embeddingService->cosineSimilarity(
+                    $postEmbedding, 
+                    $groupEmbedding->embedding
+                );
+
+                // Only include if above threshold
+                if ($similarity >= $threshold) {
+                    $recommendations[] = [
+                        'group_id' => $groupEmbedding->group->id,
+                        'group_name' => $groupEmbedding->group->group_name,
+                        'group_title' => $groupEmbedding->group->group_title,
+                        'symbol' => $groupEmbedding->group->symbol,
+                        'category' => $groupEmbedding->group->category->name ?? null,
+                        'similarity_score' => round($similarity, 4),
+                        'about' => $groupEmbedding->group->about,
+                    ];
+                }
+            }
+
+            // Sort by similarity (highest first) and limit results
+            usort($recommendations, function($a, $b) {
+                return $b['similarity_score'] <=> $a['similarity_score'];
+            });
+
+            $recommendations = array_slice($recommendations, 0, $maxResults);
+
+            Log::info('Automation API: Group recommendations generated', [
+                'total_analyzed' => $totalAnalyzed,
+                'recommendations_count' => count($recommendations),
+                'threshold' => $threshold,
+                'highest_similarity' => $recommendations ? $recommendations[0]['similarity_score'] : 0,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => count($recommendations) > 0 
+                    ? 'Group recommendations found' 
+                    : 'No groups found above similarity threshold',
+                'data' => [
+                    'recommendations' => $recommendations,
+                    'threshold_used' => $threshold,
+                    'total_groups_analyzed' => $totalAnalyzed,
+                    'post_content_preview' => substr($content, 0, 100) . (strlen($content) > 100 ? '...' : ''),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getGroupRecommendations): ' . $e->getMessage(), [
+                'content_sample' => substr($request->input('content', ''), 0, 100) . '...',
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get news API endpoints with optional name filtering
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNewsApiEndpoints(Request $request)
+    {
+        try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'name' => 'nullable|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Validation failed',
+                    'details' => $validator->errors()
+                ], 400);
+            }
+
+            $name = $request->input('name');
+
+            // Build query
+            $query = NewsApiEndpoint::select('name', 'description', 'url', 'provider');
+
+            // Apply name filter if provided (case-insensitive contains)
+            if ($name) {
+                $query->where('name', 'LIKE', "%{$name}%");
+            }
+
+            $endpoints = $query->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => $name ? "News API endpoints filtered by name: '{$name}'" : 'All news API endpoints retrieved successfully',
+                'data' => [
+                    'endpoints' => $endpoints,
+                    'count' => $endpoints->count(),
+                    'filter_applied' => $name ? $name : null
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getNewsApiEndpoints): ' . $e->getMessage(), [
+                'name_filter' => $request->input('name', ''),
                 'trace' => $e->getTraceAsString()
             ]);
 

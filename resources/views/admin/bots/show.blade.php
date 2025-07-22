@@ -79,6 +79,18 @@
                             </div>
 
                             <div class="mb-4">
+                                <h6 class="text-muted mb-2">Group Post Probability</h6>
+                                @if($bot->group_post_probability)
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-info fs-6 px-3 py-2 me-2">{{ $bot->group_post_probability }}</span>
+                                        <small class="text-muted">out of 10 ({{ $bot->group_post_probability <= 3 ? 'Rarely' : ($bot->group_post_probability <= 6 ? 'Sometimes' : 'Often') }} posts in groups)</small>
+                                    </div>
+                                @else
+                                    <span class="text-muted fst-italic">Not set</span>
+                                @endif
+                            </div>
+
+                            <div class="mb-4">
                                 <h6 class="text-muted mb-2">Status</h6>
                                 @if($bot->is_active)
                                     <span class="badge bg-success fs-6 px-3 py-2">

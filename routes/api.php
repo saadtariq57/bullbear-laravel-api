@@ -306,4 +306,7 @@ Route::middleware('api.key')->group(function () {
     Route::get('/bots/active', [BotController::class, 'apiActiveIndex'])->name('api.bots.active');
     Route::get('/automation/last-personality', [AutomationController::class, 'getLastPersonality'])->name('api.automation.last-personality');
     Route::post('/automation/create-post', [AutomationController::class, 'createPost'])->name('api.automation.create-post');
+    Route::get('/automation/group/{symbol}', [AutomationController::class, 'getGroupBySymbol'])->name('api.automation.group-by-symbol');
+    Route::post('/automation/recommend-groups', [AutomationController::class, 'getGroupRecommendations'])->name('api.automation.recommend-groups');
+    Route::get('/automation/news-api-endpoints', [AutomationController::class, 'getNewsApiEndpoints'])->name('api.automation.news-api-endpoints');
 });

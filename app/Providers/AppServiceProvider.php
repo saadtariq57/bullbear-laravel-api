@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Cmixin\BusinessDay;
+use App\Models\Group;
+use App\Observers\GroupObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
         $baseList = 'us-national';
         BusinessDay::enable(Carbon::class, $baseList);
         Schema::defaultStringLength(191);
+        
+        // Register model observers
+        Group::observe(GroupObserver::class);
     }
 }

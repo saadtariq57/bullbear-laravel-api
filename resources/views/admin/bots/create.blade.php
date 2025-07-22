@@ -77,6 +77,12 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="group_post_probability" class="form-label">Group Post Probability</label>
+                                    <input type="number" class="form-control" id="group_post_probability" name="group_post_probability" value="{{ old('group_post_probability', 5) }}" min="1" max="10" placeholder="5">
+                                    <div class="form-text">Probability scale 1-10 for posting in groups (1=rarely posts in groups, 10=always posts in groups)</div>
+                                </div>
+
+                                <div class="mb-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_active">

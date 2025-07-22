@@ -55,6 +55,7 @@
                                     <th scope="col">Style</th>
                                     <th scope="col">Post Frequency</th>
                                     <th scope="col">Activity Level</th>
+                                    <th scope="col">Group Probability</th>
                                     <th scope="col">Topics</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Created</th>
@@ -109,6 +110,16 @@
                                             @endif
                                         </td>
                                         <td>
+                                            @if($bot->group_post_probability)
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge bg-info me-2">{{ $bot->group_post_probability }}</span>
+                                                    <small class="text-muted">/10</small>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if($bot->topics && count($bot->topics) > 0)
                                                 @foreach(array_slice($bot->topics, 0, 2) as $topic)
                                                     <span class="badge bg-secondary me-1">{{ $topic }}</span>
@@ -144,7 +155,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4">
+                                        <td colspan="9" class="text-center py-4">
                                             <div class="d-flex flex-column align-items-center">
                                                 <i class="mdi mdi-robot font-size-48 text-muted mb-2"></i>
                                                 <h5 class="text-muted">No bots found</h5>
