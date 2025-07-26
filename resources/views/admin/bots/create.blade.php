@@ -121,6 +121,156 @@
                                     <div class="form-text">Add topics that this bot can discuss (e.g., technology, trading, news).</div>
                                 </div>
 
+                                <!-- Human-like Behavior Section -->
+                                <div class="mb-4">
+                                    <h6 class="text-primary mb-3">Human-like Behavior Settings</h6>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="slang_level" class="form-label">Slang Level</label>
+                                                <select class="form-select" id="slang_level" name="slang_level">
+                                                    <option value="">Not Set</option>
+                                                    <option value="none" {{ old('slang_level') == 'none' ? 'selected' : '' }}>None</option>
+                                                    <option value="very low" {{ old('slang_level') == 'very low' ? 'selected' : '' }}>Very Low</option>
+                                                    <option value="low" {{ old('slang_level') == 'low' ? 'selected' : '' }}>Low</option>
+                                                    <option value="occasional" {{ old('slang_level') == 'occasional' ? 'selected' : '' }}>Occasional</option>
+                                                    <option value="moderate" {{ old('slang_level') == 'moderate' ? 'selected' : '' }}>Moderate</option>
+                                                    <option value="frequent" {{ old('slang_level') == 'frequent' ? 'selected' : '' }}>Frequent</option>
+                                                    <option value="heavy" {{ old('slang_level') == 'heavy' ? 'selected' : '' }}>Heavy</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="emoji_use" class="form-label">Emoji Usage</label>
+                                                <select class="form-select" id="emoji_use" name="emoji_use">
+                                                    <option value="">Not Set</option>
+                                                    <option value="none" {{ old('emoji_use') == 'none' ? 'selected' : '' }}>None</option>
+                                                    <option value="very low" {{ old('emoji_use') == 'very low' ? 'selected' : '' }}>Very Low</option>
+                                                    <option value="low" {{ old('emoji_use') == 'low' ? 'selected' : '' }}>Low</option>
+                                                    <option value="occasional" {{ old('emoji_use') == 'occasional' ? 'selected' : '' }}>Occasional</option>
+                                                    <option value="moderate" {{ old('emoji_use') == 'moderate' ? 'selected' : '' }}>Moderate</option>
+                                                    <option value="frequent" {{ old('emoji_use') == 'frequent' ? 'selected' : '' }}>Frequent</option>
+                                                    <option value="heavy" {{ old('emoji_use') == 'heavy' ? 'selected' : '' }}>Heavy</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="punctuation" class="form-label">Punctuation Style</label>
+                                                <select class="form-select" id="punctuation" name="punctuation">
+                                                    <option value="">Not Set</option>
+                                                    <option value="none" {{ old('punctuation') == 'none' ? 'selected' : '' }}>None</option>
+                                                    <option value="very low" {{ old('punctuation') == 'very low' ? 'selected' : '' }}>Very Low</option>
+                                                    <option value="low" {{ old('punctuation') == 'low' ? 'selected' : '' }}>Low</option>
+                                                    <option value="occasional" {{ old('punctuation') == 'occasional' ? 'selected' : '' }}>Occasional</option>
+                                                    <option value="moderate" {{ old('punctuation') == 'moderate' ? 'selected' : '' }}>Moderate</option>
+                                                    <option value="frequent" {{ old('punctuation') == 'frequent' ? 'selected' : '' }}>Frequent</option>
+                                                    <option value="heavy" {{ old('punctuation') == 'heavy' ? 'selected' : '' }}>Heavy</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="caps_on_hype" name="caps_on_hype" value="1" {{ old('caps_on_hype') ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="caps_on_hype">
+                                                        ALL CAPS on Hype Posts
+                                                    </label>
+                                                </div>
+                                                <div class="form-text">Use ALL CAPS when posting about exciting or hype content.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="mb-3">
+                                        <label for="quirks" class="form-label">Behavioral Quirks</label>
+                                        <div id="quirks-container">
+                                            @if(old('quirks'))
+                                                @foreach(old('quirks') as $index => $quirk)
+                                                    <div class="input-group mb-2 quirk-input">
+                                                        <input type="text" class="form-control" name="quirks[]" value="{{ $quirk }}" placeholder="e.g., Always says 'WAGMI', Uses 'NFA' frequently">
+                                                        <button class="btn btn-outline-danger" type="button" onclick="removeQuirk(this)">
+                                                            <i class="mdi mdi-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="input-group mb-2 quirk-input">
+                                                    <input type="text" class="form-control" name="quirks[]" placeholder="e.g., Always says 'WAGMI', Uses 'NFA' frequently">
+                                                    <button class="btn btn-outline-danger" type="button" onclick="removeQuirk(this)">
+                                                        <i class="mdi mdi-minus"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addQuirk()">
+                                            <i class="mdi mdi-plus me-1"></i> Add Quirk
+                                        </button>
+                                        <div class="form-text">Catchphrases, habits, or unique behavioral patterns.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="post_style" class="form-label">Post Styles</label>
+                                        <div id="post-style-container">
+                                            @if(old('post_style'))
+                                                @foreach(old('post_style') as $index => $style)
+                                                    <div class="input-group mb-2 post-style-input">
+                                                        <input type="text" class="form-control" name="post_style[]" value="{{ $style }}" placeholder="e.g., one-liner, short rant, bullet points">
+                                                        <button class="btn btn-outline-danger" type="button" onclick="removePostStyle(this)">
+                                                            <i class="mdi mdi-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="input-group mb-2 post-style-input">
+                                                    <input type="text" class="form-control" name="post_style[]" placeholder="e.g., one-liner, short rant, bullet points">
+                                                    <button class="btn btn-outline-danger" type="button" onclick="removePostStyle(this)">
+                                                        <i class="mdi mdi-minus"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addPostStyle()">
+                                            <i class="mdi mdi-plus me-1"></i> Add Style
+                                        </button>
+                                        <div class="form-text">Preferred post formats and styles.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="formats" class="form-label">Special Formats</label>
+                                        <div id="formats-container">
+                                            @if(old('formats'))
+                                                @foreach(old('formats') as $index => $format)
+                                                    <div class="input-group mb-2 format-input">
+                                                        <input type="text" class="form-control" name="formats[]" value="{{ $format }}" placeholder="e.g., reaction only, stat dump, meme comment">
+                                                        <button class="btn btn-outline-danger" type="button" onclick="removeFormat(this)">
+                                                            <i class="mdi mdi-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="input-group mb-2 format-input">
+                                                    <input type="text" class="form-control" name="formats[]" placeholder="e.g., reaction only, stat dump, meme comment">
+                                                    <button class="btn btn-outline-danger" type="button" onclick="removeFormat(this)">
+                                                        <i class="mdi mdi-minus"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFormat()">
+                                            <i class="mdi mdi-plus me-1"></i> Add Format
+                                        </button>
+                                        <div class="form-text">Special post types like reactions, stats, or memes.</div>
+                                    </div>
+                                </div>
+
                                 <div class="mb-3">
                                     <label for="instructions" class="form-label">AI Instructions</label>
                                     <textarea class="form-control" id="instructions" name="instructions" rows="8" placeholder="Enter instructions for the AI behavior...">{{ old('instructions') }}</textarea>
@@ -189,6 +339,80 @@
             } else {
                 // Clear the input instead of removing
                 button.closest('.topic-input').querySelector('input').value = '';
+            }
+        }
+
+
+
+        // Quirks functions
+        function addQuirk() {
+            const container = document.getElementById('quirks-container');
+            const newQuirkHtml = `
+                <div class="input-group mb-2 quirk-input">
+                    <input type="text" class="form-control" name="quirks[]" placeholder="e.g., Always says 'WAGMI', Uses 'NFA' frequently">
+                    <button class="btn btn-outline-danger" type="button" onclick="removeQuirk(this)">
+                        <i class="mdi mdi-minus"></i>
+                    </button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newQuirkHtml);
+        }
+
+        function removeQuirk(button) {
+            const container = document.getElementById('quirks-container');
+            const inputs = container.querySelectorAll('.quirk-input');
+            if (inputs.length > 1) {
+                button.closest('.quirk-input').remove();
+            } else {
+                button.closest('.quirk-input').querySelector('input').value = '';
+            }
+        }
+
+        // Post Style functions
+        function addPostStyle() {
+            const container = document.getElementById('post-style-container');
+            const newStyleHtml = `
+                <div class="input-group mb-2 post-style-input">
+                    <input type="text" class="form-control" name="post_style[]" placeholder="e.g., one-liner, short rant, bullet points">
+                    <button class="btn btn-outline-danger" type="button" onclick="removePostStyle(this)">
+                        <i class="mdi mdi-minus"></i>
+                    </button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newStyleHtml);
+        }
+
+        function removePostStyle(button) {
+            const container = document.getElementById('post-style-container');
+            const inputs = container.querySelectorAll('.post-style-input');
+            if (inputs.length > 1) {
+                button.closest('.post-style-input').remove();
+            } else {
+                button.closest('.post-style-input').querySelector('input').value = '';
+            }
+        }
+
+        // Formats functions
+        function addFormat() {
+            const container = document.getElementById('formats-container');
+            const newFormatHtml = `
+                <div class="input-group mb-2 format-input">
+                    <input type="text" class="form-control" name="formats[]" placeholder="e.g., reaction only, stat dump, meme comment">
+                    <button class="btn btn-outline-danger" type="button" onclick="removeFormat(this)">
+                        <i class="mdi mdi-minus"></i>
+                    </button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newFormatHtml);
+        }
+
+        function removeFormat(button) {
+            const container = document.getElementById('formats-container');
+            const inputs = container.querySelectorAll('.format-input');
+            if (inputs.length > 1) {
+                button.closest('.format-input').remove();
+            } else {
+                button.closest('.format-input').querySelector('input').value = '';
             }
         }
 

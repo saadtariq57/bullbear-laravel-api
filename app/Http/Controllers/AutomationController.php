@@ -39,7 +39,7 @@ class AutomationController extends Controller
                         'post_type' => 'link',
                         'link_url' => $url,
                         // Optionally, remove the URL from content:
-                        //'content' => trim(str_replace($url, '', $request->content)),
+                        'content' => trim(str_replace($url, '', $request->content)),
                     ]);
                 }
             }

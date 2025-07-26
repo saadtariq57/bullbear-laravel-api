@@ -25,6 +25,14 @@ class Bot extends Model
         'activity_level',
         'group_post_probability',
         'last_active',
+        // Human-like behavior fields
+        'slang_level',
+        'emoji_use',
+        'punctuation',
+        'quirks',
+        'post_style',
+        'formats',
+        'caps_on_hype',
     ];
 
     /**
@@ -38,6 +46,11 @@ class Bot extends Model
         'activity_level' => 'integer',
         'group_post_probability' => 'integer',
         'last_active' => 'datetime',
+        // Human-like behavior casts
+        'quirks' => 'array',
+        'post_style' => 'array',
+        'formats' => 'array',
+        'caps_on_hype' => 'boolean',
     ];
 
     /**

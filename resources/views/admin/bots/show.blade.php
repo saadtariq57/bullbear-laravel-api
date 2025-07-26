@@ -142,6 +142,91 @@
                         </div>
                     </div>
 
+                    <!-- Human-like Behavior Settings -->
+                    @if($bot->slang_level || $bot->emoji_use || $bot->punctuation || $bot->caps_on_hype || 
+                        ($bot->quirks && count($bot->quirks) > 0) || 
+                        ($bot->post_style && count($bot->post_style) > 0) || 
+                        ($bot->formats && count($bot->formats) > 0))
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">Human-like Behavior Settings</h5>
+                                
+                                <div class="row">
+                                    @if($bot->slang_level || $bot->emoji_use || $bot->punctuation || $bot->caps_on_hype)
+                                        <div class="col-md-6">
+                                            @if($bot->slang_level)
+                                                <div class="mb-3">
+                                                    <h6 class="text-muted mb-2">Slang Level</h6>
+                                                    <span class="badge bg-secondary fs-6 px-3 py-2">{{ ucfirst($bot->slang_level) }}</span>
+                                                </div>
+                                            @endif
+
+                                            @if($bot->emoji_use)
+                                                <div class="mb-3">
+                                                    <h6 class="text-muted mb-2">Emoji Usage</h6>
+                                                    <span class="badge bg-secondary fs-6 px-3 py-2">{{ ucfirst($bot->emoji_use) }}</span>
+                                                </div>
+                                            @endif
+
+                                            @if($bot->punctuation)
+                                                <div class="mb-3">
+                                                    <h6 class="text-muted mb-2">Punctuation Style</h6>
+                                                    <span class="badge bg-secondary fs-6 px-3 py-2">{{ ucfirst($bot->punctuation) }}</span>
+                                                </div>
+                                            @endif
+
+                                            @if($bot->caps_on_hype)
+                                                <div class="mb-3">
+                                                    <h6 class="text-muted mb-2">Hype Behavior</h6>
+                                                    <span class="badge bg-warning fs-6 px-3 py-2">
+                                                        <i class="mdi mdi-format-letter-case-upper me-1"></i> ALL CAPS on Hype
+                                                    </span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+
+                                    <div class="col-md-6">
+
+
+                                        @if($bot->quirks && count($bot->quirks) > 0)
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-2">Behavioral Quirks</h6>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach($bot->quirks as $quirk)
+                                                        <span class="badge bg-info text-white">{{ $quirk }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if($bot->post_style && count($bot->post_style) > 0)
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-2">Post Styles</h6>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach($bot->post_style as $style)
+                                                        <span class="badge bg-success text-white">{{ $style }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if($bot->formats && count($bot->formats) > 0)
+                                            <div class="mb-3">
+                                                <h6 class="text-muted mb-2">Special Formats</h6>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach($bot->formats as $format)
+                                                        <span class="badge bg-primary text-white">{{ $format }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     @if($bot->instructions)
                         <div class="row mt-4">
                             <div class="col-12">

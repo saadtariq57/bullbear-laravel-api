@@ -55,11 +55,21 @@ class BotController extends Controller
             'role' => 'nullable|string|max:255',
             'style' => 'nullable|string|max:255',
             'topics' => 'nullable|array',
-            'topics.*' => 'string|max:255',
+            'topics.*' => 'nullable|string|max:255',
             'instructions' => 'nullable|string',
             'post_frequency' => 'nullable|in:low,medium,high',
             'activity_level' => 'nullable|integer|min:1|max:10',
             'group_post_probability' => 'nullable|integer|min:1|max:10',
+            // Human-like behavior validation
+            'slang_level' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'emoji_use' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'punctuation' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'quirks' => 'nullable|array',
+            'quirks.*' => 'nullable|string|max:255',
+            'post_style' => 'nullable|array',
+            'post_style.*' => 'nullable|string|max:100',
+            'formats' => 'nullable|array',
+            'formats.*' => 'nullable|string|max:100',
         ]);
 
         // Ensure the selected user is of type 'bot' and doesn't already have a bot record
@@ -77,8 +87,17 @@ class BotController extends Controller
             $validatedData['topics'] = array_filter($validatedData['topics']);
         }
 
-        // Handle checkbox: for new bots
+        // Convert array fields to proper format (remove empty values)
+        $arrayFields = ['quirks', 'post_style', 'formats'];
+        foreach ($arrayFields as $field) {
+            if (isset($validatedData[$field])) {
+                $validatedData[$field] = array_filter($validatedData[$field]);
+            }
+        }
+
+        // Handle checkboxes
         $validatedData['is_active'] = $request->has('is_active');
+        $validatedData['caps_on_hype'] = $request->has('caps_on_hype');
 
         Bot::create($validatedData);
 
@@ -112,11 +131,21 @@ class BotController extends Controller
             'role' => 'nullable|string|max:255',
             'style' => 'nullable|string|max:255',
             'topics' => 'nullable|array',
-            'topics.*' => 'string|max:255',
+            'topics.*' => 'nullable|string|max:255',
             'instructions' => 'nullable|string',
             'post_frequency' => 'nullable|in:low,medium,high',
             'activity_level' => 'nullable|integer|min:1|max:10',
             'group_post_probability' => 'nullable|integer|min:1|max:10',
+            // Human-like behavior validation
+            'slang_level' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'emoji_use' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'punctuation' => 'nullable|in:none,very low,low,occasional,moderate,frequent,heavy',
+            'quirks' => 'nullable|array',
+            'quirks.*' => 'nullable|string|max:255',
+            'post_style' => 'nullable|array',
+            'post_style.*' => 'nullable|string|max:100',
+            'formats' => 'nullable|array',
+            'formats.*' => 'nullable|string|max:100',
         ]);
 
         // Convert topics array to proper format (remove empty values)
@@ -124,8 +153,17 @@ class BotController extends Controller
             $validatedData['topics'] = array_filter($validatedData['topics']);
         }
 
-        // Handle checkbox: explicit boolean conversion
+        // Convert array fields to proper format (remove empty values)
+        $arrayFields = ['quirks', 'post_style', 'formats'];
+        foreach ($arrayFields as $field) {
+            if (isset($validatedData[$field])) {
+                $validatedData[$field] = array_filter($validatedData[$field]);
+            }
+        }
+
+        // Handle checkboxes
         $validatedData['is_active'] = $request->has('is_active');
+        $validatedData['caps_on_hype'] = $request->has('caps_on_hype');
 
         $bot->update($validatedData);
 
@@ -166,6 +204,14 @@ class BotController extends Controller
                             'post_frequency' => $bot->post_frequency,
                             'activity_level' => $bot->activity_level,
                             'group_post_probability' => $bot->group_post_probability,
+                            // Human-like behavior fields
+                            'slang_level' => $bot->slang_level,
+                            'emoji_use' => $bot->emoji_use,
+                            'punctuation' => $bot->punctuation,
+                            'quirks' => $bot->quirks,
+                            'post_style' => $bot->post_style,
+                            'formats' => $bot->formats,
+                            'caps_on_hype' => $bot->caps_on_hype,
                             'last_active' => $bot->last_active?->toISOString(),
                             'created_at' => $bot->created_at->toISOString()
                         ];
