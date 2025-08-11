@@ -29,6 +29,7 @@ class GenerateBlogCategoriesSitemap extends Command
             ['slug' => 'investing'],
             ['slug' => 'stocks'],
             ['slug' => 'specialized-reports'],
+            ['slug' => 'finance'],
         ];
 
         // Add each category URL to the sitemap

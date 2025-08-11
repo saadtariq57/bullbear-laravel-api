@@ -987,6 +987,7 @@ class WidgetController extends Controller
             961 => 'stocks',
             3591 => 'press-release',
             12800 => 'specialized-reports',
+            13458 => 'finance',
         ];
 
         return $categories[$categoryId] ?? 'uncategorized';
