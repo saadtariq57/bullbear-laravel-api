@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('news_api_endpoints', function (Blueprint $table) {
+        Schema::create('richtv_content_apis', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('Name of the news API endpoint');
-            $table->text('description')->comment('Description of the news API endpoint');
-            $table->string('url')->comment('URL of the news API endpoint');
-            $table->string('provider')->comment('Provider name of the news API');
+            $table->string('name')->comment('Name of the content API');
+            $table->text('description')->comment('Description of the content API');
+            $table->string('url')->comment('URL of the content API');
             $table->timestamps();
             
             // Add indexes for better performance
             $table->index('name');
-            $table->index('provider');
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_api_endpoints');
+        Schema::dropIfExists('richtv_content_apis');
     }
 };

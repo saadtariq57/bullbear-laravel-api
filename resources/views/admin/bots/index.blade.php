@@ -122,7 +122,12 @@
                                         <td>
                                             @if($bot->topics && count($bot->topics) > 0)
                                                 @foreach(array_slice($bot->topics, 0, 2) as $topic)
-                                                    <span class="badge bg-secondary me-1">{{ $topic }}</span>
+                                                    @php
+                                                        $label = is_array($topic)
+                                                            ? ($topic['name'] ?? ($topic['url'] ?? 'Topic'))
+                                                            : (string) $topic;
+                                                    @endphp
+                                                    <span class="badge bg-secondary me-1">{{ $label }}</span>
                                                 @endforeach
                                                 @if(count($bot->topics) > 2)
                                                     <span class="text-muted">+{{ count($bot->topics) - 2 }} more</span>

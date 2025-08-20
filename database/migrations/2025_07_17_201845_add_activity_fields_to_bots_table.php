@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bots', function (Blueprint $table) {
-            $table->enum('post_frequency', ['low', 'medium', 'high'])->default('low')->after('is_active');
-            $table->integer('activity_level')->default(3)->comment('Activity level from 1-10')->after('post_frequency');
-            $table->timestamp('last_active')->nullable()->after('activity_level');
+            if (!Schema::hasColumn('bots', 'post_frequency')) {
+                $table->enum('post_frequency', ['low', 'medium', 'high'])->default('low')->after('is_active');
+            }
+            if (!Schema::hasColumn('bots', 'activity_level')) {
+                $table->integer('activity_level')->default(3)->comment('Activity level from 1-10')->after('post_frequency');
+            }
+            if (!Schema::hasColumn('bots', 'last_active')) {
+                $table->timestamp('last_active')->nullable()->after('activity_level');
+            }
         });
     }
 

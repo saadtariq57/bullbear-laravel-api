@@ -108,9 +108,22 @@
                             <div class="mb-4">
                                 <h6 class="text-muted mb-2">Topics</h6>
                                 @if($bot->topics && count($bot->topics) > 0)
-                                    <div class="d-flex flex-wrap gap-2">
+                                    <div class="d-flex flex-column gap-2">
                                         @foreach($bot->topics as $topic)
-                                            <span class="badge bg-secondary">{{ $topic }}</span>
+                                            @php
+                                                $name = is_array($topic) ? ($topic['name'] ?? ($topic['url'] ?? 'Topic')) : (string) $topic;
+                                                $url = is_array($topic) ? ($topic['url'] ?? null) : null;
+                                                $note = is_array($topic) ? ($topic['note'] ?? null) : null;
+                                            @endphp
+                                            <div class="border rounded p-2">
+                                                <div class="fw-bold">{{ $name }}</div>
+                                                @if($url)
+                                                    <small class="text-muted"><a href="{{ $url }}" target="_blank">{{ $url }}</a></small>
+                                                @endif
+                                                @if($note)
+                                                    <div><small class="text-muted">Note: {{ $note }}</small></div>
+                                                @endif
+                                            </div>
                                         @endforeach
                                     </div>
                                 @else

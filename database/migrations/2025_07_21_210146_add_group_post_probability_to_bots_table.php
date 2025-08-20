@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bots', function (Blueprint $table) {
-            $table->integer('group_post_probability')->default(5)->after('activity_level')
-                  ->comment('Probability scale 1-10 for posting in groups (1=rarely, 10=always)');
+            if (!Schema::hasColumn('bots', 'group_post_probability')) {
+                $table->integer('group_post_probability')->default(5)->after('activity_level')
+                      ->comment('Probability scale 1-10 for posting in groups (1=rarely, 10=always)');
+            }
         });
     }
 

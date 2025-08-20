@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             EmailTemplateSeeder::class,
             EbookSeeder::class,
             CourseSeeder::class,
+            RichTvContentApisSeeder::class,
+            BotsDemoSeeder::class,
 
         ]);
     }

@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bots', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('role')->nullable(); // e.g., "moderator", "assistant", "entertainment"
-            $table->string('style')->nullable(); // e.g., "friendly", "professional", "casual"
-            $table->json('topics')->nullable(); // ["technology", "sports", "news"]
-            $table->text('instructions')->nullable(); // AI instructions
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+        if (!Schema::hasTable('bots')) {
+            Schema::create('bots', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->string('role')->nullable();
+                $table->string('style')->nullable();
+                $table->json('topics')->nullable();
+                $table->text('instructions')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->timestamps();
 
-            // Index for better performance
-            $table->index(['user_id', 'is_active']);
-        });
+                // Index for better performance
+                $table->index(['user_id', 'is_active']);
+            });
+        }
     }
 
     /**

@@ -308,5 +308,5 @@ Route::middleware('api.key')->group(function () {
     Route::post('/automation/create-post', [AutomationController::class, 'createPost'])->name('api.automation.create-post');
     Route::get('/automation/group/{symbol}', [AutomationController::class, 'getGroupBySymbol'])->name('api.automation.group-by-symbol');
     Route::post('/automation/recommend-groups', [AutomationController::class, 'getGroupRecommendations'])->name('api.automation.recommend-groups');
-    Route::get('/automation/news-api-endpoints', [AutomationController::class, 'getNewsApiEndpoints'])->name('api.automation.news-api-endpoints');
+    Route::get('/automation/richtv-content-apis', [AutomationController::class, 'getRichTvContentApis'])->name('api.automation.richtv-content-apis');
 });

@@ -103,7 +103,7 @@
                     <ul class="sub-menu">
                         <li><a href="{{ route('admin.bots.index') }}">All Bots</a></li>
                         <li><a href="{{ route('admin.bots.create') }}">Add New Bot</a></li>
-                        <li><a href="{{ route('admin.news-api-endpoints.index') }}">News APIs</a></li>
+                        <li><a href="{{ route('admin.richtv-content-apis.index') }}">RichTV Content APIs</a></li>
                     </ul>
                 </li>
 

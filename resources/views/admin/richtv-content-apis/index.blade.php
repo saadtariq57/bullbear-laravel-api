@@ -1,15 +1,14 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    News API Endpoints Management
+    RichTV Content APIs Management
 @endsection
 
 @section('page-title')
-    News API Endpoints
+    RichTV Content APIs
 @endsection
 
 @section('css')
-    <!-- Sweet Alert-->
     <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
@@ -25,7 +24,7 @@
                     <div class="row mb-2">
                         <div class="col-md-6">
                             <div class="form-inline float-md-start mb-3">
-                                <form action="{{ route('admin.news-api-endpoints.index') }}" method="GET">
+                                <form action="{{ route('admin.richtv-content-apis.index') }}" method="GET">
                                     <div class="search-box me-2">
                                         <div class="position-relative">
                                             <input type="text" name="search" class="form-control border" placeholder="Search endpoints..." value="{{ request()->query('search') }}">
@@ -37,20 +36,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 float-end">
-                                <a href="{{ route('admin.news-api-endpoints.create') }}" class="btn btn-primary">
-                                    <i class="mdi mdi-plus me-1"></i> Add New Endpoint
+                                <a href="{{ route('admin.richtv-content-apis.create') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus me-1"></i> Add New Content API
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <!-- end row -->
 
                     <div class="table-responsive mb-4">
                         <table class="table table-hover table-nowrap align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Provider</th>
                                     <th scope="col">URL</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Created</th>
@@ -58,7 +55,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($newsApiEndpoints as $endpoint)
+                                @forelse($contentApis as $endpoint)
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
@@ -73,9 +70,6 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $endpoint->provider }}</span>
-                                        </td>
-                                        <td>
                                             <a href="{{ $endpoint->url }}" target="_blank" class="text-decoration-none">
                                                 <small class="text-muted">{{ Str::limit($endpoint->url, 50) }}</small>
                                                 <i class="mdi mdi-open-in-new ms-1"></i>
@@ -87,10 +81,10 @@
                                         <td>{{ $endpoint->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <a href="{{ route('admin.news-api-endpoints.show', $endpoint->id) }}" class="btn btn-success btn-sm" title="View Endpoint Details">
+                                                <a href="{{ route('admin.richtv-content-apis.show', $endpoint->id) }}" class="btn btn-success btn-sm" title="View Endpoint Details">
                                                     <i class="mdi mdi-eye"></i>
                                                 </a>
-                                                <a href="{{ route('admin.news-api-endpoints.edit', $endpoint->id) }}" class="btn btn-primary btn-sm" title="Edit Endpoint">
+                                                <a href="{{ route('admin.richtv-content-apis.edit', $endpoint->id) }}" class="btn btn-primary btn-sm" title="Edit Endpoint">
                                                     <i class="mdi mdi-pencil"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $endpoint->id }})" title="Delete Endpoint">
@@ -101,11 +95,11 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4">
+                                        <td colspan="5" class="text-center py-4">
                                             <div class="d-flex flex-column align-items-center">
                                                 <i class="mdi mdi-api font-size-48 text-muted mb-2"></i>
-                                                <h5 class="text-muted">No news API endpoints found</h5>
-                                                <p class="text-muted mb-0">Start by adding your first news API endpoint.</p>
+                                                <h5 class="text-muted">No content APIs found</h5>
+                                                <p class="text-muted mb-0">Start by adding your first content API.</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -114,12 +108,11 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-                    @if($newsApiEndpoints->hasPages())
+                    @if($contentApis->hasPages())
                         <div class="row">
                             <div class="col-lg-12">
                                 <ul class="pagination pagination-rounded justify-content-center mb-2">
-                                    {{ $newsApiEndpoints->links() }}
+                                    {{ $contentApis->links() }}
                                 </ul>
                             </div>
                         </div>
@@ -144,14 +137,12 @@
 @endsection
 
 @section('scripts')
-    <!-- Sweet Alerts js -->
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    
     <script>
         function confirmDelete(endpointId) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "This will permanently delete the news API endpoint.",
+                text: 'This will permanently delete the content API.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -159,10 +150,9 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Create a form and submit it
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/admin/news-api-endpoints/' + endpointId;
+                    form.action = '/admin/richtv-content-apis/' + endpointId;
                     form.style.display = 'none';
 
                     let methodInput = document.createElement('input');
@@ -183,4 +173,6 @@
             });
         }
     </script>
-@endsection 
+@endsection
+
+

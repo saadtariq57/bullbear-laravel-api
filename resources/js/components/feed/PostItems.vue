@@ -83,7 +83,7 @@
                 {{ post.post_text }}
               </p>
             </div>
-            <p v-else>{{ post.post_text }}</p>
+            <div v-else class="markdown-body" v-html="renderedMarkdown(post.post_text)"></div>
           </div>
 
           <!-- Post Media -->
@@ -291,7 +291,7 @@
                     {{ post.originalPost.post_text }}
                   </p>
                 </div>
-                <p v-else>{{ post.originalPost.post_text }}</p>
+                <div v-else class="markdown-body" v-html="renderedMarkdown(post.originalPost.post_text)"></div>
               </template>
 
               <template v-else-if="post.originalPost.post_type === 'photo'">
@@ -737,6 +737,7 @@ import userFeedModule from '@/stores/userFeedStore';
 import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
+import { renderMarkdownToHtml } from '../../services/markdown';
 import CreatePost from './CreatePost.vue';
 import PostComment from './PostComment.vue';
 import ReactionModal from '../utils/ReactionModal.vue';
@@ -842,6 +843,9 @@ export default {
     }
   },
   methods: {
+    renderedMarkdown(text) {
+      return renderMarkdownToHtml(text);
+    },
     ...mapActions('userFeed', [
       'addOrUpdateReaction',
       'removeReaction',
@@ -1422,5 +1426,9 @@ export default {
 }
 .post-description {
   white-space: pre-wrap;
+}
+
+.markdown-body {
+  white-space: normal;
 }
 </style>

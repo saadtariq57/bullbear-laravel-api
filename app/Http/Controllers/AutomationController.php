@@ -7,7 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\GeneralGroupEmbedding;
-use App\Models\NewsApiEndpoint;
+use App\Models\RichTvContentApi;
 use App\Services\EmbeddingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -257,8 +257,15 @@ class AutomationController extends Controller
     public function getGroupBySymbol($symbol)
     {
         try {
+            
+            // Normalize slugged input like "TSM-1-Month-Price-Change" to ticker "TSM"
+            $normalizedSymbol = $this->extractTickerFromSlug((string) $symbol) ?: $symbol;
+
+            // Log the normalized symbol
+            Log::info('😒 Automation API: Normalized symbol', ['normalized_symbol' => $normalizedSymbol]);
+
             // Find group by symbol
-            $group = Group::where('symbol', $symbol)
+            $group = Group::where('symbol', $normalizedSymbol)
                          ->where('active', '1')
                          ->first();
                          
@@ -302,6 +309,25 @@ class AutomationController extends Controller
                 'code' => 'SERVER_ERROR'
             ], 500);
         }
+    }
+
+    private function extractTickerFromSlug(string $input): ?string
+    {
+        $candidate = strtoupper(trim(urldecode($input)));
+        if ($candidate === '') {
+            return null;
+        }
+        // Common case: take first segment before hyphen
+        $firstSegment = explode('-', $candidate)[0] ?? '';
+        $firstSegment = preg_replace('/[^A-Z\.]/', '', $firstSegment);
+        if ($firstSegment !== '' && preg_match('/^[A-Z]{1,5}(\.[A-Z]{1,3})?$/', $firstSegment)) {
+            return $firstSegment;
+        }
+        // Fallback: find first ALLCAP token in the string (1-5 letters, optional dot
+        if (preg_match('/\b[A-Z]{1,5}(?:\.[A-Z]{1,3})?\b/', $candidate, $m)) {
+            return $m[0];
+        }
+        return null;
     }
 
     /**
@@ -446,17 +472,17 @@ class AutomationController extends Controller
     }
 
     /**
-     * Get news API endpoints with optional name filtering
+     * Get RichTV content APIs with optional name filtering
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getNewsApiEndpoints(Request $request)
+    public function getRichTvContentApis(Request $request)
     {
         try {
-            // Validate the request
             $validator = Validator::make($request->all(), [
                 'name' => 'nullable|string|max:255',
+                'names' => 'nullable', // can be array or comma-separated string of names
             ]);
 
             if ($validator->fails()) {
@@ -468,12 +494,32 @@ class AutomationController extends Controller
             }
 
             $name = $request->input('name');
+            $namesInput = $request->input('names');
 
-            // Build query
-            $query = NewsApiEndpoint::select('name', 'description', 'url', 'provider');
+            $query = RichTvContentApi::select('name', 'description', 'url');
 
-            // Apply name filter if provided (case-insensitive contains)
-            if ($name) {
+            // If 'names' provided (array or CSV), extract symbols and filter by them
+            $symbols = [];
+            if (!empty($namesInput)) {
+                $namesArray = is_array($namesInput)
+                    ? $namesInput
+                    : array_map('trim', array_filter(explode(',', (string) $namesInput)));
+                $symbols = $this->extractSymbolsFromNames($namesArray);
+                if (!empty($symbols)) {
+                    $query->where(function ($q) use ($symbols) {
+                        foreach ($symbols as $sym) {
+                            $q->orWhere('name', 'LIKE', $sym . '%')
+                              ->orWhere('name', 'LIKE', '% ' . $sym . ' %')
+                              ->orWhere('name', 'LIKE', '% ' . $sym)
+                              ->orWhere('name', 'LIKE', $sym . ' %')
+                              ->orWhere('url', 'LIKE', '%symbol=' . $sym . '%');
+                        }
+                    });
+                }
+            }
+
+            // Fallback to simple name contains filter
+            if ($name && empty($symbols)) {
                 $query->where('name', 'LIKE', "%{$name}%");
             }
 
@@ -481,16 +527,17 @@ class AutomationController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => $name ? "News API endpoints filtered by name: '{$name}'" : 'All news API endpoints retrieved successfully',
+                'message' => $name ? "RichTV content APIs filtered by name: '{$name}'" : 'All RichTV content APIs retrieved successfully',
                 'data' => [
                     'endpoints' => $endpoints,
                     'count' => $endpoints->count(),
-                    'filter_applied' => $name ? $name : null
+                    'filter_applied' => $name ? $name : null,
+                    'symbols_extracted' => $symbols,
                 ]
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Automation API Error (getNewsApiEndpoints): ' . $e->getMessage(), [
+            Log::error('Automation API Error (getRichTvContentApis): ' . $e->getMessage(), [
                 'name_filter' => $request->input('name', ''),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -501,5 +548,48 @@ class AutomationController extends Controller
                 'code' => 'SERVER_ERROR'
             ], 500);
         }
+    }
+
+    /**
+     * Extract probable ticker symbols from a list of human-readable names.
+     * Examples: "TSLA Real-time Stock Quote" -> TSLA ; "AMZN Hourly Prices (Last 24 Hours)" -> AMZN
+     */
+    private function extractSymbolsFromNames(array $names): array
+    {
+        $symbols = [];
+        foreach ($names as $rawName) {
+            $candidate = trim((string) $rawName);
+            if ($candidate === '') {
+                continue;
+            }
+            // Heuristic 1: take the first token before space or '(' and test as ticker
+            $firstToken = strtoupper(preg_split('/[\s\(]/', $candidate)[0] ?? '');
+            if ($this->isLikelyTicker($firstToken)) {
+                $symbols[$firstToken] = true;
+                continue;
+            }
+            // Heuristic 2: find any ALLCAP token of 1-5 letters in the string
+            if (preg_match_all('/\b[A-Z]{1,5}\b/', strtoupper($candidate), $m)) {
+                foreach ($m[0] as $tok) {
+                    if ($this->isLikelyTicker($tok)) {
+                        $symbols[$tok] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return array_keys($symbols);
+    }
+
+    private function isLikelyTicker(string $token): bool
+    {
+        // Accept 1-5 uppercase letters (common US tickers), allow dots (e.g., BRK.B) and numbers in rare cases
+        if ($token === '') {
+            return false;
+        }
+        if (preg_match('/^[A-Z]{1,5}(\.[A-Z]{1,3})?$/', $token)) {
+            return true;
+        }
+        return false;
     }
 }

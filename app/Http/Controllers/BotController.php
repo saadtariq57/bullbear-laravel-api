@@ -55,7 +55,9 @@ class BotController extends Controller
             'role' => 'nullable|string|max:255',
             'style' => 'nullable|string|max:255',
             'topics' => 'nullable|array',
-            'topics.*' => 'nullable|string|max:255',
+            'topics.*.name' => 'required_with:topics|string|max:255',
+            'topics.*.url' => 'nullable|url|max:255',
+            'topics.*.note' => 'nullable|string|max:3000',
             'instructions' => 'nullable|string',
             'post_frequency' => 'nullable|in:low,medium,high',
             'activity_level' => 'nullable|integer|min:1|max:10',
@@ -67,9 +69,9 @@ class BotController extends Controller
             'quirks' => 'nullable|array',
             'quirks.*' => 'nullable|string|max:255',
             'post_style' => 'nullable|array',
-            'post_style.*' => 'nullable|string|max:100',
+            'post_style.*' => 'nullable|string|max:255',
             'formats' => 'nullable|array',
-            'formats.*' => 'nullable|string|max:100',
+            'formats.*' => 'nullable|string|max:255',
         ]);
 
         // Ensure the selected user is of type 'bot' and doesn't already have a bot record
@@ -82,9 +84,19 @@ class BotController extends Controller
             return redirect()->back()->withErrors(['user_id' => 'This user already has a bot configuration.']);
         }
 
-        // Convert topics array to proper format (remove empty values)
-        if (isset($validatedData['topics'])) {
-            $validatedData['topics'] = array_filter($validatedData['topics']);
+        // Normalize topics: keep { name, url, note }
+        $normalizedTopics = [];
+        foreach (($request->input('topics', []) ?? []) as $topic) {
+            if (is_array($topic) && !empty($topic['name'])) {
+                $normalizedTopics[] = [
+                    'name' => trim($topic['name']),
+                    'url' => isset($topic['url']) && $topic['url'] !== '' ? trim($topic['url']) : null,
+                    'note' => isset($topic['note']) ? trim($topic['note']) : null,
+                ];
+            }
+        }
+        if ($request->has('topics')) {
+            $validatedData['topics'] = $normalizedTopics;
         }
 
         // Convert array fields to proper format (remove empty values)
@@ -131,7 +143,9 @@ class BotController extends Controller
             'role' => 'nullable|string|max:255',
             'style' => 'nullable|string|max:255',
             'topics' => 'nullable|array',
-            'topics.*' => 'nullable|string|max:255',
+            'topics.*.name' => 'required_with:topics|string|max:255',
+            'topics.*.url' => 'required_with:topics|url|max:255',
+            'topics.*.note' => 'nullable|string|max:3000',
             'instructions' => 'nullable|string',
             'post_frequency' => 'nullable|in:low,medium,high',
             'activity_level' => 'nullable|integer|min:1|max:10',
@@ -143,14 +157,24 @@ class BotController extends Controller
             'quirks' => 'nullable|array',
             'quirks.*' => 'nullable|string|max:255',
             'post_style' => 'nullable|array',
-            'post_style.*' => 'nullable|string|max:100',
+            'post_style.*' => 'nullable|string|max:255',
             'formats' => 'nullable|array',
-            'formats.*' => 'nullable|string|max:100',
+            'formats.*' => 'nullable|string|max:255',
         ]);
 
-        // Convert topics array to proper format (remove empty values)
-        if (isset($validatedData['topics'])) {
-            $validatedData['topics'] = array_filter($validatedData['topics']);
+        // Normalize topics: keep { name, url, note }
+        $normalizedTopics = [];
+        foreach (($request->input('topics', []) ?? []) as $topic) {
+            if (is_array($topic) && !empty($topic['name']) && !empty($topic['url'])) {
+                $normalizedTopics[] = [
+                    'name' => trim($topic['name']),
+                    'url' => trim($topic['url']),
+                    'note' => isset($topic['note']) ? trim($topic['note']) : null,
+                ];
+            }
+        }
+        if ($request->has('topics')) {
+            $validatedData['topics'] = $normalizedTopics;
         }
 
         // Convert array fields to proper format (remove empty values)

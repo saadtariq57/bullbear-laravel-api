@@ -95,33 +95,41 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="topics" class="form-label">Topics</label>
-                                    <div id="topics-container">
-                                        @php
-                                            $topics = old('topics', $bot->topics ?? []);
-                                        @endphp
-                                        @if(count($topics) > 0)
-                                            @foreach($topics as $index => $topic)
-                                                <div class="input-group mb-2 topic-input">
-                                                    <input type="text" class="form-control" name="topics[]" value="{{ $topic }}" placeholder="Enter topic...">
-                                                    <button class="btn btn-outline-danger" type="button" onclick="removeTopic(this)">
-                                                        <i class="mdi mdi-minus"></i>
-                                                    </button>
-                                                </div>
-                                            @endforeach
-                                        @else
-                                            <div class="input-group mb-2 topic-input">
-                                                <input type="text" class="form-control" name="topics[]" placeholder="Enter topic...">
-                                                <button class="btn btn-outline-danger" type="button" onclick="removeTopic(this)">
-                                                    <i class="mdi mdi-minus"></i>
-                                                </button>
-                                            </div>
-                                        @endif
+                                    <label for="topics" class="form-label">Topics & Notes</label>
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control" id="apiSearch" placeholder="Search RichTV Content APIs by name or URL...">
+                                        <div class="form-text">Search and select APIs as topics; add an optional note per topic.</div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addTopic()">
-                                        <i class="mdi mdi-plus me-1"></i> Add Topic
-                                    </button>
-                                    <div class="form-text">Add topics that this bot can discuss (e.g., technology, trading, news).</div>
+                                    <div id="apiResults" class="list-group mb-2" style="max-height: 220px; overflow:auto;"></div>
+                                    <div id="selectedTopics">
+                                        @php $topics = old('topics', $bot->topics ?? []); @endphp
+                                        @foreach($topics as $topic)
+                                            @php
+                                                $name = is_array($topic) ? ($topic['name'] ?? ($topic['url'] ?? 'Topic')) : (string) $topic;
+                                                $url = is_array($topic) ? ($topic['url'] ?? '') : '';
+                                                $note = is_array($topic) ? ($topic['note'] ?? '') : '';
+                                                $id = base64_encode($url) ?: base64_encode($name);
+                                                $id = str_replace('=', '', $id);
+                                        @endphp
+                                            <div class="border rounded p-2 mb-2" id="sel-{{ $id }}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <div class="fw-bold">{{ $name }}</div>
+                                                        @if($url)
+                                                            <small class="text-muted"><a href="{{ $url }}" target="_blank">{{ $url }}</a></small>
+                                                        @endif
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSelected('{{ $id }}','{{ $url }}')">Remove</button>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <input type="hidden" name="topics[{{ $id }}][name]" value="{{ $name }}">
+                                                    <input type="hidden" name="topics[{{ $id }}][url]" value="{{ $url }}">
+                                                    <label class="form-label mb-1">Note (optional)</label>
+                                                    <input type="text" class="form-control form-control-sm" name="topics[{{ $id }}][note]" value="{{ $note }}" placeholder="Any special input for this topic/API">
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
 
                                 <!-- Human-like Behavior Section -->
@@ -386,31 +394,80 @@
 
 @section('scripts')
     <script>
-        function addTopic() {
-            const container = document.getElementById('topics-container');
-            const newTopicHtml = `
-                <div class="input-group mb-2 topic-input">
-                    <input type="text" class="form-control" name="topics[]" placeholder="Enter topic...">
-                    <button class="btn btn-outline-danger" type="button" onclick="removeTopic(this)">
-                        <i class="mdi mdi-minus"></i>
-                    </button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', newTopicHtml);
+        let allApis = [];
+        let selected = [];
+
+        async function fetchApis() {
+            try {
+                const res = await fetch("{{ route('admin.richtv-content-apis.list.json') }}", { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const data = await res.json();
+                if (data && data.success) {
+                    allApis = data.data.endpoints || [];
+                }
+            } catch (e) { /* ignore */ }
         }
 
-        function removeTopic(button) {
-            const container = document.getElementById('topics-container');
-            const topicInputs = container.querySelectorAll('.topic-input');
-            
-            // Don't remove if it's the last one
-            if (topicInputs.length > 1) {
-                button.closest('.topic-input').remove();
-            } else {
-                // Clear the input instead of removing
-                button.closest('.topic-input').querySelector('input').value = '';
-            }
+        function renderResults(items) {
+            const results = document.getElementById('apiResults');
+            results.innerHTML = '';
+            items.slice(0, 25).forEach((api) => {
+                const isAdded = selected.find(s => s.url === api.url);
+                const a = document.createElement('a');
+                a.href = 'javascript:void(0)';
+                a.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-start';
+                a.innerHTML = `<div><div class="fw-bold">${api.name}</div><small class="text-muted">${api.url}</small></div><button class="btn btn-sm ${isAdded ? 'btn-success' : 'btn-outline-primary'}">${isAdded ? 'Added' : 'Add'}</button>`;
+                a.onclick = () => { if (!isAdded) addTopicFromApi(api); };
+                results.appendChild(a);
+            });
         }
+
+        function addTopicFromApi(api) {
+            selected.push(api);
+            const wrap = document.getElementById('selectedTopics');
+            const id = btoa(api.url).replace(/=/g,'');
+            const row = document.createElement('div');
+            row.className = 'border rounded p-2 mb-2';
+            row.id = `sel-${id}`;
+            row.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold">${api.name}</div>
+                        <small class="text-muted"><a href="${api.url}" target="_blank">${api.url}</a></small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSelected('${id}','${api.url}')">Remove</button>
+                </div>
+                <div class="mt-2">
+                    <input type="hidden" name="topics[${id}][name]" value="${api.name}">
+                    <input type="hidden" name="topics[${id}][url]" value="${api.url}">
+                    <label class="form-label mb-1">Note (optional)</label>
+                    <input type="text" class="form-control form-control-sm" name="topics[${id}][note]" placeholder="Any special input for this topic/API">
+                </div>
+            `;
+            wrap.appendChild(row);
+            const term = document.getElementById('apiSearch').value.trim().toLowerCase();
+            const filtered = allApis.filter(x => x.name.toLowerCase().includes(term) || x.url.toLowerCase().includes(term));
+            renderResults(filtered);
+        }
+
+        function removeSelected(id, url) {
+            selected = selected.filter(s => s.url !== url);
+            const el = document.getElementById(`sel-${id}`);
+            if (el) el.remove();
+            const term = document.getElementById('apiSearch').value.trim().toLowerCase();
+            const filtered = allApis.filter(x => x.name.toLowerCase().includes(term) || x.url.toLowerCase().includes(term));
+            renderResults(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchApis();
+            renderResults(allApis.slice(0, 25));
+            const input = document.getElementById('apiSearch');
+            input.addEventListener('input', function() {
+                const term = input.value.trim().toLowerCase();
+                const filtered = allApis.filter(x => x.name.toLowerCase().includes(term) || x.url.toLowerCase().includes(term));
+                renderResults(filtered);
+            });
+        });
 
 
 
