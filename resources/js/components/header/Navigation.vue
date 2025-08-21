@@ -217,36 +217,38 @@
                   </li>
 
                   <!-- Finance Dropdown -->
-                  <li>
-                    <div class="dropdown d-flex gap-2 align-items-center">
-                      <button
-                        class="nav-link dropdown-toggle d-flex nav-clr"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        Finance
-                      </button>
-                      <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
-                        <li>
-                          <a class="dropdown-item nav-link" href="/blog/investing-money-management">Investing Money Management</a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item nav-link" href="/blog/investing101/">Investing 101</a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item nav-link" href="/blog/investment-strategy/">Investment Strategy</a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item nav-link" href="/blog/stock-market-basics/">Stock Market Basics</a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item nav-link" href="/blog/how-to-invest/">How to Invest</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
+                    <li>
+                      <div class="dropdown d-flex gap-2 align-items-center">
+                        <!-- 1. This is now ONLY a link. The data-bs-toggle attribute is removed. -->
+                        <a href="/blog/finance" class="nav-link nav-clr dropdown-toggle">
+                          Finance
+                        </a>
+
+                        <!-- 2. The arrow is now wrapped in its own link that ACTS as the dropdown toggle. -->
+                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle Dropdown">
+                          <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img " />
+                        </a>
+
+                        <!-- 3. Your dropdown menu remains unchanged -->
+                        <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/investing-money-management">Investing Money Management</a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/investing101/">Investing 101</a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/investment-strategy/">Investment Strategy</a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/stock-market-basics/">Stock Market Basics</a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/how-to-invest/">How to Invest</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
 
                   <!-- Analysis Dropdown -->
                   <li>
@@ -655,12 +657,13 @@
                           </div>
                         </div>
 
-                        <!-- Finance Accordion Item -->
+                       <!-- Finance Accordion Item -->
                         <div class="accordion-item">
                           <h2 class="accordion-header">
-                            <button
+                            <a
+                              href="/blog/finance"
                               class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
+                              role="button"
                               data-bs-toggle="collapse"
                               data-bs-target="#collapseGroup_chat"
                               aria-expanded="false"
@@ -672,7 +675,7 @@
                               <div class="lh-sm">
                                 <p class="mobile-nav-heading m-0 fw-6">Finance</p>
                               </div>
-                            </button>
+                            </a>
                           </h2>
                           <hr />
                           <div

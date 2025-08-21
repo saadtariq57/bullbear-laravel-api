@@ -27,6 +27,7 @@ class GenerateBlogPostsSitemap extends Command
         'investing',
         'stocks',
         'specialized-reports',
+        'finance',
     ];
 
     public function handle()
