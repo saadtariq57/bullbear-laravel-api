@@ -208,6 +208,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [App\Http\Controllers\RichTvContentApiController::class, 'index'])->name('index');
             Route::get('create', [App\Http\Controllers\RichTvContentApiController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\RichTvContentApiController::class, 'store'])->name('store');
+            Route::get('import', [App\Http\Controllers\RichTvContentApiController::class, 'importForm'])->name('import.form');
+            Route::post('import', [App\Http\Controllers\RichTvContentApiController::class, 'import'])->name('import.process');
+            Route::get('import/sample', [App\Http\Controllers\RichTvContentApiController::class, 'downloadSample'])->name('import.sample');
             Route::get('{contentApi}', [App\Http\Controllers\RichTvContentApiController::class, 'show'])->name('show');
             Route::get('{contentApi}/edit', [App\Http\Controllers\RichTvContentApiController::class, 'edit'])->name('edit');
             Route::put('{contentApi}', [App\Http\Controllers\RichTvContentApiController::class, 'update'])->name('update');

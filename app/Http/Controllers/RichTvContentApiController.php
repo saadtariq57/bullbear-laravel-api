@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\RichTvContentApi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use App\Services\ContentApiCsvImportService;
 
 class RichTvContentApiController extends Controller
 {
@@ -56,6 +58,21 @@ class RichTvContentApiController extends Controller
         return view('admin.richtv-content-apis.create');
     }
 
+    /** Show CSV import form */
+    public function importForm()
+    {
+        return view('admin.richtv-content-apis.import');
+    }
+
+    /** Download sample CSV */
+    public function downloadSample()
+    {
+        $csv = "name,url,description\nExample API,https://api.example.com/v1/example,Short purpose-focused description here";
+        return Response::streamDownload(function () use ($csv) {
+            echo $csv;
+        }, 'richtv_content_apis_sample.csv', ['Content-Type' => 'text/csv']);
+    }
+
     /**
      * Store a newly created RichTV content API in storage.
      */
@@ -71,6 +88,20 @@ class RichTvContentApiController extends Controller
 
         return redirect()->route('admin.richtv-content-apis.index')
                         ->with('success', 'RichTV content API created successfully.');
+    }
+
+    /** Process CSV import */
+    public function import(Request $request, ContentApiCsvImportService $service)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'dry_run' => 'nullable|boolean',
+        ]);
+
+        $dryRun = (bool) $request->boolean('dry_run');
+        $result = $service->importFromUploadedFile($request->file('file'), $dryRun, 5000);
+
+        return back()->with('import_result', $result)->with('dry_run', $dryRun);
     }
 
     /**

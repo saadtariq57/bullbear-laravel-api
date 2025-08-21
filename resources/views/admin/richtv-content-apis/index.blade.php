@@ -35,7 +35,10 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3 float-end">
+                            <div class="mb-3 float-end d-flex gap-2">
+                                <a href="{{ route('admin.richtv-content-apis.import.form') }}" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-file-upload-outline me-1"></i> Import CSV
+                                </a>
                                 <a href="{{ route('admin.richtv-content-apis.create') }}" class="btn btn-primary">
                                     <i class="mdi mdi-plus me-1"></i> Add New Content API
                                 </a>
