@@ -48,4 +48,9 @@ class Group extends Model
     {
         return $this->hasMany(Message::class);
     }
+
+    public function generalEmbedding()
+    {
+        return $this->hasOne(GeneralGroupEmbedding::class);
+    }
 }

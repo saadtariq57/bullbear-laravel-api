@@ -57,6 +57,26 @@
                 <div class="write-post-wrapper">
                   <!-- Content for create/edit post modal -->
                   <form class="post-textarea">
+                    <div class="markdown-toolbar d-flex gap-2 mb-2">
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyBold" title="Bold (**)" aria-label="Bold">
+                        <i class="bi bi-type-bold"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyItalic" title="Italic (*)" aria-label="Italic">
+                        <i class="bi bi-type-italic"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyHeading(1)" title="Heading 1" aria-label="Heading 1">
+                        <i class="bi bi-type-h1"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyHeading(2)" title="Heading 2" aria-label="Heading 2">
+                        <i class="bi bi-type-h2"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyHeading(3)" title="Heading 3" aria-label="Heading 3">
+                        <i class="bi bi-type-h3"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border" @click.prevent="applyLink" title="Link" aria-label="Insert Link">
+                        <i class="bi bi-link-45deg"></i>
+                      </button>
+                    </div>
                     <textarea
                       v-model="textContent"
                       :class="[postClass, { 'color-textarea': currentPostType === 'color' }]"
@@ -66,6 +86,7 @@
                       :placeholder="isEditing ? 'Edit your post...' : 'How are you trading the markets?'"
                       :disabled="loadingLinkData"
                       id="textarea-modalpost"
+                      ref="editor"
                     ></textarea>
                     <!-- Loading Spinner -->
                     <div v-if="loadingLinkData" class="loading-spinner">
@@ -208,9 +229,7 @@
                             <span class="fs-13">{{ formatDateTime(sharePostPreview.created_at) }}</span>
                           </div>
                         </div>
-                        <p v-if="!sharePostPreview.colored_post_id && sharePostPreview.post_type !== 'link'" class="mb-0">
-                          {{ sharePostPreview.post_text }}
-                        </p>
+                        <div v-if="!sharePostPreview.colored_post_id && sharePostPreview.post_type !== 'link'" class="mb-0 markdown-body" v-html="renderedMarkdown(sharePostPreview.post_text)"></div>
                         <div v-if="sharePostPreview.post_type === 'link'" class="link-post-details pt-3">
                           <h3 class="link-title fs-5">{{ sharePostPreview.post_link_title }}</h3>
                           <span class="Blue fs-12">{{ sharePostPreview.post_link }}</span>
@@ -349,6 +368,7 @@ import PostSettings from './PostSettings.vue';
 import { formatDateTime } from '../../utils';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { renderMarkdownToHtml } from '../../services/markdown';
 
 export default {
   emits: ['post-created', 'post-updated'],
@@ -475,6 +495,69 @@ export default {
   },
   methods: {
     formatDateTime,
+    renderedMarkdown(text) {
+      return renderMarkdownToHtml(text);
+    },
+    applyBold() {
+      this.applyMarkdownWrap('**', '**');
+    },
+    applyItalic() {
+      this.applyMarkdownWrap('*', '*');
+    },
+    applyHeading(level) {
+      const textarea = this.$refs.editor;
+      if (!textarea) return;
+      const prefix = '#'.repeat(level) + ' ';
+      const { selectionStart, selectionEnd } = textarea;
+      const selected = this.textContent.slice(selectionStart, selectionEnd) || 'Heading';
+      this.replaceSelection(prefix + selected);
+    },
+    applyLink() {
+      const textarea = this.$refs.editor;
+      if (!textarea) return;
+      const { selectionStart, selectionEnd } = textarea;
+      const selected = this.textContent.slice(selectionStart, selectionEnd) || 'link text';
+      const before = this.textContent.slice(0, selectionStart);
+      const after = this.textContent.slice(selectionEnd);
+      const url = 'https://';
+      const insert = `[${selected}](${url})`;
+      this.textContent = before + insert + after;
+      this.$nextTick(() => {
+        const urlStart = before.length + selected.length + 3; // [ + selected + ](
+        const urlEnd = urlStart + url.length;
+        textarea.focus();
+        textarea.setSelectionRange(urlStart, urlEnd);
+      });
+    },
+    applyMarkdownWrap(startToken, endToken) {
+      const textarea = this.$refs.editor;
+      if (!textarea) return;
+      const { selectionStart, selectionEnd } = textarea;
+      const before = this.textContent.slice(0, selectionStart);
+      const selected = this.textContent.slice(selectionStart, selectionEnd) || '';
+      const after = this.textContent.slice(selectionEnd);
+      const wrapped = `${startToken}${selected || 'text'}${endToken}`;
+      const newText = before + wrapped + after;
+      const cursorPos = before.length + startToken.length + (selected ? selected.length : 4); // 'text'.length = 4
+      this.textContent = newText;
+      this.$nextTick(() => {
+        textarea.focus();
+        textarea.setSelectionRange(cursorPos, cursorPos);
+      });
+    },
+    replaceSelection(replacementText) {
+      const textarea = this.$refs.editor;
+      if (!textarea) return;
+      const { selectionStart, selectionEnd } = textarea;
+      const before = this.textContent.slice(0, selectionStart);
+      const after = this.textContent.slice(selectionEnd);
+      this.textContent = before + replacementText + after;
+      this.$nextTick(() => {
+        const pos = before.length + replacementText.length;
+        textarea.focus();
+        textarea.setSelectionRange(pos, pos);
+      });
+    },
     sharePostModal(payload) {
       const { post, groupId, groupName } = payload;
       console.log('Received post data:', post);
@@ -948,6 +1031,9 @@ export default {
 }
 .post-textarea textarea{
   height: 240px!important;
+}
+.markdown-toolbar .btn {
+  line-height: 1;
 }
 .media-preview-container {
   max-height: 500px;

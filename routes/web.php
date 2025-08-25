@@ -192,6 +192,33 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('categories/{groupCategory}', [GroupController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
 
+        // route group for BotController
+        Route::prefix('admin/bots')->name('admin.bots.')->group(function () {
+            Route::get('/', [App\Http\Controllers\BotController::class, 'index'])->name('index');
+            Route::get('create', [App\Http\Controllers\BotController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\BotController::class, 'store'])->name('store');
+            Route::get('{bot}', [App\Http\Controllers\BotController::class, 'show'])->name('show');
+            Route::get('{bot}/edit', [App\Http\Controllers\BotController::class, 'edit'])->name('edit');
+            Route::put('{bot}', [App\Http\Controllers\BotController::class, 'update'])->name('update');
+            Route::delete('{bot}', [App\Http\Controllers\BotController::class, 'destroy'])->name('destroy');
+        });
+
+        // route group for RichTvContentApi management
+        Route::prefix('admin/richtv-content-apis')->name('admin.richtv-content-apis.')->group(function () {
+            Route::get('/', [App\Http\Controllers\RichTvContentApiController::class, 'index'])->name('index');
+            Route::get('create', [App\Http\Controllers\RichTvContentApiController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\RichTvContentApiController::class, 'store'])->name('store');
+            Route::get('import', [App\Http\Controllers\RichTvContentApiController::class, 'importForm'])->name('import.form');
+            Route::post('import', [App\Http\Controllers\RichTvContentApiController::class, 'import'])->name('import.process');
+            Route::get('import/sample', [App\Http\Controllers\RichTvContentApiController::class, 'downloadSample'])->name('import.sample');
+            Route::get('{contentApi}', [App\Http\Controllers\RichTvContentApiController::class, 'show'])->name('show');
+            Route::get('{contentApi}/edit', [App\Http\Controllers\RichTvContentApiController::class, 'edit'])->name('edit');
+            Route::put('{contentApi}', [App\Http\Controllers\RichTvContentApiController::class, 'update'])->name('update');
+            Route::delete('{contentApi}', [App\Http\Controllers\RichTvContentApiController::class, 'destroy'])->name('destroy');
+            // JSON list for admin UI search (authenticated)
+            Route::get('list/json', [App\Http\Controllers\RichTvContentApiController::class, 'listJson'])->name('list.json');
+        });
+
         // route group for GroupController
         Route::prefix('admin/users')->name('admin.users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
@@ -260,3 +287,4 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/{any}', function () {
     return view('app');
 })->where('any', '.*');
+

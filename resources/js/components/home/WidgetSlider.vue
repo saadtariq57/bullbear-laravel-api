@@ -68,6 +68,9 @@ export default {
         const fetchWidgetData = async () => {
             try {
                 const response = await axios.get(`/api/widget/${props.widgetId}`);
+                console.log("Hello");
+                
+                console.log("response.data", response.data);
                 widget.value = response.data;
                 await nextTick();
                 initSlider();

@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Ensure 'bot' is present in enum (idempotent with previous migration)
+        // Use raw SQL to modify ENUM to include 'bot' to avoid Doctrine DBAL enum issues
         DB::statement("ALTER TABLE `users` MODIFY `type` ENUM('user','admin','bot') NOT NULL DEFAULT 'user'");
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Revert back to original enum values
+        // Revert ENUM to original values
         DB::statement("ALTER TABLE `users` MODIFY `type` ENUM('user','admin') NOT NULL DEFAULT 'user'");
     }
 };

@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AblyController,
+    AutomationController,
+    BotController,
     EducationController,
     ExamController,
     ExamResultController,
@@ -294,3 +296,17 @@ Route::middleware('auth:sanctum')->group(function () {
 | Additional Public Routes
 |--------------------------------------------------------------------------
 */
+
+/*
+|--------------------------------------------------------------------------
+| API Routes with API Key Authentication
+|--------------------------------------------------------------------------
+*/
+Route::middleware('api.key')->group(function () {
+    Route::get('/bots/active', [BotController::class, 'apiActiveIndex'])->name('api.bots.active');
+    Route::get('/automation/last-personality', [AutomationController::class, 'getLastPersonality'])->name('api.automation.last-personality');
+    Route::post('/automation/create-post', [AutomationController::class, 'createPost'])->name('api.automation.create-post');
+    Route::get('/automation/group/{symbol}', [AutomationController::class, 'getGroupBySymbol'])->name('api.automation.group-by-symbol');
+    Route::post('/automation/recommend-groups', [AutomationController::class, 'getGroupRecommendations'])->name('api.automation.recommend-groups');
+    Route::get('/automation/richtv-content-apis', [AutomationController::class, 'getRichTvContentApis'])->name('api.automation.richtv-content-apis');
+});

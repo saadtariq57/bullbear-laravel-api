@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('trading_reports', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->unsignedBigInteger('category_id');
-            $table->text('description')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('trading_reports')) {
+            Schema::create('trading_reports', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->unsignedBigInteger('category_id');
+                $table->text('description')->nullable();
+                $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('trading_performance_categories')->onDelete('cascade');
-        });
+                $table->foreign('category_id')->references('id')->on('trading_performance_categories')->onDelete('cascade');
+            });
+        }
     }
 
     /**
