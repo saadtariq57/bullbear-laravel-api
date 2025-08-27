@@ -956,8 +956,15 @@ class PostController extends Controller
 
         // Load reaction type and user data to align with the initial structure
         $reaction->load(['reactionType', 'user:id,name,avatar,about']);
-        $postOwner = Post::find($request->post_id)->user;
-        if($userId != $ownerId){
+        
+        // Get the post owner - use the postId we determined earlier, not from request
+        $postOwner = null;
+        if ($postId) {
+            $post = Post::find($postId);
+            $postOwner = $post ? $post->user : null;
+        }
+        
+        if($userId != $ownerId && $postOwner){
             $notificationData = [
                 'reacted_by' => $userId,
                 'reacted_to' => $ownerId,
@@ -968,7 +975,7 @@ class PostController extends Controller
                 'description' => $reaction->user->name. $notificationDesc,
                 'type' => 'reaction',
                 'last_notification_time' => now(),
-                'url' => url("/post/{$postOwner->name}/{$postId}"),
+                'url' => $postOwner ? url("/post/{$postOwner->name}/{$postId}") : null,
                 'user' => [
                     'id' => $reaction->user->id,
                     'name' => $reaction->user->name,
