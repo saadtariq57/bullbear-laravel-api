@@ -1,5 +1,6 @@
 export const categories = [
   { name: 'Fundamental Analysis', slug: 'fundamental-analysis', wp_id: 4342, from_wp: true },
+  { name: 'Finance', slug: 'finance', wp_id: 13458, from_wp: true },
   { name: 'Technical Analysis', slug: 'technical-analysis', wp_id: 962, from_wp: true },
   { name: 'Investing Money Management', slug: 'investing-money-management', wp_id: 11445, from_wp: true },
   { name: 'Investing101', slug: 'investing101', wp_id: 11438, from_wp: true },
