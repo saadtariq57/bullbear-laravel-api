@@ -33,6 +33,7 @@ class Bot extends Model
         'post_style',
         'formats',
         'caps_on_hype',
+        'engagement_config',
     ];
 
     /**
@@ -51,6 +52,7 @@ class Bot extends Model
         'post_style' => 'array',
         'formats' => 'array',
         'caps_on_hype' => 'boolean',
+        'engagement_config' => 'array',
     ];
 
     /**

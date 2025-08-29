@@ -9,6 +9,8 @@ use App\Models\Group;
 use App\Models\GeneralGroupEmbedding;
 use App\Models\RichTvContentApi;
 use App\Services\EmbeddingService;
+use App\Services\EngagementService;
+use App\Models\EngagementLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -591,5 +593,302 @@ class AutomationController extends Controller
             return true;
         }
         return false;
+    }
+
+    /**
+     * Trigger a bot engagement on a random eligible post using bot's engagement_config
+     */
+    public function engage(Request $request, EngagementService $engagementService)
+    {
+        $validator = Validator::make($request->all(), [
+            'bot_user_id' => 'required|integer|exists:users,id',
+            'time_window' => 'nullable|in:24h,7d,30d,all',
+            'post_id' => 'nullable|integer|exists:posts,id',
+            'allow_any' => 'nullable|boolean',
+            'exclude_engaged' => 'nullable|boolean',
+            'react' => 'nullable',
+            'comment' => 'nullable|string|max:2000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Validation failed',
+                'details' => $validator->errors()
+            ], 400);
+        }
+
+        $user = User::find($request->bot_user_id);
+        if (!$user || $user->type !== 'bot') {
+            return response()->json([
+                'success' => false,
+                'error' => 'Invalid bot user ID',
+            ], 400);
+        }
+
+        $bot = Bot::where('user_id', $user->id)->first();
+        if (!$bot || !$bot->is_active) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Bot is not active'
+            ], 400);
+        }
+
+        // Determine forced action from flags or legacy 'action'
+        $reactInput = $request->input('react');
+        $commentText = $request->input('comment');
+        $forcedAction = null;
+        $forcedReactionName = null;
+        // If react is a non-empty string not equal to literal 'true'/'false', treat it as reaction name
+        if (is_string($reactInput) && trim($reactInput) !== '' && !in_array(strtolower($reactInput), ['true','false'], true)) {
+            $forcedReactionName = trim($reactInput);
+        }
+        if ($forcedReactionName && $commentText) {
+            $forcedAction = 'react+comment';
+        } elseif ($forcedReactionName) {
+            $forcedAction = 'react';
+        } elseif (is_string($commentText) && trim($commentText) !== '') {
+            $forcedAction = 'comment';
+        } else {
+            // fallback to legacy 'action'
+            $forcedAction = $request->input('action');
+        }
+
+        $options = [
+            'time_window' => $request->input('time_window'),
+            'post_id' => $request->input('post_id'),
+            'allow_any' => filter_var($request->input('allow_any', false), FILTER_VALIDATE_BOOLEAN),
+            'exclude_engaged' => filter_var($request->input('exclude_engaged', true), FILTER_VALIDATE_BOOLEAN),
+            'forced_action' => $forcedAction,
+            'forced_reaction_name' => $forcedReactionName,
+            'forced_comment_text' => is_string($commentText) ? trim($commentText) : null,
+        ];
+
+        $result = $engagementService->engage($bot, $options);
+        return response()->json($result, $result['success'] ? 200 : 400);
+    }
+
+    /**
+     * Get the most recent engagement (for excluding the last engaged bot in n8n)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLastEngagement()
+    {
+        try {
+            $last = EngagementLog::with(['bot:id,user_id,role', 'bot.user:id,name'])
+                ->orderByDesc('created_at')
+                ->first();
+
+            if (!$last) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No engagements logged yet',
+                    'data' => null,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Last engagement retrieved',
+                'data' => [
+                    'bot_id' => $last->bot_id,
+                    'bot_user_id' => $last->bot?->user_id,
+                    'bot_name' => $last->bot?->user?->name,
+                    'role' => $last->bot?->role,
+                    'post_id' => $last->post_id,
+                    'action_type' => $last->action_type,
+                    'reaction_type_id' => $last->reaction_type_id,
+                    'comment_id' => $last->comment_id,
+                    'sentiment' => $last->sentiment,
+                    'time' => $last->created_at?->toISOString(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getLastEngagement): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all active bots including engagement data for n8n selection
+     */
+    public function getActiveBotsForEngagement()
+    {
+        try {
+            $bots = \App\Models\Bot::with(['user:id,name,email'])
+                ->where('is_active', true)
+                ->get()
+                ->map(function ($bot) {
+                    $cfg = $bot->engagement_config ?? [];
+                    $hoursSince = $bot->last_active ? now()->diffInHours($bot->last_active) : null;
+                    // Ensure 5-sentiment structure and template groups
+                    $sentiment = array_merge([
+                        'positive' => 35,
+                        'neutral' => 25,
+                        'skeptical' => 15,
+                        'curious' => 15,
+                        'critical' => 10,
+                    ], (array) ($cfg['sentiment'] ?? []));
+                    $templates = $cfg['comment_templates'] ?? [];
+                    $commentTemplates = [
+                        'positive' => array_values(array_filter((array) ($templates['positive'] ?? []))),
+                        'neutral' => array_values(array_filter((array) ($templates['neutral'] ?? []))),
+                        'skeptical' => array_values(array_filter((array) ($templates['skeptical'] ?? []))),
+                        'curious' => array_values(array_filter((array) ($templates['curious'] ?? []))),
+                        'critical' => array_values(array_filter((array) ($templates['critical'] ?? []))),
+                    ];
+                    return [
+                        'id' => $bot->id,
+                        'bot_user_id' => $bot->user_id,
+                        'name' => $bot->user?->name,
+                        'email' => $bot->user?->email,
+                        'role' => $bot->role,
+                        'style' => $bot->style,
+                        'post_frequency' => $bot->post_frequency,
+                        'activity_level' => $bot->activity_level,
+                        'group_post_probability' => $bot->group_post_probability,
+                        'last_active' => $bot->last_active?->toISOString(),
+                        'hours_since_last_active' => $hoursSince,
+                        // Engagement data (canonical, no redundancy)
+                        'active_window_hours' => $cfg['active_window_hours'] ?? null,
+                        'actions' => $cfg['actions'] ?? null,
+                        'sentiment' => $sentiment,
+                        'reaction_weights' => $cfg['reaction_weights'] ?? null,
+                        'comment_length' => $cfg['comment_length'] ?? null,
+                        'comment_templates' => $commentTemplates,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'count' => $bots->count(),
+                'data' => $bots,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getActiveBotsForEngagement): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Return a random post from the past 30 days using weighted windows.
+     * Query params (optional):
+     *   w1d  (default 20)  → last 1 day
+     *   w7d  (default 70)  → last 7 days excluding last 1 day
+     *   w30d (default 10)  → last 30 days excluding last 7 days
+     */
+    public function getRandomPostWeighted(Request $request)
+    {
+        try {
+            $w1 = (int) $request->query('w1d', 20);
+            $w7 = (int) $request->query('w7d', 70);
+            $w30 = (int) $request->query('w30d', 10);
+            // Optional user/post filters
+            $userId = (int) $request->query('userId', 0) ?: (int) $request->query('user_id', 0);
+            $checkPostId = (int) $request->query('postId', 0) ?: (int) $request->query('post_id', 0);
+
+            if ($w1 < 0) $w1 = 0; if ($w7 < 0) $w7 = 0; if ($w30 < 0) $w30 = 0;
+            $sum = $w1 + $w7 + $w30;
+            if ($sum === 0) { $w1 = 20; $w7 = 70; $w30 = 10; $sum = 100; }
+
+            $window = $this->pickWeightedWindow(['1d' => $w1, '7d' => $w7, '30d' => $w30]);
+
+            $now = now();
+            $ranges = [
+                '1d' => [ $now->copy()->subDay(), $now ],
+                // last 7 days excluding last 1 day
+                '7d' => [ $now->copy()->subDays(7), $now->copy()->subDay() ],
+                // last 30 days excluding last 7 days
+                '30d' => [ $now->copy()->subDays(30), $now->copy()->subDays(7) ],
+            ];
+
+            $order = [$window, ...array_values(array_diff(['1d','7d','30d'], [$window]))];
+
+            // Precompute posts the user already reacted to (optional)
+            $excludePostIds = [];
+            if ($userId > 0) {
+                $excludePostIds = \App\Models\Reaction::where('user_id', $userId)->pluck('post_id')->all();
+            }
+
+            foreach ($order as $win) {
+                [$from, $to] = $ranges[$win];
+                // Use half-open interval [from, to) to avoid overlaps across windows
+                $q = Post::where('active', 1)
+                    ->where('created_at', '>=', $from)
+                    ->where('created_at', '<', $to);
+                if (!empty($excludePostIds)) {
+                    $q->whereNotIn('id', $excludePostIds);
+                }
+                $picked = $q->inRandomOrder()->first();
+                if ($picked) {
+                    // If explicit postId check was requested, report that status too
+                    $already = null;
+                    if ($userId > 0 && $checkPostId > 0) {
+                        $already = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                    }
+                    return response()->json([
+                        'success' => true,
+                        'message' => "Random post from window {$win}",
+                        'data' => [
+                            'window' => $win,
+                            'post' => [
+                                'id' => $picked->id,
+                                'user_id' => $picked->user_id,
+                                'group_id' => $picked->group_id,
+                                'post_type' => $picked->post_type,
+                                'post_text' => $picked->post_text,
+                                'post_link' => $picked->post_link,
+                                'created_at' => $picked->created_at?->toISOString(),
+                            ],
+                            'already_reacted_for_postId' => $already,
+                        ]
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'No posts found in the past 30 days',
+                'data' => null
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getRandomPostWeighted): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    private function pickWeightedWindow(array $weights): string
+    {
+        $sum = array_sum($weights);
+        if ($sum <= 0) return '7d';
+        $rand = random_int(1, $sum);
+        $acc = 0;
+        foreach ($weights as $k => $w) {
+            $acc += (int) $w;
+            if ($rand <= $acc) return $k;
+        }
+        return array_key_first($weights);
     }
 }

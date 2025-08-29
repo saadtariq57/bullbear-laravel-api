@@ -300,6 +300,145 @@
                         </div>
                     </div>
                     
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">Engagement Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-2">Action Weights (sum 100%)</h6>
+                                    @php $act = $bot->engagement_config['actions'] ?? ['react'=>50,'comment'=>30,'react+comment'=>20]; @endphp
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">React %</label>
+                                            <input type="number" class="form-control" name="eng_actions_react" value="{{ old('eng_actions_react', $act['react']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Comment %</label>
+                                            <input type="number" class="form-control" name="eng_actions_comment" value="{{ old('eng_actions_comment', $act['comment']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">React+Comment %</label>
+                                            <input type="number" class="form-control" name="eng_actions_both" value="{{ old('eng_actions_both', $act['react+comment']) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Sentiment Weights (sum 100%)</h6>
+                                    @php
+                                        $senDefaults = ['positive'=>35,'neutral'=>25,'skeptical'=>15,'curious'=>15,'critical'=>10];
+                                        $sen = array_merge($senDefaults, (array) data_get($bot->engagement_config, 'sentiment', []));
+                                    @endphp
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Positive</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_positive" value="{{ old('eng_sentiment_positive', $sen['positive']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Neutral</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_neutral" value="{{ old('eng_sentiment_neutral', $sen['neutral']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Skeptical</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_skeptical" value="{{ old('eng_sentiment_skeptical', $sen['skeptical']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Curious</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_curious" value="{{ old('eng_sentiment_curious', $sen['curious']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Critical</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_critical" value="{{ old('eng_sentiment_critical', $sen['critical']) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Reaction Weights</h6>
+                                    @php $rw = $bot->engagement_config['reaction_weights'] ?? ['like'=>40,'love'=>25,'haha'=>10,'wow'=>15,'sad'=>5,'angry'=>5]; @endphp
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Like</label>
+                                            <input type="number" class="form-control" name="eng_reaction_like" value="{{ old('eng_reaction_like', $rw['like']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Love</label>
+                                            <input type="number" class="form-control" name="eng_reaction_love" value="{{ old('eng_reaction_love', $rw['love']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Haha</label>
+                                            <input type="number" class="form-control" name="eng_reaction_haha" value="{{ old('eng_reaction_haha', $rw['haha']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Wow</label>
+                                            <input type="number" class="form-control" name="eng_reaction_wow" value="{{ old('eng_reaction_wow', $rw['wow']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Sad</label>
+                                            <input type="number" class="form-control" name="eng_reaction_sad" value="{{ old('eng_reaction_sad', $rw['sad']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Angry</label>
+                                            <input type="number" class="form-control" name="eng_reaction_angry" value="{{ old('eng_reaction_angry', $rw['angry']) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Comment Length Distribution</h6>
+                                    @php $cl = $bot->engagement_config['comment_length'] ?? ['short'=>50,'medium'=>35,'long'=>15]; @endphp
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Short %</label>
+                                            <input type="number" class="form-control" name="eng_length_short" value="{{ old('eng_length_short', $cl['short']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Medium %</label>
+                                            <input type="number" class="form-control" name="eng_length_medium" value="{{ old('eng_length_medium', $cl['medium']) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Long %</label>
+                                            <input type="number" class="form-control" name="eng_length_long" value="{{ old('eng_length_long', $cl['long']) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="mb-2">Active Window</h6>
+                                    @php $h = data_get($bot->engagement_config, 'active_window_hours', ''); @endphp
+                                    <label class="form-label">Hours</label>
+                                    <input type="number" class="form-control" name="eng_active_hours" value="{{ old('eng_active_hours', $h) }}" min="1" max="168" placeholder="e.g., 2 or 4">
+
+                                    <h6 class="mt-3 mb-2">Comment Templates</h6>
+                                    @foreach(['positive'=>'Positive','neutral'=>'Neutral','skeptical'=>'Skeptical','curious'=>'Curious','critical'=>'Critical'] as $key=>$label)
+                                        @php $vals = old('eng_templates_'.$key, data_get($bot->engagement_config, 'comment_templates.'.$key, [])); @endphp
+                                        <div class="mb-2">
+                                            <label class="form-label">{{ $label }} Templates</label>
+                                            <div id="tmpl-{{ $key }}">
+                                                @if(count($vals) > 0)
+                                                    @foreach($vals as $val)
+                                                        <div class="input-group mb-1">
+                                                            <input type="text" class="form-control" name="eng_templates_{{ $key }}[]" value="{{ $val }}" placeholder="Add a template seed...">
+                                                            <button class="btn btn-outline-danger" type="button" onclick="this.closest('.input-group').remove()"><i class="mdi mdi-minus"></i></button>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                                <div class="input-group mb-1">
+                                                    <input type="text" class="form-control" name="eng_templates_{{ $key }}[]" placeholder="Add a template seed...">
+                                                    <button class="btn btn-outline-danger" type="button" onclick="this.closest('.input-group').remove()"><i class="mdi mdi-minus"></i></button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addTmpl('{{ $key }}')"><i class="mdi mdi-plus me-1"></i> Add</button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        function addTmpl(key){
+                            const wrap = document.getElementById('tmpl-'+key);
+                            wrap.insertAdjacentHTML('beforeend', `<div class=\"input-group mb-1\"><input type=\"text\" class=\"form-control\" name=\"eng_templates_${key}[]\" placeholder=\"Add a template...\"><button class=\"btn btn-outline-danger\" type=\"button\" onclick=\"this.closest(' . "'" . '.input-group' . "'" . ').remove()\"><i class=\"mdi mdi-minus\"></i></button></div>`);
+                        }
+                    </script>
+
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-md-12">

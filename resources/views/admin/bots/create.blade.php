@@ -265,6 +265,137 @@
                         </div>
                     </div>
                     
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">Engagement Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-2">Action Weights (sum 100%)</h6>
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">React %</label>
+                                            <input type="number" class="form-control" name="eng_actions_react" value="{{ old('eng_actions_react', 50) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Comment %</label>
+                                            <input type="number" class="form-control" name="eng_actions_comment" value="{{ old('eng_actions_comment', 30) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">React+Comment %</label>
+                                            <input type="number" class="form-control" name="eng_actions_both" value="{{ old('eng_actions_both', 20) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Sentiment Weights (sum 100%)</h6>
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Positive</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_positive" value="{{ old('eng_sentiment_positive', 50) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Neutral</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_neutral" value="{{ old('eng_sentiment_neutral', 30) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Skeptical</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_skeptical" value="{{ old('eng_sentiment_skeptical', 20) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Curious</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_curious" value="{{ old('eng_sentiment_curious', 0) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Critical</label>
+                                            <input type="number" class="form-control" name="eng_sentiment_critical" value="{{ old('eng_sentiment_critical', 0) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Reaction Weights</h6>
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Like</label>
+                                            <input type="number" class="form-control" name="eng_reaction_like" value="{{ old('eng_reaction_like', 40) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Love</label>
+                                            <input type="number" class="form-control" name="eng_reaction_love" value="{{ old('eng_reaction_love', 25) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Haha</label>
+                                            <input type="number" class="form-control" name="eng_reaction_haha" value="{{ old('eng_reaction_haha', 10) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Wow</label>
+                                            <input type="number" class="form-control" name="eng_reaction_wow" value="{{ old('eng_reaction_wow', 15) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Sad</label>
+                                            <input type="number" class="form-control" name="eng_reaction_sad" value="{{ old('eng_reaction_sad', 5) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Angry</label>
+                                            <input type="number" class="form-control" name="eng_reaction_angry" value="{{ old('eng_reaction_angry', 5) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-3 mb-2">Comment Length Distribution</h6>
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="form-label">Short %</label>
+                                            <input type="number" class="form-control" name="eng_length_short" value="{{ old('eng_length_short', 50) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Medium %</label>
+                                            <input type="number" class="form-control" name="eng_length_medium" value="{{ old('eng_length_medium', 35) }}" min="0" max="100">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Long %</label>
+                                            <input type="number" class="form-control" name="eng_length_long" value="{{ old('eng_length_long', 15) }}" min="0" max="100">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="mb-2">Active Window</h6>
+                                    <label class="form-label">Hours</label>
+                                    <input type="number" class="form-control" name="eng_active_hours" value="{{ old('eng_active_hours', '') }}" min="1" max="168" placeholder="e.g., 2 or 4">
+
+                                    <h6 class="mt-3 mb-2">Comment Templates</h6>
+                                    @foreach(['positive'=>'Positive','neutral'=>'Neutral','skeptical'=>'Skeptical','curious'=>'Curious','critical'=>'Critical'] as $key=>$label)
+                                        <div class="mb-2">
+                                            <label class="form-label">{{ $label }} Templates</label>
+                                            <div id="tmpl-{{ $key }}">
+                                                @php $vals = old('eng_templates_'.$key, []); @endphp
+                                                @if(count($vals) > 0)
+                                                    @foreach($vals as $val)
+                                                        <div class="input-group mb-1">
+                                                            <input type="text" class="form-control" name="eng_templates_{{ $key }}[]" value="{{ $val }}" placeholder="Add a template seed...">
+                                                            <button class="btn btn-outline-danger" type="button" onclick="this.closest('.input-group').remove()"><i class="mdi mdi-minus"></i></button>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                                <div class="input-group mb-1">
+                                                    <input type="text" class="form-control" name="eng_templates_{{ $key }}[]" placeholder="Add a template seed...">
+                                                    <button class="btn btn-outline-danger" type="button" onclick="this.closest('.input-group').remove()"><i class="mdi mdi-minus"></i></button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addTmpl('{{ $key }}')"><i class="mdi mdi-plus me-1"></i> Add</button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        function addTmpl(key){
+                            const wrap = document.getElementById('tmpl-'+key);
+                            wrap.insertAdjacentHTML('beforeend', `<div class="input-group mb-1"><input type="text" class="form-control" name="eng_templates_${key}[]" placeholder="Add a template..."><button class="btn btn-outline-danger" type="button" onclick="this.closest('.input-group').remove()"><i class="mdi mdi-minus"></i></button></div>`);
+                        }
+                    </script>
+
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-md-12">
