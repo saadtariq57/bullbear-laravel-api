@@ -92,63 +92,16 @@ class FollowerController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        // Step 1: Find admins not followed by the current user and exclude self
-        $adminSuggestions = User::select('id', 'name', 'avatar')
-            ->where('type', 'admin')
+        // Exclude self only; include accounts even if already followed
+        $suggestions = User::select('id', 'name', 'avatar')
             ->where('id', '!=', $currentUser->id)
-            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
-                $query->where('follower_id', $currentUser->id);
-            })
+            ->withCount(['posts'])
+            ->orderByDesc('posts_count')
+            ->limit(15)
             ->get();
 
-        // Step 2: Find mutual connections (users followed by the user's followings)
-        $firstLayerFollowings = Follower::where('follower_id', $currentUser->id)
-            ->pluck('following_id');
-
-        $secondLayerFollowings = Follower::whereIn('follower_id', $firstLayerFollowings)
-            ->pluck('following_id')
-            ->unique()
-            ->diff([$currentUser->id]) // Ensure self is excluded
-            ->toArray();
-
-        $mutualSuggestions = User::select('id', 'name', 'avatar')
-            ->whereIn('id', $secondLayerFollowings)
-            ->whereDoesntHave('followers', function ($query) use ($currentUser) {
-                $query->where('follower_id', $currentUser->id);
-            })
-            ->withCount(['posts']) // Count posts for ordering if needed
-            ->get();
-
-        // Combine admin and mutual suggestions, ensuring uniqueness
-        $suggestions = $adminSuggestions->merge($mutualSuggestions)->unique('id');
-
-        // Check if we have enough suggestions, if not, add users with most posts
-        if ($suggestions->count() < 10) {
-            $needed = 10 - $suggestions->count();
-
-            // Get IDs of users the current user is already following
-            $alreadyFollowing = Follower::where('follower_id', $currentUser->id)
-                ->pluck('following_id')
-                ->toArray();
-
-            $additionalSuggestions = User::select('id', 'name', 'avatar')
-                ->where('id', '!=', $currentUser->id) 
-                ->whereNotIn('id', $alreadyFollowing)
-                ->whereNotIn('id', $suggestions->pluck('id'))
-                ->withCount(['posts'])
-                ->orderByDesc('posts_count')
-                ->limit($needed)
-                ->get();
-
-            $suggestions = $suggestions->merge($additionalSuggestions);
-        }
-
-        // Limit the final suggestions to 10
-        $suggestions = $suggestions->take(5);
-
-        // Return only the necessary fields
         return response()->json([
-            'data' => $suggestions->map(function($user) {
+            'data' => $suggestions->map(function ($user) {
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
