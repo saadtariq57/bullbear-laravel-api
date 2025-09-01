@@ -30,10 +30,10 @@ const UserFeedService = {
                 let userVoted = false;
                 let userVoteOptionId = null;
                 if (post.poll) {
-                    userVoted = post.userVoted;
+                    // Backend provides poll.userVoted and poll.userVoteOption
+                    userVoted = !!post.poll.userVoted;
                     if (userVoted) {
-                        const userVote = post.user_votes.find(vote => vote.user_id === userId);
-                        userVoteOptionId = userVote ? userVote.option_id : null;
+                        userVoteOptionId = post.poll.userVoteOption ?? null;
                     }
                 }
 

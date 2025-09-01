@@ -23,6 +23,9 @@ use App\Notifications\PostCommentNotification;
 use App\Notifications\NewPollVoteNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\FeedService;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Message;
 
 class PostController extends Controller
 {
@@ -346,54 +349,14 @@ class PostController extends Controller
     public function getUserFeed(Request $request)
     {
         $user = $request->user();
-        $groupIds = $user->groupMemberships()->pluck('group_id');
-        $followingsIds = $user->followings()->pluck('following_id')->toArray();
-        //return response()->json(['Grouo Id' => $groupIds, 'Following Id' => $followingsIds]);
+        $feedService = app(FeedService::class);
+        $posts = $feedService->getFeedForUser($user, [
+            'since_hours' => (int) $request->get('since_hours', 24),
+            'lastPostId' => $request->get('lastPostId'),
+            'per_page' => (int) $request->get('per_page', 10),
+        ]);
 
-        // Create a query combining posts from groups, followed users, and user's own posts
-        $postsQuery = Post::with([
-            'user:id,name,avatar',
-            'user' => function($query) {
-                $query->withCount('followers'); 
-            },
-            'photos', 
-            'poll.options', 
-            'poll.userVotes' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            },
-            'coloredPost', 
-            'reactions' => function($query) {
-                $query->with('reactionType:id,name,icon')
-                      ->with('user:id,name,avatar,about');
-            },
-            'sharedPost.user:id,name,avatar',
-            'sharedPost.photos',
-            'sharedPost.poll.options',
-            'sharedPost.poll.userVotes' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            },
-            'sharedPost.coloredPost',
-            'sharedPost.reactions' => function($query) {
-                $query->with('reactionType:id,name,icon')
-                      ->with('user:id,name,avatar,about');
-            }
-        ])
-        ->withCount(['comments', 'reactions'])
-        ->where(function($query) use ($groupIds, $followingsIds, $user) {
-            $query->whereIn('group_id', $groupIds)
-                  ->orWhereIn('user_id', $followingsIds)
-                  ->orWhere('user_id', $user->id);
-                  /*->where('user_id', '!=', $user->id);*/
-        })
-        ->orderByDesc('created_at');
-
-        if ($request->has('lastPostId')) {
-            $lastPostId = $request->get('lastPostId');
-            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
-        }
-
-        $posts = $postsQuery->paginate(10);
-        $posts->transform(function ($post) use ($user) {
+        $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
             if ($post->sharedPost) {
                 $sharedPost = $post->sharedPost;

@@ -64,6 +64,7 @@ export function formatDateTime(dateTime) {
 }
 
 export const organizeReactions = (reactions, userId) => {
+    reactions = Array.isArray(reactions) ? reactions : [];
     let organizedReactions = {};
     let userReaction = null;
 
