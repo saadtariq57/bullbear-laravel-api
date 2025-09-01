@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Cmixin\BusinessDay;
 use App\Models\Group;
 use App\Observers\GroupObserver;
+use App\Models\User;
+use App\Observers\UserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
         
         // Register model observers
         Group::observe(GroupObserver::class);
+        User::observe(UserObserver::class);
     }
 }
