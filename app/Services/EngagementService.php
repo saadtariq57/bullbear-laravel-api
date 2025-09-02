@@ -79,13 +79,32 @@ class EngagementService
 
                 $this->notifyReaction($reaction, $post);
 
-                EngagementLog::create([
-                    'bot_id' => $bot->id,
-                    'post_id' => $post->id,
-                    'action_type' => $actionType === 'react+comment' ? 'react+comment' : 'react',
-                    'reaction_type_id' => $reactionTypeId,
-                    'sentiment' => $sentiment,
-                ]);
+                try {
+                    EngagementLog::create([
+                        'bot_id' => $bot->id,
+                        'post_id' => $post->id,
+                        'action_type' => $actionType === 'react+comment' ? 'react+comment' : 'react',
+                        'reaction_type_id' => $reactionTypeId,
+                        'sentiment' => $sentiment,
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // If enum not yet migrated for new sentiments, fallback to nearest allowed
+                    $fallback = in_array($sentiment, ['positive','neutral','skeptical'], true)
+                        ? $sentiment
+                        : 'neutral';
+                    Log::warning('EngagementLog create failed; using fallback sentiment', [
+                        'original' => $sentiment,
+                        'fallback' => $fallback,
+                        'error' => $e->getMessage(),
+                    ]);
+                    EngagementLog::create([
+                        'bot_id' => $bot->id,
+                        'post_id' => $post->id,
+                        'action_type' => $actionType === 'react+comment' ? 'react+comment' : 'react',
+                        'reaction_type_id' => $reactionTypeId,
+                        'sentiment' => $fallback,
+                    ]);
+                }
 
                 $result['reaction'] = [
                     'reaction_type_id' => $reactionTypeId
@@ -107,13 +126,31 @@ class EngagementService
             ]);
             $this->notifyComment($comment, $post);
 
-            EngagementLog::create([
-                'bot_id' => $bot->id,
-                'post_id' => $post->id,
-                'action_type' => $actionType,
-                'comment_id' => $comment->id,
-                'sentiment' => $sentiment,
-            ]);
+            try {
+                EngagementLog::create([
+                    'bot_id' => $bot->id,
+                    'post_id' => $post->id,
+                    'action_type' => $actionType,
+                    'comment_id' => $comment->id,
+                    'sentiment' => $sentiment,
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                $fallback = in_array($sentiment, ['positive','neutral','skeptical'], true)
+                    ? $sentiment
+                    : 'neutral';
+                Log::warning('EngagementLog create (comment) failed; using fallback sentiment', [
+                    'original' => $sentiment,
+                    'fallback' => $fallback,
+                    'error' => $e->getMessage(),
+                ]);
+                EngagementLog::create([
+                    'bot_id' => $bot->id,
+                    'post_id' => $post->id,
+                    'action_type' => $actionType,
+                    'comment_id' => $comment->id,
+                    'sentiment' => $fallback,
+                ]);
+            }
 
             $result['comment'] = [
                 'comment_id' => $comment->id,
