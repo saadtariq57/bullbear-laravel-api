@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
+ 
 
 class FeedService
 {
@@ -26,37 +26,34 @@ class FeedService
             return $this->getTrendingFeed($sinceHours, $perPage, $lastPostId);
         }
 
-        // Cache scored IDs for a brief time window keyed by user + lastPostId boundary
-        $cacheKey = sprintf('feed:v1:user:%d:since:%d:last:%s:pp:%d', $user->id, $sinceHours, $lastPostId ?: 'none', $perPage);
-        return Cache::remember($cacheKey, now()->addMinutes(3), function () use ($user, $sinceHours, $lastPostId, $perPage) {
-            $candidates = $this->fetchCandidates($user, $sinceHours, $lastPostId);
+        // Build feed fresh on every request (no server-side caching)
+        $candidates = $this->fetchCandidates($user, $sinceHours, $lastPostId);
 
-            // If empty, widen window to 7d then 30d and include trending
-            if ($candidates->isEmpty()) {
-                $fallback = $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
-                if ($fallback->total() > 0) return $fallback;
-                return $this->getTrendingFeed(720, $perPage, $lastPostId, $user);
-            }
+        // If empty, widen window to 7d then 30d and include trending
+        if ($candidates->isEmpty()) {
+            $fallback = $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
+            if ($fallback->total() > 0) return $fallback;
+            return $this->getTrendingFeed(720, $perPage, $lastPostId, $user);
+        }
 
-            $scored = $this->scoreCandidates($user, $candidates);
+        $scored = $this->scoreCandidates($user, $candidates);
 
-            if ($scored->isEmpty()) {
-                return $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
-            }
+        if ($scored->isEmpty()) {
+            return $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
+        }
 
-            // Paginate manually: we already have rich eager-loaded posts
-            $total = $scored->count();
-            $page = 1; // cursor-based via lastPostId
-            $items = $scored->take($perPage)->values();
+        // Paginate manually: we already have rich eager-loaded posts
+        $total = $scored->count();
+        $page = 1; // cursor-based via lastPostId
+        $items = $scored->take($perPage)->values();
 
-            return new \Illuminate\Pagination\LengthAwarePaginator(
-                $items,
-                $total,
-                $perPage,
-                $page,
-                [ 'path' => request()->url(), 'query' => request()->query() ]
-            );
-        });
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            [ 'path' => request()->url(), 'query' => request()->query() ]
+        );
     }
 
     public function getTrendingFeed(int $sinceHours, int $perPage, $lastPostId, ?User $user = null): LengthAwarePaginator
