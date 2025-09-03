@@ -10,25 +10,25 @@
                     <img class="rounded-circle" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" alt="Profile Picture" width="75px" height="75px">
                 </div>
                 <div class="title text-center">
-                    <a class="text-black fw-bold" :href="'profile/'+userData.name">{{ userData.name }}</a>
+                    <a class="text-black fw-bold" :href="`/profile/${userData.name}`">{{ userData.name }}</a>
                     <p>@{{ userData.name }}</p>
                 </div>
             </div>
             <ul class="wo_user_side_info list-unstyled row text-center">
                 <li class="col-4">
-                    <a class="menu_list text-black" href="/profile">
+                    <a class="menu_list text-black" :href="`/profile/${userData.name}`">
                         <span class="split-link d-block"><b>Posts</b></span>
                         <span id="user_post_count">{{ userData.posts_count }}</span>
                     </a>
                 </li>
                 <li class="col-4 border-start border-end">
-                    <a class="menu_list text-black" href="/profile">
+                    <a class="menu_list text-black" :href="`/profile/${userData.name}`">
                         <span class="split-link d-block"><b>Watchlists</b></span>
                         <span>{{ userData.watchlists_count }}</span>
                     </a>
                 </li>
                 <li class="col-4">
-                    <a class="menu_list text-black" href="/profile">
+                    <a class="menu_list text-black" :href="`/profile/${userData.name}`">
                         <span class="split-link d-block"><b>Followers</b></span>
                         <span>{{ userData.followers_count }}</span>
                     </a>
