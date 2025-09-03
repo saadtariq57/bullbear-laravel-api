@@ -356,6 +356,14 @@ class PostController extends Controller
             'per_page' => (int) $request->get('per_page', 10),
         ]);
 
+        // Ensure reactions are eager-loaded on the returned items (belt-and-suspenders)
+        $posts->getCollection()->load([
+            'reactions.reactionType:id,name,icon',
+            'reactions.user:id,name,avatar,about',
+            'sharedPost.reactions.reactionType:id,name,icon',
+            'sharedPost.reactions.user:id,name,avatar,about',
+        ]);
+
         $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
             if ($post->sharedPost) {
