@@ -98,8 +98,11 @@ const userFeedModule = {
         updateReactionInPost(state, { post_id, reaction }) {
             const targetPost = state.posts.find(post => post.id === post_id);
             if (!targetPost) return;
+            if (!Array.isArray(targetPost.reactions)) {
+                targetPost.reactions = [];
+            }
             // Add or update the user's reaction
-            const existingReactionIndex = targetPost.reactions.findIndex(r => r.user_id === reaction.user_id);
+            const existingReactionIndex = targetPost.reactions.findIndex(r => r && r.user_id === reaction.user_id);
             if (existingReactionIndex !== -1) {
                 targetPost.reactions.splice(existingReactionIndex, 1, reaction);
             } else {
