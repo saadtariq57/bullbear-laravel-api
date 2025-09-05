@@ -759,6 +759,7 @@ class AutomationController extends Controller
                         'hours_since_last_active' => $hoursSince,
                         // Engagement data (canonical, no redundancy)
                         'active_window_hours' => $cfg['active_window_hours'] ?? null,
+                        'active_window_minutes' => $cfg['active_window_minutes'] ?? null,
                         'actions' => $cfg['actions'] ?? null,
                         'sentiment' => $sentiment,
                         'reaction_weights' => $cfg['reaction_weights'] ?? null,

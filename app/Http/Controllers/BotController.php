@@ -90,7 +90,8 @@ class BotController extends Controller
             'eng_length_short' => 'nullable|integer|min:0|max:100',
             'eng_length_medium' => 'nullable|integer|min:0|max:100',
             'eng_length_long' => 'nullable|integer|min:0|max:100',
-            'eng_active_hours' => 'nullable|integer|min:1|max:168',
+            'eng_active_hours' => 'nullable|integer|min:0|max:168',
+            'eng_active_minutes' => 'nullable|integer|min:0|max:59',
             'eng_templates_positive' => 'nullable|array',
             'eng_templates_positive.*' => 'nullable|string|max:300',
             'eng_templates_neutral' => 'nullable|array',
@@ -161,8 +162,9 @@ class BotController extends Controller
             return redirect()->back()->withErrors(['engagement' => 'Sentiment weights must sum to 100%.'])->withInput();
         }
 
-        // Active window hours as integer
-        $activeWindowHours = $request->filled('eng_active_hours') ? (int) $request->input('eng_active_hours') : null;
+        // Active window as hours and minutes
+        $activeWindowHours = $request->filled('eng_active_hours') ? (int) $request->input('eng_active_hours') : 0;
+        $activeWindowMinutes = $request->filled('eng_active_minutes') ? (int) $request->input('eng_active_minutes') : null;
 
         $engagementConfig = [
             'actions' => $actions,
@@ -188,6 +190,7 @@ class BotController extends Controller
                 'long' => (int) $request->input('eng_length_long', 15),
             ],
             'active_window_hours' => $activeWindowHours,
+            'active_window_minutes' => $activeWindowMinutes,
         ];
 
         $validatedData['engagement_config'] = $engagementConfig;
@@ -259,7 +262,8 @@ class BotController extends Controller
             'eng_length_short' => 'nullable|integer|min:0|max:100',
             'eng_length_medium' => 'nullable|integer|min:0|max:100',
             'eng_length_long' => 'nullable|integer|min:0|max:100',
-            'eng_active_hours' => 'nullable|integer|min:1|max:168',
+            'eng_active_hours' => 'nullable|integer|min:0|max:168',
+            'eng_active_minutes' => 'nullable|integer|min:0|max:59',
             'eng_templates_positive' => 'nullable|array',
             'eng_templates_positive.*' => 'nullable|string|max:300',
             'eng_templates_neutral' => 'nullable|array',
@@ -320,10 +324,13 @@ class BotController extends Controller
             return redirect()->back()->withErrors(['engagement' => 'Sentiment weights must sum to 100%.'])->withInput();
         }
 
-        // Active window hours as integer
+        // Active window as hours and minutes
         $activeWindowHours = $request->filled('eng_active_hours')
             ? (int) $request->input('eng_active_hours')
-            : data_get($bot->engagement_config, 'active_window_hours');
+            : (int) data_get($bot->engagement_config, 'active_window_hours', 0);
+        $activeWindowMinutes = $request->filled('eng_active_minutes')
+            ? (int) $request->input('eng_active_minutes')
+            : data_get($bot->engagement_config, 'active_window_minutes');
 
         $engagementConfig = [
             'actions' => $actions,
@@ -349,6 +356,7 @@ class BotController extends Controller
                 'long' => (int) $request->input('eng_length_long', data_get($bot->engagement_config, 'comment_length.long', 15)),
             ],
             'active_window_hours' => $activeWindowHours,
+            'active_window_minutes' => $activeWindowMinutes,
         ];
 
         $validatedData['engagement_config'] = $engagementConfig;

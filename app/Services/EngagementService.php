@@ -164,10 +164,11 @@ class EngagementService
     private function isWithinActiveHours(array $config): bool
     {
         $hours = Arr::get($config, 'active_window_hours');
-        if (!$hours || !is_numeric($hours) || (int)$hours <= 0) {
+        $minutes = Arr::get($config, 'active_window_minutes');
+        if ((!$hours && !$minutes) || (is_numeric($hours) && (int)$hours <= 0 && (!is_numeric($minutes) || (int)$minutes <= 0))) {
             return true; // no restriction configured
         }
-        // n8n drives scheduling; hours here are informational/gating only. Allow by default.
+        // n8n drives scheduling; window here is informational/gating only. Allow by default.
         return true;
     }
 

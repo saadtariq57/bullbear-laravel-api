@@ -401,9 +401,11 @@
 
                                 <div class="col-md-6">
                                     <h6 class="mb-2">Active Window</h6>
-                                    @php $h = data_get($bot->engagement_config, 'active_window_hours', ''); @endphp
+                                    @php $h = data_get($bot->engagement_config, 'active_window_hours', ''); $m = data_get($bot->engagement_config, 'active_window_minutes', ''); @endphp
                                     <label class="form-label">Hours</label>
-                                    <input type="number" class="form-control" name="eng_active_hours" value="{{ old('eng_active_hours', $h) }}" min="1" max="168" placeholder="e.g., 2 or 4">
+                                    <input type="number" class="form-control" name="eng_active_hours" value="{{ old('eng_active_hours', $h) }}" min="0" max="168" placeholder="e.g., 0, 2 or 4">
+                                    <label class="form-label mt-2">Minutes</label>
+                                    <input type="number" class="form-control" name="eng_active_minutes" value="{{ old('eng_active_minutes', $m) }}" min="0" max="59" placeholder="e.g., 15 or 30">
 
                                     <h6 class="mt-3 mb-2">Comment Templates</h6>
                                     @foreach(['positive'=>'Positive','neutral'=>'Neutral','skeptical'=>'Skeptical','curious'=>'Curious','critical'=>'Critical'] as $key=>$label)
