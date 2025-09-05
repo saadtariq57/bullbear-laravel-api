@@ -42,9 +42,15 @@ class EngagementService
             'positive' => 35, 'neutral' => 25, 'skeptical' => 15, 'curious' => 15, 'critical' => 10
         ]));
 
-        $post = $this->selectEligiblePost($bot, $options);
+        $selectionDiagnostics = [];
+        $post = $this->selectEligiblePost($bot, $options, $selectionDiagnostics);
         if (!$post) {
-            return ['success' => false, 'error' => 'no_eligible_posts'];
+            return [
+                'success' => false,
+                'error' => 'no_eligible_posts',
+                'message' => 'No eligible posts were found based on the current time window and exclusion rules.',
+                'diagnostics' => $selectionDiagnostics,
+            ];
         }
 
         $result = [
@@ -172,7 +178,7 @@ class EngagementService
         return true;
     }
 
-    private function selectEligiblePost(Bot $bot, array $options = []): ?Post
+    private function selectEligiblePost(Bot $bot, array $options = [], array &$diagnostics = []): ?Post
     {
         $config = $bot->engagement_config ?? [];
         $forcedWindow = $options['time_window'] ?? null;
@@ -185,6 +191,14 @@ class EngagementService
             '7d' => now()->subDays(7),
             default => now()->subDays(30),
         };
+
+        $diagnostics = [
+            'forced_window' => $forcedWindow,
+            'window_choice' => $windowChoice,
+            'from_utc' => method_exists($from, 'toISOString') ? $from->toISOString() : (string) $from,
+            'exclude_engaged' => !empty($options['exclude_engaged']),
+            'allow_any' => !empty($options['allow_any']),
+        ];
 
         // If a specific post is requested, try that immediately
         if (!empty($options['post_id'])) {
@@ -226,6 +240,9 @@ class EngagementService
         }
 
         $candidates = $query->orderByDesc('created_at')->limit(100)->get();
+        $diagnostics['candidates_initial'] = $candidates->count();
+        $diagnostics['excluded_reacted_or_commented_count'] = count($exclude);
+        $diagnostics['excluded_already_engaged_count'] = count($engagedPostIds);
         if ($candidates->isEmpty()) {
             // Fallback: widen window to 7d, then 30d, then all if allow_any
             $fallbacks = [];
@@ -233,6 +250,7 @@ class EngagementService
             if ($windowChoice !== '30d') $fallbacks[] = now()->subDays(30);
             if (!empty($options['allow_any'])) $fallbacks[] = null; // all time
 
+            $fallbackAttempts = [];
             foreach ($fallbacks as $fFrom) {
                 $q = Post::where('active', 1)->where('user_id', '!=', $bot->user_id);
                 if ($fFrom) $q->where('created_at', '>=', $fFrom);
@@ -246,8 +264,13 @@ class EngagementService
                     if (!empty($exclude)) $q->whereNotIn('id', $exclude);
                 }
                 $found = $q->orderByDesc('created_at')->limit(100)->get();
+                $fallbackAttempts[] = [
+                    'from_utc' => $fFrom ? (method_exists($fFrom, 'toISOString') ? $fFrom->toISOString() : (string) $fFrom) : null,
+                    'count' => $found->count(),
+                ];
                 if ($found->isNotEmpty()) return $found->random();
             }
+            $diagnostics['fallback_attempts'] = $fallbackAttempts;
             return null;
         }
         return $candidates->random();

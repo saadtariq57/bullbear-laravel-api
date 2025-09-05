@@ -800,7 +800,9 @@ class AutomationController extends Controller
             $w7 = (int) $request->query('w7d', 70);
             $w30 = (int) $request->query('w30d', 10);
             // Optional user/post filters
-            $userId = (int) $request->query('userId', 0) ?: (int) $request->query('user_id', 0);
+            // Backward-compat: accept bot_user_id (preferred) or legacy userId/user_id
+            $botUserId = (int) $request->query('bot_user_id', 0);
+            $userId = $botUserId ?: ((int) $request->query('userId', 0) ?: (int) $request->query('user_id', 0));
             $checkPostId = (int) $request->query('postId', 0) ?: (int) $request->query('post_id', 0);
 
             if ($w1 < 0) $w1 = 0; if ($w7 < 0) $w7 = 0; if ($w30 < 0) $w30 = 0;
@@ -820,7 +822,7 @@ class AutomationController extends Controller
 
             $order = [$window, ...array_values(array_diff(['1d','7d','30d'], [$window]))];
 
-            // Precompute posts the user already reacted to (optional)
+            // Precompute posts the bot/user already reacted to (optional)
             $excludePostIds = [];
             if ($userId > 0) {
                 $excludePostIds = \App\Models\Reaction::where('user_id', $userId)->pluck('post_id')->all();
@@ -860,6 +862,20 @@ class AutomationController extends Controller
                         ]
                     ]);
                 }
+            }
+
+            // If we reach here, no eligible post was found across windows.
+            // If a bot_user_id was provided, update the bot's last_active and return an error.
+            if ($botUserId > 0) {
+                $bot = Bot::where('user_id', $botUserId)->first();
+                if ($bot) {
+                    $bot->update(['last_active' => now()]);
+                }
+                return response()->json([
+                    'success' => false,
+                    'error' => 'No eligible post to react by this bot',
+                    'code' => 'NO_ELIGIBLE_POST_FOR_BOT',
+                ], 404);
             }
 
             return response()->json([
