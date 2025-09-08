@@ -25,6 +25,7 @@ class Bot extends Model
         'activity_level',
         'group_post_probability',
         'last_active',
+        'last_engagement',
         // Human-like behavior fields
         'slang_level',
         'emoji_use',
@@ -47,6 +48,7 @@ class Bot extends Model
         'activity_level' => 'integer',
         'group_post_probability' => 'integer',
         'last_active' => 'datetime',
+        'last_engagement' => 'datetime',
         // Human-like behavior casts
         'quirks' => 'array',
         'post_style' => 'array',

@@ -756,6 +756,7 @@ class AutomationController extends Controller
                         'activity_level' => $bot->activity_level,
                         'group_post_probability' => $bot->group_post_probability,
                         'last_active' => $bot->last_active?->toISOString(),
+                        'last_engagement' => $bot->last_engagement?->toISOString(),
                         'hours_since_last_active' => $hoursSince,
                         // Engagement data (canonical, no redundancy)
                         'active_window_hours' => $cfg['active_window_hours'] ?? null,

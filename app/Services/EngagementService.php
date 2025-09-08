@@ -163,6 +163,15 @@ class EngagementService
             ];
         }
 
+        // Update bot last_engagement timestamp on any successful engagement action
+        try {
+            if (!empty($result['success'])) {
+                $bot->update(['last_engagement' => now()]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('EngagementService: failed to update bot last_engagement', ['e' => $e->getMessage(), 'bot_id' => $bot->id]);
+        }
+
         Log::info('EngagementService: engagement result', $result);
         return $result;
     }

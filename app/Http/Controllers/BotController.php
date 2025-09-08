@@ -409,6 +409,7 @@ class BotController extends Controller
                             'formats' => $bot->formats,
                             'caps_on_hype' => $bot->caps_on_hype,
                             'last_active' => $bot->last_active?->toISOString(),
+                            'last_engagement' => $bot->last_engagement?->toISOString(),
                             'created_at' => $bot->created_at->toISOString()
                         ];
                         });
