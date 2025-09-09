@@ -2,7 +2,7 @@
   <ul class="bg-white list-unstyled rounded-1 pb-2 shadow position-relative">
     <div class="profile-completion-overlay d-flex justify-content-center align-items-center" v-if="completionPercentage === 100">
       <div class="completion-icon rounded-circle d-flex justify-content-center align-items-center text-cta">
-        <i class="bi bi-check-lg fs-1 fw-bolder"></i>
+        <i class="bi bi-check-lg fs-1 fw-bolder text-white"></i>
       </div>
     </div>
     <li class="mb-1">
