@@ -3,7 +3,7 @@ import { organizeReactions } from '../utils';
 const userFeedCommentModule = {
     namespaced: true,
     state: () => ({
-        comments: [],
+        comments: {},
         error: null,
     }),
     mutations: {
@@ -176,11 +176,11 @@ const userFeedCommentModule = {
 	    	}catch(error){
 	    		console.error('Error submitting comment/reply:', error);
 	    	}
-	    }
+	    }	
     },
     getters: {
         getCommentsByPostId: (state) => (postId) => {
-            return state.comments.filter(comment => comment.post_id === postId);
+            return state.comments[postId] || [];
         }
     }
 };
