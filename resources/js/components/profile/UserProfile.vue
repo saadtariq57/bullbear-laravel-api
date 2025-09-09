@@ -273,6 +273,7 @@ import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModul
 import userFeedModule from '@/stores/userFeedStore';
 import userProfileModule from '@/stores/profileStore';
 import userGroupsModule from '@/stores/groupStore';
+import userFeedCommentModule from '@/stores/userFeedCommentStore';
 
 export default {
   name: 'UserFeed',
@@ -342,6 +343,11 @@ export default {
     if (!this.$store.hasModule('userFeed')) {
       registerVuexModule('userFeed', userFeedModule);
       this.modulesRegistered.push('userFeed');
+    }
+
+    if (!this.$store.hasModule('userFeedComment')) {
+      registerVuexModule('userFeedComment', userFeedCommentModule);
+      this.modulesRegistered.push('userFeedComment');
     }
 
     if (!this.$store.hasModule('UserGroups')) {
