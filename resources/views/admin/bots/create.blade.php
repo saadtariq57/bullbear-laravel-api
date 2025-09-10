@@ -274,17 +274,13 @@
                                 <div class="col-md-6">
                                     <h6 class="mb-2">Action Weights (sum 100%)</h6>
                                     <div class="row g-2">
-                                        <div class="col-4">
+                                        <div class="col-6">
                                             <label class="form-label">React %</label>
-                                            <input type="number" class="form-control" name="eng_actions_react" value="{{ old('eng_actions_react', 50) }}" min="0" max="100">
+                                            <input type="number" class="form-control" name="eng_actions_react" value="{{ old('eng_actions_react', 70) }}" min="0" max="100">
                                         </div>
-                                        <div class="col-4">
-                                            <label class="form-label">Comment %</label>
-                                            <input type="number" class="form-control" name="eng_actions_comment" value="{{ old('eng_actions_comment', 30) }}" min="0" max="100">
-                                        </div>
-                                        <div class="col-4">
+                                        <div class="col-6">
                                             <label class="form-label">React+Comment %</label>
-                                            <input type="number" class="form-control" name="eng_actions_both" value="{{ old('eng_actions_both', 20) }}" min="0" max="100">
+                                            <input type="number" class="form-control" name="eng_actions_both" value="{{ old('eng_actions_both', 30) }}" min="0" max="100">
                                         </div>
                                     </div>
 

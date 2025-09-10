@@ -34,9 +34,9 @@ class EngagementService
         }
 
         $forced = $options['forced_action'] ?? null;
-        $actionType = in_array($forced, ['react','comment','react+comment'], true)
+        $actionType = in_array($forced, ['react','react+comment'], true)
             ? $forced
-            : $this->pickWeighted(Arr::get($config, 'actions', [ 'react' => 50, 'comment' => 30, 'react+comment' => 20 ]));
+            : $this->pickWeighted(Arr::get($config, 'actions', [ 'react' => 70, 'react+comment' => 30 ]));
 
         $sentiment = $this->pickWeighted(Arr::get($config, 'sentiment', [
             'positive' => 35, 'neutral' => 25, 'skeptical' => 15, 'curious' => 15, 'critical' => 10
@@ -119,7 +119,7 @@ class EngagementService
         }
 
         // Comment
-        if ($actionType === 'comment' || $actionType === 'react+comment') {
+        if ($actionType === 'react+comment') {
             $commentText = $options['forced_comment_text'] ?? null;
             if (!$commentText || trim($commentText) === '') {
                 $commentText = $this->generateCommentText($bot, $config, $sentiment);

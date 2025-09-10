@@ -74,7 +74,6 @@ class BotController extends Controller
             'formats.*' => 'nullable|string|max:255',
             // Engagement config validation (basic numeric bounds)
             'eng_actions_react' => 'nullable|integer|min:0|max:100',
-            'eng_actions_comment' => 'nullable|integer|min:0|max:100',
             'eng_actions_both' => 'nullable|integer|min:0|max:100',
             'eng_sentiment_positive' => 'nullable|integer|min:0|max:100',
             'eng_sentiment_neutral' => 'nullable|integer|min:0|max:100',
@@ -143,9 +142,8 @@ class BotController extends Controller
 
         // Build engagement_config from flat inputs
         $actions = [
-            'react' => (int) $request->input('eng_actions_react', 50),
-            'comment' => (int) $request->input('eng_actions_comment', 30),
-            'react+comment' => (int) $request->input('eng_actions_both', 20),
+            'react' => (int) $request->input('eng_actions_react', 70),
+            'react+comment' => (int) $request->input('eng_actions_both', 30),
         ];
         $sentimentWeights = [
             'positive' => (int) $request->input('eng_sentiment_positive', 35),
@@ -246,7 +244,6 @@ class BotController extends Controller
             'formats.*' => 'nullable|string|max:255',
             // Engagement config validation (basic numeric bounds)
             'eng_actions_react' => 'nullable|integer|min:0|max:100',
-            'eng_actions_comment' => 'nullable|integer|min:0|max:100',
             'eng_actions_both' => 'nullable|integer|min:0|max:100',
             'eng_sentiment_positive' => 'nullable|integer|min:0|max:100',
             'eng_sentiment_neutral' => 'nullable|integer|min:0|max:100',
@@ -305,9 +302,8 @@ class BotController extends Controller
 
         // Build engagement_config from flat inputs
         $actions = [
-            'react' => (int) $request->input('eng_actions_react', 50),
-            'comment' => (int) $request->input('eng_actions_comment', 30),
-            'react+comment' => (int) $request->input('eng_actions_both', 20),
+            'react' => (int) $request->input('eng_actions_react', 70),
+            'react+comment' => (int) $request->input('eng_actions_both', 30),
         ];
         $sentimentWeights = [
             'positive' => (int) $request->input('eng_sentiment_positive', data_get($bot->engagement_config, 'sentiment.positive', 35)),

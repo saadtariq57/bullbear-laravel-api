@@ -308,17 +308,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="mb-2">Action Weights (sum 100%)</h6>
-                                    @php $act = $bot->engagement_config['actions'] ?? ['react'=>50,'comment'=>30,'react+comment'=>20]; @endphp
+                                    @php $act = $bot->engagement_config['actions'] ?? ['react'=>70,'react+comment'=>30]; @endphp
                                     <div class="row g-2">
-                                        <div class="col-4">
+                                        <div class="col-6">
                                             <label class="form-label">React %</label>
                                             <input type="number" class="form-control" name="eng_actions_react" value="{{ old('eng_actions_react', $act['react']) }}" min="0" max="100">
                                         </div>
-                                        <div class="col-4">
-                                            <label class="form-label">Comment %</label>
-                                            <input type="number" class="form-control" name="eng_actions_comment" value="{{ old('eng_actions_comment', $act['comment']) }}" min="0" max="100">
-                                        </div>
-                                        <div class="col-4">
+                                        <div class="col-6">
                                             <label class="form-label">React+Comment %</label>
                                             <input type="number" class="form-control" name="eng_actions_both" value="{{ old('eng_actions_both', $act['react+comment']) }}" min="0" max="100">
                                         </div>

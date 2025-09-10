@@ -647,8 +647,6 @@ class AutomationController extends Controller
             $forcedAction = 'react+comment';
         } elseif ($forcedReactionName) {
             $forcedAction = 'react';
-        } elseif (is_string($commentText) && trim($commentText) !== '') {
-            $forcedAction = 'comment';
         } else {
             // fallback to legacy 'action'
             $forcedAction = $request->input('action');
@@ -812,7 +810,29 @@ class AutomationController extends Controller
 
             $window = $this->pickWeightedWindow(['1d' => $w1, '7d' => $w7, '30d' => $w30]);
 
+            // Check if bot is already engaged to a specific post
+            if ($userId > 0 && $checkPostId > 0) {
+                $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                if ($reacted || $commented) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'This bot is already engaged to this post',
+                        'code' => 'BOT_ALREADY_ENGAGED_TO_POST',
+                        'data' => [
+                            'post_id' => $checkPostId,
+                            'bot_user_id' => $userId,
+                            'engagement_types' => array_filter([
+                                'reacted' => $reacted,
+                                'commented' => $commented
+                            ])
+                        ]
+                    ], 409); // 409 Conflict
+                }
+            }
+
             $now = now();
+            
             $ranges = [
                 '1d' => [ $now->copy()->subDay(), $now ],
                 // last 7 days excluding last 1 day
@@ -823,10 +843,12 @@ class AutomationController extends Controller
 
             $order = [$window, ...array_values(array_diff(['1d','7d','30d'], [$window]))];
 
-            // Precompute posts the bot/user already reacted to (optional)
+            // Precompute posts the bot/user already reacted to or commented on (optional)
             $excludePostIds = [];
             if ($userId > 0) {
-                $excludePostIds = \App\Models\Reaction::where('user_id', $userId)->pluck('post_id')->all();
+                $reactedPostIds = \App\Models\Reaction::where('user_id', $userId)->pluck('post_id')->all();
+                $commentedPostIds = \App\Models\Comment::where('user_id', $userId)->pluck('post_id')->all();
+                $excludePostIds = array_values(array_unique(array_merge($reactedPostIds, $commentedPostIds)));
             }
 
             foreach ($order as $win) {
@@ -843,7 +865,9 @@ class AutomationController extends Controller
                     // If explicit postId check was requested, report that status too
                     $already = null;
                     if ($userId > 0 && $checkPostId > 0) {
-                        $already = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                        $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                        $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                        $already = $reacted || $commented;
                     }
                     return response()->json([
                         'success' => true,
