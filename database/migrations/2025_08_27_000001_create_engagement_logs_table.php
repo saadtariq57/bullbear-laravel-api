@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('bot_id')->constrained('bots')->onDelete('cascade');
                 $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
-                $table->enum('action_type', ['react', 'react+comment']);
+                $table->enum('action_type', ['react', 'comment', 'react+comment']);
                 $table->foreignId('reaction_type_id')->nullable()->constrained('reaction_types')->nullOnDelete();
                 $table->foreignId('comment_id')->nullable()->constrained('comments')->nullOnDelete();
                 $table->enum('sentiment', ['positive', 'neutral', 'skeptical']);
