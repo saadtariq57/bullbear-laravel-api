@@ -271,13 +271,13 @@ class FeedService
             return $post->user_id === $user->id && $ageMinutes <= 30;
         })->sortByDesc('created_at')->take(3); // Limit to top 3 very recent user posts
 
-        // All other posts (including older user posts) compete by score
+        // All other posts (non-user posts + user posts >30min)
         $otherPosts = $scored->filter(function ($post) use ($user) {
             $ageMinutes = now()->diffInMinutes($post->created_at);
-            return !($post->user_id === $user->id && $ageMinutes <= 30);
+            return $post->user_id !== $user->id || ($post->user_id === $user->id && $ageMinutes > 30);
         });
 
-        // Recombine: top 3 very recent user posts first, then all others by score (natural blend)
+        // Recombine: top 3 very recent user posts first, then all others by score
         $finalScored = $userVeryRecentPosts->concat($otherPosts);
 
         return $finalScored;
