@@ -33,6 +33,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Engagement Prioritization & Fresh Boost
+    |--------------------------------------------------------------------------
+    |
+    | These flags control how quickly real-user posts are prioritized and how
+    | fresh posts receive early engagement. Configure via your .env file.
+    |
+    */
+
+    'FRESH_BOOST_ENABLED' => env('FRESH_BOOST_ENABLED', true),
+    'FRESH_BOOST_USE_LOGS' => env('FRESH_BOOST_USE_LOGS', true),
+    'FRESH_BOOST_15M_THRESHOLD' => env('FRESH_BOOST_15M_THRESHOLD', 8),
+
+    'REAL_POST_PRIORITY_ENABLED' => env('REAL_POST_PRIORITY_ENABLED', true),
+    'REAL_POST_PRIORITY_WINDOW_HOURS' => env('REAL_POST_PRIORITY_WINDOW_HOURS', 48),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

@@ -791,6 +791,7 @@ class AutomationController extends Controller
      *   w1d  (default 20)  → last 1 day
      *   w7d  (default 70)  → last 7 days excluding last 1 day
      *   w30d (default 10)  → last 30 days excluding last 7 days
+     * 
      */
     public function getRandomPostWeighted(Request $request)
     {
@@ -869,7 +870,7 @@ class AutomationController extends Controller
             };
 
             // Helper to check engagement velocity (engagements in last 5 minutes)
-            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 4): bool {
+            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 2): bool {
                 $recentFrom = now()->subMinutes(5);
                 $recentCount = 0;
                 
@@ -921,8 +922,8 @@ class AutomationController extends Controller
 
             // Tier 1: Fresh boost (posts with realistic timing and low engagement)
             if ((bool) config('app.FRESH_BOOST_ENABLED', true)) {
-                $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 8); // Increased from 3 to 8
-                $freshFrom = $now->copy()->subHours(2); // Extended to 2 hours for better coverage
+                $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 3);
+                $freshFrom = $now->copy()->subMinutes(90); // Extended window for realistic timing
                 $freshQuery = Post::where('active', 1)
                     ->where('created_at', '>=', $freshFrom);
                 if ($userId > 0) {

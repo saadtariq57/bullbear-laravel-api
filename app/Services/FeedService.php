@@ -109,7 +109,7 @@ class FeedService
         $followingIds = $user->followings()->pluck('following_id');
 
         $query = Post::with([
-                'user:id,name,avatar',
+                'user:id,name,avatar,type',
                 'user' => function ($q) { $q->withCount('followers'); },
                 'photos',
                 'poll.options',
@@ -143,7 +143,7 @@ class FeedService
 
         // If pool thin, add global trending slice (still within since window)
         if ($initial->count() < (int) (self::CANDIDATE_LIMIT * 0.6)) {
-            $trending = Post::with(['user:id,name,avatar'])
+            $trending = Post::with(['user:id,name,avatar,type'])
                 ->withCount(['comments','reactions'])
                 ->where('active', 1)
                 ->where('created_at', '>=', $since)
@@ -173,9 +173,10 @@ class FeedService
         $nowTs = now()->getTimestamp();
         $daySec = 86400;
 
-        $scored = $posts->map(function (Post $post) use ($followingIds, $groupIds, $wFollowing, $wGroup, $wEngagement, $wCreator, $nowTs, $daySec) {
+        $scored = $posts->map(function (Post $post) use ($user, $followingIds, $groupIds, $wFollowing, $wGroup, $wEngagement, $wCreator, $nowTs, $daySec) {
             $isFollowing = in_array($post->user_id, $followingIds, true) ? 1 : 0;
             $isSameGroup = $post->group_id && in_array($post->group_id, $groupIds, true) ? 1 : 0;
+            $isUserPost = $post->user_id === $user->id ? 1 : 0;
 
             $eng = (int) $post->reactions_count + 2 * (int) $post->comments_count;
             $engNorm = min(1.0, log(1 + $eng) / 5.0);
@@ -184,30 +185,102 @@ class FeedService
             $creatorQuality = min(1.0, log(1 + $creatorFollowers) / 8.0);
 
             $ageSec = max(1, $nowTs - $post->created_at->getTimestamp());
+            $ageHours = $ageSec / 3600;
+            
+            // Enhanced recency decay with user post boost
             $recencyDecay = exp(-$ageSec / (2 * $daySec));
+            
+            // User post priority: Strong boost for 30 minutes, then smooth blend with normal timeline
+            $userPostBoost = 0;
+            if ($isUserPost) {
+                $ageMinutes = $ageHours * 60; // Convert to minutes
+                if ($ageMinutes <= 30) {
+                    // Very recent user posts (0-30 minutes): Strong boost for top visibility
+                    $userPostBoost = 3.0 + (30 - $ageMinutes) * 0.1; // 3.0 to 6.0 boost
+                } elseif ($ageMinutes <= 60) {
+                    // Recent user posts (30-60 minutes): Gradual decline to blend with timeline
+                    $userPostBoost = 2.0 + (60 - $ageMinutes) * 0.033; // 2.0 to 3.0 boost
+                } elseif ($ageHours <= 4) {
+                    // Moderately recent user posts (1-4 hours): Small boost to stay visible
+                    $userPostBoost = 1.0 + (4 - $ageHours) * 0.25; // 1.0 to 2.0 boost
+                } elseif ($ageHours <= 8) {
+                    // Older user posts (4-8 hours): Minimal boost to blend naturally
+                    $userPostBoost = 0.5 + (8 - $ageHours) * 0.125; // 0.5 to 1.0 boost
+                } elseif ($ageHours <= 24) {
+                    // Day-old user posts: Very small boost for personal relevance
+                    $userPostBoost = 0.3 + (24 - $ageHours) * 0.02; // 0.3 to 0.5 boost
+                } else {
+                    // Very old user posts: No boost, pure timeline
+                    $userPostBoost = 0;
+                }
+            }
+
+            // Enhanced recency boost for all very recent posts (rebalanced)
+            $recencyBoost = 0;
+            if ($ageHours <= 1) {
+                $recencyBoost = 1.0; // Moderate boost for posts < 1 hour
+            } elseif ($ageHours <= 2) {
+                $recencyBoost = 0.5; // Small boost for posts 1-2 hours
+            } elseif ($ageHours <= 4) {
+                $recencyBoost = 0.2; // Minimal boost for posts 2-4 hours
+            }
 
             $score = ($wFollowing * $isFollowing)
                    + ($wGroup * $isSameGroup)
                    + ($wEngagement * $engNorm)
                    + ($wCreator * $creatorQuality)
-                   + $recencyDecay;
+                   + $recencyDecay
+                   + $userPostBoost
+                   + $recencyBoost;
 
             $post->feed_score = $score;
+            $post->debug_score_breakdown = [
+                'base_score' => ($wFollowing * $isFollowing) + ($wGroup * $isSameGroup) + ($wEngagement * $engNorm) + ($wCreator * $creatorQuality) + $recencyDecay,
+                'user_post_boost' => $userPostBoost,
+                'recency_boost' => $recencyBoost,
+                'age_hours' => round($ageHours, 2),
+                'is_user_post' => $isUserPost
+            ];
             return $post;
         });
 
-        // Diversity: downweight repeated creators beyond 2 in top list
+        // Diversity: downweight repeated creators beyond 2 in top list (but be gentler on user posts)
         $seenByUser = [];
-        $scored = $scored->sortByDesc('feed_score')->values()->map(function (Post $p) use (&$seenByUser) {
+        $scored = $scored->sortByDesc('feed_score')->values()->map(function (Post $p) use (&$seenByUser, $user) {
             $cnt = ($seenByUser[$p->user_id] ?? 0) + 1;
             $seenByUser[$p->user_id] = $cnt;
+            
+            // Apply diversity penalty, but be more lenient for user's own posts
             if ($cnt > 2) {
-                $p->feed_score *= 0.85; // slight penalty
+                if ($p->user_id === $user->id) {
+                    // User's own posts: lighter penalty (allow up to 4-5 user posts)
+                    if ($cnt > 4) {
+                        $p->feed_score *= 0.90; // lighter penalty for user posts
+                    }
+                } else {
+                    // Other users' posts: normal penalty
+                    $p->feed_score *= 0.85;
+                }
             }
             return $p;
         })->sortByDesc('feed_score')->values();
 
-        return $scored;
+        // Special handling: Only guarantee top positions for user posts within 30 minutes
+        $userVeryRecentPosts = $scored->filter(function ($post) use ($user) {
+            $ageMinutes = now()->diffInMinutes($post->created_at);
+            return $post->user_id === $user->id && $ageMinutes <= 30;
+        })->sortByDesc('created_at')->take(3); // Limit to top 3 very recent user posts
+
+        // All other posts (including older user posts) compete by score
+        $otherPosts = $scored->filter(function ($post) use ($user) {
+            $ageMinutes = now()->diffInMinutes($post->created_at);
+            return !($post->user_id === $user->id && $ageMinutes <= 30);
+        });
+
+        // Recombine: top 3 very recent user posts first, then all others by score (natural blend)
+        $finalScored = $userVeryRecentPosts->concat($otherPosts);
+
+        return $finalScored;
     }
 }
 
