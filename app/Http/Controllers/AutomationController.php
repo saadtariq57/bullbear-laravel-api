@@ -851,27 +851,210 @@ class AutomationController extends Controller
                 $excludePostIds = array_values(array_unique(array_merge($reactedPostIds, $commentedPostIds)));
             }
 
+            // Helper to count engagements for a post (prefer logs within last 48h)
+            $useLogs = (bool) config('app.FRESH_BOOST_USE_LOGS', true);
+            $countEngagement = function (int $postId) use ($useLogs, $now): int {
+                $count = 0;
+                if ($useLogs) {
+                    // Only logs within the last 48h are retained
+                    $logsFrom = $now->copy()->subHours(48);
+                    $count += (int) \App\Models\EngagementLog::where('post_id', $postId)
+                        ->where('created_at', '>=', $logsFrom)
+                        ->count();
+                }
+                // Always include durable sources
+                $count += (int) \App\Models\Reaction::where('post_id', $postId)->count();
+                $count += (int) \App\Models\Comment::where('post_id', $postId)->count();
+                return $count;
+            };
+
+            // Helper to check engagement velocity (engagements in last 5 minutes)
+            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 4): bool {
+                $recentFrom = now()->subMinutes(5);
+                $recentCount = 0;
+                
+                // Check recent engagement logs
+                if ((bool) config('app.FRESH_BOOST_USE_LOGS', true)) {
+                    $recentCount += (int) \App\Models\EngagementLog::where('post_id', $postId)
+                        ->where('created_at', '>=', $recentFrom)
+                        ->count();
+                }
+                
+                // Check recent reactions
+                $recentCount += (int) \App\Models\Reaction::where('post_id', $postId)
+                    ->where('created_at', '>=', $recentFrom)
+                    ->count();
+                    
+                // Check recent comments
+                $recentCount += (int) \App\Models\Comment::where('post_id', $postId)
+                    ->where('created_at', '>=', $recentFrom)
+                    ->count();
+                    
+                return $recentCount < $maxRecentEngagements;
+            };
+
+            // Helper to get realistic engagement chance based on post age
+            $getEngagementChance = function (\Carbon\Carbon $postCreatedAt): float {
+                $ageMinutes = now()->diffInMinutes($postCreatedAt);
+                
+                // 0-2 minutes: Discovery period (no engagement)
+                if ($ageMinutes < 2) {
+                    return 0.0;
+                }
+                // 2-10 minutes: Low chance (40%) - more engagement than before
+                elseif ($ageMinutes >= 2 && $ageMinutes <= 10) {
+                    return 0.40;
+                }
+                // 10-30 minutes: Moderate chance (70%) - higher engagement
+                elseif ($ageMinutes >= 10 && $ageMinutes <= 30) {
+                    return 0.70;
+                }
+                // 30-120 minutes: High chance (85%)
+                elseif ($ageMinutes >= 30 && $ageMinutes <= 120) {
+                    return 0.85;
+                }
+                // 120+ minutes: Normal prioritization (100%)
+                else {
+                    return 1.0;
+                }
+            };
+
+            // Tier 1: Fresh boost (posts with realistic timing and low engagement)
+            if ((bool) config('app.FRESH_BOOST_ENABLED', true)) {
+                $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 8); // Increased from 3 to 8
+                $freshFrom = $now->copy()->subHours(2); // Extended to 2 hours for better coverage
+                $freshQuery = Post::where('active', 1)
+                    ->where('created_at', '>=', $freshFrom);
+                if ($userId > 0) {
+                    $freshQuery->where('user_id', '!=', $userId);
+                }
+                if (!empty($excludePostIds)) {
+                    $freshQuery->whereNotIn('id', $excludePostIds);
+                }
+                // Limit scan for performance
+                $freshCandidates = $freshQuery->orderByDesc('created_at')->limit(200)->get();
+                foreach ($freshCandidates as $candidate) {
+                    $postAge = $now->diffInMinutes($candidate->created_at);
+                    $totalEngagements = $countEngagement((int) $candidate->id);
+                    
+                    // Apply realistic timing and engagement checks
+                    if ($totalEngagements < $freshThreshold && 
+                        $checkEngagementVelocity((int) $candidate->id) &&
+                        mt_rand() / mt_getrandmax() <= $getEngagementChance($candidate->created_at)) {
+                        
+                        $already = null;
+                        if ($userId > 0 && $checkPostId > 0) {
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
+                        }
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Random fresh post (realistic timing, low engagement)',
+                            'data' => [
+                                'window' => 'fresh_realistic',
+                                'post' => [
+                                    'id' => $candidate->id,
+                                    'user_id' => $candidate->user_id,
+                                    'group_id' => $candidate->group_id,
+                                    'post_type' => $candidate->post_type,
+                                    'post_text' => $candidate->post_text,
+                                    'post_link' => $candidate->post_link,
+                                    'created_at' => $candidate->created_at?->toISOString(),
+                                ],
+                                'already_reacted_for_postId' => $already,
+                                'engagement_count' => $totalEngagements,
+                                'post_age_minutes' => $postAge,
+                            ]
+                        ]);
+                    }
+                }
+            }
+
+            // Priority tier: Prefer real-user posts created within the last 48 hours (with realistic timing)
+            $prioritizeFlag = config('app.REAL_POST_PRIORITY_ENABLED', true);
+            $prioritizeParam = $request->has('prioritize_real_users')
+                ? filter_var($request->query('prioritize_real_users'), FILTER_VALIDATE_BOOLEAN)
+                : null;
+            $prioritizeRealUsers = is_bool($prioritizeParam) ? $prioritizeParam : $prioritizeFlag;
+
+            if ($prioritizeRealUsers) {
+                $priorityFrom = $now->copy()->subHours((int) config('app.REAL_POST_PRIORITY_WINDOW_HOURS', 48));
+                $priorityQuery = Post::where('active', 1)
+                    ->where('created_at', '>=', $priorityFrom)
+                    ->whereHas('user', function ($q) {
+                        $q->where('type', '!=', 'bot');
+                    });
+                if ($userId > 0) {
+                    // Do not return posts authored by the requesting bot's user
+                    $priorityQuery->where('user_id', '!=', $userId);
+                }
+                if (!empty($excludePostIds)) {
+                    $priorityQuery->whereNotIn('id', $excludePostIds);
+                }
+                // Limit scan size for performance, then pick randomly
+                $priorityCandidates = $priorityQuery->orderByDesc('created_at')->limit(200)->get();
+                foreach ($priorityCandidates as $priorityCandidate) {
+                    // Apply realistic timing to ALL posts, not just fresh ones
+                    if ($checkEngagementVelocity((int) $priorityCandidate->id) &&
+                        mt_rand() / mt_getrandmax() <= $getEngagementChance($priorityCandidate->created_at)) {
+                        
+                        $already = null;
+                        if ($userId > 0 && $checkPostId > 0) {
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
+                        }
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Random prioritized real-user post (<=48h, realistic timing)',
+                            'data' => [
+                                'window' => 'priority_48h',
+                                'post' => [
+                                    'id' => $priorityCandidate->id,
+                                    'user_id' => $priorityCandidate->user_id,
+                                    'group_id' => $priorityCandidate->group_id,
+                                    'post_type' => $priorityCandidate->post_type,
+                                    'post_text' => $priorityCandidate->post_text,
+                                    'post_link' => $priorityCandidate->post_link,
+                                    'created_at' => $priorityCandidate->created_at?->toISOString(),
+                                ],
+                                'already_reacted_for_postId' => $already,
+                                'post_age_minutes' => $now->diffInMinutes($priorityCandidate->created_at),
+                            ]
+                        ]);
+                    }
+                }
+            }
+
             foreach ($order as $win) {
                 [$from, $to] = $ranges[$win];
                 // Use half-open interval [from, to) to avoid overlaps across windows
                 $q = Post::where('active', 1)
                     ->where('created_at', '>=', $from)
                     ->where('created_at', '<', $to);
+                if ($userId > 0) {
+                    $q->where('user_id', '!=', $userId);
+                }
                 if (!empty($excludePostIds)) {
                     $q->whereNotIn('id', $excludePostIds);
                 }
-                $picked = $q->inRandomOrder()->first();
-                if ($picked) {
+                $candidates = $q->orderByDesc('created_at')->limit(200)->get();
+                foreach ($candidates as $picked) {
+                    // Apply realistic timing to ALL posts in fallback windows too
+                    if ($checkEngagementVelocity((int) $picked->id) &&
+                        mt_rand() / mt_getrandmax() <= $getEngagementChance($picked->created_at)) {
+                        
                     // If explicit postId check was requested, report that status too
                     $already = null;
                     if ($userId > 0 && $checkPostId > 0) {
-                        $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
-                        $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
-                        $already = $reacted || $commented;
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
                     }
                     return response()->json([
                         'success' => true,
-                        'message' => "Random post from window {$win}",
+                            'message' => "Random post from window {$win} (realistic timing)",
                         'data' => [
                             'window' => $win,
                             'post' => [
@@ -884,8 +1067,10 @@ class AutomationController extends Controller
                                 'created_at' => $picked->created_at?->toISOString(),
                             ],
                             'already_reacted_for_postId' => $already,
+                                'post_age_minutes' => $now->diffInMinutes($picked->created_at),
                         ]
                     ]);
+                    }
                 }
             }
 
