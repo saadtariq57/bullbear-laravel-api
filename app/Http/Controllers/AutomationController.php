@@ -870,7 +870,7 @@ class AutomationController extends Controller
             };
 
             // Helper to check engagement velocity (engagements in last 5 minutes)
-            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 2): bool {
+            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 6): bool {
                 $recentFrom = now()->subMinutes(5);
                 $recentCount = 0;
                 
@@ -898,23 +898,23 @@ class AutomationController extends Controller
             $getEngagementChance = function (\Carbon\Carbon $postCreatedAt): float {
                 $ageMinutes = now()->diffInMinutes($postCreatedAt);
                 
-                // 0-2 minutes: Discovery period (no engagement)
+                // 0-2 minutes: Discovery period (10% chance)
                 if ($ageMinutes < 2) {
-                    return 0.0;
+                    return 0.10;
                 }
-                // 2-10 minutes: Low chance (40%) - more engagement than before
+                // 2-10 minutes: Early engagement (80% chance) - much higher for real users
                 elseif ($ageMinutes >= 2 && $ageMinutes <= 10) {
-                    return 0.40;
+                    return 0.80;
                 }
-                // 10-30 minutes: Moderate chance (70%) - higher engagement
+                // 10-30 minutes: High engagement (90% chance)
                 elseif ($ageMinutes >= 10 && $ageMinutes <= 30) {
-                    return 0.70;
+                    return 0.90;
                 }
-                // 30-120 minutes: High chance (85%)
-                elseif ($ageMinutes >= 30 && $ageMinutes <= 120) {
-                    return 0.85;
+                // 30-60 minutes: Very high chance (95%)
+                elseif ($ageMinutes >= 30 && $ageMinutes <= 60) {
+                    return 0.95;
                 }
-                // 120+ minutes: Normal prioritization (100%)
+                // 60+ minutes: Normal prioritization (100%)
                 else {
                     return 1.0;
                 }
@@ -923,7 +923,7 @@ class AutomationController extends Controller
             // Tier 1: Fresh boost (posts with realistic timing and low engagement)
             if ((bool) config('app.FRESH_BOOST_ENABLED', true)) {
                 $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 3);
-                $freshFrom = $now->copy()->subMinutes(90); // Extended window for realistic timing
+                $freshFrom = $now->copy()->subMinutes(120); // Extended window for realistic timing
                 $freshQuery = Post::where('active', 1)
                     ->where('created_at', '>=', $freshFrom);
                 if ($userId > 0) {
@@ -932,16 +932,46 @@ class AutomationController extends Controller
                 if (!empty($excludePostIds)) {
                     $freshQuery->whereNotIn('id', $excludePostIds);
                 }
+                // For real user posts, don't exclude based on bot engagement history
+                // This allows multiple bots to engage with real user posts
+                $freshQueryRealUser = \App\Models\Post::with('user:id,type')
+                    ->where('active', 1)
+                    ->where('created_at', '>=', $freshFrom)
+                    ->whereHas('user', function($q) {
+                        $q->where('type', '!=', 'bot');
+                    });
+                if ($userId > 0) {
+                    $freshQueryRealUser->where('user_id', '!=', $userId);
+                }
+                
+                $realUserCandidates = $freshQueryRealUser->orderByDesc('created_at')->limit(50)->get();
+                
                 // Limit scan for performance
-                $freshCandidates = $freshQuery->orderByDesc('created_at')->limit(200)->get();
-                foreach ($freshCandidates as $candidate) {
+                $freshCandidates = $freshQuery->with('user:id,type')->orderByDesc('created_at')->limit(200)->get();
+                
+                // Combine real user posts with bot posts, prioritizing real user posts
+                $allCandidates = $realUserCandidates->concat($freshCandidates->filter(function($post) {
+                    return $post->user && $post->user->type === 'bot';
+                }));
+                
+                
+                foreach ($allCandidates as $candidate) {
                     $postAge = $now->diffInMinutes($candidate->created_at);
                     $totalEngagements = $countEngagement((int) $candidate->id);
                     
+                    // Special boost for real user posts
+                    $isRealUser = $candidate->user && $candidate->user->type !== 'bot';
+                    $effectiveThreshold = $isRealUser ? $freshThreshold + 5 : $freshThreshold; // Allow 5 more engagements for real users
+                    
                     // Apply realistic timing and engagement checks
-                    if ($totalEngagements < $freshThreshold && 
-                        $checkEngagementVelocity((int) $candidate->id) &&
-                        mt_rand() / mt_getrandmax() <= $getEngagementChance($candidate->created_at)) {
+                    $engagementChance = $getEngagementChance($candidate->created_at);
+                    $randomValue = mt_rand() / mt_getrandmax();
+                    $velocityPasses = $checkEngagementVelocity((int) $candidate->id);
+                    
+                    
+                    if ($totalEngagements < $effectiveThreshold && 
+                        $velocityPasses &&
+                        $randomValue <= $engagementChance) {
                         
                         $already = null;
                         if ($userId > 0 && $checkPostId > 0) {
@@ -966,6 +996,8 @@ class AutomationController extends Controller
                                 'already_reacted_for_postId' => $already,
                                 'engagement_count' => $totalEngagements,
                                 'post_age_minutes' => $postAge,
+                                'is_real_user' => $isRealUser,
+                                'effective_threshold' => $effectiveThreshold,
                             ]
                         ]);
                     }
