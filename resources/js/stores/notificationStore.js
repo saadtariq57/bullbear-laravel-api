@@ -42,6 +42,7 @@ const userNotificationModule = {
             const notification = state.notifications.find(n => n.id === notificationId);
             if (notification) {
                 notification.read_at = new Date().toISOString();
+              } else {
             }
         },
         // REMOVE_FOLLOWER_NOTIFICATION(state, followerId) {
@@ -58,12 +59,16 @@ const userNotificationModule = {
     },
     actions: {
         markNotificationAsRead({ commit }, notificationId) {
-            axios.post(`/api/notifications/${notificationId}/read`)
+            return axios.post(`/api/notifications/${notificationId}/read`)
                 .then(response => {
                     commit('MARK_AS_READ', notificationId);
+                    console.log('Mutation committed successfully');
+                    return response;
                 })
                 .catch(error => {
-                    console.error('Error marking notification as read:', error);
+                    console.error('API error details:', error);
+                    console.error('Error response:', error.response);
+                    throw error;
                 });
         },
         listenToUpdates({ commit, rootState }) {

@@ -36,6 +36,33 @@ class FeedService
             return $this->getTrendingFeed(720, $perPage, $lastPostId, $user);
         }
 
+        // Backfill when the pool is smaller than a single page (sparse days)
+        if ($candidates->count() < $perPage) {
+            // First widen to 7 days
+            $fallback7dPaginator = $this->getTrendingFeed(max($sinceHours, 168), self::CANDIDATE_LIMIT, $lastPostId, $user);
+            $fallback7d = collect($fallback7dPaginator->items());
+            if ($fallback7d->isNotEmpty()) {
+                $candidates = $candidates
+                    ->concat($fallback7d)
+                    ->unique('id')
+                    ->take(self::CANDIDATE_LIMIT)
+                    ->values();
+            }
+
+            // If still thin, widen to 30 days
+            if ($candidates->count() < $perPage) {
+                $fallback30dPaginator = $this->getTrendingFeed(720, self::CANDIDATE_LIMIT, $lastPostId, $user);
+                $fallback30d = collect($fallback30dPaginator->items());
+                if ($fallback30d->isNotEmpty()) {
+                    $candidates = $candidates
+                        ->concat($fallback30d)
+                        ->unique('id')
+                        ->take(self::CANDIDATE_LIMIT)
+                        ->values();
+                }
+            }
+        }
+
         $scored = $this->scoreCandidates($user, $candidates);
 
         if ($scored->isEmpty()) {
