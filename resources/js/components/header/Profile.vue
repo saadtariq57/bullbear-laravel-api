@@ -50,7 +50,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification">
                 <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
-                    <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
+                    <a @click.prevent="handleGeneralNotificationClick(notification)" :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
@@ -130,6 +130,13 @@ export default {
         ...mapActions('userNotification', ['fetchNotifications', 'listenToUpdates', 'markNotificationAsRead']),
 
         handleNotificationClick(notification) {
+            if (!notification.read_at) {
+                this.markNotificationAsRead(notification.id);
+            }
+            window.location.href = notification.url;
+        },
+
+        handleGeneralNotificationClick(notification) {
             if (!notification.read_at) {
                 this.markNotificationAsRead(notification.id);
             }

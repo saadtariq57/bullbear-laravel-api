@@ -39,10 +39,9 @@ const userNotificationModule = {
         },
         
         MARK_AS_READ(state, notificationId) {
-            const notification = state.notifications.find(n => n.id === notificationId);
-            if (notification) {
-                notification.read_at = new Date().toISOString();
-              } else {
+            const index = state.notifications.findIndex(n => n.id === notificationId);
+            if (index !== -1) {
+                state.notifications.splice(index, 1);
             }
         },
         // REMOVE_FOLLOWER_NOTIFICATION(state, followerId) {
