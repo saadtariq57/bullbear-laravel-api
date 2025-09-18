@@ -562,6 +562,9 @@
           />
         </div>
       </div>
+      <!-- Sentinel for infinite scroll (triggers before widgets on mobile) -->
+      <div ref="infiniteScrollSentinel" style="height:1px;width:100%;"></div>
+
       <!-- Loading Indicator for More Posts -->
       <div v-if="isFetchingMore" class="text-center my-4">
         <span>Loading more posts...</span>
@@ -783,6 +786,7 @@ export default {
       shareToGroupPost: null,
       shareModalInstance: null,
       editPostData: null,
+      infiniteObserver: null,
     };
   },
   computed: {
@@ -843,6 +847,28 @@ export default {
     }
   },
   methods: {
+    setupInfiniteObserver() {
+      // Teardown any existing observer
+      if (this.infiniteObserver) {
+        if (this.$refs.infiniteScrollSentinel) {
+          try { this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel); } catch (e) {}
+        }
+        try { this.infiniteObserver.disconnect(); } catch (e) {}
+        this.infiniteObserver = null;
+      }
+
+      if ('IntersectionObserver' in window && this.$refs.infiniteScrollSentinel) {
+        const options = { root: null, rootMargin: '0px 0px 800px 0px', threshold: 0 };
+        this.infiniteObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.isFetchingMore && this.hasMorePosts) {
+              this.loadMorePosts();
+            }
+          });
+        }, options);
+        this.infiniteObserver.observe(this.$refs.infiniteScrollSentinel);
+      }
+    },
     renderedMarkdown(text) {
       return renderMarkdownToHtml(text);
     },
@@ -944,7 +970,11 @@ export default {
       this.activeReactionData = { postId, reactionData };
     },
     handleScroll() {
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+      const scrollingElement = document.scrollingElement || document.documentElement;
+      const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = scrollingElement.scrollHeight;
+      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - 300);
       if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
         this.loadMorePosts();
       }
@@ -1104,13 +1134,25 @@ export default {
   },
   mounted() {
     this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
-    window.addEventListener('scroll', this.debouncedHandleScroll);
+    window.addEventListener('scroll', this.debouncedHandleScroll, { passive: true });
+
+    // IntersectionObserver for reliable mobile infinite scroll
+    this.$nextTick(() => { this.setupInfiniteObserver(); });
+  },
+  updated() {
+    // Ensure observer stays attached after virtual DOM updates (e.g., after appending posts)
+    this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
   beforeDestroy() {
     if (this.moduleRegistered) {
       unregisterVuexModule('userFeed');
     }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
+    if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
+      this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
+      this.infiniteObserver.disconnect();
+      this.infiniteObserver = null;
+    }
   },
   created() {
     if (!this.$store.hasModule('userFeed')) {
