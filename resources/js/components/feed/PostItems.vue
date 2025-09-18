@@ -737,6 +737,7 @@ import { formatDateTime } from '../../utils';
 import { Modal, Dropdown } from 'bootstrap';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userFeedModule from '@/stores/userFeedStore';
+import userFeedCommentModule from '@/stores/userFeedCommentStore';
 import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
@@ -782,6 +783,7 @@ export default {
       clickedPostReactionTypes: null,
       loadingComputedPosts: true,
       moduleRegistered: false,
+      commentModuleRegistered: false,
       debouncedHandleScroll: null,
       shareToGroupPost: null,
       shareModalInstance: null,
@@ -1147,6 +1149,9 @@ export default {
     if (this.moduleRegistered) {
       unregisterVuexModule('userFeed');
     }
+    if (this.commentModuleRegistered) {
+      unregisterVuexModule('userFeedComment');
+    }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
     if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
       this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
@@ -1158,6 +1163,10 @@ export default {
     if (!this.$store.hasModule('userFeed')) {
       registerVuexModule('userFeed', userFeedModule);
       this.moduleRegistered = true;
+    }
+    if (!this.$store.hasModule('userFeedComment')) {
+      registerVuexModule('userFeedComment', userFeedCommentModule);
+      this.commentModuleRegistered = true;
     }
   }
 };
