@@ -898,9 +898,9 @@ class AutomationController extends Controller
             $getEngagementChance = function (\Carbon\Carbon $postCreatedAt): float {
                 $ageMinutes = now()->diffInMinutes($postCreatedAt);
                 
-                // 0-2 minutes: Discovery period (10% chance)
+                // 0-2 minutes: Blackout period (0% chance)
                 if ($ageMinutes < 2) {
-                    return 0.10;
+                    return 0.0;
                 }
                 // 2-10 minutes: Early engagement (80% chance) - much higher for real users
                 elseif ($ageMinutes >= 2 && $ageMinutes <= 10) {

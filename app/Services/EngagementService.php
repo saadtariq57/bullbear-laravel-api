@@ -214,6 +214,8 @@ class EngagementService
             $specific = Post::where('active', 1)
                 ->where('id', (int) $options['post_id'])
                 ->where('user_id', '!=', $bot->user_id)
+                // Enforce 2-minute blackout: skip posts younger than 2 minutes
+                ->where('created_at', '<=', now()->subMinutes(2))
                 ->first();
             if ($specific) {
                 // Optionally honor exclude_engaged
@@ -232,7 +234,9 @@ class EngagementService
 
         $query = Post::where('active', 1)
             ->where('created_at', '>=', $from)
-            ->where('user_id', '!=', $bot->user_id);
+            ->where('user_id', '!=', $bot->user_id)
+            // Enforce 2-minute blackout
+            ->where('created_at', '<=', now()->subMinutes(2));
 
         // Exclude posts already engaged by this bot
         $engagedPostIds = EngagementLog::where('bot_id', $bot->id)->pluck('post_id')->all();
@@ -263,6 +267,8 @@ class EngagementService
             foreach ($fallbacks as $fFrom) {
                 $q = Post::where('active', 1)->where('user_id', '!=', $bot->user_id);
                 if ($fFrom) $q->where('created_at', '>=', $fFrom);
+                // Enforce 2-minute blackout in fallbacks as well
+                $q->where('created_at', '<=', now()->subMinutes(2));
                 // Respect exclude_engaged again
                 if (!empty($options['exclude_engaged'])) {
                     $engagedPostIds = EngagementLog::where('bot_id', $bot->id)->pluck('post_id')->all();
