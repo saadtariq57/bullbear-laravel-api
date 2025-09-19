@@ -8,7 +8,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="follower in followers" :key="follower.id" class="py-0">
-                    <a :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
+                    <a @click.prevent="handleFollowerClick(follower)" :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
                             <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="45" height="45">
                             <div>
@@ -28,7 +28,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
                 <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
-                    <a @click.prevent="handleNotificationClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
+                    <a @click.prevent="handleMessageClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
                         <img :src="'/uploads/' + message.user.avatar" alt="" width="50" height="50" class="rounded-circle">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ message.user.name }}</h6>
@@ -141,6 +141,20 @@ export default {
                 this.markNotificationAsRead(notification.id);
             }
             window.location.href = notification.url;
+        },
+
+        handleMessageClick(message) {
+            if (!message.read_at) {
+                this.markNotificationAsRead(message.id);
+            }
+            window.location.href = message.url;
+        },
+
+        handleFollowerClick(follower) {
+            if (!follower.read_at) {
+                this.markNotificationAsRead(follower.id);
+            }
+            window.location.href = '/profile/' + follower.user.name;
         },
 
         logout() {
