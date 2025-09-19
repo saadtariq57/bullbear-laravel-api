@@ -1,10 +1,10 @@
 <template>
     <div class="d-flex gap-3">
         <!-- Followers -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
-                <span class="notification-count">{{ followers.length }}</span>
+                <span class="notification-count" v-if="followers.length > 0">{{ followers.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="follower in followers" :key="follower.id" class="py-0">
@@ -21,10 +21,10 @@
         </div>
 
         <!-- Messages -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-dots fs-4"></i>
-                <span class="notification-count">{{ messages.length }}</span>
+                <span class="notification-count" v-if="messages.length > 0">{{ messages.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
                 <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
@@ -43,10 +43,10 @@
         </div>
 
         <!-- General Notifications -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill fs-4"></i>
-                <span class="notification-count">{{ notifications.length }}</span>
+                <span class="notification-count" v-if="notifications.length > 0">{{ notifications.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification">
                 <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
@@ -63,7 +63,7 @@
             </ul>
         </div>
     <!-- Profile Links -->
-    <div class="dropdown-center dropdown-hover btn-drps">
+    <div class="dropdown-center btn-drps">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div class="img">
@@ -172,12 +172,6 @@ export default {
 .header_notification{
     max-height: 316px;
     overflow: auto;
-}
-.dropdown-hover:hover .dropdown-menu{
-    display: block;
-    right: 0;
-    left: auto;
-    top: 100%!important;
 }
 .unread-notification-wrapper{
   background-color: #C3DDF8;
