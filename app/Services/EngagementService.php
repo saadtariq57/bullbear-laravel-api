@@ -48,6 +48,15 @@ class EngagementService
             // Cool down this bot on failure to avoid immediate reselection
             try {
                 $bot->update(['last_engagement' => now()]);
+                $botUser = $bot->user ?: User::find($bot->user_id);
+                Log::channel('bot_engagement')->info('No eligible posts; updated last_engagement for bot', [
+                    'bot_id' => $bot->id,
+                    'bot_user_id' => $bot->user_id,
+                    'bot_name' => $botUser?->name,
+                    'bot_email' => $botUser?->email,
+                    'options' => $options,
+                    'diagnostics' => $selectionDiagnostics,
+                ]);
             } catch (\Throwable $e) {
                 Log::warning('EngagementService: failed to update bot timestamps on no eligible posts', ['e' => $e->getMessage(), 'bot_id' => $bot->id]);
             }

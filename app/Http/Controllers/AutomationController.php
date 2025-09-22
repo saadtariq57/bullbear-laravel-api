@@ -1191,6 +1191,17 @@ class AutomationController extends Controller
                 $bot = Bot::where('user_id', $botUserId)->first();
                 if ($bot) {
                     $bot->update(['last_engagement' => now()]);
+                    $botUser = $bot->user ?: User::find($bot->user_id);
+                    Log::channel('bot_engagement')->info('No eligible posts (weighted); updated last_engagement for bot', [
+                        'bot_id' => $bot->id,
+                        'bot_user_id' => $bot->user_id,
+                        'bot_name' => $botUser?->name,
+                        'bot_email' => $botUser?->email,
+                        'exclude_post_ids_count' => $diag['exclude_post_ids_count'] ?? null,
+                        'fresh_scanned' => $diag['fresh_scanned'] ?? null,
+                        'priority_scanned' => $diag['priority_scanned'] ?? null,
+                        'fallback_scanned' => $diag['fallback_scanned'] ?? null,
+                    ]);
                 }
                 $payload = [
                     'success' => false,

@@ -65,6 +65,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'bot_engagement' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/bot_engagement.log'),
+            'level' => 'info',
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
