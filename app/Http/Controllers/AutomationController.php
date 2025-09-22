@@ -963,15 +963,23 @@ class AutomationController extends Controller
                     $isRealUser = $candidate->user && $candidate->user->type !== 'bot';
                     $effectiveThreshold = $isRealUser ? $freshThreshold + 5 : $freshThreshold; // Allow 5 more engagements for real users
                     
-                    // Apply realistic timing and engagement checks
-                    $engagementChance = $getEngagementChance($candidate->created_at);
-                    $randomValue = mt_rand() / mt_getrandmax();
-                    $velocityPasses = $checkEngagementVelocity((int) $candidate->id);
+                    // Timing and engagement checks
+                    // Enforce 2-minute blackout for ALL posts
+                    if ($postAge < 2) {
+                        continue;
+                    }
                     
+                    // Apply age-based randomness ONLY to real-user posts
+                    $chancePasses = true;
+                    if ($isRealUser) {
+                        $engagementChance = $getEngagementChance($candidate->created_at);
+                        $chancePasses = (mt_rand() / mt_getrandmax()) <= $engagementChance;
+                    }
+                    $velocityPasses = $checkEngagementVelocity((int) $candidate->id);
                     
                     if ($totalEngagements < $effectiveThreshold && 
                         $velocityPasses &&
-                        $randomValue <= $engagementChance) {
+                        $chancePasses) {
                         
                         $already = null;
                         if ($userId > 0 && $checkPostId > 0) {
@@ -1072,11 +1080,21 @@ class AutomationController extends Controller
                 if (!empty($excludePostIds)) {
                     $q->whereNotIn('id', $excludePostIds);
                 }
-                $candidates = $q->orderByDesc('created_at')->limit(200)->get();
+                // Eager-load user to distinguish real-user vs bot-authored posts
+                $candidates = $q->with('user:id,type')->orderByDesc('created_at')->limit(200)->get();
                 foreach ($candidates as $picked) {
-                    // Apply realistic timing to ALL posts in fallback windows too
-                    if ($checkEngagementVelocity((int) $picked->id) &&
-                        mt_rand() / mt_getrandmax() <= $getEngagementChance($picked->created_at)) {
+                    // Enforce 2-minute blackout for ALL posts
+                    $postAge = $now->diffInMinutes($picked->created_at);
+                    if ($postAge < 2) {
+                        continue;
+                    }
+                    // Apply age-based randomness ONLY to real-user posts
+                    $isRealUser = $picked->user && $picked->user->type !== 'bot';
+                    $chancePasses = true;
+                    if ($isRealUser) {
+                        $chancePasses = (mt_rand() / mt_getrandmax()) <= $getEngagementChance($picked->created_at);
+                    }
+                    if ($checkEngagementVelocity((int) $picked->id) && $chancePasses) {
                         
                     // If explicit postId check was requested, report that status too
                     $already = null;
