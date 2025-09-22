@@ -45,6 +45,12 @@ class EngagementService
         $selectionDiagnostics = [];
         $post = $this->selectEligiblePost($bot, $options, $selectionDiagnostics);
         if (!$post) {
+            // Cool down this bot on failure to avoid immediate reselection
+            try {
+                $bot->update(['last_engagement' => now()]);
+            } catch (\Throwable $e) {
+                Log::warning('EngagementService: failed to update bot timestamps on no eligible posts', ['e' => $e->getMessage(), 'bot_id' => $bot->id]);
+            }
             return [
                 'success' => false,
                 'error' => 'no_eligible_posts',

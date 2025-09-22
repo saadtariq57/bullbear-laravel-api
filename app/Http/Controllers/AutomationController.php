@@ -1186,11 +1186,11 @@ class AutomationController extends Controller
             }
 
             // If we reach here, no eligible post was found across windows.
-            // If a bot_user_id was provided, update the bot's last_active and return an error.
+            // If a bot_user_id was provided, update the bot's last_engagement (cooldown) and return an error.
             if ($botUserId > 0) {
                 $bot = Bot::where('user_id', $botUserId)->first();
                 if ($bot) {
-                    $bot->update(['last_active' => now()]);
+                    $bot->update(['last_engagement' => now()]);
                 }
                 $payload = [
                     'success' => false,
