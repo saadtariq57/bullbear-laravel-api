@@ -920,6 +920,19 @@ class AutomationController extends Controller
                 }
             };
 
+            // Prepare diagnostics sampling
+            $debugMode = filter_var($request->query('debug', false), FILTER_VALIDATE_BOOLEAN) || (bool) config('app.debug');
+            $diag = [
+                'fresh_scanned' => 0,
+                'priority_scanned' => 0,
+                'fallback_scanned' => 0,
+                'exclude_post_ids_count' => count($excludePostIds),
+                'fresh_reject_samples' => [],
+                'priority_reject_samples' => [],
+                'fallback_reject_samples' => [],
+            ];
+            $maxSamplesPerBucket = 10;
+
             // Tier 1: Fresh boost (posts with realistic timing and low engagement)
             if ((bool) config('app.FRESH_BOOST_ENABLED', true)) {
                 $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 3);
@@ -956,6 +969,7 @@ class AutomationController extends Controller
                 
                 
                 foreach ($allCandidates as $candidate) {
+                    $diag['fresh_scanned']++;
                     $postAge = $now->diffInMinutes($candidate->created_at);
                     $totalEngagements = $countEngagement((int) $candidate->id);
                     
@@ -966,6 +980,15 @@ class AutomationController extends Controller
                     // Timing and engagement checks
                     // Enforce 2-minute blackout for ALL posts
                     if ($postAge < 2) {
+                        if ($debugMode && count($diag['fresh_reject_samples']) < $maxSamplesPerBucket) {
+                            $diag['fresh_reject_samples'][] = [
+                                'post_id' => (int) $candidate->id,
+                                'reason' => 'blackout_0_2m',
+                                'age_minutes' => $postAge,
+                                'is_real_user' => $isRealUser,
+                                'engagements' => $totalEngagements,
+                            ];
+                        }
                         continue;
                     }
                     
@@ -1009,6 +1032,17 @@ class AutomationController extends Controller
                             ]
                         ]);
                     }
+                    if ($debugMode && count($diag['fresh_reject_samples']) < $maxSamplesPerBucket) {
+                        $reason = !$velocityPasses ? 'velocity' : (!$chancePasses ? 'chance' : 'threshold');
+                        $diag['fresh_reject_samples'][] = [
+                            'post_id' => (int) $candidate->id,
+                            'reason' => $reason,
+                            'age_minutes' => $postAge,
+                            'is_real_user' => $isRealUser,
+                            'engagements' => $totalEngagements,
+                            'effective_threshold' => $effectiveThreshold,
+                        ];
+                    }
                 }
             }
 
@@ -1036,6 +1070,7 @@ class AutomationController extends Controller
                 // Limit scan size for performance, then pick randomly
                 $priorityCandidates = $priorityQuery->orderByDesc('created_at')->limit(200)->get();
                 foreach ($priorityCandidates as $priorityCandidate) {
+                    $diag['priority_scanned']++;
                     // Apply realistic timing to ALL posts, not just fresh ones
                     if ($checkEngagementVelocity((int) $priorityCandidate->id) &&
                         mt_rand() / mt_getrandmax() <= $getEngagementChance($priorityCandidate->created_at)) {
@@ -1065,6 +1100,14 @@ class AutomationController extends Controller
                             ]
                         ]);
                     }
+                    if ($debugMode && count($diag['priority_reject_samples']) < $maxSamplesPerBucket) {
+                        $diag['priority_reject_samples'][] = [
+                            'post_id' => (int) $priorityCandidate->id,
+                            'reason' => 'velocity_or_chance',
+                            'age_minutes' => $now->diffInMinutes($priorityCandidate->created_at),
+                            'is_real_user' => true,
+                        ];
+                    }
                 }
             }
 
@@ -1083,9 +1126,18 @@ class AutomationController extends Controller
                 // Eager-load user to distinguish real-user vs bot-authored posts
                 $candidates = $q->with('user:id,type')->orderByDesc('created_at')->limit(200)->get();
                 foreach ($candidates as $picked) {
+                    $diag['fallback_scanned']++;
                     // Enforce 2-minute blackout for ALL posts
                     $postAge = $now->diffInMinutes($picked->created_at);
                     if ($postAge < 2) {
+                        if ($debugMode && count($diag['fallback_reject_samples']) < $maxSamplesPerBucket) {
+                            $diag['fallback_reject_samples'][] = [
+                                'post_id' => (int) $picked->id,
+                                'reason' => 'blackout_0_2m',
+                                'age_minutes' => $postAge,
+                                'is_real_user' => ($picked->user && $picked->user->type !== 'bot'),
+                            ];
+                        }
                         continue;
                     }
                     // Apply age-based randomness ONLY to real-user posts
@@ -1122,6 +1174,14 @@ class AutomationController extends Controller
                         ]
                     ]);
                     }
+                    if ($debugMode && count($diag['fallback_reject_samples']) < $maxSamplesPerBucket) {
+                        $diag['fallback_reject_samples'][] = [
+                            'post_id' => (int) $picked->id,
+                            'reason' => !$chancePasses ? 'chance' : 'velocity',
+                            'age_minutes' => $postAge,
+                            'is_real_user' => $isRealUser,
+                        ];
+                    }
                 }
             }
 
@@ -1132,11 +1192,23 @@ class AutomationController extends Controller
                 if ($bot) {
                     $bot->update(['last_active' => now()]);
                 }
-                return response()->json([
+                $payload = [
                     'success' => false,
                     'error' => 'No eligible post to react by this bot',
                     'code' => 'NO_ELIGIBLE_POST_FOR_BOT',
-                ], 404);
+                ];
+                if ($debugMode) {
+                    $payload['diagnostics'] = [
+                        'fresh_scanned' => $diag['fresh_scanned'],
+                        'priority_scanned' => $diag['priority_scanned'],
+                        'fallback_scanned' => $diag['fallback_scanned'],
+                        'exclude_post_ids_count' => $diag['exclude_post_ids_count'],
+                        'fresh_reject_samples' => $diag['fresh_reject_samples'],
+                        'priority_reject_samples' => $diag['priority_reject_samples'],
+                        'fallback_reject_samples' => $diag['fallback_reject_samples'],
+                    ];
+                }
+                return response()->json($payload, 404);
             }
 
             return response()->json([
