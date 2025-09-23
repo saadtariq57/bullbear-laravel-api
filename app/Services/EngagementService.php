@@ -254,15 +254,25 @@ class EngagementService
             ->where('created_at', '<=', now()->subMinutes(2));
 
         // Exclude posts already engaged by this bot
-        $engagedPostIds = EngagementLog::where('bot_id', $bot->id)->pluck('post_id')->all();
+        $engagedPostIds = EngagementLog::where('bot_id', $bot->id)
+            ->whereNotNull('post_id')
+            ->pluck('post_id')
+            ->all();
         if (!empty($engagedPostIds)) {
             $query->whereNotIn('id', $engagedPostIds);
         }
 
         // Additional safety: exclude posts already reacted or commented by the bot user
-        $reacted = Reaction::where('user_id', $bot->user_id)->pluck('post_id')->all();
-        $commented = Comment::where('user_id', $bot->user_id)->pluck('post_id')->all();
+        $reacted = Reaction::where('user_id', $bot->user_id)
+            ->whereNotNull('post_id')
+            ->pluck('post_id')
+            ->all();
+        $commented = Comment::where('user_id', $bot->user_id)
+            ->whereNotNull('post_id')
+            ->pluck('post_id')
+            ->all();
         $exclude = array_values(array_unique(array_merge($reacted, $commented)));
+        $exclude = array_values(array_filter($exclude, fn($v) => !is_null($v)));
         if (!empty($exclude)) {
             $query->whereNotIn('id', $exclude);
         }
@@ -286,11 +296,21 @@ class EngagementService
                 $q->where('created_at', '<=', now()->subMinutes(2));
                 // Respect exclude_engaged again
                 if (!empty($options['exclude_engaged'])) {
-                    $engagedPostIds = EngagementLog::where('bot_id', $bot->id)->pluck('post_id')->all();
+                    $engagedPostIds = EngagementLog::where('bot_id', $bot->id)
+                        ->whereNotNull('post_id')
+                        ->pluck('post_id')
+                        ->all();
                     if (!empty($engagedPostIds)) $q->whereNotIn('id', $engagedPostIds);
-                    $reacted = Reaction::where('user_id', $bot->user_id)->pluck('post_id')->all();
-                    $commented = Comment::where('user_id', $bot->user_id)->pluck('post_id')->all();
+                    $reacted = Reaction::where('user_id', $bot->user_id)
+                        ->whereNotNull('post_id')
+                        ->pluck('post_id')
+                        ->all();
+                    $commented = Comment::where('user_id', $bot->user_id)
+                        ->whereNotNull('post_id')
+                        ->pluck('post_id')
+                        ->all();
                     $exclude = array_values(array_unique(array_merge($reacted, $commented)));
+                    $exclude = array_values(array_filter($exclude, fn($v) => !is_null($v)));
                     if (!empty($exclude)) $q->whereNotIn('id', $exclude);
                 }
                 $found = $q->orderByDesc('created_at')->limit(100)->get();

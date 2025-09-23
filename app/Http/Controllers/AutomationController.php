@@ -847,9 +847,17 @@ class AutomationController extends Controller
             // Precompute posts the bot/user already reacted to or commented on (optional)
             $excludePostIds = [];
             if ($userId > 0) {
-                $reactedPostIds = \App\Models\Reaction::where('user_id', $userId)->pluck('post_id')->all();
-                $commentedPostIds = \App\Models\Comment::where('user_id', $userId)->pluck('post_id')->all();
+                $reactedPostIds = \App\Models\Reaction::where('user_id', $userId)
+                    ->whereNotNull('post_id')
+                    ->pluck('post_id')
+                    ->all();
+                $commentedPostIds = \App\Models\Comment::where('user_id', $userId)
+                    ->whereNotNull('post_id')
+                    ->pluck('post_id')
+                    ->all();
                 $excludePostIds = array_values(array_unique(array_merge($reactedPostIds, $commentedPostIds)));
+                // Defensive guard against stray NULLs
+                $excludePostIds = array_values(array_filter($excludePostIds, fn($v) => !is_null($v)));
             }
 
             // Helper to count engagements for a post (prefer logs within last 48h)
