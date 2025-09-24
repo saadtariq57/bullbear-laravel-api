@@ -65,7 +65,7 @@
           <!-- Post Content -->
           <div v-if="post.post_text" class="post-description px-3 text-break">
             <div
-              v-if="post.colored_post_id"
+              v-if="post.colored_post_id && post.colored_post"
               class="colored-post-text d-flex justify-content-center align-items-center"
               :style="{
                 backgroundImage:
@@ -285,7 +285,7 @@
             <div class="shared-post-content">
               <!-- Render based on shared post type -->
               <template v-if="post.originalPost.post_type === 'text'">
-                <div v-if="post.originalPost.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
+                <div v-if="post.originalPost.colored_post_id && post.originalPost.colored_post" class="colored-post-text d-flex justify-content-center align-items-center"
                   :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
                   <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
                     {{ post.originalPost.post_text }}

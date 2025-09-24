@@ -364,6 +364,9 @@ class PostController extends Controller
             'sharedPost.reactions.user:id,name,avatar,about',
         ]);
 
+        // Ensure colored posts are present for color rendering
+        $posts->getCollection()->load(['coloredPost', 'sharedPost.coloredPost']);
+
         $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
             if ($post->sharedPost) {
