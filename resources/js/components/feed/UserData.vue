@@ -10,7 +10,7 @@
                     <img class="rounded-circle" :src="UpdatedProfileImagePath != null ? '/uploads/'+UpdatedProfileImagePath : '/uploads/'+userData.avatar" alt="Profile Picture" width="75px" height="75px">
                 </div>
                 <div class="title text-center">
-                    <a class="text-black fw-bold" :href="'profile/'+userData.name">{{ userData.name }}</a>
+                    <a class="text-black fw-bold" :href="`/profile/${userData.name}`">{{ userData.name }}</a>
                     <p>@{{ userData.name }}</p>
                 </div>
             </div>

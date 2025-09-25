@@ -55,11 +55,17 @@
 
                                                         <div class="mb-3">
                                                             <label class="form-label" for="password-input">Password</label>
-                                                            <input type="password"
-                                                                class="form-control @error('password') is-invalid @enderror"
-                                                                placeholder="Enter password" id="password-input"
-                                                                name="password" required autocomplete="current-password"
-                                                                value="">
+                                                            <div class="position-relative">
+                                                                <input type="password"
+                                                                    class="form-control @error('password') is-invalid @enderror"
+                                                                    placeholder="Enter password" id="password-input"
+                                                                    name="password" required autocomplete="current-password"
+                                                                    value="">
+                                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
+                                                                        id="toggle-password" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                                                                    <i class="bi bi-eye-slash" id="toggle-password-icon" style="font-size: 18px;"></i>
+                                                                </button>
+                                                            </div>
                                                             @error('password')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
@@ -119,4 +125,21 @@
 <script src="{{ URL::asset('build/libs/jquery/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ URL::asset('build/js/custom.js') }}"></script>
+<script>
+    // Password toggle functionality
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password-input');
+        const toggleIcon = document.getElementById('toggle-password-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        }
+    });
+</script>
 @endsection

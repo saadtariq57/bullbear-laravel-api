@@ -9,6 +9,8 @@ use App\Models\Group;
 use App\Models\GeneralGroupEmbedding;
 use App\Models\RichTvContentApi;
 use App\Services\EmbeddingService;
+use App\Services\EngagementService;
+use App\Models\EngagementLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -591,5 +593,671 @@ class AutomationController extends Controller
             return true;
         }
         return false;
+    }
+
+    /**
+     * Trigger a bot engagement on a random eligible post using bot's engagement_config
+     */
+    public function engage(Request $request, EngagementService $engagementService)
+    {
+        $validator = Validator::make($request->all(), [
+            'bot_user_id' => 'required|integer|exists:users,id',
+            'time_window' => 'nullable|in:24h,7d,30d,all',
+            'post_id' => 'nullable|integer|exists:posts,id',
+            'allow_any' => 'nullable|boolean',
+            'exclude_engaged' => 'nullable|boolean',
+            'react' => 'nullable',
+            'comment' => 'nullable|string|max:2000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Validation failed',
+                'details' => $validator->errors()
+            ], 400);
+        }
+
+        $user = User::find($request->bot_user_id);
+        if (!$user || $user->type !== 'bot') {
+            return response()->json([
+                'success' => false,
+                'error' => 'Invalid bot user ID',
+            ], 400);
+        }
+
+        $bot = Bot::where('user_id', $user->id)->first();
+        if (!$bot || !$bot->is_active) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Bot is not active'
+            ], 400);
+        }
+
+        // Determine forced action from flags or legacy 'action'
+        $reactInput = $request->input('react');
+        $commentText = $request->input('comment');
+        $forcedAction = null;
+        $forcedReactionName = null;
+        // If react is a non-empty string not equal to literal 'true'/'false', treat it as reaction name
+        if (is_string($reactInput) && trim($reactInput) !== '' && !in_array(strtolower($reactInput), ['true','false'], true)) {
+            $forcedReactionName = trim($reactInput);
+        }
+        if ($forcedReactionName && $commentText) {
+            $forcedAction = 'react+comment';
+        } elseif ($forcedReactionName) {
+            $forcedAction = 'react';
+        } else {
+            // fallback to legacy 'action'
+            $forcedAction = $request->input('action');
+        }
+
+        $options = [
+            'time_window' => $request->input('time_window'),
+            'post_id' => $request->input('post_id'),
+            'allow_any' => filter_var($request->input('allow_any', false), FILTER_VALIDATE_BOOLEAN),
+            'exclude_engaged' => filter_var($request->input('exclude_engaged', true), FILTER_VALIDATE_BOOLEAN),
+            'forced_action' => $forcedAction,
+            'forced_reaction_name' => $forcedReactionName,
+            'forced_comment_text' => is_string($commentText) ? trim($commentText) : null,
+        ];
+
+        $result = $engagementService->engage($bot, $options);
+        return response()->json($result, $result['success'] ? 200 : 400);
+    }
+
+    /**
+     * Get the most recent engagement (for excluding the last engaged bot in n8n)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLastEngagement()
+    {
+        try {
+            $last = EngagementLog::with(['bot:id,user_id,role', 'bot.user:id,name'])
+                ->orderByDesc('created_at')
+                ->first();
+
+            if (!$last) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No engagements logged yet',
+                    'data' => null,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Last engagement retrieved',
+                'data' => [
+                    'bot_id' => $last->bot_id,
+                    'bot_user_id' => $last->bot?->user_id,
+                    'bot_name' => $last->bot?->user?->name,
+                    'role' => $last->bot?->role,
+                    'post_id' => $last->post_id,
+                    'action_type' => $last->action_type,
+                    'reaction_type_id' => $last->reaction_type_id,
+                    'comment_id' => $last->comment_id,
+                    'sentiment' => $last->sentiment,
+                    'time' => $last->created_at?->toISOString(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getLastEngagement): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all active bots including engagement data for n8n selection
+     */
+    public function getActiveBotsForEngagement()
+    {
+        try {
+            $bots = \App\Models\Bot::with(['user:id,name,email'])
+                ->where('is_active', true)
+                ->get()
+                ->map(function ($bot) {
+                    $cfg = $bot->engagement_config ?? [];
+                    $hoursSince = $bot->last_active ? now()->diffInHours($bot->last_active) : null;
+                    // Ensure 5-sentiment structure and template groups
+                    $sentiment = array_merge([
+                        'positive' => 35,
+                        'neutral' => 25,
+                        'skeptical' => 15,
+                        'curious' => 15,
+                        'critical' => 10,
+                    ], (array) ($cfg['sentiment'] ?? []));
+                    $templates = $cfg['comment_templates'] ?? [];
+                    $commentTemplates = [
+                        'positive' => array_values(array_filter((array) ($templates['positive'] ?? []))),
+                        'neutral' => array_values(array_filter((array) ($templates['neutral'] ?? []))),
+                        'skeptical' => array_values(array_filter((array) ($templates['skeptical'] ?? []))),
+                        'curious' => array_values(array_filter((array) ($templates['curious'] ?? []))),
+                        'critical' => array_values(array_filter((array) ($templates['critical'] ?? []))),
+                    ];
+                    return [
+                        'id' => $bot->id,
+                        'bot_user_id' => $bot->user_id,
+                        'name' => $bot->user?->name,
+                        'email' => $bot->user?->email,
+                        'role' => $bot->role,
+                        'style' => $bot->style,
+                        'post_frequency' => $bot->post_frequency,
+                        'activity_level' => $bot->activity_level,
+                        'group_post_probability' => $bot->group_post_probability,
+                        'last_active' => $bot->last_active?->toISOString(),
+                        'last_engagement' => $bot->last_engagement?->toISOString(),
+                        'hours_since_last_active' => $hoursSince,
+                        // Engagement data (canonical, no redundancy)
+                        'active_window_hours' => $cfg['active_window_hours'] ?? null,
+                        'active_window_minutes' => $cfg['active_window_minutes'] ?? null,
+                        'actions' => $cfg['actions'] ?? null,
+                        'sentiment' => $sentiment,
+                        'reaction_weights' => $cfg['reaction_weights'] ?? null,
+                        'comment_length' => $cfg['comment_length'] ?? null,
+                        'comment_templates' => $commentTemplates,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'count' => $bots->count(),
+                'data' => $bots,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getActiveBotsForEngagement): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    /**
+     * Return a random post from the past 30 days using weighted windows.
+     * Query params (optional):
+     *   w1d  (default 20)  → last 1 day
+     *   w7d  (default 70)  → last 7 days excluding last 1 day
+     *   w30d (default 10)  → last 30 days excluding last 7 days
+     * 
+     */
+    public function getRandomPostWeighted(Request $request)
+    {
+        try {
+            $w1 = (int) $request->query('w1d', 20);
+            $w7 = (int) $request->query('w7d', 70);
+            $w30 = (int) $request->query('w30d', 10);
+            // Optional user/post filters
+            // Backward-compat: accept bot_user_id (preferred) or legacy userId/user_id
+            $botUserId = (int) $request->query('bot_user_id', 0);
+            $userId = $botUserId ?: ((int) $request->query('userId', 0) ?: (int) $request->query('user_id', 0));
+            $checkPostId = (int) $request->query('postId', 0) ?: (int) $request->query('post_id', 0);
+
+            if ($w1 < 0) $w1 = 0; if ($w7 < 0) $w7 = 0; if ($w30 < 0) $w30 = 0;
+            $sum = $w1 + $w7 + $w30;
+            if ($sum === 0) { $w1 = 20; $w7 = 70; $w30 = 10; $sum = 100; }
+
+            $window = $this->pickWeightedWindow(['1d' => $w1, '7d' => $w7, '30d' => $w30]);
+
+            // Check if bot is already engaged to a specific post
+            if ($userId > 0 && $checkPostId > 0) {
+                $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                if ($reacted || $commented) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'This bot is already engaged to this post',
+                        'code' => 'BOT_ALREADY_ENGAGED_TO_POST',
+                        'data' => [
+                            'post_id' => $checkPostId,
+                            'bot_user_id' => $userId,
+                            'engagement_types' => array_filter([
+                                'reacted' => $reacted,
+                                'commented' => $commented
+                            ])
+                        ]
+                    ], 409); // 409 Conflict
+                }
+            }
+
+            $now = now();
+            
+            $ranges = [
+                '1d' => [ $now->copy()->subDay(), $now ],
+                // last 7 days excluding last 1 day
+                '7d' => [ $now->copy()->subDays(7), $now->copy()->subDay() ],
+                // last 30 days excluding last 7 days
+                '30d' => [ $now->copy()->subDays(30), $now->copy()->subDays(7) ],
+            ];
+
+            $order = [$window, ...array_values(array_diff(['1d','7d','30d'], [$window]))];
+
+            // Precompute posts the bot/user already reacted to or commented on (optional)
+            $excludePostIds = [];
+            if ($userId > 0) {
+                $reactedPostIds = \App\Models\Reaction::where('user_id', $userId)
+                    ->whereNotNull('post_id')
+                    ->pluck('post_id')
+                    ->all();
+                $commentedPostIds = \App\Models\Comment::where('user_id', $userId)
+                    ->whereNotNull('post_id')
+                    ->pluck('post_id')
+                    ->all();
+                $excludePostIds = array_values(array_unique(array_merge($reactedPostIds, $commentedPostIds)));
+                // Defensive guard against stray NULLs
+                $excludePostIds = array_values(array_filter($excludePostIds, fn($v) => !is_null($v)));
+            }
+
+            // Helper to count engagements for a post (prefer logs within last 48h)
+            $useLogs = (bool) config('app.FRESH_BOOST_USE_LOGS', true);
+            $countEngagement = function (int $postId) use ($useLogs, $now): int {
+                $count = 0;
+                if ($useLogs) {
+                    // Only logs within the last 48h are retained
+                    $logsFrom = $now->copy()->subHours(48);
+                    $count += (int) \App\Models\EngagementLog::where('post_id', $postId)
+                        ->where('created_at', '>=', $logsFrom)
+                        ->count();
+                }
+                // Always include durable sources
+                $count += (int) \App\Models\Reaction::where('post_id', $postId)->count();
+                $count += (int) \App\Models\Comment::where('post_id', $postId)->count();
+                return $count;
+            };
+
+            // Helper to check engagement velocity (engagements in last 5 minutes)
+            $checkEngagementVelocity = function (int $postId, int $maxRecentEngagements = 6): bool {
+                $recentFrom = now()->subMinutes(5);
+                $recentCount = 0;
+                
+                // Check recent engagement logs
+                if ((bool) config('app.FRESH_BOOST_USE_LOGS', true)) {
+                    $recentCount += (int) \App\Models\EngagementLog::where('post_id', $postId)
+                        ->where('created_at', '>=', $recentFrom)
+                        ->count();
+                }
+                
+                // Check recent reactions
+                $recentCount += (int) \App\Models\Reaction::where('post_id', $postId)
+                    ->where('created_at', '>=', $recentFrom)
+                    ->count();
+                    
+                // Check recent comments
+                $recentCount += (int) \App\Models\Comment::where('post_id', $postId)
+                    ->where('created_at', '>=', $recentFrom)
+                    ->count();
+                    
+                return $recentCount < $maxRecentEngagements;
+            };
+
+            // Helper to get realistic engagement chance based on post age
+            $getEngagementChance = function (\Carbon\Carbon $postCreatedAt): float {
+                $ageMinutes = now()->diffInMinutes($postCreatedAt);
+                
+                // 0-2 minutes: Blackout period (0% chance)
+                if ($ageMinutes < 2) {
+                    return 0.0;
+                }
+                // 2-10 minutes: Early engagement (80% chance) - much higher for real users
+                elseif ($ageMinutes >= 2 && $ageMinutes <= 10) {
+                    return 0.80;
+                }
+                // 10-30 minutes: High engagement (90% chance)
+                elseif ($ageMinutes >= 10 && $ageMinutes <= 30) {
+                    return 0.90;
+                }
+                // 30-60 minutes: Very high chance (95%)
+                elseif ($ageMinutes >= 30 && $ageMinutes <= 60) {
+                    return 0.95;
+                }
+                // 60+ minutes: Normal prioritization (100%)
+                else {
+                    return 1.0;
+                }
+            };
+
+            // Prepare diagnostics sampling
+            $debugMode = filter_var($request->query('debug', false), FILTER_VALIDATE_BOOLEAN) || (bool) config('app.debug');
+            $diag = [
+                'fresh_scanned' => 0,
+                'priority_scanned' => 0,
+                'fallback_scanned' => 0,
+                'exclude_post_ids_count' => count($excludePostIds),
+                'fresh_reject_samples' => [],
+                'priority_reject_samples' => [],
+                'fallback_reject_samples' => [],
+            ];
+            $maxSamplesPerBucket = 10;
+
+            // Tier 1: Fresh boost (posts with realistic timing and low engagement)
+            if ((bool) config('app.FRESH_BOOST_ENABLED', true)) {
+                $freshThreshold = (int) config('app.FRESH_BOOST_15M_THRESHOLD', 3);
+                $freshFrom = $now->copy()->subMinutes(120); // Extended window for realistic timing
+                $freshQuery = Post::where('active', 1)
+                    ->where('created_at', '>=', $freshFrom);
+                if ($userId > 0) {
+                    $freshQuery->where('user_id', '!=', $userId);
+                }
+                if (!empty($excludePostIds)) {
+                    $freshQuery->whereNotIn('id', $excludePostIds);
+                }
+                // For real user posts, don't exclude based on bot engagement history
+                // This allows multiple bots to engage with real user posts
+                $freshQueryRealUser = \App\Models\Post::with('user:id,type')
+                    ->where('active', 1)
+                    ->where('created_at', '>=', $freshFrom)
+                    ->whereHas('user', function($q) {
+                        $q->where('type', '!=', 'bot');
+                    });
+                if ($userId > 0) {
+                    $freshQueryRealUser->where('user_id', '!=', $userId);
+                }
+                
+                $realUserCandidates = $freshQueryRealUser->orderByDesc('created_at')->limit(50)->get();
+                
+                // Limit scan for performance
+                $freshCandidates = $freshQuery->with('user:id,type')->orderByDesc('created_at')->limit(200)->get();
+                
+                // Combine real user posts with bot posts, prioritizing real user posts
+                $allCandidates = $realUserCandidates->concat($freshCandidates->filter(function($post) {
+                    return $post->user && $post->user->type === 'bot';
+                }));
+                
+                
+                foreach ($allCandidates as $candidate) {
+                    $diag['fresh_scanned']++;
+                    $postAge = $now->diffInMinutes($candidate->created_at);
+                    $totalEngagements = $countEngagement((int) $candidate->id);
+                    
+                    // Special boost for real user posts
+                    $isRealUser = $candidate->user && $candidate->user->type !== 'bot';
+                    $effectiveThreshold = $isRealUser ? $freshThreshold + 5 : $freshThreshold; // Allow 5 more engagements for real users
+                    
+                    // Timing and engagement checks
+                    // Enforce 2-minute blackout for ALL posts
+                    if ($postAge < 2) {
+                        if ($debugMode && count($diag['fresh_reject_samples']) < $maxSamplesPerBucket) {
+                            $diag['fresh_reject_samples'][] = [
+                                'post_id' => (int) $candidate->id,
+                                'reason' => 'blackout_0_2m',
+                                'age_minutes' => $postAge,
+                                'is_real_user' => $isRealUser,
+                                'engagements' => $totalEngagements,
+                            ];
+                        }
+                        continue;
+                    }
+                    
+                    // Apply age-based randomness ONLY to real-user posts
+                    $chancePasses = true;
+                    if ($isRealUser) {
+                        $engagementChance = $getEngagementChance($candidate->created_at);
+                        $chancePasses = (mt_rand() / mt_getrandmax()) <= $engagementChance;
+                    }
+                    $velocityPasses = $checkEngagementVelocity((int) $candidate->id);
+                    
+                    if ($totalEngagements < $effectiveThreshold && 
+                        $velocityPasses &&
+                        $chancePasses) {
+                        
+                        $already = null;
+                        if ($userId > 0 && $checkPostId > 0) {
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
+                        }
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Random fresh post (realistic timing, low engagement)',
+                            'data' => [
+                                'window' => 'fresh_realistic',
+                                'post' => [
+                                    'id' => $candidate->id,
+                                    'user_id' => $candidate->user_id,
+                                    'group_id' => $candidate->group_id,
+                                    'post_type' => $candidate->post_type,
+                                    'post_text' => $candidate->post_text,
+                                    'post_link' => $candidate->post_link,
+                                    'created_at' => $candidate->created_at?->toISOString(),
+                                ],
+                                'already_reacted_for_postId' => $already,
+                                'engagement_count' => $totalEngagements,
+                                'post_age_minutes' => $postAge,
+                                'is_real_user' => $isRealUser,
+                                'effective_threshold' => $effectiveThreshold,
+                            ]
+                        ]);
+                    }
+                    if ($debugMode && count($diag['fresh_reject_samples']) < $maxSamplesPerBucket) {
+                        $reason = !$velocityPasses ? 'velocity' : (!$chancePasses ? 'chance' : 'threshold');
+                        $diag['fresh_reject_samples'][] = [
+                            'post_id' => (int) $candidate->id,
+                            'reason' => $reason,
+                            'age_minutes' => $postAge,
+                            'is_real_user' => $isRealUser,
+                            'engagements' => $totalEngagements,
+                            'effective_threshold' => $effectiveThreshold,
+                        ];
+                    }
+                }
+            }
+
+            // Priority tier: Prefer real-user posts created within the last 48 hours (with realistic timing)
+            $prioritizeFlag = config('app.REAL_POST_PRIORITY_ENABLED', true);
+            $prioritizeParam = $request->has('prioritize_real_users')
+                ? filter_var($request->query('prioritize_real_users'), FILTER_VALIDATE_BOOLEAN)
+                : null;
+            $prioritizeRealUsers = is_bool($prioritizeParam) ? $prioritizeParam : $prioritizeFlag;
+
+            if ($prioritizeRealUsers) {
+                $priorityFrom = $now->copy()->subHours((int) config('app.REAL_POST_PRIORITY_WINDOW_HOURS', 48));
+                $priorityQuery = Post::where('active', 1)
+                    ->where('created_at', '>=', $priorityFrom)
+                    ->whereHas('user', function ($q) {
+                        $q->where('type', '!=', 'bot');
+                    });
+                if ($userId > 0) {
+                    // Do not return posts authored by the requesting bot's user
+                    $priorityQuery->where('user_id', '!=', $userId);
+                }
+                if (!empty($excludePostIds)) {
+                    $priorityQuery->whereNotIn('id', $excludePostIds);
+                }
+                // Limit scan size for performance, then pick randomly
+                $priorityCandidates = $priorityQuery->orderByDesc('created_at')->limit(200)->get();
+                foreach ($priorityCandidates as $priorityCandidate) {
+                    $diag['priority_scanned']++;
+                    // Apply realistic timing to ALL posts, not just fresh ones
+                    if ($checkEngagementVelocity((int) $priorityCandidate->id) &&
+                        mt_rand() / mt_getrandmax() <= $getEngagementChance($priorityCandidate->created_at)) {
+                        
+                        $already = null;
+                        if ($userId > 0 && $checkPostId > 0) {
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
+                        }
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Random prioritized real-user post (<=48h, realistic timing)',
+                            'data' => [
+                                'window' => 'priority_48h',
+                                'post' => [
+                                    'id' => $priorityCandidate->id,
+                                    'user_id' => $priorityCandidate->user_id,
+                                    'group_id' => $priorityCandidate->group_id,
+                                    'post_type' => $priorityCandidate->post_type,
+                                    'post_text' => $priorityCandidate->post_text,
+                                    'post_link' => $priorityCandidate->post_link,
+                                    'created_at' => $priorityCandidate->created_at?->toISOString(),
+                                ],
+                                'already_reacted_for_postId' => $already,
+                                'post_age_minutes' => $now->diffInMinutes($priorityCandidate->created_at),
+                            ]
+                        ]);
+                    }
+                    if ($debugMode && count($diag['priority_reject_samples']) < $maxSamplesPerBucket) {
+                        $diag['priority_reject_samples'][] = [
+                            'post_id' => (int) $priorityCandidate->id,
+                            'reason' => 'velocity_or_chance',
+                            'age_minutes' => $now->diffInMinutes($priorityCandidate->created_at),
+                            'is_real_user' => true,
+                        ];
+                    }
+                }
+            }
+
+            foreach ($order as $win) {
+                [$from, $to] = $ranges[$win];
+                // Use half-open interval [from, to) to avoid overlaps across windows
+                $q = Post::where('active', 1)
+                    ->where('created_at', '>=', $from)
+                    ->where('created_at', '<', $to);
+                if ($userId > 0) {
+                    $q->where('user_id', '!=', $userId);
+                }
+                if (!empty($excludePostIds)) {
+                    $q->whereNotIn('id', $excludePostIds);
+                }
+                // Eager-load user to distinguish real-user vs bot-authored posts
+                $candidates = $q->with('user:id,type')->orderByDesc('created_at')->limit(200)->get();
+                foreach ($candidates as $picked) {
+                    $diag['fallback_scanned']++;
+                    // Enforce 2-minute blackout for ALL posts
+                    $postAge = $now->diffInMinutes($picked->created_at);
+                    if ($postAge < 2) {
+                        if ($debugMode && count($diag['fallback_reject_samples']) < $maxSamplesPerBucket) {
+                            $diag['fallback_reject_samples'][] = [
+                                'post_id' => (int) $picked->id,
+                                'reason' => 'blackout_0_2m',
+                                'age_minutes' => $postAge,
+                                'is_real_user' => ($picked->user && $picked->user->type !== 'bot'),
+                            ];
+                        }
+                        continue;
+                    }
+                    // Apply age-based randomness ONLY to real-user posts
+                    $isRealUser = $picked->user && $picked->user->type !== 'bot';
+                    $chancePasses = true;
+                    if ($isRealUser) {
+                        $chancePasses = (mt_rand() / mt_getrandmax()) <= $getEngagementChance($picked->created_at);
+                    }
+                    if ($checkEngagementVelocity((int) $picked->id) && $chancePasses) {
+                        
+                    // If explicit postId check was requested, report that status too
+                    $already = null;
+                    if ($userId > 0 && $checkPostId > 0) {
+                            $reacted = \App\Models\Reaction::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $commented = \App\Models\Comment::where('user_id', $userId)->where('post_id', $checkPostId)->exists();
+                            $already = $reacted || $commented;
+                    }
+                    return response()->json([
+                        'success' => true,
+                            'message' => "Random post from window {$win} (realistic timing)",
+                        'data' => [
+                            'window' => $win,
+                            'post' => [
+                                'id' => $picked->id,
+                                'user_id' => $picked->user_id,
+                                'group_id' => $picked->group_id,
+                                'post_type' => $picked->post_type,
+                                'post_text' => $picked->post_text,
+                                'post_link' => $picked->post_link,
+                                'created_at' => $picked->created_at?->toISOString(),
+                            ],
+                            'already_reacted_for_postId' => $already,
+                                'post_age_minutes' => $now->diffInMinutes($picked->created_at),
+                        ]
+                    ]);
+                    }
+                    if ($debugMode && count($diag['fallback_reject_samples']) < $maxSamplesPerBucket) {
+                        $diag['fallback_reject_samples'][] = [
+                            'post_id' => (int) $picked->id,
+                            'reason' => !$chancePasses ? 'chance' : 'velocity',
+                            'age_minutes' => $postAge,
+                            'is_real_user' => $isRealUser,
+                        ];
+                    }
+                }
+            }
+
+            // If we reach here, no eligible post was found across windows.
+            // If a bot_user_id was provided, update the bot's last_engagement (cooldown) and return an error.
+            if ($botUserId > 0) {
+                $bot = Bot::where('user_id', $botUserId)->first();
+                if ($bot) {
+                    $bot->update(['last_engagement' => now()]);
+                    $botUser = $bot->user ?: User::find($bot->user_id);
+                    Log::channel('bot_engagement')->info('No eligible posts (weighted); updated last_engagement for bot', [
+                        'bot_id' => $bot->id,
+                        'bot_user_id' => $bot->user_id,
+                        'bot_name' => $botUser?->name,
+                        'bot_email' => $botUser?->email,
+                        'exclude_post_ids_count' => $diag['exclude_post_ids_count'] ?? null,
+                        'fresh_scanned' => $diag['fresh_scanned'] ?? null,
+                        'priority_scanned' => $diag['priority_scanned'] ?? null,
+                        'fallback_scanned' => $diag['fallback_scanned'] ?? null,
+                    ]);
+                }
+                $payload = [
+                    'success' => false,
+                    'error' => 'No eligible post to react by this bot',
+                    'code' => 'NO_ELIGIBLE_POST_FOR_BOT',
+                ];
+                if ($debugMode) {
+                    $payload['diagnostics'] = [
+                        'fresh_scanned' => $diag['fresh_scanned'],
+                        'priority_scanned' => $diag['priority_scanned'],
+                        'fallback_scanned' => $diag['fallback_scanned'],
+                        'exclude_post_ids_count' => $diag['exclude_post_ids_count'],
+                        'fresh_reject_samples' => $diag['fresh_reject_samples'],
+                        'priority_reject_samples' => $diag['priority_reject_samples'],
+                        'fallback_reject_samples' => $diag['fallback_reject_samples'],
+                    ];
+                }
+                return response()->json($payload, 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'No posts found in the past 30 days',
+                'data' => null
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Automation API Error (getRandomPostWeighted): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Internal server error',
+                'code' => 'SERVER_ERROR'
+            ], 500);
+        }
+    }
+
+    private function pickWeightedWindow(array $weights): string
+    {
+        $sum = array_sum($weights);
+        if ($sum <= 0) return '7d';
+        $rand = random_int(1, $sum);
+        $acc = 0;
+        foreach ($weights as $k => $w) {
+            $acc += (int) $w;
+            if ($rand <= $acc) return $k;
+        }
+        return array_key_first($weights);
     }
 }

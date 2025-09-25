@@ -1,5 +1,5 @@
 <template>
-  <ul class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
+  <div class="bg-white rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
     <!-- Widget Header -->
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center">
@@ -8,67 +8,70 @@
       <span class="fs-5 text-black">Suggested Traders To Follow</span>
     </div>
 
-    <!-- Loading Skeleton -->
-    <template v-if="isSuggestedTradersLoading">
-      <li class="px-3 py-2 d-flex align-items-center">
-        <div class="avatar me-3 skeleton-avatar"></div>
-        <div class="flex-grow-1">
-          <div class="skeleton-line skeleton-line-title"></div>
-          <div class="skeleton-line skeleton-line-subtitle"></div>
-        </div>
-        <div class="skeleton-button"></div>
-      </li>
-      <li class="px-3 py-2 d-flex align-items-center">
-        <div class="avatar me-3 skeleton-avatar"></div>
-        <div class="flex-grow-1">
-          <div class="skeleton-line skeleton-line-title"></div>
-          <div class="skeleton-line skeleton-line-subtitle"></div>
-        </div>
-        <div class="skeleton-button"></div>
-      </li>
-      <li class="px-3 py-2 d-flex align-items-center">
-        <div class="avatar me-3 skeleton-avatar"></div>
-        <div class="flex-grow-1">
-          <div class="skeleton-line skeleton-line-title"></div>
-          <div class="skeleton-line skeleton-line-subtitle"></div>
-        </div>
-        <div class="skeleton-button"></div>
-      </li>
-    </template>
+    <!-- Scrollable list -->
+    <ul class="list-unstyled mb-0 suggested-scroll-area" style="max-height: 330px; overflow-y: auto; display: block; -webkit-overflow-scrolling: touch;">
+      <!-- Loading Skeleton -->
+      <template v-if="isSuggestedTradersLoading">
+        <li class="px-3 py-2 d-flex align-items-center">
+          <div class="avatar me-3 skeleton-avatar"></div>
+          <div class="flex-grow-1">
+            <div class="skeleton-line skeleton-line-title"></div>
+            <div class="skeleton-line skeleton-line-subtitle"></div>
+          </div>
+          <div class="skeleton-button"></div>
+        </li>
+        <li class="px-3 py-2 d-flex align-items-center">
+          <div class="avatar me-3 skeleton-avatar"></div>
+          <div class="flex-grow-1">
+            <div class="skeleton-line skeleton-line-title"></div>
+            <div class="skeleton-line skeleton-line-subtitle"></div>
+          </div>
+          <div class="skeleton-button"></div>
+        </li>
+        <li class="px-3 py-2 d-flex align-items-center">
+          <div class="avatar me-3 skeleton-avatar"></div>
+          <div class="flex-grow-1">
+            <div class="skeleton-line skeleton-line-title"></div>
+            <div class="skeleton-line skeleton-line-subtitle"></div>
+          </div>
+          <div class="skeleton-button"></div>
+        </li>
+      </template>
 
-    <!-- Traders List -->
-    <template v-else>
-      <li v-for="trader in getSuggestedTraders" :key="trader.id" class="px-3 py-2 d-flex align-items-center hover-shadow">
-        <div class="avatar me-3">
-          <img 
-            :src="`/uploads/${trader.avatar}`" 
-            alt="Profile Picture" 
-            class="rounded-circle" 
-            width="50" 
-            height="50" 
-            @error="handleImageError($event)"
+      <!-- Traders List -->
+      <template v-else>
+        <li v-for="trader in getSuggestedTraders" :key="trader.id" class="px-3 py-2 d-flex align-items-center hover-shadow">
+          <div class="avatar me-3">
+            <img 
+              :src="`/uploads/${trader.avatar}`" 
+              alt="Profile Picture" 
+              class="rounded-circle" 
+              width="50" 
+              height="50" 
+              @error="handleImageError($event)"
+            >
+          </div>
+          <div class="flex-grow-1">
+            <a :href="trader.profileUrl" class="fw-5 text-black">{{ trader.name }}</a>
+            <p class="mb-0 text-muted">
+              {{ trader.posts_count }} {{ trader.posts_count > 1 ? 'Posts' : 'Post' }}
+            </p>
+          </div>
+          <button 
+            class="btn btn-outline-primary btn-sm" 
+            @click="handleFollow(trader.id)"
+            :disabled="trader.isFollowing"
           >
-        </div>
-        <div class="flex-grow-1">
-          <a :href="trader.profileUrl" class="fw-5 text-black">{{ trader.name }}</a>
-          <p class="mb-0 text-muted">
-            {{ trader.posts_count }} {{ trader.posts_count > 1 ? 'Posts' : 'Post' }}
-          </p>
-        </div>
-        <button 
-          class="btn btn-outline-primary btn-sm" 
-          @click="handleFollow(trader.id)"
-          :disabled="trader.isFollowing"
-        >
-          <i class="bi bi-person-plus me-1"></i> 
-          {{ trader.isFollowing ? 'Following' : 'Follow' }}
-        </button>
-      </li>
-      <li v-if="getSuggestedTraders.length === 0" class="px-3 py-2 text-center text-muted">
-        No suggestions available at the moment.
-      </li>
-    </template>
-  </ul>
+            <i class="bi bi-person-plus me-1"></i> 
+            {{ trader.isFollowing ? 'Following' : 'Follow' }}
+          </button>
+        </li>
+        <li v-if="getSuggestedTraders.length === 0" class="px-3 py-2 text-center text-muted">
+          No suggestions available at the moment.
+        </li>
+      </template>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -157,5 +160,12 @@ export default {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+/* Make list scrollable after ~5 items while preserving header size */
+.suggested-scroll-area {
+  height: 330px; /* ~5 rows visible */
+  overflow-y: auto;
+  display: block;
 }
 </style>

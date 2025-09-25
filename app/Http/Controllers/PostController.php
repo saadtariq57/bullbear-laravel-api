@@ -23,6 +23,9 @@ use App\Notifications\PostCommentNotification;
 use App\Notifications\NewPollVoteNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\FeedService;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Message;
 
 class PostController extends Controller
 {
@@ -346,54 +349,25 @@ class PostController extends Controller
     public function getUserFeed(Request $request)
     {
         $user = $request->user();
-        $groupIds = $user->groupMemberships()->pluck('group_id');
-        $followingsIds = $user->followings()->pluck('following_id')->toArray();
-        //return response()->json(['Grouo Id' => $groupIds, 'Following Id' => $followingsIds]);
+        $feedService = app(FeedService::class);
+        $posts = $feedService->getFeedForUser($user, [
+            'since_hours' => (int) $request->get('since_hours', 24),
+            'lastPostId' => $request->get('lastPostId'),
+            'per_page' => (int) $request->get('per_page', 10),
+        ]);
 
-        // Create a query combining posts from groups, followed users, and user's own posts
-        $postsQuery = Post::with([
-            'user:id,name,avatar',
-            'user' => function($query) {
-                $query->withCount('followers'); 
-            },
-            'photos', 
-            'poll.options', 
-            'poll.userVotes' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            },
-            'coloredPost', 
-            'reactions' => function($query) {
-                $query->with('reactionType:id,name,icon')
-                      ->with('user:id,name,avatar,about');
-            },
-            'sharedPost.user:id,name,avatar',
-            'sharedPost.photos',
-            'sharedPost.poll.options',
-            'sharedPost.poll.userVotes' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            },
-            'sharedPost.coloredPost',
-            'sharedPost.reactions' => function($query) {
-                $query->with('reactionType:id,name,icon')
-                      ->with('user:id,name,avatar,about');
-            }
-        ])
-        ->withCount(['comments', 'reactions'])
-        ->where(function($query) use ($groupIds, $followingsIds, $user) {
-            $query->whereIn('group_id', $groupIds)
-                  ->orWhereIn('user_id', $followingsIds)
-                  ->orWhere('user_id', $user->id);
-                  /*->where('user_id', '!=', $user->id);*/
-        })
-        ->orderByDesc('created_at');
+        // Ensure reactions are eager-loaded on the returned items (belt-and-suspenders)
+        $posts->getCollection()->load([
+            'reactions.reactionType:id,name,icon',
+            'reactions.user:id,name,avatar,about',
+            'sharedPost.reactions.reactionType:id,name,icon',
+            'sharedPost.reactions.user:id,name,avatar,about',
+        ]);
 
-        if ($request->has('lastPostId')) {
-            $lastPostId = $request->get('lastPostId');
-            $postsQuery = $postsQuery->where('id', '<', $lastPostId);
-        }
+        // Ensure colored posts are present for color rendering
+        $posts->getCollection()->load(['coloredPost', 'sharedPost.coloredPost']);
 
-        $posts = $postsQuery->paginate(10);
-        $posts->transform(function ($post) use ($user) {
+        $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
             if ($post->sharedPost) {
                 $sharedPost = $post->sharedPost;
@@ -897,15 +871,19 @@ class PostController extends Controller
         $userId = Auth::id();
 
         $request->validate([
-            'reaction_type_id' => 'required|integer',
-            // Ensure at least one of these IDs is provided
-            'post_id' => 'sometimes|integer',
-            'comment_id' => 'sometimes|integer',
-            'message_id' => 'sometimes|integer',
+            'reaction_type_id' => 'required|integer|exists:reaction_types,id',
+            // Ensure at least one of these IDs is provided and that they exist when present
+            'post_id' => 'sometimes|integer|required_without_all:comment_id,message_id|exists:posts,id',
+            'comment_id' => 'sometimes|integer|required_without_all:post_id,message_id|exists:comments,id',
+            'message_id' => 'sometimes|integer|required_without_all:post_id,comment_id',
         ]);
 
-        $reactionTypeId = $request->reaction_type_id;
-        $reactionTypeName = ReactionType::find($reactionTypeId)->name;
+        $reactionTypeId = (int) $request->reaction_type_id;
+        $reactionType = ReactionType::find($reactionTypeId);
+        if (!$reactionType) {
+            return response()->json(['message' => 'Invalid reaction_type_id'], 422);
+        }
+        $reactionTypeName = $reactionType->name;
 
         $reactionData = [
             'user_id' => $userId,
@@ -918,23 +896,25 @@ class PostController extends Controller
         $postId = null;
         // Determine which ID is provided and use it
         if ($request->has('post_id')) {
-            $reactionData['post_id'] = $request->post_id;
-            $ownerId = Post::find($request->post_id)->user_id ?? null;
-            $postId = $request->post_id ?? null;
+            $reactionData['post_id'] = (int) $request->post_id;
+            $post = Post::find($request->post_id);
+            $ownerId = $post?->user_id;
+            $postId = $post?->id;
             $notificationTitle = ' has reacted to your post';
             $notificationDesc = ' has '.$reactionTypeName.' your post';
 
         } elseif ($request->has('comment_id')) {
-            $reactionData['comment_id'] = $request->comment_id;
+            $reactionData['comment_id'] = (int) $request->comment_id;
             $comment = Comment::find($request->comment_id);
-            $ownerId = $comment->user_id ?? null;
-            $postId = $comment->post_id ?? null;
+            $ownerId = $comment?->user_id;
+            $postId = $comment?->post_id;
             $notificationTitle = ' has reacted to your comment';
             $notificationDesc = ' has '.$reactionTypeName.' your comment';
 
         } elseif ($request->has('message_id')) {
-            $reactionData['message_id'] = $request->message_id;
-            $ownerId = Message::find($request->message_id)->user_id ?? null;
+            $reactionData['message_id'] = (int) $request->message_id;
+            $message = Message::find($request->message_id);
+            $ownerId = $message?->user_id;
             $notificationTitle = ' has reacted to your message';
             $notificationDesc = ' has '.$reactionTypeName.' your message';
         }
@@ -983,9 +963,28 @@ class PostController extends Controller
                 ],
             ];
             $postOwner = User::findOrFail($ownerId);
-    
-            broadcast(new NewPostReaction($notificationData));
-            $postOwner->notify(new NewPostReactionNotification($notificationData));
+
+            try {
+                broadcast(new NewPostReaction($notificationData));
+            } catch (\Throwable $e) {
+                Log::error('Broadcast NewPostReaction failed', [
+                    'userId' => $userId,
+                    'ownerId' => $ownerId,
+                    'postId' => $postId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $postOwner->notify(new NewPostReactionNotification($notificationData));
+            } catch (\Throwable $e) {
+                Log::error('Notify NewPostReactionNotification failed', [
+                    'userId' => $userId,
+                    'ownerId' => $ownerId,
+                    'postId' => $postId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
         
 

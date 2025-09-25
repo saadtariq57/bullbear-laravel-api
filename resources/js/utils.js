@@ -64,32 +64,36 @@ export function formatDateTime(dateTime) {
 }
 
 export const organizeReactions = (reactions, userId) => {
-    let organizedReactions = {};
+    const safeArray = Array.isArray(reactions) ? reactions : [];
+    const organizedReactions = {};
     let userReaction = null;
 
-    reactions.forEach(reaction => {
-        const reactionKey = reaction.reaction_type.name;
+    for (const reaction of safeArray) {
+        if (!reaction) continue;
+
+        // Support both snake_case and camelCase relation keys from API
+        const reactionTypeRel = reaction.reaction_type || reaction.reactionType || {};
+        const userRel = reaction.user || {};
+
+        const reactionKey = reactionTypeRel.name || 'like';
 
         if (!organizedReactions[reactionKey]) {
-            organizedReactions[reactionKey] = {
-                count: 0,
-                details: [],
-            };
+            organizedReactions[reactionKey] = { count: 0, details: [] };
         }
 
         if (reaction.user_id === userId) {
-            userReaction = reaction.reaction_type_id;
+            userReaction = reaction.reaction_type_id ?? userReaction;
         }
 
-        organizedReactions[reactionKey].count++;
+        organizedReactions[reactionKey].count += 1;
         organizedReactions[reactionKey].details.push({
             userId: reaction.user_id,
-            userName: reaction.user.name,
-            userImage: reaction.user.avatar,
-            reactionImage: reaction.reaction_type.icon,
+            userName: userRel.name || 'Unknown',
+            userImage: userRel.avatar || 'default.png',
+            reactionImage: reactionTypeRel.icon || 'uploads/icons/like.png',
             reactionType: reactionKey,
         });
-    });
+    }
 
     return { organizedReactions, userReaction };
 };

@@ -65,7 +65,7 @@
           <!-- Post Content -->
           <div v-if="post.post_text" class="post-description px-3 text-break">
             <div
-              v-if="post.colored_post_id"
+              v-if="post.colored_post_id && post.colored_post"
               class="colored-post-text d-flex justify-content-center align-items-center"
               :style="{
                 backgroundImage:
@@ -285,7 +285,7 @@
             <div class="shared-post-content">
               <!-- Render based on shared post type -->
               <template v-if="post.originalPost.post_type === 'text'">
-                <div v-if="post.originalPost.colored_post_id" class="colored-post-text d-flex justify-content-center align-items-center"
+                <div v-if="post.originalPost.colored_post_id && post.originalPost.colored_post" class="colored-post-text d-flex justify-content-center align-items-center"
                   :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
                   <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
                     {{ post.originalPost.post_text }}
@@ -562,6 +562,9 @@
           />
         </div>
       </div>
+      <!-- Sentinel for infinite scroll (triggers before widgets on mobile) -->
+      <div ref="infiniteScrollSentinel" style="height:1px;width:100%;"></div>
+
       <!-- Loading Indicator for More Posts -->
       <div v-if="isFetchingMore" class="text-center my-4">
         <span>Loading more posts...</span>
@@ -734,6 +737,7 @@ import { formatDateTime } from '../../utils';
 import { Modal, Dropdown } from 'bootstrap';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userFeedModule from '@/stores/userFeedStore';
+import userFeedCommentModule from '@/stores/userFeedCommentStore';
 import { mapState, mapActions } from 'vuex';
 import "vue-skeletor/dist/vue-skeletor.css";
 import { Skeletor } from "vue-skeletor";
@@ -779,10 +783,12 @@ export default {
       clickedPostReactionTypes: null,
       loadingComputedPosts: true,
       moduleRegistered: false,
+      commentModuleRegistered: false,
       debouncedHandleScroll: null,
       shareToGroupPost: null,
       shareModalInstance: null,
       editPostData: null,
+      infiniteObserver: null,
     };
   },
   computed: {
@@ -843,6 +849,28 @@ export default {
     }
   },
   methods: {
+    setupInfiniteObserver() {
+      // Teardown any existing observer
+      if (this.infiniteObserver) {
+        if (this.$refs.infiniteScrollSentinel) {
+          try { this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel); } catch (e) {}
+        }
+        try { this.infiniteObserver.disconnect(); } catch (e) {}
+        this.infiniteObserver = null;
+      }
+
+      if ('IntersectionObserver' in window && this.$refs.infiniteScrollSentinel) {
+        const options = { root: null, rootMargin: '0px 0px 800px 0px', threshold: 0 };
+        this.infiniteObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.isFetchingMore && this.hasMorePosts) {
+              this.loadMorePosts();
+            }
+          });
+        }, options);
+        this.infiniteObserver.observe(this.$refs.infiniteScrollSentinel);
+      }
+    },
     renderedMarkdown(text) {
       return renderMarkdownToHtml(text);
     },
@@ -944,7 +972,11 @@ export default {
       this.activeReactionData = { postId, reactionData };
     },
     handleScroll() {
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+      const scrollingElement = document.scrollingElement || document.documentElement;
+      const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = scrollingElement.scrollHeight;
+      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - 300);
       if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
         this.loadMorePosts();
       }
@@ -1104,18 +1136,37 @@ export default {
   },
   mounted() {
     this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
-    window.addEventListener('scroll', this.debouncedHandleScroll);
+    window.addEventListener('scroll', this.debouncedHandleScroll, { passive: true });
+
+    // IntersectionObserver for reliable mobile infinite scroll
+    this.$nextTick(() => { this.setupInfiniteObserver(); });
+  },
+  updated() {
+    // Ensure observer stays attached after virtual DOM updates (e.g., after appending posts)
+    this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
   beforeDestroy() {
     if (this.moduleRegistered) {
       unregisterVuexModule('userFeed');
     }
+    if (this.commentModuleRegistered) {
+      unregisterVuexModule('userFeedComment');
+    }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
+    if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
+      this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
+      this.infiniteObserver.disconnect();
+      this.infiniteObserver = null;
+    }
   },
   created() {
     if (!this.$store.hasModule('userFeed')) {
       registerVuexModule('userFeed', userFeedModule);
       this.moduleRegistered = true;
+    }
+    if (!this.$store.hasModule('userFeedComment')) {
+      registerVuexModule('userFeedComment', userFeedCommentModule);
+      this.commentModuleRegistered = true;
     }
   }
 };

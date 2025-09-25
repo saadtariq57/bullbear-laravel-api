@@ -2,10 +2,12 @@
 
 <div class="d-flex gap-3">
     <!-- Followers -->
-    <div class="btn-group dropdown-hover" aria-label="Followers Dropdown">
+    <div class="btn-group" aria-label="Followers Dropdown">
         <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Followers">
             <i class="bi bi-person-fill-add fs-4" aria-hidden="true"></i>
-            <span class="notification-count">{{ $followers->count() }}</span>
+            @if ($followers->count() > 0)
+                <span class="notification-count">{{ $followers->count() }}</span>
+            @endif
         </button>
         <ul class="dropdown-menu dropdown-menu-end m-0 p-0" aria-label="Followers Menu">
             @forelse ($followers as $follower)
@@ -28,10 +30,12 @@
     </div>
 
     <!-- Messages -->
-    <div class="btn-group dropdown-hover" aria-label="Messages Dropdown">
+    <div class="btn-group" aria-label="Messages Dropdown">
         <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Messages">
             <i class="bi bi-chat-dots fs-4" aria-hidden="true"></i>
-            <span class="notification-count">{{ $messages->count() }}</span>
+            @if ($messages->count() > 0)
+                <span class="notification-count">{{ $messages->count() }}</span>
+            @endif
         </button>
         <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown" aria-label="Messages Menu">
             @forelse ($messages as $message)
@@ -57,10 +61,12 @@
     </div>
 
     <!-- General Notifications -->
-    <div class="btn-group dropdown-hover" aria-label="Notifications Dropdown">
+    <div class="btn-group" aria-label="Notifications Dropdown">
         <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
             <i class="bi bi-bell-fill fs-4" aria-hidden="true"></i>
-            <span class="notification-count">{{ $notifications->count() }}</span>
+            @if ($notifications->count() > 0)
+                <span class="notification-count">{{ $notifications->count() }}</span>
+            @endif
         </button>
         <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification" aria-label="Notifications Menu">
             @forelse ($notifications as $notification)
@@ -86,7 +92,7 @@
     </div>
 
     <!-- Profile Links -->
-    <div class="dropdown-center dropdown-hover" aria-label="Profile Dropdown">
+    <div class="dropdown-center" aria-label="Profile Dropdown">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Profile Menu">
             <div class="img">
                 <img src="{{ $updatedProfileImagePath ? '/uploads/' . $updatedProfileImagePath : '/uploads/' . $user->avatar }}" class="rounded-circle" width="40" height="40" alt="{{ $user->name }} profile picture" onerror="this.onerror=null;this.src='/uploads/photos/d-avatar.jpg';">

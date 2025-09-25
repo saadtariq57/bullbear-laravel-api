@@ -1,14 +1,14 @@
 <template>
     <div class="d-flex gap-3">
         <!-- Followers -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
-                <span class="notification-count">{{ followers.length }}</span>
+                <span class="notification-count" v-if="followers.length > 0">{{ followers.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
                 <li v-for="follower in followers" :key="follower.id" class="py-0">
-                    <a :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
+                    <a @click.prevent="handleFollowerClick(follower)" :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
                             <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="45" height="45">
                             <div>
@@ -21,14 +21,14 @@
         </div>
 
         <!-- Messages -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-dots fs-4"></i>
-                <span class="notification-count">{{ messages.length }}</span>
+                <span class="notification-count" v-if="messages.length > 0">{{ messages.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
                 <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
-                    <a @click.prevent="handleNotificationClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
+                    <a @click.prevent="handleMessageClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
                         <img :src="'/uploads/' + message.user.avatar" alt="" width="50" height="50" class="rounded-circle">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ message.user.name }}</h6>
@@ -43,14 +43,14 @@
         </div>
 
         <!-- General Notifications -->
-        <div class="btn-group dropdown-hover btn-drps">
+        <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill fs-4"></i>
-                <span class="notification-count">{{ notifications.length }}</span>
+                <span class="notification-count" v-if="notifications.length > 0">{{ notifications.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification">
                 <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
-                    <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
+                    <a @click.prevent="handleGeneralNotificationClick(notification)" :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
                         <div>
                             <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
@@ -63,7 +63,7 @@
             </ul>
         </div>
     <!-- Profile Links -->
-    <div class="dropdown-center dropdown-hover btn-drps">
+    <div class="dropdown-center btn-drps">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <div class="img">
@@ -136,6 +136,27 @@ export default {
             window.location.href = notification.url;
         },
 
+        handleGeneralNotificationClick(notification) {
+            if (!notification.read_at) {
+                this.markNotificationAsRead(notification.id);
+            }
+            window.location.href = notification.url;
+        },
+
+        handleMessageClick(message) {
+            if (!message.read_at) {
+                this.markNotificationAsRead(message.id);
+            }
+            window.location.href = message.url;
+        },
+
+        handleFollowerClick(follower) {
+            if (!follower.read_at) {
+                this.markNotificationAsRead(follower.id);
+            }
+            window.location.href = '/profile/' + follower.user.name;
+        },
+
         logout() {
             axios.post('/logout')
             .then(response => {
@@ -165,12 +186,6 @@ export default {
 .header_notification{
     max-height: 316px;
     overflow: auto;
-}
-.dropdown-hover:hover .dropdown-menu{
-    display: block;
-    right: 0;
-    left: auto;
-    top: 100%!important;
 }
 .unread-notification-wrapper{
   background-color: #C3DDF8;

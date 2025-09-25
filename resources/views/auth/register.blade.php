@@ -84,10 +84,16 @@
 
                                                         <div class="mb-3">
                                                             <label class="form-label" for="password-input">Password</label>
-                                                            <input type="password"
-                                                                class="form-control @error('password') is-invalid @enderror"
-                                                                name="password" required id="password-input"
-                                                                placeholder="Enter password">
+                                                            <div class="position-relative">
+                                                                <input type="password"
+                                                                    class="form-control @error('password') is-invalid @enderror"
+                                                                    name="password" required id="password-input"
+                                                                    placeholder="Enter password">
+                                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
+                                                                        id="toggle-password" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                                                                    <i class="bi bi-eye-slash" id="toggle-password-icon" style="font-size: 18px;"></i>
+                                                                </button>
+                                                            </div>
                                                             @error('password')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
@@ -98,10 +104,16 @@
                                                         <div class="mb-3">
                                                             <label class="form-label" for="password-confirm">Confirm
                                                                 Password</label>
-                                                            <input type="password"
-                                                                class="form-control @error('password') is-invalid @enderror"
-                                                                name="password_confirmation" required id="password-confirm"
-                                                                placeholder="Enter confirm password">
+                                                            <div class="position-relative">
+                                                                <input type="password"
+                                                                    class="form-control @error('password') is-invalid @enderror"
+                                                                    name="password_confirmation" required id="password-confirm"
+                                                                    placeholder="Enter confirm password">
+                                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
+                                                                        id="toggle-password-confirm" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                                                                    <i class="bi bi-eye-slash" id="toggle-password-confirm-icon" style="font-size: 18px;"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
 
                                                         <div>
@@ -195,6 +207,38 @@
         document.getElementById('name').addEventListener('input', function() {
             var username = this.value;
             checkUsernameAvailability(username);
+        });
+
+        // Password toggle functionality for password field
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password-input');
+            const toggleIcon = document.getElementById('toggle-password-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            }
+        });
+
+        // Password toggle functionality for confirm password field
+        document.getElementById('toggle-password-confirm').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password-confirm');
+            const toggleIcon = document.getElementById('toggle-password-confirm-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            }
         });
     </script>
 @endsection

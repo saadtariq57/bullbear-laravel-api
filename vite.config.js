@@ -64,8 +64,8 @@ export default defineConfig({
                     src: 'resources/images',
                     dest: ''
                 },
-                { src: 'resources/js/libs/jquery.min.js', dest: 'libs/jquery' },
-                { src: 'resources/js/libs/bootstrap.bundle.min.js', dest: 'libs/bootstrap/js' },
+                { src: 'node_modules/jquery/dist/jquery.min.js', dest: 'libs/jquery' },
+                { src: 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', dest: 'libs/bootstrap/js' },
                 { src: 'resources/js/slick.min.js', dest: 'js' },
                 { src: 'resources/js/custom.js', dest: 'js' },
                 {

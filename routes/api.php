@@ -309,4 +309,9 @@ Route::middleware('api.key')->group(function () {
     Route::get('/automation/group/{symbol}', [AutomationController::class, 'getGroupBySymbol'])->name('api.automation.group-by-symbol');
     Route::post('/automation/recommend-groups', [AutomationController::class, 'getGroupRecommendations'])->name('api.automation.recommend-groups');
     Route::get('/automation/richtv-content-apis', [AutomationController::class, 'getRichTvContentApis'])->name('api.automation.richtv-content-apis');
+   
+    Route::post('/automation/engage', [AutomationController::class, 'engage'])->name('api.automation.engage');
+    Route::get('/automation/last-engagement', [AutomationController::class, 'getLastEngagement'])->name('api.automation.last-engagement');
+    Route::get('/bots/active-engagement-bots', [AutomationController::class, 'getActiveBotsForEngagement'])->name('api.automation.engagement-bots');
+    Route::get('/automation/random-post-weighted', [AutomationController::class, 'getRandomPostWeighted'])->name('api.automation.random-post-weighted');
 });
