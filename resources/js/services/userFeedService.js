@@ -20,7 +20,19 @@ const UserFeedService = {
             console.log(lastPostId);
             console.log(url);
             const response = await axios.get(url);
-            const data = response.data.data;
+            let data = Array.isArray(response.data?.data) ? response.data.data : [];
+
+            // Fallback: if feed is empty on initial load, broaden the time window to avoid an empty UI
+            if (context === 'feed' && !lastPostId && data.length === 0) {
+                const separator = url.includes('?') ? '&' : '?';
+                const fallbackUrl = `${url}${separator}since_hours=720`;
+                try {
+                    const fallbackResponse = await axios.get(fallbackUrl);
+                    data = Array.isArray(fallbackResponse.data?.data) ? fallbackResponse.data.data : [];
+                } catch (e) {
+                    // ignore fallback error; will return empty data
+                }
+            }
             
         
             const transformedPosts = data.map(post => {
@@ -37,8 +49,23 @@ const UserFeedService = {
                     }
                 }
 
+                // Defensive normalization to prevent render-time crashes
+                const safeUser = post.user || { id: null, name: 'Unknown', avatar: 'photos/d-avatar.jpg' };
+                const safePhotos = Array.isArray(post.photos) ? post.photos : [];
+                let safeOriginalPost = null;
+                if (post.originalPost) {
+                    const op = post.originalPost;
+                    // Prefer original post's user; if missing, fall back to current post's user to avoid 'Unknown'
+                    const opUser = op.user || safeUser || { id: null, name: 'Unknown', avatar: 'photos/d-avatar.jpg' };
+                    const opPhotos = Array.isArray(op.photos) ? op.photos : [];
+                    safeOriginalPost = { ...op, user: opUser, photos: opPhotos };
+                }
+
                 return {
                     ...post,
+                    user: safeUser,
+                    photos: safePhotos,
+                    originalPost: safeOriginalPost ?? post.originalPost ?? null,
                     userReaction: userReaction,
                     organizedReactions: organizedReactions,
                     userVoted: userVoted,

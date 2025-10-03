@@ -131,24 +131,31 @@ const userFeedModule = {
         },
     },
     actions: {
-        async fetchPosts({ commit, rootState }, { context, groupId = null, userName = null, singlePostID }) {
-            
-          commit('setLoading', true);
-          try {
-            const userId = rootState.userData.id;
-            let posts;
-            let lastPostId;
-            posts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName, lastPostId, singlePostID);
-            commit('setPosts', posts);
-            if (posts.length < 10) {
-                commit('setHasMorePosts', false);
+        async fetchPosts({ commit, state, rootState }, { context, groupId = null, userName = null, singlePostID }) {
+            commit('setLoading', true);
+            try {
+                const userId = rootState.userData.id;
+                let posts;
+                let lastPostId;
+                posts = await UserFeedService.fetchUserPosts(userId, context, groupId, userName, lastPostId, singlePostID);
+                // For feed context, avoid wiping existing posts on empty responses after actions like sharing
+                if (context === 'feed') {
+                    if (posts.length > 0 || state.posts.length === 0) {
+                        commit('setPosts', posts);
+                    }
+                } else {
+                    // For non-feed contexts (group/profile/single), always reflect server state
+                    commit('setPosts', posts);
+                }
+                if (posts.length < 10) {
+                    commit('setHasMorePosts', false);
+                }
+            } catch (error) {
+                commit('setError', error.message);
+                // Do not clear existing posts on error
+            } finally {
+                commit('setLoading', false);
             }
-            
-          } catch (error) {
-            commit('setError', error.message);
-          } finally {
-            commit('setLoading', false);
-          }
         },
         addPost({commit, rootState}, post){
             const transformedPost = UserFeedService.transfromPost([post], post.user.id);

@@ -22,10 +22,11 @@ use App\Notifications\NewPostReactionNotification;
 use App\Notifications\PostCommentNotification;
 use App\Notifications\NewPollVoteNotification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Services\FeedService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Message;
+//
 
 class PostController extends Controller
 {
@@ -350,6 +351,12 @@ class PostController extends Controller
     {
         $user = $request->user();
         $feedService = app(FeedService::class);
+        Log::info('UserFeed request', [
+            'user_id' => $user?->id,
+            'since_hours' => (int) $request->get('since_hours', 24),
+            'lastPostId' => $request->get('lastPostId'),
+            'per_page' => (int) $request->get('per_page', 10),
+        ]);
         $posts = $feedService->getFeedForUser($user, [
             'since_hours' => (int) $request->get('since_hours', 24),
             'lastPostId' => $request->get('lastPostId'),
@@ -366,6 +373,14 @@ class PostController extends Controller
 
         // Ensure colored posts are present for color rendering
         $posts->getCollection()->load(['coloredPost', 'sharedPost.coloredPost']);
+
+        // Diagnostics: count posts with missing user relations to explain render errors
+        try {
+            $nullUserCount = $posts->getCollection()->filter(function ($p) { return $p->user === null; })->count();
+            Log::info('UserFeed diagnostics', [ 'null_user_posts' => $nullUserCount ]);
+        } catch (\Throwable $e) {
+            // ignore logging errors
+        }
 
         $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
@@ -427,6 +442,10 @@ class PostController extends Controller
             return $post;
         });
 
+        Log::info('UserFeed response', [
+            'items_on_page' => $posts->count(),
+            'total' => $posts->total(),
+        ]);
         return response()->json($posts);
     }
 

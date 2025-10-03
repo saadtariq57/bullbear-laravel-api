@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
  
 
 class FeedService
@@ -28,11 +29,18 @@ class FeedService
 
         // Build feed fresh on every request (no server-side caching)
         $candidates = $this->fetchCandidates($user, $sinceHours, $lastPostId);
+        Log::info('FeedService candidates', [
+            'user_id' => $user->id,
+            'since_hours' => $sinceHours,
+            'lastPostId' => $lastPostId,
+            'candidate_count' => $candidates->count(),
+        ]);
 
         // If empty, widen window to 7d then 30d and include trending
         if ($candidates->isEmpty()) {
             $fallback = $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
             if ($fallback->total() > 0) return $fallback;
+            Log::info('FeedService fallback to 30d trending');
             return $this->getTrendingFeed(720, $perPage, $lastPostId, $user);
         }
 
@@ -47,6 +55,7 @@ class FeedService
                     ->unique('id')
                     ->take(self::CANDIDATE_LIMIT)
                     ->values();
+                Log::info('FeedService backfill 7d', ['added' => $fallback7d->count(), 'total' => $candidates->count()]);
             }
 
             // If still thin, widen to 30 days
@@ -59,6 +68,7 @@ class FeedService
                         ->unique('id')
                         ->take(self::CANDIDATE_LIMIT)
                         ->values();
+                    Log::info('FeedService backfill 30d', ['added' => $fallback30d->count(), 'total' => $candidates->count()]);
                 }
             }
         }
@@ -66,6 +76,7 @@ class FeedService
         $scored = $this->scoreCandidates($user, $candidates);
 
         if ($scored->isEmpty()) {
+            Log::info('FeedService scored empty, fallback trending 7d');
             return $this->getTrendingFeed(max($sinceHours, 168), $perPage, $lastPostId, $user);
         }
 
@@ -74,6 +85,7 @@ class FeedService
         $page = 1; // cursor-based via lastPostId
         $items = $scored->take($perPage)->values();
 
+        Log::info('FeedService paginate', ['returning' => $items->count(), 'total' => $total]);
         return new \Illuminate\Pagination\LengthAwarePaginator(
             $items,
             $total,
@@ -116,6 +128,7 @@ class FeedService
             ->limit(self::CANDIDATE_LIMIT);
 
         $posts = $query->get();
+        Log::info('FeedService trending query', ['since_hours' => $sinceHours, 'fetched' => $posts->count()]);
 
         $total = $posts->count();
         $items = $posts->take($perPage)->values();
@@ -134,6 +147,11 @@ class FeedService
 
         $groupIds = $user->groupMemberships()->pluck('group_id');
         $followingIds = $user->followings()->pluck('following_id');
+        Log::info('FeedService memberships', [
+            'user_id' => $user->id,
+            'groups_count' => $groupIds->count(),
+            'following_count' => $followingIds->count(),
+        ]);
 
         $query = Post::with([
                 'user:id,name,avatar,type',
@@ -167,6 +185,7 @@ class FeedService
         });
 
         $initial = $query->limit(self::CANDIDATE_LIMIT)->get();
+        Log::info('FeedService initial pool', ['count' => $initial->count()]);
 
         // If pool thin, add global trending slice (still within since window)
         if ($initial->count() < (int) (self::CANDIDATE_LIMIT * 0.6)) {

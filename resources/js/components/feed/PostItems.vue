@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div class="mt-3" v-if="userData">
     <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert text-center mb-3">
       <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">
         New Post Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i>
@@ -264,7 +264,7 @@
                 <span class="text-muted ms-2">{{ formatDateTime(post.originalPost.created_at) }}</span>
               </div>
               <FollowButton
-                v-if="!isOwnProfile(post.originalPost.user_id)"
+                v-if="post.originalPost && post.originalPost.user && post.originalPost.user.id && !isOwnProfile(post.originalPost.user.id)"
                 :userId="post.originalPost.user.id"
                 :initialIsFollowing="isFollowing(post.originalPost.user.id)"
                 :initialFollowersCount="this.userData.followers_count"
@@ -730,6 +730,9 @@
       @comments-count-reupdated="updateCommentsCount($event)"
     />
   </div>
+  <div v-else class="text-center my-4">
+    <span>Loading feed...</span>
+  </div>
 </template>
 
 <script>
@@ -1117,15 +1120,18 @@ export default {
       return this.userData.id === userId;
     },
     isFollowing(userId) {
-      return this.userData.following.includes(userId);
+      const followingList = Array.isArray(this.userData?.following) ? this.userData.following : [];
+      return followingList.includes(userId);
     },
     isJoined(groupId) {
-      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
-      return group && group.status === 'active';
+      const groups = Array.isArray(this.userData?.groups_info) ? this.userData.groups_info : [];
+      const group = groups.find(g => g.id === Number(groupId));
+      return !!group && group.status === 'active';
     },
     isRequestPending(groupId) {
-      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
-      return group && group.status === 'pending';
+      const groups = Array.isArray(this.userData?.groups_info) ? this.userData.groups_info : [];
+      const group = groups.find(g => g.id === Number(groupId));
+      return !!group && group.status === 'pending';
     },
     formatGroupName(groupName){
       return groupName
