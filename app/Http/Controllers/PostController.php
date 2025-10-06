@@ -145,10 +145,61 @@ class PostController extends Controller
                         'reactions' => function($query) {
                             $query->with('reactionType:id,name,icon')
                                     ->with('user:id,name,avatar,about');
+                        },
+                        'sharedPost.user:id,name,avatar',
+                        'sharedPost.photos',
+                        'sharedPost.poll.options',
+                        'sharedPost.poll.userVotes' => function($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        },
+                        'sharedPost.coloredPost',
+                        'sharedPost.reactions' => function($query) {
+                            $query->with('reactionType:id,name,icon')
+                                    ->with('user:id,name,avatar,about');
                         }
                     ])
                     ->withCount(['comments', 'reactions'])
                     ->findOrFail($post->id);
+
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
+                $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
+            }
+
             switch ($post->post_type) {
                 case 'photo':
                     break;
@@ -411,8 +462,15 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
             }
 
             // Check and handle each post type
@@ -515,8 +573,15 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
             }
 
             switch ($post->post_type) {
@@ -622,8 +687,14 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property without altering the main post structure
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
                 $post->unsetRelation('sharedPost');
             }
 

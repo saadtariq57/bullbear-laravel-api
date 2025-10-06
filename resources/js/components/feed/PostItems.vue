@@ -294,6 +294,16 @@
                 <div v-else class="markdown-body" v-html="renderedMarkdown(post.originalPost.post_text)"></div>
               </template>
 
+              <template v-else-if="post.originalPost.post_type === 'color'">
+                <div v-if="post.originalPost.colored_post_id && post.originalPost.colored_post" class="colored-post-text d-flex justify-content-center align-items-center"
+                  :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
+                  <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
+                    {{ post.originalPost.post_text }}
+                  </p>
+                </div>
+                <div v-else class="markdown-body" v-html="renderedMarkdown(post.originalPost.post_text)"></div>
+              </template>
+
               <template v-else-if="post.originalPost.post_type === 'photo'">
                 <div class="post-file" @click="openPostPreviewModal(post.originalPost)">
                   <div v-if="post.originalPost.multi_image > 0" class="d-flex flex-wrap row-gap-3 justify-content-between">

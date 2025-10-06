@@ -94,8 +94,23 @@ const UserFeedService = {
                 }
             }
 
+            // Defensive normalization to prevent render-time crashes (same as fetchUserPosts)
+            const safeUser = post.user || { id: null, name: 'Unknown', avatar: 'photos/d-avatar.jpg' };
+            const safePhotos = Array.isArray(post.photos) ? post.photos : [];
+            let safeOriginalPost = null;
+            if (post.originalPost) {
+                const op = post.originalPost;
+                // Prefer original post's user; if missing, fall back to current post's user to avoid 'Unknown'
+                const opUser = op.user || safeUser || { id: null, name: 'Unknown', avatar: 'photos/d-avatar.jpg' };
+                const opPhotos = Array.isArray(op.photos) ? op.photos : [];
+                safeOriginalPost = { ...op, user: opUser, photos: opPhotos };
+            }
+
             return {
                 ...post,
+                user: safeUser,
+                photos: safePhotos,
+                originalPost: safeOriginalPost ?? post.originalPost ?? null,
                 userReaction: userReaction,
                 organizedReactions: organizedReactions,
                 userVoted: userVoted,

@@ -57,8 +57,56 @@ class NewPost implements ShouldBroadcast
     }
     public function broadcastWith()
     {
+        // Load all necessary relations for the post, including shared post data
+        $post = $this->post->load([
+            'user:id,name,avatar',
+            'photos',
+            'poll.options',
+            'coloredPost',
+            'reactions' => function ($query) {
+                $query->with('reactionType:id,name,icon')
+                      ->with('user:id,name,avatar,about');
+            },
+            'sharedPost.user:id,name,avatar',
+            'sharedPost.photos',
+            'sharedPost.poll.options',
+            'sharedPost.coloredPost',
+            'sharedPost.reactions' => function ($query) {
+                $query->with('reactionType:id,name,icon')
+                      ->with('user:id,name,avatar,about');
+            }
+        ]);
+
+        // Apply the same transformation as in the controllers to set originalPost
+        if ($post->sharedPost) {
+            $sharedPost = $post->sharedPost;
+            
+            // Apply similar transformations to the shared post
+            switch ($sharedPost->post_type) {
+                case 'photo':
+                    break;
+                case 'poll':
+                    if ($sharedPost->poll) {
+                        $sharedPost->poll->options = $sharedPost->poll->options;
+                    }
+                    unset($sharedPost->pollDetails);
+                    break;
+                case 'color':
+                    unset($sharedPost->colorDetails);
+                    break;
+            }
+
+            // Ensure relations are preserved
+            $sharedPost->setRelation('user', $sharedPost->user);
+            if ($sharedPost->coloredPost) {
+                $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+            }
+            $post->originalPost = $sharedPost;
+            $post->unsetRelation('sharedPost');
+        }
+
         return [
-            'post' => $this->post->load(['user', 'comments', 'reactions']),
+            'post' => $post,
         ];
     }
     public function broadcastAs()

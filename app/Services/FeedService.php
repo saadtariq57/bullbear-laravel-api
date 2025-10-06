@@ -130,6 +130,50 @@ class FeedService
         $posts = $query->get();
         Log::info('FeedService trending query', ['since_hours' => $sinceHours, 'fetched' => $posts->count()]);
 
+        // Transform posts to handle shared content
+        $posts->transform(function ($post) use ($user) {
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
+                $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
+            }
+
+            return $post;
+        });
+
         $total = $posts->count();
         $items = $posts->take($perPage)->values();
         return new \Illuminate\Pagination\LengthAwarePaginator(
@@ -220,6 +264,45 @@ class FeedService
         $daySec = 86400;
 
         $scored = $posts->map(function (Post $post) use ($user, $followingIds, $groupIds, $wFollowing, $wGroup, $wEngagement, $wCreator, $nowTs, $daySec) {
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
+                $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
+            }
+
             $isFollowing = in_array($post->user_id, $followingIds, true) ? 1 : 0;
             $isSameGroup = $post->group_id && in_array($post->group_id, $groupIds, true) ? 1 : 0;
             $isUserPost = $post->user_id === $user->id ? 1 : 0;
