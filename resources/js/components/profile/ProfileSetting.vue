@@ -198,17 +198,32 @@
                     <input type="text" name="username" hidden aria-hidden="true" autocomplete="username">
                     <div class="col">
                       <label for="current-password" class="form-label col-form-label-lg pb-0">Current Password</label>
-                      <input v-model="updatePasswordData.currentPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.currentPassword" :type="show.current ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword" autocomplete="current-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.current = !show.current" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.current ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="row g-3 px-3 pt-3">
                     <div class="col-md-6">
                       <label for="New-password" class="form-label col-form-label-lg">New password</label>
-                      <input v-model="updatePasswordData.newPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.newPassword" :type="show.new ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.new = !show.new" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.new ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                     <div class="col-md-6">
                       <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat password</label>
-                      <input v-model="updatePasswordData.newPassword_confirmation" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.newPassword_confirmation" :type="show.repeat ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.repeat = !show.repeat" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.repeat ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="px-3 pt-4">
@@ -1069,6 +1084,7 @@ export default {
         newPassword_confirmation: '',
         // twoFactor: '1',
       },
+      show: { current: false, new: false, repeat: false },
     };
   },
   mounted() {
