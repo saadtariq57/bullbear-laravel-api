@@ -803,6 +803,10 @@ export default {
       editPostData: null,
       infiniteObserver: null,
       isMobile: false,
+      safetyCheckInterval: null,
+      bottomReachCheckInterval: null,
+      immediateBottomCheck: null,
+      scrollPositionBeforeLoad: null,
     };
   },
   computed: {
@@ -869,6 +873,74 @@ export default {
       const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       this.isMobile = isMobileWidth || isMobileUserAgent;
     },
+    startSafetyCheck() {
+      // Safety mechanism: periodically check if user is near bottom and load more posts
+      this.safetyCheckInterval = setInterval(() => {
+        if (this.isFetchingMore || !this.hasMorePosts) return;
+        
+        const scrollingElement = document.scrollingElement || document.documentElement;
+        const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const fullHeight = scrollingElement.scrollHeight;
+        
+        // Very aggressive check - trigger if user is within 2000px of bottom
+        const safetyBuffer = this.isMobile ? 2000 : 1500;
+        const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - safetyBuffer);
+        
+        if (nearBottom) {
+          console.log('Safety check triggered - loading more posts');
+          this.loadMorePosts();
+        }
+      }, 1000); // Check every second
+    },
+    stopSafetyCheck() {
+      if (this.safetyCheckInterval) {
+        clearInterval(this.safetyCheckInterval);
+        this.safetyCheckInterval = null;
+      }
+    },
+    startBottomReachCheck() {
+      // Dedicated mechanism to detect when user reaches absolute bottom
+      this.bottomReachCheckInterval = setInterval(() => {
+        if (this.isFetchingMore || !this.hasMorePosts) return;
+        
+        const scrollingElement = document.scrollingElement || document.documentElement;
+        const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const fullHeight = scrollingElement.scrollHeight;
+        
+        // Check if user has reached the absolute bottom (within 10px)
+        const atAbsoluteBottom = (scrollTop + viewportHeight) >= (fullHeight - 10);
+        
+        if (atAbsoluteBottom) {
+          console.log('User reached absolute bottom - forcing post load');
+          this.loadMorePosts();
+        }
+      }, 500); // Check every 500ms for more responsive detection
+    },
+    stopBottomReachCheck() {
+      if (this.bottomReachCheckInterval) {
+        clearInterval(this.bottomReachCheckInterval);
+        this.bottomReachCheckInterval = null;
+      }
+    },
+    immediateBottomDetection() {
+      // Immediate bottom detection that runs on every scroll event
+      if (this.isFetchingMore || !this.hasMorePosts) return;
+      
+      const scrollingElement = document.scrollingElement || document.documentElement;
+      const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = scrollingElement.scrollHeight;
+      
+      // Check if user has reached the absolute bottom (within 5px for maximum sensitivity)
+      const atAbsoluteBottom = (scrollTop + viewportHeight) >= (fullHeight - 5);
+      
+      if (atAbsoluteBottom) {
+        console.log('Immediate bottom detection - user at absolute bottom - FORCING post load');
+        this.loadMorePosts();
+      }
+    },
     setupInfiniteObserver() {
       // Teardown any existing observer
       if (this.infiniteObserver) {
@@ -880,12 +952,13 @@ export default {
       }
 
       if ('IntersectionObserver' in window && this.$refs.infiniteScrollSentinel) {
-        // Use larger rootMargin on mobile to account for widgets below posts
-        const rootMargin = this.isMobile ? '0px 0px 1200px 0px' : '0px 0px 800px 0px';
+        // Use much more aggressive rootMargin to trigger loading much earlier
+        const rootMargin = this.isMobile ? '0px 0px 2000px 0px' : '0px 0px 1500px 0px';
         const options = { root: null, rootMargin, threshold: 0 };
         this.infiniteObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting && !this.isFetchingMore && this.hasMorePosts) {
+              console.log('IntersectionObserver triggered - loading more posts');
               this.loadMorePosts();
             }
           });
@@ -998,18 +1071,76 @@ export default {
       const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       const fullHeight = scrollingElement.scrollHeight;
-      // Use larger buffer on mobile to account for widgets below posts
-      const scrollBuffer = this.isMobile ? 800 : 300;
+      
+      // Much more aggressive buffer - trigger loading when user is still far from bottom
+      const scrollBuffer = this.isMobile ? 1500 : 1000;
       const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - scrollBuffer);
-      if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
+      
+      // Fallback: trigger loading even when user reaches absolute bottom
+      const atBottom = (scrollTop + viewportHeight) >= (fullHeight - 50);
+      
+      // Emergency fallback: trigger loading when user reaches very bottom (within 10px)
+      const atVeryBottom = (scrollTop + viewportHeight) >= (fullHeight - 10);
+      
+      if ((nearBottom || atBottom || atVeryBottom) && !this.isFetchingMore && this.hasMorePosts) {
+        if (nearBottom) {
+          console.log('Scroll handler triggered (near bottom) - loading more posts');
+        } else if (atBottom) {
+          console.log('Scroll handler triggered (at bottom) - loading more posts');
+        } else if (atVeryBottom) {
+          console.log('Scroll handler triggered (at very bottom) - FORCING post load');
+        }
         this.loadMorePosts();
       }
+      
+      // Also run immediate bottom detection on every scroll
+      this.immediateBottomDetection();
     },
     async loadMorePosts() {
+      // Detect if user is at (or near) bottom before loading
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+      const wasAtBottom = (scrollTop + viewportHeight) >= (fullHeight - 120);
+      // Capture current count to locate first newly appended post after render
+      const prevCount = Array.isArray(this.posts) ? this.posts.length : 0;
+
+      console.log('Loading more posts - current posts count:', this.posts.length);
+      console.log('User was at bottom:', wasAtBottom, 'prevCount:', prevCount);
+
       if (this.userName) {
         await this.fetchMorePosts({ context: this.context, userName: this.userName });
       } else {
         await this.fetchMorePosts({ context: this.context });
+      }
+
+      console.log('More posts loaded - new posts count:', this.posts.length);
+
+      // If user was at bottom, bring the first newly loaded post into view immediately
+      if (wasAtBottom) {
+        this.$nextTick(() => {
+          this.scrollFirstNewPostIntoView(prevCount);
+        });
+      }
+    },
+    scrollFirstNewPostIntoView(prevCount) {
+      // Use existing ref array from v-for (ref="scrollContainer") to locate the first newly appended post
+      const containers = this.$refs && this.$refs.scrollContainer ? this.$refs.scrollContainer : null;
+      if (!containers) return;
+
+      const isArray = Array.isArray(containers);
+      const firstNewEl = isArray ? containers[prevCount] : null;
+      if (firstNewEl && typeof firstNewEl.scrollIntoView === 'function') {
+        // Scroll so the first new post is placed at the top of the viewport
+        firstNewEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+      } else if (firstNewEl) {
+        const rect = firstNewEl.getBoundingClientRect();
+        const absoluteTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+        window.scrollTo({ top: absoluteTop, behavior: 'auto' });
+      } else {
+        // Fallback: scroll to bottom
+        const fullHeight = (document.scrollingElement || document.documentElement).scrollHeight;
+        window.scrollTo({ top: fullHeight, behavior: 'auto' });
       }
     },
     toggleComments(postId, userId) {
@@ -1171,6 +1302,12 @@ export default {
     // Listen for resize events to handle orientation changes
     window.addEventListener('resize', this.detectMobileDevice);
 
+    // Start safety check mechanism
+    this.startSafetyCheck();
+    
+    // Start bottom reach check mechanism
+    this.startBottomReachCheck();
+
     // IntersectionObserver for reliable mobile infinite scroll
     this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
@@ -1189,6 +1326,13 @@ export default {
     }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
     window.removeEventListener('resize', this.detectMobileDevice);
+    
+    // Stop safety check
+    this.stopSafetyCheck();
+    
+    // Stop bottom reach check
+    this.stopBottomReachCheck();
+    
     if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
       this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
       this.infiniteObserver.disconnect();
