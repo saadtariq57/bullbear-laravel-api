@@ -802,6 +802,7 @@ export default {
       shareModalInstance: null,
       editPostData: null,
       infiniteObserver: null,
+      isMobile: false,
     };
   },
   computed: {
@@ -862,6 +863,12 @@ export default {
     }
   },
   methods: {
+    detectMobileDevice() {
+      // Check if device is mobile based on screen width and user agent
+      const isMobileWidth = window.innerWidth <= 768;
+      const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      this.isMobile = isMobileWidth || isMobileUserAgent;
+    },
     setupInfiniteObserver() {
       // Teardown any existing observer
       if (this.infiniteObserver) {
@@ -873,7 +880,9 @@ export default {
       }
 
       if ('IntersectionObserver' in window && this.$refs.infiniteScrollSentinel) {
-        const options = { root: null, rootMargin: '0px 0px 800px 0px', threshold: 0 };
+        // Use larger rootMargin on mobile to account for widgets below posts
+        const rootMargin = this.isMobile ? '0px 0px 1200px 0px' : '0px 0px 800px 0px';
+        const options = { root: null, rootMargin, threshold: 0 };
         this.infiniteObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting && !this.isFetchingMore && this.hasMorePosts) {
@@ -989,7 +998,9 @@ export default {
       const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       const fullHeight = scrollingElement.scrollHeight;
-      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - 300);
+      // Use larger buffer on mobile to account for widgets below posts
+      const scrollBuffer = this.isMobile ? 800 : 300;
+      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - scrollBuffer);
       if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
         this.loadMorePosts();
       }
@@ -1151,13 +1162,21 @@ export default {
     },
   },
   mounted() {
+    // Detect mobile device
+    this.detectMobileDevice();
+    
     this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
     window.addEventListener('scroll', this.debouncedHandleScroll, { passive: true });
+    
+    // Listen for resize events to handle orientation changes
+    window.addEventListener('resize', this.detectMobileDevice);
 
     // IntersectionObserver for reliable mobile infinite scroll
     this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
   updated() {
+    // Re-detect mobile device in case of orientation changes
+    this.detectMobileDevice();
     // Ensure observer stays attached after virtual DOM updates (e.g., after appending posts)
     this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
@@ -1169,6 +1188,7 @@ export default {
       unregisterVuexModule('userFeedComment');
     }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
+    window.removeEventListener('resize', this.detectMobileDevice);
     if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
       this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
       this.infiniteObserver.disconnect();
