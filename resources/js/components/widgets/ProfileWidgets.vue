@@ -4,9 +4,16 @@
       <div class="row">
         <!-- Profile Completion Widget -->
         <ProfileCompletionWidget
+          v-if="completionPercentage < 100"
           :completionPercentage="completionPercentage"
           :profileSteps="profileSteps"
         />
+        <template v-else>
+          <div class="d-flex align-items-center text-secondary small mb-3">
+            <i class="bi bi-check-circle-fill text-cta me-2"></i>
+            <span class="fw-6">Profile complete</span>
+          </div>
+        </template>
 
         <!-- Info Widget -->
         <InfoWidget
