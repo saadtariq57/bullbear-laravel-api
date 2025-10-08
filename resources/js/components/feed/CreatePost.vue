@@ -643,11 +643,7 @@ export default {
         this.$refs.uploadMediaComponent.resetStateParent();
       }
       this.hideMediaPostModal();
-      setTimeout(() => this.showPostModal(), 300);
-      const textarea = document.getElementById('textarea-modalpost');
-      if (textarea) {
-        textarea.style.height = 'auto';
-      }
+      // Do not auto-open the post editor when cancelling upload
     },
     handleMediaUpload(payload) {
       if (payload.files.length > 0) {
@@ -711,7 +707,7 @@ export default {
       }
       this.$refs.createPollComponent.resetPoll();
       this.hidePollPostModal();
-      setTimeout(() => this.showPostModal(), 300);
+      // Do not auto-open the post editor when cancelling poll creation
     },
     showPostSettingModal() {
       this.hidePostModal();
