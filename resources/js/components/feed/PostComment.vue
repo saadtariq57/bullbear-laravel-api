@@ -1,4 +1,5 @@
 <template>
+  <div v-if="showCommentEmojiPicker || showNestedCommentEmojiPicker" class="emoji-close-overlay" @click="closeAllEmojis"></div>
   <!-- Comment box -->
   <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
@@ -269,6 +270,15 @@ export default {
       showNestedCommentEmojiPicker: false
     };
   },
+  mounted() {
+    // Close any open emoji pickers when clicking outside
+    document.addEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
+    document.addEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
+  },
+  beforeUnmount() {
+    document.removeEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
+    document.removeEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
+  },
   computed: {
     ...mapState(['userData']),
     ...mapState('userFeed', ['fetchedCommentsFlags']),
@@ -422,6 +432,31 @@ export default {
     onSelectNestedCommentEmoji(emoji) {
       this.newContent += emoji.i;
     },
+    closeAllEmojis() {
+      this.showCommentEmojiPicker = false;
+      this.showNestedCommentEmojiPicker = false;
+    },
+    onDocumentClickCloseEmoji(event) {
+      if (!this.showCommentEmojiPicker && !this.showNestedCommentEmojiPicker) return;
+      // If click originated inside any emoji picker container, ignore
+      let clickedInside = false;
+      const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+      if (path && path.length) {
+        clickedInside = path.some((el) => el && el.classList && el.classList.contains && el.classList.contains('comment-emoji-picker'));
+      }
+      if (!clickedInside) {
+        const root = this.$el;
+        const containers = root ? root.querySelectorAll('.comment-emoji-picker') : [];
+        containers.forEach((el) => {
+          if (el.contains && el.contains(event.target)) {
+            clickedInside = true;
+          }
+        });
+      }
+      if (clickedInside) return;
+      this.showCommentEmojiPicker = false;
+      this.showNestedCommentEmojiPicker = false;
+    },
   },
 };
 </script>
@@ -439,7 +474,20 @@ export default {
 .comment-emoji-picker .v3-emoji-picker {
   position: absolute;
   top: 35px;
-  z-index: 1;
+  right: 0;
+  left: auto;
+  z-index: 10001;
+  max-width: calc(100vw - 24px);
+}
+
+.emoji-close-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: transparent;
 }
 
 @media screen and (max-width: 506px) {
@@ -454,6 +502,11 @@ export default {
   .like-count .reaction-icons .reaction-icon {
     width: 15px;
     height: 15px;
+  }
+  .comment-emoji-picker .v3-emoji-picker {
+    right: 0;
+    left: auto;
+    max-width: calc(100vw - 16px);
   }
 }
 
