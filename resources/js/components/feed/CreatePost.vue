@@ -258,7 +258,7 @@
                     </div>
                   </div>
                   <!-- Emojis Model Button-->
-                  <div>
+                  <div ref="emojiPickerContainer" class="emoji-picker-container">
                     <button class="btn" @click="toggleEmojiPicker">
                       <abbr title="Open Emoji">
                         <i class="bi bi-emoji-smile fs-4"></i>
@@ -484,6 +484,11 @@ export default {
     this.mediaPostModalInstance = new Modal(this.$refs.mediaPostModal, { backdrop: 'static' });
     this.pollPostModalInstance = new Modal(this.$refs.pollpostModal, { backdrop: 'static' });
     this.postSettingModalInstance = new Modal(this.$refs.postSettingModal, { backdrop: 'static' });
+    // Close emoji picker on outside click
+    document.addEventListener('click', this.onDocumentClickCloseEmoji);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClickCloseEmoji);
   },
   watch: {
     textContent(newVal) {
@@ -723,7 +728,14 @@ export default {
       this.showEmojiPicker = !this.showEmojiPicker;
     },
     onSelectEmoji(emoji) {
-      this.textContent += emoji.native;
+      this.textContent += emoji.i;
+    },
+    onDocumentClickCloseEmoji(event) {
+      if (!this.showEmojiPicker) return;
+      const container = this.$refs.emojiPickerContainer;
+      if (container && !container.contains(event.target)) {
+        this.showEmojiPicker = false;
+      }
     },
     selectColor(style) {
       this.currentPostType = 'color';
@@ -1135,7 +1147,13 @@ export default {
 
 .v3-emoji-picker {
   position: absolute;
-  top: -60px;
+  top: 100%;
+  left: 0;
+  z-index: 1050;
+}
+
+.emoji-picker-container {
+  position: relative;
 }
 
 .single-photo {
