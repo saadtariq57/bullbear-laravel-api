@@ -1210,10 +1210,41 @@ export default {
     },
 
     openShareToGroupModal(post) {
-      this.shareToGroupPost = post;
+      // If reopening for the same post and modal instance exists, just show it
+      if (this.shareToGroupPost && this.shareToGroupPost.id === post.id && this.shareModalInstance) {
+        this.shareModalInstance.show();
+        return;
+      }
+      // Force re-mount to retrigger watcher and child mount if same reference
+      this.shareToGroupPost = null;
+      this.$nextTick(() => {
+        this.shareToGroupPost = post;
+      });
     },
     handleShareModalClosed(modalElement){
-      this.shareModalInstance.hide();
+      if (this.shareModalInstance && modalElement) {
+        const onHidden = () => {
+          try { if (typeof this.shareModalInstance.dispose === 'function') this.shareModalInstance.dispose(); } catch (e) {}
+          this.shareModalInstance = null;
+          // Clean any leftover Bootstrap artifacts to prevent scroll freeze
+          document.body.classList.remove('modal-open');
+          try { document.body.style.removeProperty('padding-right'); } catch (e) {}
+          const backdrops = document.querySelectorAll('.modal-backdrop');
+          backdrops.forEach(b => b.remove());
+          // Clear the post so subsequent opens for the same post work
+          this.shareToGroupPost = null;
+        };
+        modalElement.addEventListener('hidden.bs.modal', onHidden, { once: true });
+        try { this.shareModalInstance.hide(); } catch (e) { onHidden(); }
+      } else {
+        // Fallback cleanup
+        this.shareModalInstance = null;
+        this.shareToGroupPost = null;
+        document.body.classList.remove('modal-open');
+        try { document.body.style.removeProperty('padding-right'); } catch (e) {}
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(b => b.remove());
+      }
     },
     handlePostShare({ groupId, groupName }) {
       this.$emit('show-post-modal', {

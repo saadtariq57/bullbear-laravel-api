@@ -486,9 +486,14 @@ export default {
     this.postSettingModalInstance = new Modal(this.$refs.postSettingModal, { backdrop: 'static' });
     // Close emoji picker on outside click
     document.addEventListener('click', this.onDocumentClickCloseEmoji);
+    // Ensure share state resets whenever modal fully hides
+    this.$refs.postModal.addEventListener('hidden.bs.modal', this.onPostModalHidden);
   },
   beforeUnmount() {
     document.removeEventListener('click', this.onDocumentClickCloseEmoji);
+    if (this.$refs.postModal) {
+      this.$refs.postModal.removeEventListener('hidden.bs.modal', this.onPostModalHidden);
+    }
   },
   watch: {
     textContent(newVal) {
@@ -564,22 +569,41 @@ export default {
       });
     },
     sharePostModal(payload) {
-      const { post, groupId, groupName } = payload;
-      console.log('Received post data:', post);
-      console.log('Received Group Id:', groupId);
-      console.log('Received Group Name:', groupName);
+      // Support both signatures: sharePostModal(post) and sharePostModal({ post, groupId, groupName })
+      let post = null;
+      let groupId = null;
+      let groupName = null;
+      if (payload && typeof payload === 'object' && 'post' in payload) {
+        post = payload.post;
+        groupId = payload.groupId || null;
+        groupName = payload.groupName || null;
+      } else {
+        post = payload;
+      }
+
       this.sharePostPreview = post;
       this.shareContext = groupId ? 'group' : 'feed';
       this.shareTargetGroupId = groupId;
       this.shareTargetGroupName = groupName;
-      this.postModalInstance.show();
+
+      // Always get or create a fresh modal instance and show after DOM updates
+      this.$nextTick(() => {
+        this.postModalInstance = Modal.getOrCreateInstance(this.$refs.postModal, { backdrop: 'static' });
+        this.postModalInstance.show();
+      });
+    },
+    onPostModalHidden() {
+      // Reset share state so re-opening the same post works
+      this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
     },
     showPostModal() {
       this.postModalInstance.show();
     },
     hidePostModal() {
       this.postModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postModal'), 150);
       if(!this.isPublishable){
         this.clearPostType();
         this.isEditing = false;
@@ -594,7 +618,6 @@ export default {
     },
     hidePostModalAndClearPost() {
       this.postModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postModal'), 150);
       this.clearPostType();
       this.$refs.createPollComponent.resetPoll();
       this.isEditing = false;
@@ -612,7 +635,6 @@ export default {
     },
     hideMediaPostModal() {
       this.mediaPostModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('mediaPostModal'), 150);
     },
     handleBackFromUpload() {
       if(!this.isPublishable){
@@ -668,7 +690,6 @@ export default {
     },
     hidePollPostModal() {
       this.pollPostModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('pollpostModal'), 150);
     },
     handlePollCreation(pollData) {
       if (pollData) {
@@ -698,7 +719,6 @@ export default {
     },
     hidePostSettingModal() {
       this.postSettingModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postSettingModal'), 150);
     },
     handleBackFromSettings() {
       this.hidePostSettingModal();
@@ -710,20 +730,7 @@ export default {
       this.hidePostSettingModal();
       setTimeout(() => this.showPostModal(), 300);
     },
-    removeBackdrop(modalId) {
-      let backdrops = document.querySelectorAll('.modal-backdrop');
-      if (backdrops.length > 0) {
-        if (modalId === 'postModal') {
-          backdrops[backdrops.length - 1].remove();
-        } else if (modalId === 'mediaPostModal' && backdrops.length > 1) {
-          backdrops[backdrops.length - 2].remove();
-        } else if (modalId === 'pollpostModal' && backdrops.length > 0) {
-          backdrops[backdrops.length - 1].remove();
-        } else if (modalId === 'postSettingModal' && backdrops.length > 0) {
-          backdrops[backdrops.length - 1].remove();
-        }
-      }
-    },
+    
     toggleEmojiPicker() {
       this.showEmojiPicker = !this.showEmojiPicker;
     },
