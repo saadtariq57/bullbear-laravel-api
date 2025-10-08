@@ -1,6 +1,6 @@
 <template>
   <ul
-    class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize mt-4">
+    class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center">
         <i class="bi bi-info-circle-fill text-white"></i>
