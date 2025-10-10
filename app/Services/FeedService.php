@@ -120,6 +120,11 @@ class FeedService
             ])
             ->withCount(['comments', 'reactions'])
             ->where('active', 1)
+            ->whereHas('user', function ($u) {
+                $u->where('post_privacy', 'Everyone');
+            })
+            // Trending should only include globally visible posts
+            ->whereIn('post_privacy', ['public', 'Public', 'Everyone'])
             ->where('created_at', '>=', $since)
             ->when($lastPostId, fn($q) => $q->where('id', '<', (int) $lastPostId))
             ->orderByDesc('reactions_count')
@@ -221,11 +226,41 @@ class FeedService
             $query->where('id', '<', (int) $lastPostId);
         }
 
-        // Build a wide pool: followings, groups, and global trending as fallback
+        // Build a wide pool with privacy awareness:
+        // - User's own posts
+        // - Posts in groups the user belongs to
+        // - Public/Everyone posts from anyone (non-group)
+        // - Followed creators' posts when their privacy is Followers/Friends or Public/Everyone
         $query->where(function ($q) use ($groupIds, $followingIds, $user) {
-            $q->whereIn('user_id', $followingIds)
+            // Always include viewer's own posts
+            $q->orWhere('user_id', $user->id)
+              // Include posts from groups the viewer belongs to
               ->orWhereIn('group_id', $groupIds)
-              ->orWhere('user_id', $user->id);
+              // Include global public/everyone posts (exclude group posts to avoid leaking group content)
+              ->orWhere(function ($q4) {
+                  $q4->whereNull('group_id')
+                     ->whereIn('post_privacy', ['public', 'Public', 'Everyone']);
+              })
+              // Include any creator who set profile visibility to Everyone (non-group)
+              ->orWhere(function ($q5) {
+                  $q5->whereNull('group_id')
+                     ->whereHas('user', function ($u) {
+                         $u->where('post_privacy', 'Everyone');
+                     });
+              })
+              // Include followed creators' posts that are visible to followers/public
+              ->orWhere(function ($q2) use ($followingIds) {
+                  $q2->whereIn('user_id', $followingIds)
+                     ->whereHas('user', function ($u) {
+                         $u->whereIn('post_privacy', ['Followers', 'Everyone']);
+                     })
+                     ->whereIn('post_privacy', ['followers', 'Followers', 'Friends', 'public', 'Public', 'Everyone'])
+                     // Safety: legacy/null privacy treated as public
+                     ->orWhere(function ($q3) use ($followingIds) {
+                         $q3->whereIn('user_id', $followingIds)
+                            ->whereNull('post_privacy');
+                     });
+              });
         });
 
         $initial = $query->limit(self::CANDIDATE_LIMIT)->get();
@@ -236,6 +271,10 @@ class FeedService
             $trending = Post::with(['user:id,name,avatar,type'])
                 ->withCount(['comments','reactions'])
                 ->where('active', 1)
+                ->whereHas('user', function ($u) {
+                    $u->where('post_privacy', 'Everyone');
+                })
+                ->whereIn('post_privacy', ['public', 'Public', 'Everyone'])
                 ->where('created_at', '>=', $since)
                 ->when($lastPostId, fn($q) => $q->where('id', '<', (int) $lastPostId))
                 ->orderByDesc('reactions_count')
