@@ -11,7 +11,7 @@
                     </div>
                 </section>
             </div>
-            <div class="col-lg-4 sidebar-widgets">
+            <div class="col-lg-4 sidebar-widgets d-none d-lg-block">
                 <div>
                     <UserData />
                     <Markets v-if="this.widgetLoaded"/>
