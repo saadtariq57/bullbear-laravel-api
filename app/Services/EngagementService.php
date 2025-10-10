@@ -467,7 +467,7 @@ class EngagementService
                     'description' => $reaction->user->name . ' has ' . $reaction->reactionType->name . ' your post',
                     'type' => 'reaction',
                     'last_notification_time' => now(),
-                    'url' => url("/post/{$postOwner->name}/{$post->id}"),
+                    'url' => "/post/{$postOwner->name}/{$post->id}",
                     'user' => [
                         'id' => $reaction->user->id,
                         'name' => $reaction->user->name,
@@ -496,7 +496,7 @@ class EngagementService
                 'description' => '',
                 'type' => 'comment',
                 'last_notification_time' => now(),
-                'url' => url("/post/{$postOwner->name}/{$post->id}"),
+                'url' => "/post/{$postOwner->name}/{$post->id}",
                 'user' => [
                     'id' => $comment->user->id,
                     'name' => $comment->user->name,

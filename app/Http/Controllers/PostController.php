@@ -798,7 +798,7 @@ class PostController extends Controller
             'description' => '',
             'type' => 'comment',
             'last_notification_time' => now(),
-            'url' => url("/post/{$postOwner->name}/{$request->post_id}"),
+            'url' => "/post/{$postOwner->name}/{$request->post_id}",
             'user' => [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
@@ -1045,7 +1045,7 @@ class PostController extends Controller
                 'description' => $reaction->user->name. $notificationDesc,
                 'type' => 'reaction',
                 'last_notification_time' => now(),
-                'url' => $postOwner ? url("/post/{$postOwner->name}/{$postId}") : null,
+                'url' => $postOwner ? "/post/{$postOwner->name}/{$postId}" : null,
                 'user' => [
                     'id' => $reaction->user->id,
                     'name' => $reaction->user->name,
@@ -1182,7 +1182,7 @@ class PostController extends Controller
                     'description' => '',
                     'type' => 'pollVote',
                     'last_notification_time' => now(),
-                    'url' => url("/post/{$postOwner->name}/{$postID}"),
+                    'url' => "/post/{$postOwner->name}/{$postID}",
                     'user' => [
                         'id' => $userId,
                         'name' => $user->name,

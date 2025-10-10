@@ -39,20 +39,29 @@ const userNotificationModule = {
         },
         
         MARK_AS_READ(state, notificationId) {
-            // Remove from general notifications
+            // Mark as read in general notifications
             const nIdx = state.notifications.findIndex(n => n.id === notificationId);
             if (nIdx !== -1) {
-                state.notifications.splice(nIdx, 1);
+                state.notifications[nIdx] = {
+                    ...state.notifications[nIdx],
+                    read_at: state.notifications[nIdx].read_at || new Date().toISOString(),
+                };
             }
-            // Remove from message notifications
+            // Mark as read in message notifications
             const mIdx = state.messages.findIndex(m => m.id === notificationId);
             if (mIdx !== -1) {
-                state.messages.splice(mIdx, 1);
+                state.messages[mIdx] = {
+                    ...state.messages[mIdx],
+                    read_at: state.messages[mIdx].read_at || new Date().toISOString(),
+                };
             }
-            // Remove from follower notifications
+            // Mark as read in follower notifications
             const fIdx = state.followers.findIndex(f => f.id === notificationId);
             if (fIdx !== -1) {
-                state.followers.splice(fIdx, 1);
+                state.followers[fIdx] = {
+                    ...state.followers[fIdx],
+                    read_at: state.followers[fIdx].read_at || new Date().toISOString(),
+                };
             }
         },
         // REMOVE_FOLLOWER_NOTIFICATION(state, followerId) {

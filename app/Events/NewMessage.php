@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\Message;
 use App\Models\Group;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -57,7 +58,7 @@ class NewMessage implements ShouldBroadcast
 
     protected function queueNotifications()
     {
-        \Log::info('Queue new notification Job ' . json_encode($this->message));
+        Log::info('Queue new notification Job ' . json_encode($this->message));
         SendNewMessageNotifications::dispatch($this->members, $this->notificationData);
     }
 
@@ -76,7 +77,7 @@ class NewMessage implements ShouldBroadcast
             'last_message' => $this->message->text,
             'last_message_time' => now(),
             'preview' => $this->message->text,
-            'url' => url("/groups/{$this->message->group_id}/" . \Illuminate\Support\Str::slug($group->group_title) . "/live-chat"),
+            'url' => "/groups/{$this->message->group_id}/" . \Illuminate\Support\Str::slug($group->group_title) . "/live-chat",
             'user' => [
                 'id' => $this->message->user->id,
                 'name' => $this->message->user->name,

@@ -10,6 +10,7 @@ use App\Mail\DailyNotificationsMailable;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -22,77 +23,86 @@ class NotificationController extends Controller
     public function getNotifications($userId)
     {
         $user = User::findOrFail($userId);
-        $notifications = $user->notifications()->whereNull('read_at')->latest()->get();
-    
+        // Return both unread and read notifications so frontend can style by read_at
+        // Query notifications table directly to avoid relation mismatch issues
+        $rows = DB::table('notifications')
+            ->where('notifiable_type', User::class)
+            ->where('notifiable_id', $user->id)
+            ->orderByDesc('created_at')
+            ->limit(100)
+            ->get();
+
         // Transform each notification to match the broadcast data structure
-        $transformedNotifications = $notifications->map(function ($notification) {
+        $transformedNotifications = collect($rows)->map(function ($row) {
+            $data = is_array($row->data) ? $row->data : json_decode($row->data, true);
+            $type = $data['type'] ?? 'general';
             $baseData = [
-                'id' => $notification->id,
-                'type' => $notification->data['type'],
-                'url' => $notification->data['url'],
-                'read_at' => $notification->read_at,
+                'id' => $row->id,
+                'type' => $type,
+                'url' => $data['url'] ?? '#',
+                'read_at' => $row->read_at,
             ];
-    
+
             // Add user data if available
-            if (isset($notification->data['user'])) {
+            if (isset($data['user'])) {
                 $baseData['user'] = [
-                    'id' => $notification->data['user']['id'],
-                    'name' => $notification->data['user']['name'],
-                    'avatar' => $notification->data['user']['avatar'],
+                    'id' => $data['user']['id'] ?? null,
+                    'name' => $data['user']['name'] ?? null,
+                    'avatar' => $data['user']['avatar'] ?? null,
                 ];
             }
-    
+
             // Add additional fields based on type
-            switch ($notification->data['type']) {
+            switch ($type) {
                 case 'message':
                     $baseData = array_merge($baseData, [
-                        'message_id' => $notification->data['message_id'],
-                        'group_id' => $notification->data['group_id'],
-                        'group_title' => $notification->data['group_title'],
-                        'group_avatar' => $notification->data['group_avatar'],
-                        'unread_count' => $notification->data['unread_count'],
-                        'last_message' => $notification->data['last_message'],
-                        'last_message_time' => $notification->data['last_message_time'],
-                        'preview' => $notification->data['preview'],
+                        'message_id' => $data['message_id'] ?? null,
+                        'group_id' => $data['group_id'] ?? null,
+                        'group_title' => $data['group_title'] ?? null,
+                        'group_avatar' => $data['group_avatar'] ?? null,
+                        'unread_count' => $data['unread_count'] ?? 0,
+                        'last_message' => $data['last_message'] ?? null,
+                        'last_message_time' => $data['last_message_time'] ?? null,
+                        'preview' => $data['preview'] ?? null,
                     ]);
                     break;
                 case 'follower':
                     $baseData = array_merge($baseData, [
-                        'following_id' => $notification->data['following_id'],
-                        'follower_id' => $notification->data['follower_id'],
-                        'last_follow_time' => $notification->data['last_follow_time'],
+                        'following_id' => $data['following_id'] ?? null,
+                        'follower_id' => $data['follower_id'] ?? null,
+                        'last_follow_time' => $data['last_follow_time'] ?? null,
                     ]);
                     break;
                 case 'reaction':
-                        $baseData = array_merge($baseData, [
-                            'reacted_by' => $notification->data['reacted_by'],
-                            'reacted_to' => $notification->data['reacted_to'],
-                            'last_notification_time' => $notification->data['last_notification_time'],
-                            'title' => $notification->data['title'],
-                            'description' => $notification->data['description'],
-                        ]);
-                        break;
+                    $baseData = array_merge($baseData, [
+                        'reacted_by' => $data['reacted_by'] ?? null,
+                        'reacted_to' => $data['reacted_to'] ?? null,
+                        'last_notification_time' => $data['last_notification_time'] ?? null,
+                        'title' => $data['title'] ?? null,
+                        'description' => $data['description'] ?? null,
+                    ]);
+                    break;
                 case 'comment':
-                        $baseData = array_merge($baseData, [
-                            'commented_by' => $notification->data['commented_by'],
-                            'commented_to' => $notification->data['commented_to'],
-                            'last_notification_time' => $notification->data['last_notification_time'],
-                            'title' => $notification->data['title'],
-                            'description' => $notification->data['description'],
-                        ]);
-                        break;
+                    $baseData = array_merge($baseData, [
+                        'commented_by' => $data['commented_by'] ?? null,
+                        'commented_to' => $data['commented_to'] ?? null,
+                        'last_notification_time' => $data['last_notification_time'] ?? null,
+                        'title' => $data['title'] ?? null,
+                        'description' => $data['description'] ?? null,
+                    ]);
+                    break;
                 case 'pollVote':
-                        $baseData = array_merge($baseData, [
-                            'voted_by' => $notification->data['voted_by'],
-                            'voted_to' => $notification->data['voted_to'],
-                            'last_notification_time' => $notification->data['last_notification_time'],
-                            'title' => $notification->data['title'],
-                            'description' => $notification->data['description'],
-                        ]);
-                        break;
+                    $baseData = array_merge($baseData, [
+                        'voted_by' => $data['voted_by'] ?? null,
+                        'voted_to' => $data['voted_to'] ?? null,
+                        'last_notification_time' => $data['last_notification_time'] ?? null,
+                        'title' => $data['title'] ?? null,
+                        'description' => $data['description'] ?? null,
+                    ]);
+                    break;
                 // Add other types as needed
             }
-    
+
             return $baseData;
         });
     
@@ -119,7 +129,7 @@ class NotificationController extends Controller
     {
         $user = User::findOrFail($userId);
         $today = Carbon::today()->toDateString();
-        \Log::info("Today's date: " . $today);
+        Log::info("Today's date: " . $today);
         $notifications = $user->notifications()
             ->whereDate('created_at', $today)
             ->latest()
@@ -184,10 +194,10 @@ class NotificationController extends Controller
             }
         });
 
-        \Log::info("Sending daily notifications to user:", ['notifications' => $transformedNotifications]);
+        Log::info("Sending daily notifications to user:", ['notifications' => $transformedNotifications]);
 
         // Send the email
-        \Mail::to($user->email)->send(new DailyNotificationsMailable($user, $transformedNotifications));
+        Mail::to($user->email)->send(new DailyNotificationsMailable($user, $transformedNotifications));
 
         // return response()->json(['status' => 'success', 'message' => 'Daily notifications sent.']);
     }

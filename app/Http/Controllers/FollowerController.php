@@ -40,7 +40,7 @@ class FollowerController extends Controller
                 'follower_id' => $follower->id,
                 'type' => 'follower',
                 'last_follow_time' => now(),
-                'url' => url("/profile/{$following->name}/"),
+                'url' => "/profile/{$following->name}/",
                 'user' => [
                     'id' => $follower->id,
                     'name' => $follower->name,

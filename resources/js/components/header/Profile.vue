@@ -38,7 +38,7 @@
                         </div>
                     </a>
                 </li>
-                <li class="py-0"><a href="/messages" class="dropdown-item text-center py-2">See All</a></li>
+                <li class="py-0 see-all"><a href="/messages" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
 
@@ -46,20 +46,21 @@
         <div class="btn-group btn-drps">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill fs-4"></i>
-                <span class="notification-count" v-if="notifications.length > 0">{{ notifications.length }}</span>
+                <span class="notification-count" v-if="unreadCount > 0">{{ unreadCount }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification">
-                <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
+                <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3 position-relative" :class="{ 'unread-notification-wrapper': !notification.read_at }">
+                    <span v-if="!notification.read_at" class="unread-nav-notification position-absolute rounded-circle"></span>
                     <a @click.prevent="handleGeneralNotificationClick(notification)" :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
                         <div>
-                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
+                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0" :class="{ 'fw-bold': !notification.read_at }">{{ notification.title }}</h6>
                             <p class="mb-0 fs-12 fw-5 text-wrap">{{ notification.description }}</p>
                             <div class="fs-6 fw-5">{{ notification.formattedTime }}</div>
                         </div>
                     </a>
                 </li>
-                <li class="py-0"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
+                <li class="py-0 see-all"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
     <!-- Profile Links -->
@@ -107,6 +108,13 @@ export default {
         ...mapState(['userData']),
         ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
         ...mapState('userNotification', ['followers', 'messages', 'notifications']),
+        unreadCount() {
+            try {
+                return this.notifications.filter(n => !n.read_at).length;
+            } catch (e) {
+                return 0;
+            }
+        },
         formattedMessages() {
             return this.messages.map(message => {
                 // console.log(message);
@@ -140,14 +148,16 @@ export default {
             if (!notification.read_at) {
                 this.markNotificationAsRead(notification.id);
             }
-            window.location.href = notification.url;
+            const url = new URL(notification.url, window.location.origin);
+            window.location.href = url.pathname + url.search + url.hash;
         },
 
         handleMessageClick(message) {
             if (!message.read_at) {
                 this.markNotificationAsRead(message.id);
             }
-            window.location.href = message.url;
+            const url = new URL(message.url, window.location.origin);
+            window.location.href = url.pathname + url.search + url.hash;
         },
 
         handleFollowerClick(follower) {
@@ -186,6 +196,19 @@ export default {
 .header_notification{
     max-height: 316px;
     overflow: auto;
+    padding-bottom: 48px; /* space for sticky footer button */
+}
+.message_dropdown{
+    max-height: 316px;
+    overflow: auto;
+    padding-bottom: 48px; /* space for sticky footer button */
+}
+.dropdown-menu .see-all{
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 10;
+    border-top: 1px solid #eee;
 }
 .unread-notification-wrapper{
   background-color: #C3DDF8;
