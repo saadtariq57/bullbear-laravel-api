@@ -6,8 +6,9 @@
                 <i class="bi bi-person-fill-add fs-4"></i>
                 <span class="notification-count" v-if="followers.length > 0">{{ followers.length }}</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end m-0 p-0">
-                <li v-for="follower in followers" :key="follower.id" class="py-0">
+            <ul class="dropdown-menu dropdown-menu-end m-0 p-0 followers_dropdown">
+                <li v-for="follower in followers" :key="follower.id" class="py-0 position-relative" :class="{ 'unread-notification-wrapper': !follower.read_at }">
+                    <span v-if="!follower.read_at" class="unread-nav-notification position-absolute rounded-circle"></span>
                     <a @click.prevent="handleFollowerClick(follower)" :href="'/profile/' + follower.user.name" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
                             <img :src="'/uploads/' + follower.user.avatar" alt="" class="rounded-circle" width="45" height="45">
@@ -17,6 +18,7 @@
                         </div>
                     </a>
                 </li>
+                <li class="py-0 see-all"><a href="/followers" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
 
@@ -27,7 +29,8 @@
                 <span class="notification-count" v-if="messages.length > 0">{{ messages.length }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
-                <li v-for="message in formattedMessages" :key="message.message_id" class="py-0">
+                <li v-for="message in formattedMessages" :key="message.message_id" class="py-0 position-relative" :class="{ 'unread-notification-wrapper': !message.read_at }">
+                    <span v-if="!message.read_at" class="unread-nav-notification position-absolute rounded-circle"></span>
                     <a @click.prevent="handleMessageClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
                         <img :src="'/uploads/' + message.user.avatar" alt="" width="50" height="50" class="rounded-circle">
                         <div>
@@ -203,6 +206,11 @@ export default {
     overflow: auto;
     padding-bottom: 48px; /* space for sticky footer button */
 }
+.followers_dropdown{
+    max-height: 316px;
+    overflow: auto;
+    padding-bottom: 48px; /* space for sticky footer button */
+}
 .dropdown-menu .see-all{
     position: sticky;
     bottom: 0;
@@ -211,15 +219,15 @@ export default {
     border-top: 1px solid #eee;
 }
 .unread-notification-wrapper{
-  background-color: #C3DDF8;
+  background-color: transparent;
 }
 .unread-notification-wrapper:hover{
-  background-color: #aed3fa;
+  background-color: transparent;
 }
 .unread-nav-notification{
   width: 10px;
   height: 10px;
-  background-color: #0A66C2;
+  background-color: #EDB043;
   left: 7px;
 }
 .img{

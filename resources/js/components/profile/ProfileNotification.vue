@@ -149,7 +149,7 @@ export default{
 .unread-notification{
   width: 10px;
   height: 10px;
-  background-color: #0A66C2;
+  background-color: #EDB043;
   border-radius: 50%;
   position: absolute;
   left: 7px;

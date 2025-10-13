@@ -222,10 +222,6 @@ export default {
   border-color: #dee2e6 #dee2e6 #fff !important;
 }
 
-.rounded-circle {
-  background: #000000 !important;
-}
-
 .text-success {
   color: #28a745 !important;
 }
