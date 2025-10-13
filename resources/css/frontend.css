@@ -2348,7 +2348,7 @@ p.user-message {
 .followers_dropdown {
     max-height: 316px !important;
     overflow: auto !important;
-    padding-bottom: 56px !important; /* match sticky footer height */
+    padding-bottom: 0 !important; /* sticky row occupies flow height */
 }
 
 /* Sticky footer inside dropdowns; keep a fixed height to avoid overlap */
@@ -2358,7 +2358,7 @@ p.user-message {
     background: #fff;
     z-index: 10;
     border-top: 1px solid #eee;
-    height: 56px; /* must match padding-bottom above */
+    height: 56px; /* fixed height; containers no longer padded */
 }
 .dropdown-menu .see-all > a{
     display: flex;

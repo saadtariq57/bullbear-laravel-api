@@ -199,17 +199,17 @@ export default {
 .header_notification{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 56px; /* space for sticky footer button */
+    padding-bottom: 0; /* sticky row occupies flow height */
 }
 .message_dropdown{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 56px; /* space for sticky footer button */
+    padding-bottom: 0; /* sticky row occupies flow height */
 }
 .followers_dropdown{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 56px; /* space for sticky footer button */
+    padding-bottom: 0; /* sticky row occupies flow height */
 }
 .dropdown-menu .see-all{
     position: sticky;
