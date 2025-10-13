@@ -2348,7 +2348,24 @@ p.user-message {
 .followers_dropdown {
     max-height: 316px !important;
     overflow: auto !important;
-    padding-bottom: 48px !important; /* space for sticky footer button */
+    padding-bottom: 56px !important; /* match sticky footer height */
+}
+
+/* Sticky footer inside dropdowns; keep a fixed height to avoid overlap */
+.dropdown-menu .see-all{
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 10;
+    border-top: 1px solid #eee;
+    height: 56px; /* must match padding-bottom above */
+}
+.dropdown-menu .see-all > a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 12px;
 }
 
 .empty-notifications {

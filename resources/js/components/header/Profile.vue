@@ -199,17 +199,17 @@ export default {
 .header_notification{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 48px; /* space for sticky footer button */
+    padding-bottom: 56px; /* space for sticky footer button */
 }
 .message_dropdown{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 48px; /* space for sticky footer button */
+    padding-bottom: 56px; /* space for sticky footer button */
 }
 .followers_dropdown{
     max-height: 316px;
     overflow: auto;
-    padding-bottom: 48px; /* space for sticky footer button */
+    padding-bottom: 56px; /* space for sticky footer button */
 }
 .dropdown-menu .see-all{
     position: sticky;
@@ -217,6 +217,13 @@ export default {
     background: #fff;
     z-index: 10;
     border-top: 1px solid #eee;
+    height: 56px;
+}
+.dropdown-menu .see-all > a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 .unread-notification-wrapper{
   background-color: transparent;
