@@ -19,6 +19,12 @@
                 </div>
 
               </div>
+              
+              <!-- Profile Completed Success Message -->
+              <div v-if="isProfileComplete" class="alert alert-success mx-3 mt-3 d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-check-circle-fill fs-4"></i>
+                <strong class="mb-0">Profile Completed!</strong>
+              </div>
               <form @submit.prevent="updateGeneralUserData" class="mt-5 pt-3 text-capitalize">
                 <div class="row g-3 px-3">
                   <div class="col-md-6">
@@ -1059,6 +1065,16 @@ import Swal from 'sweetalert2';
 export default {
   computed: {
     ...mapState(['userData']),
+    isProfileComplete() {
+      // Check if all required profile fields are filled
+      const hasCustomAvatar = this.userData?.avatar && this.userData.avatar !== 'photos/d-avatar.jpg';
+      const hasCustomCover = this.userData?.cover && this.userData.cover !== 'photos/d-cover.jpg';
+      const hasSocialLinks = !!(this.userData?.twitter || this.userData?.linkedin || this.userData?.youtube);
+      const hasPhoneNumber = !!this.userData?.phone_number;
+      const hasAbout = !!this.userData?.about;
+      
+      return hasCustomAvatar && hasCustomCover && hasSocialLinks && hasPhoneNumber && hasAbout;
+    },
   },
   data() {
     return {
