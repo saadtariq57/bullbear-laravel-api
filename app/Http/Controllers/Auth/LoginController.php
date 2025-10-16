@@ -29,7 +29,7 @@ class LoginController extends Controller
         $user = User::where($this->username(), $request->{$this->username()})->first();
 
         if ($user && !$user->hasVerifiedEmail()) {
-            Auth::login($user);
+            // Do NOT log the user in; redirect to verification notice with guidance
             return $this->unverifiedUser($request, $user);
         }
 
@@ -46,8 +46,6 @@ class LoginController extends Controller
 
     protected function unverifiedUser(Request $request, $user)
     {
-        Auth::logout();
-
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => false,

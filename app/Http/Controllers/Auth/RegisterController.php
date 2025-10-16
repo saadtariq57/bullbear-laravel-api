@@ -137,9 +137,6 @@ class RegisterController extends Controller
         // Create the user
         event(new Registered($user = $this->create($request->all())));
 
-        // Log the user in
-        $this->guard()->login($user);
-
         // Retrieve period and plan_id from the request
         $period = $request->input('period');
         $plan_id = $request->input('plan_id');
@@ -151,7 +148,8 @@ class RegisterController extends Controller
             return redirect($redirectUrl);
         }
 
-        return redirect('/email/verify');
+        // Do not log the user in yet; require email verification
+        return redirect('/email/verify')->with('email', $user->email);
     }
 
     protected function registered(Request $request, $user)
