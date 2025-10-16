@@ -1089,10 +1089,11 @@ export default {
       },
       countries: getNames(),
       privacySettings: {
-        post_privacy: '',
-        groups_privacy: '',
-        watchlists_privacy: '',
-        photos_privacy: '',
+        // Default all privacy controls to "Everyone"
+        post_privacy: 'Everyone',
+        groups_privacy: 'Everyone',
+        watchlists_privacy: 'Everyone',
+        photos_privacy: 'Everyone',
       },
       updatePasswordData: {
         currentPassword: '',
@@ -1232,11 +1233,20 @@ export default {
       }
     },
     loadPrivacySettings() {
+      const normalize = (value) => {
+        const v = (value || '').toString();
+        if (['Everyone', 'Public', 'public', 'anyone', 'Anyone'].includes(v)) return 'Everyone';
+        if (['Followers', 'followers', 'Friends'].includes(v)) return 'Followers';
+        if (['Private', 'private', 'Only Me'].includes(v)) return 'Private';
+        return 'Everyone';
+      };
+
       this.privacySettings = {
-        post_privacy: this.userData.post_privacy || '',
-        groups_privacy: this.userData.groups_privacy || '',
-        watchlists_privacy: this.userData.watchlists_privacy || '',
-        photos_privacy: this.userData.photos_privacy || '',
+        // Normalize possible legacy or variant values
+        post_privacy: normalize(this.userData.post_privacy),
+        groups_privacy: normalize(this.userData.groups_privacy),
+        watchlists_privacy: normalize(this.userData.watchlists_privacy),
+        photos_privacy: normalize(this.userData.photos_privacy),
       };
     },
     async updatePrivacySettings() {
