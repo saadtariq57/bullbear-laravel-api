@@ -113,7 +113,7 @@ const store = createStore({
                         position: "top-end",
                         showConfirmButton: false,
                         width: "400px",
-                        timer: 1000,
+                        timer: 1200,
                         timerProgressBar: true,
                         didOpen: (toast) => {
                             toast.onmouseenter = Swal.stopTimer;
@@ -126,13 +126,20 @@ const store = createStore({
                     });
                 })
                 .catch(error => {
-                    console.error('Error updating user data:', error.response.data);
+                    let message = 'Error updating user data';
+                    if (error?.response?.status === 422 && error.response.data?.errors) {
+                        const firstField = Object.keys(error.response.data.errors)[0];
+                        const firstMsg = error.response.data.errors[firstField]?.[0];
+                        if (firstMsg) message = firstMsg;
+                    } else if (error?.response?.data?.message) {
+                        message = error.response.data.message;
+                    }
                     const Toast = Swal.mixin({
                         toast: true,
                         position: "top-end",
                         showConfirmButton: false,
-                        width: "400px",
-                        timer: 1000,
+                        width: "420px",
+                        timer: 2000,
                         timerProgressBar: true,
                         didOpen: (toast) => {
                             toast.onmouseenter = Swal.stopTimer;
@@ -141,7 +148,7 @@ const store = createStore({
                     });
                     Toast.fire({
                         icon: "error",
-                        title: "Error updating user data"
+                        title: message
                     });
                 });
         }

@@ -34,8 +34,8 @@
                   </div>
                   <div class="col-md-6">
                     <label for="phone" class="form-label col-form-label-lg">Phone</label>
-                    <input type="text" class="form-control form-control-lg" id="phone" placeholder="Enter phone number"
-                      v-model="userData.phone_number">
+                    <input type="tel" class="form-control form-control-lg" id="phone" placeholder="Enter phone number"
+                      v-model="userData.phone_number" pattern="^[+]?([0-9\-\.\s\(\)]){7,20}$" @blur="validatePhoneField">
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3">
@@ -109,8 +109,8 @@
                 <div class="row g-3 px-3 pt-3">
                   <div class="col-md-12">
                     <label for="website" class="form-label col-form-label-lg">Website</label>
-                    <input type="text" class="form-control form-control-lg" id="website"
-                      placeholder="https://yourwebsite.com/" v-model="userData.website">
+                    <input type="url" class="form-control form-control-lg" id="website"
+                      placeholder="https://yourwebsite.com/" v-model="userData.website" @blur="ensureUrlProtocol('website')">
                   </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -267,20 +267,20 @@
                 <div class="row g-3 px-3 ">
                   <div class="col-md-6 pt-3 pt-md-0">
                     <label for="twitter-FormLabelLg" class="form-label col-form-label-lg mb-0 ">Twitter</label>
-                    <input type="text" class="form-control form-control-lg twitter fs-16" placeholder="Add twitter link"
-                      aria-label="twitter" v-model="userData.twitter">
+                    <input type="url" class="form-control form-control-lg twitter fs-16" placeholder="Add twitter link"
+                      aria-label="twitter" v-model="userData.twitter" @blur="ensureUrlProtocol('twitter')">
                   </div>
                   <div class="col-md-6 pt-3 pt-md-0">
                     <label for="colFormLabelLg" class="form-label col-form-label-lg mb-0">Linkedin</label>
-                    <input type="text" class="form-control form-control-lg fs-16" placeholder="Add linkedin link"
-                      aria-label="linkedIn" v-model="userData.linkedin">
+                    <input type="url" class="form-control form-control-lg fs-16" placeholder="Add linkedin link"
+                      aria-label="linkedIn" v-model="userData.linkedin" @blur="ensureUrlProtocol('linkedin')">
                   </div>
                 </div>
                 <div class="row g-3 px-3 pt-3">
                   <div class="col-md-12 pt-3 pt-md-0">
                     <label for="colFormLabelLg" class="form-label col-form-label-lg">YouTube</label>
-                    <input type="text" class="form-control form-control-lg fs-16" placeholder="Add youtube link"
-                      aria-label="youtube" v-model="userData.youtube">
+                    <input type="url" class="form-control form-control-lg fs-16" placeholder="Add youtube link"
+                      aria-label="youtube" v-model="userData.youtube" @blur="ensureUrlProtocol('youtube')">
                   </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -1117,7 +1117,53 @@ export default {
       collapseInstance.toggle();
     },
     updateGeneralUserData() {
+      // Client-side guard validation
+      const errors = [];
+      const urlFields = ['website', 'twitter', 'linkedin', 'youtube'];
+      const urlPattern = /^(https?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#\[\]@!$&'()*+,;=.]*$/i;
+      urlFields.forEach((field) => {
+        const value = (this.userData?.[field] || '').trim();
+        if (value && !urlPattern.test(value)) {
+          errors.push(`${field} must be a valid URL starting with http:// or https://`);
+        }
+      });
+      const phone = (this.userData?.phone_number || '').trim();
+      if (phone && !/^[+]?([0-9\-\.\s\(\)]){7,20}$/.test(phone)) {
+        errors.push('phone number is invalid');
+      }
+      if (errors.length) {
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, width: '400px', timer: 2000, timerProgressBar: true, didOpen: (t)=>{t.onmouseenter=Swal.stopTimer; t.onmouseleave=Swal.resumeTimer;} });
+        Toast.fire({ icon: 'error', title: errors[0] });
+        return;
+      }
       this.$store.dispatch('updateUserData', this.userData);
+    },
+    ensureUrlProtocol(field) {
+      const value = (this.userData?.[field] || '').trim();
+      if (!value) return;
+      if (!/^https?:\/\//i.test(value)) {
+        this.userData[field] = `https://${value}`;
+      }
+    },
+    validatePhoneField() {
+      const phone = (this.userData?.phone_number || '').trim();
+      if (!phone) return; // allow empty; server enforces if provided
+      const isValid = /^[+]?([0-9\-\.\s\(\)]){7,20}$/.test(phone);
+      if (!isValid) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          width: '400px',
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({ icon: 'error', title: 'phone number is invalid' });
+      }
     },
     showConfirmModel() {
       if (this.confirmModalInstance) {

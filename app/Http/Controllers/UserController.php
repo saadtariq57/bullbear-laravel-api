@@ -10,6 +10,7 @@ use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -435,24 +436,24 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        // Validate the request data except for name, email, and subscription_plan
-        // $validatedData = $request->validate([
-        //     'phone_number' => 'required|string|max:255',
-        //     'first_name' => 'nullable|string|max:255',
-        //     'last_name' => 'nullable|string|max:255',
-        //     'about' => 'nullable|string',
-        //     'gender' => 'nullable|string|in:male,female,other',
-        //     'birthday' => 'nullable|date',
-        //     'country' => 'nullable|string|max:255',
-        //     'city' => 'nullable|string|max:255',
-        //     'zip' => 'nullable|string|max:255',
-        //     'website' => 'nullable|string|max:255'
-        // ]);
+        // Validate inputs (URLs and phone formats)
+        $validatedData = $request->validate([
+            'phone_number' => ['nullable','string','max:32','regex:/^[+]?([0-9\-\.\s\(\)]){7,20}$/'],
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'about' => 'nullable|string',
+            'gender' => 'nullable|string|in:male,female,other',
+            'birthday' => 'nullable|date',
+            'country' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'zip' => 'nullable|string|max:255',
+            'website' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'linkedin' => 'nullable|url|max:255',
+            'youtube' => 'nullable|url|max:255',
+        ]);
 
-        // Update user with validated data
-        // $user->update($validatedData);
-
-        $dataToUpdate = $request->only([
+        $dataToUpdate = $validatedData ?: $request->only([
             'phone_number', 
             'first_name', 
             'last_name', 
