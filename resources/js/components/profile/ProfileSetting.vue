@@ -199,13 +199,14 @@
                     <p class="fs-28 pt-2">Change Password</p>
                   </div>
                 </div>
-                <form @submit.prevent="updatePassword" class="mt-5 pt-3">
+                <form @submit.prevent="updatePassword" class="mt-5 pt-3" autocomplete="off">
                   <div class="row g-3 px-3 pt-3">
                     <input type="text" name="username" hidden aria-hidden="true" autocomplete="username">
+                    <input type="password" hidden aria-hidden="true" tabindex="-1" autocomplete="new-password">
                     <div class="col">
                       <label for="current-password" class="form-label col-form-label-lg pb-0">Current Password</label>
                       <div class="position-relative">
-                        <input v-model="updatePasswordData.currentPassword" :type="show.current ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword" autocomplete="current-password">
+                        <input v-model="updatePasswordData.currentPassword" :type="show.current ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off">
                         <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.current = !show.current" style="border: none; background: none; z-index: 10; color: #6c757d;">
                           <i class="bi" :class="show.current ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
                         </button>
@@ -216,7 +217,7 @@
                     <div class="col-md-6">
                       <label for="New-password" class="form-label col-form-label-lg">New password</label>
                       <div class="position-relative">
-                        <input v-model="updatePasswordData.newPassword" :type="show.new ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
+                        <input v-model="updatePasswordData.newPassword" :type="show.new ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password" spellcheck="false" autocapitalize="off" autocorrect="off">
                         <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.new = !show.new" style="border: none; background: none; z-index: 10; color: #6c757d;">
                           <i class="bi" :class="show.new ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
                         </button>
@@ -225,7 +226,7 @@
                     <div class="col-md-6">
                       <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat password</label>
                       <div class="position-relative">
-                        <input v-model="updatePasswordData.newPassword_confirmation" :type="show.repeat ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
+                        <input v-model="updatePasswordData.newPassword_confirmation" :type="show.repeat ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password" spellcheck="false" autocapitalize="off" autocorrect="off">
                         <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.repeat = !show.repeat" style="border: none; background: none; z-index: 10; color: #6c757d;">
                           <i class="bi" :class="show.repeat ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
                         </button>
@@ -1336,39 +1337,55 @@ export default {
       }
     },
     async updatePassword() {
+      // Client-side validation
+      const { currentPassword, newPassword, newPassword_confirmation } = this.updatePasswordData;
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        width: "420px",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+      if (!currentPassword || !newPassword || !newPassword_confirmation) {
+        Toast.fire({ icon: 'error', title: 'All password fields are required' });
+        return;
+      }
+      if (newPassword !== newPassword_confirmation) {
+        Toast.fire({ icon: 'error', title: 'New password and repeat password must match' });
+        return;
+      }
+      if (currentPassword === newPassword) {
+        Toast.fire({ icon: 'error', title: 'New password must be different from current password' });
+        return;
+      }
+      // Optional: enforce strength similar to backend
+      const strongPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
+      if (!strongPattern.test(newPassword)) {
+        Toast.fire({ icon: 'error', title: 'Password must be strong (8+ chars, upper, lower, number, symbol)' });
+        return;
+      }
+
       try {
         const response = await axios.post('/api/update-password', this.updatePasswordData);
-        // alert(response.data.message);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          width: "400px",
-          timer: 1000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Password updated successfully"
-        });
+        Toast.fire({ icon: 'success', title: 'Password updated successfully' });
+        this.updatePasswordData.currentPassword = '';
+        this.updatePasswordData.newPassword = '';
+        this.updatePasswordData.newPassword_confirmation = '';
       } catch (error) {
-        if (error.response && error.response.data.errors) {
-          // alert(Object.values(error.response.data.errors).join('\n'));
-          Toast.fire({
-          icon: "error",
-          title: "Error updating password"
-        });
-        } else {
-          // alert('An error occurred. Please try again.');
-          Toast.fire({
-          icon: "error",
-          title: "Error updating password"
-        });
+        let message = 'Error updating password';
+        if (error?.response?.status === 422 && error.response.data?.errors) {
+          const firstField = Object.keys(error.response.data.errors)[0];
+          const firstMsg = error.response.data.errors[firstField]?.[0];
+          if (firstMsg) message = firstMsg;
+        } else if (error?.response?.data?.message) {
+          message = error.response.data.message;
         }
+        Toast.fire({ icon: 'error', title: message });
       }
     },
   },

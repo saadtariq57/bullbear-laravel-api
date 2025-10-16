@@ -509,8 +509,16 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'currentPassword' => 'required',
-            'newPassword' => 'required|min:8|confirmed',
+            'currentPassword' => ['required','string'],
+            'newPassword' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/'
+            ],
+        ], [
+            'newPassword.regex' => 'Password must be at least 8 chars and include upper, lower, number, and symbol.',
         ]);
 
         $user = Auth::user();
@@ -519,6 +527,14 @@ class UserController extends Controller
             throw ValidationException::withMessages([
                 'currentPassword' => ['The provided password does not match your current password.'],
             ]);
+        }
+
+        // Prevent reusing the same password
+        if (Hash::check($request->newPassword, $user->password)) {
+            return response()->json([
+                'message' => 'New password must be different from current password.',
+                'errors' => ['newPassword' => ['New password must be different from current password.']]
+            ], 422);
         }
 
         $user->password = Hash::make($request->newPassword);
