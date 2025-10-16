@@ -6,6 +6,12 @@
 <style>
     #usernameNotavaible{color: red;}
     #usernameAvaible{color: green;}
+    /* Hide Bootstrap's invalid background icon for password fields to avoid overlap with eye toggle */
+    #password-input.is-invalid,
+    #password-confirm.is-invalid {
+        background-image: none;
+        padding-right: 2.5rem; /* keep space for eye toggle */
+    }
 </style>
     <div class="auth-maintenance d-flex align-items-center min-vh-100">
         <div class="bg-overlay bg-light"></div>
@@ -95,7 +101,7 @@
                                                                 </button>
                                                             </div>
                                                             @error('password')
-                                                                <span class="invalid-feedback" role="alert">
+                                                                <span class="invalid-feedback d-block" role="alert">
                                                                     <strong>{{ $message }}</strong>
                                                                 </span>
                                                             @enderror
@@ -106,13 +112,18 @@
                                                                 Password</label>
                                                             <div class="position-relative">
                                                                 <input type="password"
-                                                                    class="form-control @error('password') is-invalid @enderror"
+                                                                    class="form-control @error('password_confirmation') is-invalid @enderror"
                                                                     name="password_confirmation" required id="password-confirm"
                                                                     placeholder="Enter confirm password">
                                                                 <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
                                                                         id="toggle-password-confirm" style="border: none; background: none; z-index: 10; color: #6c757d;">
                                                                     <i class="bi bi-eye-slash" id="toggle-password-confirm-icon" style="font-size: 18px;"></i>
                                                                 </button>
+                                                                @error('password_confirmation')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
                                                             </div>
                                                         </div>
 
