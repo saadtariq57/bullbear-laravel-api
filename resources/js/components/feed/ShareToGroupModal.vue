@@ -107,14 +107,20 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const response = await axios.get('/api/joined-chats-share', {
-          params: {
-            per_page: 5,
-            page,
-            search,
-          },
-        });
-        this.groups = response.data.data;
+        if (search) {
+          await this.searchAll(search);
+        } else {
+          const response = await axios.get('/api/joined-chats-share', {
+            params: {
+              per_page: 5,
+              page,
+            },
+          });
+          this.groups = (response.data && response.data.data ? response.data.data : []).map(g => ({
+            ...g,
+            name: g.name || g.group_title || g.group_name,
+          }));
+        }
         if (search === '' && !this.defaultFetched) {
           // If fetching default suggestions
           this.defaultFetched = true;
@@ -126,11 +132,41 @@ export default {
         this.loading = false;
       }
     },
+    async searchAll(search) {
+      try {
+        const [joinedRes, suggestedRes] = await Promise.all([
+          axios.get('/api/joined-chats-share', { params: { per_page: 5, page: 1, search } }),
+          axios.get('/api/suggested-chats', { params: { per_page: 5, page: 1, search } })
+        ]);
+
+        const joined = (joinedRes.data && joinedRes.data.data) ? joinedRes.data.data : [];
+        const suggested = (suggestedRes.data && suggestedRes.data.data) ? suggestedRes.data.data : [];
+
+        const combined = [...joined, ...suggested].map(g => ({
+          ...g,
+          name: g.name || g.group_title || g.group_name,
+        }));
+
+        const seen = new Set();
+        this.groups = combined.filter(g => {
+          if (!g || typeof g.id === 'undefined') return false;
+          if (seen.has(g.id)) return false;
+          seen.add(g.id);
+          return true;
+        });
+      } catch (err) {
+        console.error(err);
+        this.error = 'Failed to load groups.';
+        this.groups = [];
+      }
+    },
     debouncedSearch: debounce(function () {
       this.fetchGroups(1, this.searchQuery);
     }, 300),
     shareToGroup(group) {
-      this.$emit('share-post', {groupId: group.id, groupName: group.group_title.replace(/ /g, '-')});
+      const slugSource = group.group_title || group.group_name || group.name || '';
+      const groupSlug = slugSource ? slugSource.replace(/ /g, '-') : '';
+      this.$emit('share-post', {groupId: group.id, groupName: groupSlug});
       this.$emit('close-modal', this.$el);
     },
     closeModal() {

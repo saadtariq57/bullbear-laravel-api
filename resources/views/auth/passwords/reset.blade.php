@@ -55,11 +55,16 @@
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label" for="password-input">Password</label>
-                                                            <input type="password"
-                                                                class="form-control @error('password') is-invalid @enderror"
-                                                                name="password" placeholder="Enter password"
-                                                                id="password-input" aria-describedby="passwordInput"
-                                                                required="">
+                                                            <div class="position-relative">
+                                                                <input type="password"
+                                                                    class="form-control @error('password') is-invalid @enderror"
+                                                                    name="password" placeholder="Enter password"
+                                                                    id="password-input" aria-describedby="passwordInput"
+                                                                    required="">
+                                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" id="toggle-password" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                                                                    <i class="bi bi-eye-slash" id="toggle-password-icon" style="font-size: 18px;"></i>
+                                                                </button>
+                                                            </div>
                                                             @error('password')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
@@ -73,9 +78,14 @@
                                                         <div class="mb-3">
                                                             <label class="form-label" for="confirm-password-input">Confirm
                                                                 Password</label>
-                                                            <input type="password" class="form-control"
-                                                                name="password_confirmation" placeholder="Confirm password"
-                                                                id="confirm-password-input" required="">
+                                                            <div class="position-relative">
+                                                                <input type="password" class="form-control"
+                                                                    name="password_confirmation" placeholder="Confirm password"
+                                                                    id="confirm-password-input" required="">
+                                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" id="toggle-confirm-password" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                                                                    <i class="bi bi-eye-slash" id="toggle-confirm-password-icon" style="font-size: 18px;"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
 
                                                         <div class="mt-4">
@@ -117,4 +127,32 @@
 @section('scripts')
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script>
+        // Password toggle for reset password
+        (function(){
+            const pwInput = document.getElementById('password-input');
+            const pwToggle = document.getElementById('toggle-password');
+            const pwIcon = document.getElementById('toggle-password-icon');
+            if (pwInput && pwToggle && pwIcon) {
+                pwToggle.addEventListener('click', function(){
+                    const isHidden = pwInput.type === 'password';
+                    pwInput.type = isHidden ? 'text' : 'password';
+                    pwIcon.classList.toggle('bi-eye-slash', !isHidden);
+                    pwIcon.classList.toggle('bi-eye', isHidden);
+                });
+            }
+
+            const cpwInput = document.getElementById('confirm-password-input');
+            const cpwToggle = document.getElementById('toggle-confirm-password');
+            const cpwIcon = document.getElementById('toggle-confirm-password-icon');
+            if (cpwInput && cpwToggle && cpwIcon) {
+                cpwToggle.addEventListener('click', function(){
+                    const isHidden = cpwInput.type === 'password';
+                    cpwInput.type = isHidden ? 'text' : 'password';
+                    cpwIcon.classList.toggle('bi-eye-slash', !isHidden);
+                    cpwIcon.classList.toggle('bi-eye', isHidden);
+                });
+            }
+        })();
+    </script>
 @endsection

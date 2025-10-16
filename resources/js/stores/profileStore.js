@@ -286,9 +286,10 @@ const userProfileModule = {
             if (!state.userProfileData) return false;
             if (getters.getIsOwnProfile) return true;
             const privacy = state.userProfileData.post_privacy;
-            if (privacy === 'Public') return true;
-            if (privacy === 'Private') return false;
-            // Assuming 'Followers' is the third option
+            // Normalize and allow Everyone/public to be visible to all
+            if (['Everyone', 'Public', 'public'].includes(privacy)) return true;
+            if (['Private', 'Only Me', 'private'].includes(privacy)) return false;
+            // Followers/Friends visibility otherwise
             return getters.getIsFollowing;
         },
         canViewGroups(state, getters) {

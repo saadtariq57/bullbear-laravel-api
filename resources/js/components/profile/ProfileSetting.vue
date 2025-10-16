@@ -19,6 +19,12 @@
                 </div>
 
               </div>
+              
+              <!-- Profile Completed Success Message -->
+              <div v-if="isProfileComplete" class="alert alert-success mx-3 mt-3 d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-check-circle-fill fs-4"></i>
+                <strong class="mb-0">Profile Completed!</strong>
+              </div>
               <form @submit.prevent="updateGeneralUserData" class="mt-5 pt-3 text-capitalize">
                 <div class="row g-3 px-3">
                   <div class="col-md-6">
@@ -198,17 +204,32 @@
                     <input type="text" name="username" hidden aria-hidden="true" autocomplete="username">
                     <div class="col">
                       <label for="current-password" class="form-label col-form-label-lg pb-0">Current Password</label>
-                      <input v-model="updatePasswordData.currentPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.currentPassword" :type="show.current ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter current password" aria-label="currentPassword" name="currentPassword" autocomplete="current-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.current = !show.current" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.current ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="row g-3 px-3 pt-3">
                     <div class="col-md-6">
                       <label for="New-password" class="form-label col-form-label-lg">New password</label>
-                      <input v-model="updatePasswordData.newPassword" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.newPassword" :type="show.new ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword" autocomplete="new-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.new = !show.new" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.new ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                     <div class="col-md-6">
                       <label for="colFormLabelLg" class="form-label col-form-label-lg">Repeat password</label>
-                      <input v-model="updatePasswordData.newPassword_confirmation" type="password" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
+                      <div class="position-relative">
+                        <input v-model="updatePasswordData.newPassword_confirmation" :type="show.repeat ? 'text' : 'password'" class="form-control form-control-lg text-secondary" placeholder="Enter new password" aria-label="New password" name="newPassword_confirmation" autocomplete="new-password">
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" @click="show.repeat = !show.repeat" style="border: none; background: none; z-index: 10; color: #6c757d;">
+                          <i class="bi" :class="show.repeat ? 'bi-eye' : 'bi-eye-slash'" style="font-size: 18px;"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="px-3 pt-4">
@@ -1044,6 +1065,16 @@ import Swal from 'sweetalert2';
 export default {
   computed: {
     ...mapState(['userData']),
+    isProfileComplete() {
+      // Check if all required profile fields are filled
+      const hasCustomAvatar = this.userData?.avatar && this.userData.avatar !== 'photos/d-avatar.jpg';
+      const hasCustomCover = this.userData?.cover && this.userData.cover !== 'photos/d-cover.jpg';
+      const hasSocialLinks = !!(this.userData?.twitter || this.userData?.linkedin || this.userData?.youtube);
+      const hasPhoneNumber = !!this.userData?.phone_number;
+      const hasAbout = !!this.userData?.about;
+      
+      return hasCustomAvatar && hasCustomCover && hasSocialLinks && hasPhoneNumber && hasAbout;
+    },
   },
   data() {
     return {
@@ -1058,10 +1089,11 @@ export default {
       },
       countries: getNames(),
       privacySettings: {
-        post_privacy: '',
-        groups_privacy: '',
-        watchlists_privacy: '',
-        photos_privacy: '',
+        // Default all privacy controls to "Everyone"
+        post_privacy: 'Everyone',
+        groups_privacy: 'Everyone',
+        watchlists_privacy: 'Everyone',
+        photos_privacy: 'Everyone',
       },
       updatePasswordData: {
         currentPassword: '',
@@ -1069,6 +1101,7 @@ export default {
         newPassword_confirmation: '',
         // twoFactor: '1',
       },
+      show: { current: false, new: false, repeat: false },
     };
   },
   mounted() {
@@ -1200,11 +1233,20 @@ export default {
       }
     },
     loadPrivacySettings() {
+      const normalize = (value) => {
+        const v = (value || '').toString();
+        if (['Everyone', 'Public', 'public', 'anyone', 'Anyone'].includes(v)) return 'Everyone';
+        if (['Followers', 'followers', 'Friends'].includes(v)) return 'Followers';
+        if (['Private', 'private', 'Only Me'].includes(v)) return 'Private';
+        return 'Everyone';
+      };
+
       this.privacySettings = {
-        post_privacy: this.userData.post_privacy || '',
-        groups_privacy: this.userData.groups_privacy || '',
-        watchlists_privacy: this.userData.watchlists_privacy || '',
-        photos_privacy: this.userData.photos_privacy || '',
+        // Normalize possible legacy or variant values
+        post_privacy: normalize(this.userData.post_privacy),
+        groups_privacy: normalize(this.userData.groups_privacy),
+        watchlists_privacy: normalize(this.userData.watchlists_privacy),
+        photos_privacy: normalize(this.userData.photos_privacy),
       };
     },
     async updatePrivacySettings() {

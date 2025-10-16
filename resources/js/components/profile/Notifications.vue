@@ -19,12 +19,13 @@
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
                        
                         <ul class="list-unstyled all_notify m-0 p-0">
-                            <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3">
-                                <div class="d-flex">
-                                    <a :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0">
+                            <li v-for="notification in formattedNotifications" :key="notification.id" class="py-2 px-3 position-relative" :class="{ 'unread-notification-wrapper': !notification.read_at }">
+                                <div class="d-flex w-100">
+                                    <span v-if="!notification.read_at" class="unread-nav-notification position-absolute rounded-circle"></span>
+                                    <a @click.prevent="handleNotificationClick(notification)" :href="notification.url" class="dropdown-item d-flex gap-3 align-items-center p-0 w-100">
                                         <img :src="'/uploads/' + notification.user.avatar" alt="" width="45" height="45" class="rounded-circle">
-                                        <div>
-                                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ notification.title }}</h6>
+                                        <div class="flex-grow-1">
+                                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0" :class="{ 'fw-bold': !notification.read_at }">{{ notification.title }}</h6>
                                             <p class="mb-0 fs-12 fw-5 text-wrap">{{ notification.description }}</p>
                                         </div>
                                     </a>
@@ -97,7 +98,8 @@ export default {
             if (!notification.read_at) {
                 this.markNotificationAsRead(notification.id);
             }
-            //window.location.href = notification.url;
+            const url = new URL(notification.url, window.location.origin);
+            window.location.href = url.pathname + url.search + url.hash;
         },
 
         logout() {

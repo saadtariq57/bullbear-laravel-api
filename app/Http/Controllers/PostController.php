@@ -22,10 +22,11 @@ use App\Notifications\NewPostReactionNotification;
 use App\Notifications\PostCommentNotification;
 use App\Notifications\NewPollVoteNotification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Services\FeedService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Message;
+//
 
 class PostController extends Controller
 {
@@ -144,10 +145,61 @@ class PostController extends Controller
                         'reactions' => function($query) {
                             $query->with('reactionType:id,name,icon')
                                     ->with('user:id,name,avatar,about');
+                        },
+                        'sharedPost.user:id,name,avatar',
+                        'sharedPost.photos',
+                        'sharedPost.poll.options',
+                        'sharedPost.poll.userVotes' => function($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        },
+                        'sharedPost.coloredPost',
+                        'sharedPost.reactions' => function($query) {
+                            $query->with('reactionType:id,name,icon')
+                                    ->with('user:id,name,avatar,about');
                         }
                     ])
                     ->withCount(['comments', 'reactions'])
                     ->findOrFail($post->id);
+
+            // Handle shared post if exists
+            if ($post->sharedPost) {
+                $sharedPost = $post->sharedPost;
+
+                // Apply similar transformations to the shared post
+                switch ($sharedPost->post_type) {
+                    case 'photo':
+                        break;
+
+                    case 'poll':
+                        if ($sharedPost->poll) {
+                            $sharedPost->poll->options = $sharedPost->poll->options;
+                            // Check if the user has voted
+                            if ($sharedPost->poll->userVotes->isNotEmpty()) {
+                                $sharedPost->poll->userVoted = true;
+                                $sharedPost->poll->userVoteOption = $sharedPost->poll->userVotes->first()->option_id;
+                            } else {
+                                $sharedPost->poll->userVoted = false;
+                            }
+                        }
+                        unset($sharedPost->pollDetails);
+                        break;
+
+                    case 'color':
+                        unset($sharedPost->colorDetails);
+                        break;
+                }
+
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
+                $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
+            }
+
             switch ($post->post_type) {
                 case 'photo':
                     break;
@@ -350,6 +402,12 @@ class PostController extends Controller
     {
         $user = $request->user();
         $feedService = app(FeedService::class);
+        Log::info('UserFeed request', [
+            'user_id' => $user?->id,
+            'since_hours' => (int) $request->get('since_hours', 24),
+            'lastPostId' => $request->get('lastPostId'),
+            'per_page' => (int) $request->get('per_page', 10),
+        ]);
         $posts = $feedService->getFeedForUser($user, [
             'since_hours' => (int) $request->get('since_hours', 24),
             'lastPostId' => $request->get('lastPostId'),
@@ -366,6 +424,14 @@ class PostController extends Controller
 
         // Ensure colored posts are present for color rendering
         $posts->getCollection()->load(['coloredPost', 'sharedPost.coloredPost']);
+
+        // Diagnostics: count posts with missing user relations to explain render errors
+        try {
+            $nullUserCount = $posts->getCollection()->filter(function ($p) { return $p->user === null; })->count();
+            Log::info('UserFeed diagnostics', [ 'null_user_posts' => $nullUserCount ]);
+        } catch (\Throwable $e) {
+            // ignore logging errors
+        }
 
         $posts->getCollection()->transform(function ($post) use ($user) {
             // Handle shared post if exists
@@ -396,8 +462,15 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
             }
 
             // Check and handle each post type
@@ -427,6 +500,10 @@ class PostController extends Controller
             return $post;
         });
 
+        Log::info('UserFeed response', [
+            'items_on_page' => $posts->count(),
+            'total' => $posts->total(),
+        ]);
         return response()->json($posts);
     }
 
@@ -496,8 +573,15 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
+                $post->unsetRelation('sharedPost');
             }
 
             switch ($post->post_type) {
@@ -603,8 +687,14 @@ class PostController extends Controller
                         break;
                 }
 
-                // Attach the transformed shared post as a new property without altering the main post structure
+                // Expose original shared content consistently to the frontend
+                // Ensure relations are preserved
+                $sharedPost->setRelation('user', $sharedPost->user);
+                if ($sharedPost->coloredPost) {
+                    $sharedPost->setRelation('coloredPost', $sharedPost->coloredPost);
+                }
                 $post->originalPost = $sharedPost;
+                // Avoid duplicating the same payload under two keys
                 $post->unsetRelation('sharedPost');
             }
 
@@ -708,7 +798,7 @@ class PostController extends Controller
             'description' => '',
             'type' => 'comment',
             'last_notification_time' => now(),
-            'url' => url("/post/{$postOwner->name}/{$request->post_id}"),
+            'url' => "/post/{$postOwner->name}/{$request->post_id}",
             'user' => [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
@@ -955,7 +1045,7 @@ class PostController extends Controller
                 'description' => $reaction->user->name. $notificationDesc,
                 'type' => 'reaction',
                 'last_notification_time' => now(),
-                'url' => $postOwner ? url("/post/{$postOwner->name}/{$postId}") : null,
+                'url' => $postOwner ? "/post/{$postOwner->name}/{$postId}" : null,
                 'user' => [
                     'id' => $reaction->user->id,
                     'name' => $reaction->user->name,
@@ -1092,7 +1182,7 @@ class PostController extends Controller
                     'description' => '',
                     'type' => 'pollVote',
                     'last_notification_time' => now(),
-                    'url' => url("/post/{$postOwner->name}/{$postID}"),
+                    'url' => "/post/{$postOwner->name}/{$postID}",
                     'user' => [
                         'id' => $userId,
                         'name' => $user->name,

@@ -4,6 +4,7 @@
       <div class="row">
         <!-- Profile Completion Widget -->
         <ProfileCompletionWidget
+          v-if="completionPercentage < 100"
           :completionPercentage="completionPercentage"
           :profileSteps="profileSteps"
         />

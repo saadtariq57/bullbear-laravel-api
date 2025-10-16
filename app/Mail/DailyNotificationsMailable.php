@@ -45,10 +45,11 @@ class DailyNotificationsMailable extends Mailable
                     default => "You have a new notification."
                 };
 
-                $notificationHtml .= "<li><a href='" . htmlspecialchars($notification['url']) . "'>$description</a></li>";
+                $absoluteUrl = $this->makeAbsoluteUrl($notification['url'] ?? '');
+                $notificationHtml .= "<li><a href='" . htmlspecialchars($absoluteUrl) . "'>$description</a></li>";
             }
         } else {
-            \Log::error("Expected notifications to be a collection, but got: " . gettype($notifications));
+            Log::error("Expected notifications to be a collection, but got: " . gettype($notifications));
         }
 
         $placeholders = [
@@ -58,6 +59,17 @@ class DailyNotificationsMailable extends Mailable
         ];
 
         return str_replace(array_keys($placeholders), array_values($placeholders), $templateBody);
+    }
+
+    private function makeAbsoluteUrl(string $url): string
+    {
+        if ($url === '') {
+            return rtrim((string) config('app.url'), '/');
+        }
+        if (preg_match('/^https?:\/\//i', $url) === 1) {
+            return $url; // already absolute
+        }
+        return rtrim((string) config('app.url'), '/') . $url;
     }
 
 

@@ -1,6 +1,6 @@
 <template>
   <ul
-    class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize mt-4">
+    class="bg-white list-unstyled rounded-1 pb-2 shadow rounded border-top border-2 border-warning widgets-border text-capitalize">
     <div class="border-bottom fw-6 fs-6 py-2 ps-3 mb-1 d-flex align-items-center">
       <span class="icon-round-bg me-2 bg-cta rounded-5 d-flex justify-content-center align-items-center">
         <i class="bi bi-info-circle-fill text-white"></i>
@@ -31,15 +31,15 @@
     <li class="border-bottom my-1"></li>
     <li class="px-3 py-1 fs-16" v-if="userProfileData.linkedin">
       <i class="bi bi-linkedin me-2 text-black fs-5"></i>
-      <a :href="userProfileData.linkedin" class="text-black">{{ userProfileData.name }}</a>
+      <a :href="normalizeUrl(userProfileData.linkedin)" class="text-black" target="_blank" rel="noopener noreferrer">{{ formatUrl(userProfileData.linkedin) }}</a>
     </li>
     <li class="px-3 py-1 fs-16" v-if="userProfileData.twitter">
       <i class="bi bi-twitter me-2 text-black fs-5"></i>
-      <a :href="userProfileData.twitter" class="text-black">{{ userProfileData.name }}</a>
+      <a :href="normalizeUrl(userProfileData.twitter)" class="text-black" target="_blank" rel="noopener noreferrer">{{ formatUrl(userProfileData.twitter) }}</a>
     </li>
     <li class="px-3 py-1 fs-16" v-if="userProfileData.youtube">
       <i class="bi bi-youtube me-2 text-black fs-5"></i>
-      <a :href="userProfileData.youtube" class="text-black">{{ userProfileData.name }}</a>
+      <a :href="normalizeUrl(userProfileData.youtube)" class="text-black" target="_blank" rel="noopener noreferrer">{{ formatUrl(userProfileData.youtube) }}</a>
     </li>
   </ul>
 </template>
@@ -55,6 +55,22 @@ export default {
     userOnline: {
       type: String,
       required: true,
+    },
+  },
+  methods: {
+    normalizeUrl(url) {
+      if (!url) return '#';
+      return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+    },
+    formatUrl(url) {
+      if (!url) return '';
+      try {
+        const u = /^https?:\/\//i.test(url) ? new URL(url) : new URL(`https://${url}`);
+        const pathname = u.pathname === '/' ? '' : u.pathname;
+        return `${u.hostname}${pathname}`;
+      } catch (e) {
+        return url;
+      }
     },
   },
 };

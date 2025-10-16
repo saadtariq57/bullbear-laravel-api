@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div class="mt-3" v-if="userData">
     <div v-if="$store.state.userFeed.newPostAvailable" class="new-post-alert text-center mb-3">
       <button @click="$store.commit('userFeed/shiftNewPost')" class="btn fs-5 btn-feed-hover border-0 rounded-5 px-3">
         New Post Available - Click to View <i class="bi bi-arrow-up-short fw-bold fs-5"></i>
@@ -264,7 +264,7 @@
                 <span class="text-muted ms-2">{{ formatDateTime(post.originalPost.created_at) }}</span>
               </div>
               <FollowButton
-                v-if="!isOwnProfile(post.originalPost.user_id)"
+                v-if="post.originalPost && post.originalPost.user && post.originalPost.user.id && !isOwnProfile(post.originalPost.user.id)"
                 :userId="post.originalPost.user.id"
                 :initialIsFollowing="isFollowing(post.originalPost.user.id)"
                 :initialFollowersCount="this.userData.followers_count"
@@ -285,6 +285,16 @@
             <div class="shared-post-content">
               <!-- Render based on shared post type -->
               <template v-if="post.originalPost.post_type === 'text'">
+                <div v-if="post.originalPost.colored_post_id && post.originalPost.colored_post" class="colored-post-text d-flex justify-content-center align-items-center"
+                  :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
+                  <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
+                    {{ post.originalPost.post_text }}
+                  </p>
+                </div>
+                <div v-else class="markdown-body" v-html="renderedMarkdown(post.originalPost.post_text)"></div>
+              </template>
+
+              <template v-else-if="post.originalPost.post_type === 'color'">
                 <div v-if="post.originalPost.colored_post_id && post.originalPost.colored_post" class="colored-post-text d-flex justify-content-center align-items-center"
                   :style="{ backgroundImage: 'linear-gradient(45deg, ' + post.originalPost.colored_post.color_1 + ' 0%, ' + post.originalPost.colored_post.color_2 + ' 100%)' }">
                   <p :style="{ color: post.originalPost.colored_post.text_color }" class="px-3 py-2 lh-base">
@@ -730,6 +740,9 @@
       @comments-count-reupdated="updateCommentsCount($event)"
     />
   </div>
+  <div v-else class="text-center my-4">
+    <span>Loading feed...</span>
+  </div>
 </template>
 
 <script>
@@ -789,6 +802,11 @@ export default {
       shareModalInstance: null,
       editPostData: null,
       infiniteObserver: null,
+      isMobile: false,
+      safetyCheckInterval: null,
+      bottomReachCheckInterval: null,
+      immediateBottomCheck: null,
+      scrollPositionBeforeLoad: null,
     };
   },
   computed: {
@@ -849,6 +867,80 @@ export default {
     }
   },
   methods: {
+    detectMobileDevice() {
+      // Check if device is mobile based on screen width and user agent
+      const isMobileWidth = window.innerWidth <= 768;
+      const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      this.isMobile = isMobileWidth || isMobileUserAgent;
+    },
+    startSafetyCheck() {
+      // Safety mechanism: periodically check if user is near bottom and load more posts
+      this.safetyCheckInterval = setInterval(() => {
+        if (this.isFetchingMore || !this.hasMorePosts) return;
+        
+        const scrollingElement = document.scrollingElement || document.documentElement;
+        const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const fullHeight = scrollingElement.scrollHeight;
+        
+        // Very aggressive check - trigger if user is within 2000px of bottom
+        const safetyBuffer = this.isMobile ? 2000 : 1500;
+        const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - safetyBuffer);
+        
+        if (nearBottom) {
+          console.log('Safety check triggered - loading more posts');
+          this.loadMorePosts();
+        }
+      }, 1000); // Check every second
+    },
+    stopSafetyCheck() {
+      if (this.safetyCheckInterval) {
+        clearInterval(this.safetyCheckInterval);
+        this.safetyCheckInterval = null;
+      }
+    },
+    startBottomReachCheck() {
+      // Dedicated mechanism to detect when user reaches absolute bottom
+      this.bottomReachCheckInterval = setInterval(() => {
+        if (this.isFetchingMore || !this.hasMorePosts) return;
+        
+        const scrollingElement = document.scrollingElement || document.documentElement;
+        const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const fullHeight = scrollingElement.scrollHeight;
+        
+        // Check if user has reached the absolute bottom (within 10px)
+        const atAbsoluteBottom = (scrollTop + viewportHeight) >= (fullHeight - 10);
+        
+        if (atAbsoluteBottom) {
+          console.log('User reached absolute bottom - forcing post load');
+          this.loadMorePosts();
+        }
+      }, 500); // Check every 500ms for more responsive detection
+    },
+    stopBottomReachCheck() {
+      if (this.bottomReachCheckInterval) {
+        clearInterval(this.bottomReachCheckInterval);
+        this.bottomReachCheckInterval = null;
+      }
+    },
+    immediateBottomDetection() {
+      // Immediate bottom detection that runs on every scroll event
+      if (this.isFetchingMore || !this.hasMorePosts) return;
+      
+      const scrollingElement = document.scrollingElement || document.documentElement;
+      const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = scrollingElement.scrollHeight;
+      
+      // Check if user has reached the absolute bottom (within 5px for maximum sensitivity)
+      const atAbsoluteBottom = (scrollTop + viewportHeight) >= (fullHeight - 5);
+      
+      if (atAbsoluteBottom) {
+        console.log('Immediate bottom detection - user at absolute bottom - FORCING post load');
+        this.loadMorePosts();
+      }
+    },
     setupInfiniteObserver() {
       // Teardown any existing observer
       if (this.infiniteObserver) {
@@ -860,10 +952,13 @@ export default {
       }
 
       if ('IntersectionObserver' in window && this.$refs.infiniteScrollSentinel) {
-        const options = { root: null, rootMargin: '0px 0px 800px 0px', threshold: 0 };
+        // Use much more aggressive rootMargin to trigger loading much earlier
+        const rootMargin = this.isMobile ? '0px 0px 2000px 0px' : '0px 0px 1500px 0px';
+        const options = { root: null, rootMargin, threshold: 0 };
         this.infiniteObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting && !this.isFetchingMore && this.hasMorePosts) {
+              console.log('IntersectionObserver triggered - loading more posts');
               this.loadMorePosts();
             }
           });
@@ -976,16 +1071,76 @@ export default {
       const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : scrollingElement.scrollTop;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
       const fullHeight = scrollingElement.scrollHeight;
-      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - 300);
-      if (nearBottom && !this.isFetchingMore && this.hasMorePosts) {
+      
+      // Much more aggressive buffer - trigger loading when user is still far from bottom
+      const scrollBuffer = this.isMobile ? 1500 : 1000;
+      const nearBottom = (scrollTop + viewportHeight) >= (fullHeight - scrollBuffer);
+      
+      // Fallback: trigger loading even when user reaches absolute bottom
+      const atBottom = (scrollTop + viewportHeight) >= (fullHeight - 50);
+      
+      // Emergency fallback: trigger loading when user reaches very bottom (within 10px)
+      const atVeryBottom = (scrollTop + viewportHeight) >= (fullHeight - 10);
+      
+      if ((nearBottom || atBottom || atVeryBottom) && !this.isFetchingMore && this.hasMorePosts) {
+        if (nearBottom) {
+          console.log('Scroll handler triggered (near bottom) - loading more posts');
+        } else if (atBottom) {
+          console.log('Scroll handler triggered (at bottom) - loading more posts');
+        } else if (atVeryBottom) {
+          console.log('Scroll handler triggered (at very bottom) - FORCING post load');
+        }
         this.loadMorePosts();
       }
+      
+      // Also run immediate bottom detection on every scroll
+      this.immediateBottomDetection();
     },
     async loadMorePosts() {
+      // Detect if user is at (or near) bottom before loading
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+      const wasAtBottom = (scrollTop + viewportHeight) >= (fullHeight - 120);
+      // Capture current count to locate first newly appended post after render
+      const prevCount = Array.isArray(this.posts) ? this.posts.length : 0;
+
+      console.log('Loading more posts - current posts count:', this.posts.length);
+      console.log('User was at bottom:', wasAtBottom, 'prevCount:', prevCount);
+
       if (this.userName) {
         await this.fetchMorePosts({ context: this.context, userName: this.userName });
       } else {
         await this.fetchMorePosts({ context: this.context });
+      }
+
+      console.log('More posts loaded - new posts count:', this.posts.length);
+
+      // If user was at bottom, bring the first newly loaded post into view immediately
+      if (wasAtBottom) {
+        this.$nextTick(() => {
+          this.scrollFirstNewPostIntoView(prevCount);
+        });
+      }
+    },
+    scrollFirstNewPostIntoView(prevCount) {
+      // Use existing ref array from v-for (ref="scrollContainer") to locate the first newly appended post
+      const containers = this.$refs && this.$refs.scrollContainer ? this.$refs.scrollContainer : null;
+      if (!containers) return;
+
+      const isArray = Array.isArray(containers);
+      const firstNewEl = isArray ? containers[prevCount] : null;
+      if (firstNewEl && typeof firstNewEl.scrollIntoView === 'function') {
+        // Scroll so the first new post is placed at the top of the viewport
+        firstNewEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+      } else if (firstNewEl) {
+        const rect = firstNewEl.getBoundingClientRect();
+        const absoluteTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+        window.scrollTo({ top: absoluteTop, behavior: 'auto' });
+      } else {
+        // Fallback: scroll to bottom
+        const fullHeight = (document.scrollingElement || document.documentElement).scrollHeight;
+        window.scrollTo({ top: fullHeight, behavior: 'auto' });
       }
     },
     toggleComments(postId, userId) {
@@ -1055,10 +1210,41 @@ export default {
     },
 
     openShareToGroupModal(post) {
-      this.shareToGroupPost = post;
+      // If reopening for the same post and modal instance exists, just show it
+      if (this.shareToGroupPost && this.shareToGroupPost.id === post.id && this.shareModalInstance) {
+        this.shareModalInstance.show();
+        return;
+      }
+      // Force re-mount to retrigger watcher and child mount if same reference
+      this.shareToGroupPost = null;
+      this.$nextTick(() => {
+        this.shareToGroupPost = post;
+      });
     },
     handleShareModalClosed(modalElement){
-      this.shareModalInstance.hide();
+      if (this.shareModalInstance && modalElement) {
+        const onHidden = () => {
+          try { if (typeof this.shareModalInstance.dispose === 'function') this.shareModalInstance.dispose(); } catch (e) {}
+          this.shareModalInstance = null;
+          // Clean any leftover Bootstrap artifacts to prevent scroll freeze
+          document.body.classList.remove('modal-open');
+          try { document.body.style.removeProperty('padding-right'); } catch (e) {}
+          const backdrops = document.querySelectorAll('.modal-backdrop');
+          backdrops.forEach(b => b.remove());
+          // Clear the post so subsequent opens for the same post work
+          this.shareToGroupPost = null;
+        };
+        modalElement.addEventListener('hidden.bs.modal', onHidden, { once: true });
+        try { this.shareModalInstance.hide(); } catch (e) { onHidden(); }
+      } else {
+        // Fallback cleanup
+        this.shareModalInstance = null;
+        this.shareToGroupPost = null;
+        document.body.classList.remove('modal-open');
+        try { document.body.style.removeProperty('padding-right'); } catch (e) {}
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(b => b.remove());
+      }
     },
     handlePostShare({ groupId, groupName }) {
       this.$emit('show-post-modal', {
@@ -1117,15 +1303,18 @@ export default {
       return this.userData.id === userId;
     },
     isFollowing(userId) {
-      return this.userData.following.includes(userId);
+      const followingList = Array.isArray(this.userData?.following) ? this.userData.following : [];
+      return followingList.includes(userId);
     },
     isJoined(groupId) {
-      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
-      return group && group.status === 'active';
+      const groups = Array.isArray(this.userData?.groups_info) ? this.userData.groups_info : [];
+      const group = groups.find(g => g.id === Number(groupId));
+      return !!group && group.status === 'active';
     },
     isRequestPending(groupId) {
-      const group = this.userData.groups_info.find(g => g.id === Number(groupId));
-      return group && group.status === 'pending';
+      const groups = Array.isArray(this.userData?.groups_info) ? this.userData.groups_info : [];
+      const group = groups.find(g => g.id === Number(groupId));
+      return !!group && group.status === 'pending';
     },
     formatGroupName(groupName){
       return groupName
@@ -1135,13 +1324,27 @@ export default {
     },
   },
   mounted() {
+    // Detect mobile device
+    this.detectMobileDevice();
+    
     this.debouncedHandleScroll = this.debounce(this.handleScroll, 200);
     window.addEventListener('scroll', this.debouncedHandleScroll, { passive: true });
+    
+    // Listen for resize events to handle orientation changes
+    window.addEventListener('resize', this.detectMobileDevice);
+
+    // Start safety check mechanism
+    this.startSafetyCheck();
+    
+    // Start bottom reach check mechanism
+    this.startBottomReachCheck();
 
     // IntersectionObserver for reliable mobile infinite scroll
     this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
   updated() {
+    // Re-detect mobile device in case of orientation changes
+    this.detectMobileDevice();
     // Ensure observer stays attached after virtual DOM updates (e.g., after appending posts)
     this.$nextTick(() => { this.setupInfiniteObserver(); });
   },
@@ -1153,6 +1356,14 @@ export default {
       unregisterVuexModule('userFeedComment');
     }
     window.removeEventListener('scroll', this.debouncedHandleScroll);
+    window.removeEventListener('resize', this.detectMobileDevice);
+    
+    // Stop safety check
+    this.stopSafetyCheck();
+    
+    // Stop bottom reach check
+    this.stopBottomReachCheck();
+    
     if (this.infiniteObserver && this.$refs.infiniteScrollSentinel) {
       this.infiniteObserver.unobserve(this.$refs.infiniteScrollSentinel);
       this.infiniteObserver.disconnect();

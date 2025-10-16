@@ -19,60 +19,90 @@ class FetchYouTubePlaylist extends Command
 
     public function handle()
     {
-        $apiKey = env('YOUTUBE_API_KEY');
-        $playlists = [
-            'featured' => env('YOUTUBE_PLAYLIST_ID_FEATURED'),
-            'another' => env('YOUTUBE_PLAYLIST_ID_ANOTHER'),
-        ];
-        $maxResults = 500;
+        // Prefer config values; fall back to env() if config entries are missing
+        $apiKey = config('services.youtube.key');
+        if (!$apiKey) {
+            $apiKey = env('YOUTUBE_API_KEY');
+        }
+
+        $playlists = config('services.youtube.playlists', []);
+        if (empty($playlists)) {
+            $playlists = [
+                'featured' => env('YOUTUBE_PLAYLIST_ID_FEATURED'),
+                'another' => env('YOUTUBE_PLAYLIST_ID_ANOTHER'),
+            ];
+        }
+        $maxResults = 50; // API max
 
         foreach ($playlists as $type => $playlistId) {
             $this->info("Fetching playlist: {$type} ({$playlistId})");
 
             $url = "https://www.googleapis.com/youtube/v3/playlistItems";
-            $response = Http::get($url, [
-                'part' => 'snippet',
-                'playlistId' => $playlistId,
-                'maxResults' => $maxResults,
-                'key' => $apiKey,
-            ]);
 
-            if ($response->successful()) {
-                $videos = collect($response->json()['items'])
-                    ->filter(function ($item) {
-                        // Ensure at least one thumbnail is available
-                        return isset($item['snippet']['thumbnails']['high']['url']) 
-                            || isset($item['snippet']['thumbnails']['medium']['url']) 
-                            || isset($item['snippet']['thumbnails']['default']['url']);
-                    })
-                    ->map(function ($item) use ($playlistId) {
-                        return [
-                            'id' => $item['id'],
-                            'title' => $item['snippet']['title'],
-                            'description' => $item['snippet']['description'],
-                            'thumbnail_url' => $item['snippet']['thumbnails']['high']['url'] 
-                                    ?? $item['snippet']['thumbnails']['medium']['url'] 
-                                    ?? $item['snippet']['thumbnails']['default']['url'],
-                            'youtube_id' => $item['snippet']['resourceId']['videoId'],
-                            'playlist_id' => $playlistId,
-                            'channel_title' => $item['snippet']['channelTitle'] ?? null,
-                            'published_at' => isset($item['snippet']['publishedAt'])
-                                ? Carbon::parse($item['snippet']['publishedAt'])->format('Y-m-d H:i:s')
-                                : null,
-                        ];
-                    });
+            $allItems = collect();
+            $pageToken = null;
+            $page = 0;
 
-                // Remove existing videos for this playlist
-                Video::where('playlist_id', $playlistId)->delete();
+            do {
+                $params = [
+                    'part' => 'snippet,contentDetails',
+                    'playlistId' => $playlistId,
+                    'maxResults' => $maxResults,
+                    'key' => $apiKey,
+                ];
+                if ($pageToken) {
+                    $params['pageToken'] = $pageToken;
+                }
 
-                // Insert new videos
+                $response = Http::get($url, $params);
+                if (!$response->successful()) {
+                    $this->error("Failed to fetch playlist page {$page} for: {$type}.");
+                    $this->error('Response: ' . $response->body());
+                    break;
+                }
+
+                $json = $response->json();
+                $items = collect($json['items'] ?? []);
+                $allItems = $allItems->merge($items);
+                $pageToken = $json['nextPageToken'] ?? null;
+                $page++;
+            } while ($pageToken);
+
+            $videos = $allItems
+                ->filter(function ($item) {
+                    $thumbs = $item['snippet']['thumbnails'] ?? [];
+                    return isset($thumbs['high']['url']) || isset($thumbs['medium']['url']) || isset($thumbs['default']['url']);
+                })
+                ->map(function ($item) use ($playlistId) {
+                    $snippet = $item['snippet'] ?? [];
+                    $details = $item['contentDetails'] ?? [];
+                    $thumbs = $snippet['thumbnails'] ?? [];
+                    $thumb = $thumbs['high']['url'] ?? ($thumbs['medium']['url'] ?? ($thumbs['default']['url'] ?? null));
+
+                    $published = $details['videoPublishedAt'] ?? ($snippet['publishedAt'] ?? null);
+                    $publishedAt = $published ? Carbon::parse($published)->format('Y-m-d H:i:s') : null;
+
+                    return [
+                        'id' => $item['id'],
+                        'title' => $snippet['title'] ?? null,
+                        'description' => $snippet['description'] ?? null,
+                        'thumbnail_url' => $thumb,
+                        'youtube_id' => $details['videoId'] ?? ($snippet['resourceId']['videoId'] ?? null),
+                        'playlist_id' => $playlistId,
+                        'channel_title' => $snippet['channelTitle'] ?? null,
+                        'published_at' => $publishedAt,
+                    ];
+                });
+
+            // Remove existing videos for this playlist
+            Video::where('playlist_id', $playlistId)->delete();
+
+            // Insert new videos
+            if ($videos->isNotEmpty()) {
                 Video::insert($videos->toArray());
-
-                $this->info("Successfully cached {$videos->count()} videos for playlist: {$type}.");
-            } else {
-                $this->error("Failed to fetch playlist: {$type}.");
-                $this->error('Response: ' . $response->body());
             }
+
+            $this->info("Successfully cached {$videos->count()} videos for playlist: {$type}.");
         }
 
         $this->info('All playlists have been processed.');

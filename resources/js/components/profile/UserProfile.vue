@@ -126,9 +126,12 @@
                 />
             </div>
               <div class="followUser" v-else>
-                <p class="text-center mt-4">Posts are hidden based on the {{ userProfileData.name }}'s privacy settings. Follow {{ userProfileData.name }} to see their posts</p>
+                <p class="text-center mt-4">
+                  Posts are hidden based on the {{ userProfileData.name }}'s privacy settings.
+                  <span v-if="postPrivacyIsFollowers"> Follow {{ userProfileData.name }} to see their posts</span>
+                </p>
                 <FollowButton
-                  v-if="!isOwnProfile"
+                  v-if="!isOwnProfile && postPrivacyIsFollowers"
                   :userId="userProfileData.id"
                   :initialIsFollowing="isFollowing"
                   :initialFollowersCount="followersCount"
@@ -326,6 +329,10 @@ export default {
       'canViewWatchlists',
       'canViewPhotos',
     ]),
+    postPrivacyIsFollowers() {
+      const privacy = this.userProfileData?.post_privacy;
+      return ['Followers', 'followers', 'Friends'].includes(privacy);
+    },
     currentJoinedChatsPage() {
       return this.$store.state.UserGroups.currentPage;
     },

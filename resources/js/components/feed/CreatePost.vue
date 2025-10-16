@@ -258,7 +258,7 @@
                     </div>
                   </div>
                   <!-- Emojis Model Button-->
-                  <div>
+                  <div ref="emojiPickerContainer" class="emoji-picker-container">
                     <button class="btn" @click="toggleEmojiPicker">
                       <abbr title="Open Emoji">
                         <i class="bi bi-emoji-smile fs-4"></i>
@@ -484,6 +484,16 @@ export default {
     this.mediaPostModalInstance = new Modal(this.$refs.mediaPostModal, { backdrop: 'static' });
     this.pollPostModalInstance = new Modal(this.$refs.pollpostModal, { backdrop: 'static' });
     this.postSettingModalInstance = new Modal(this.$refs.postSettingModal, { backdrop: 'static' });
+    // Close emoji picker on outside click
+    document.addEventListener('click', this.onDocumentClickCloseEmoji);
+    // Ensure share state resets whenever modal fully hides
+    this.$refs.postModal.addEventListener('hidden.bs.modal', this.onPostModalHidden);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClickCloseEmoji);
+    if (this.$refs.postModal) {
+      this.$refs.postModal.removeEventListener('hidden.bs.modal', this.onPostModalHidden);
+    }
   },
   watch: {
     textContent(newVal) {
@@ -559,22 +569,41 @@ export default {
       });
     },
     sharePostModal(payload) {
-      const { post, groupId, groupName } = payload;
-      console.log('Received post data:', post);
-      console.log('Received Group Id:', groupId);
-      console.log('Received Group Name:', groupName);
+      // Support both signatures: sharePostModal(post) and sharePostModal({ post, groupId, groupName })
+      let post = null;
+      let groupId = null;
+      let groupName = null;
+      if (payload && typeof payload === 'object' && 'post' in payload) {
+        post = payload.post;
+        groupId = payload.groupId || null;
+        groupName = payload.groupName || null;
+      } else {
+        post = payload;
+      }
+
       this.sharePostPreview = post;
       this.shareContext = groupId ? 'group' : 'feed';
       this.shareTargetGroupId = groupId;
       this.shareTargetGroupName = groupName;
-      this.postModalInstance.show();
+
+      // Always get or create a fresh modal instance and show after DOM updates
+      this.$nextTick(() => {
+        this.postModalInstance = Modal.getOrCreateInstance(this.$refs.postModal, { backdrop: 'static' });
+        this.postModalInstance.show();
+      });
+    },
+    onPostModalHidden() {
+      // Reset share state so re-opening the same post works
+      this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
     },
     showPostModal() {
       this.postModalInstance.show();
     },
     hidePostModal() {
       this.postModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postModal'), 150);
       if(!this.isPublishable){
         this.clearPostType();
         this.isEditing = false;
@@ -589,7 +618,6 @@ export default {
     },
     hidePostModalAndClearPost() {
       this.postModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postModal'), 150);
       this.clearPostType();
       this.$refs.createPollComponent.resetPoll();
       this.isEditing = false;
@@ -607,7 +635,6 @@ export default {
     },
     hideMediaPostModal() {
       this.mediaPostModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('mediaPostModal'), 150);
     },
     handleBackFromUpload() {
       if(!this.isPublishable){
@@ -616,11 +643,7 @@ export default {
         this.$refs.uploadMediaComponent.resetStateParent();
       }
       this.hideMediaPostModal();
-      setTimeout(() => this.showPostModal(), 300);
-      const textarea = document.getElementById('textarea-modalpost');
-      if (textarea) {
-        textarea.style.height = 'auto';
-      }
+      // Do not auto-open the post editor when cancelling upload
     },
     handleMediaUpload(payload) {
       if (payload.files.length > 0) {
@@ -663,7 +686,6 @@ export default {
     },
     hidePollPostModal() {
       this.pollPostModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('pollpostModal'), 150);
     },
     handlePollCreation(pollData) {
       if (pollData) {
@@ -685,7 +707,7 @@ export default {
       }
       this.$refs.createPollComponent.resetPoll();
       this.hidePollPostModal();
-      setTimeout(() => this.showPostModal(), 300);
+      // Do not auto-open the post editor when cancelling poll creation
     },
     showPostSettingModal() {
       this.hidePostModal();
@@ -693,7 +715,6 @@ export default {
     },
     hidePostSettingModal() {
       this.postSettingModalInstance.hide();
-      setTimeout(() => this.removeBackdrop('postSettingModal'), 150);
     },
     handleBackFromSettings() {
       this.hidePostSettingModal();
@@ -705,25 +726,19 @@ export default {
       this.hidePostSettingModal();
       setTimeout(() => this.showPostModal(), 300);
     },
-    removeBackdrop(modalId) {
-      let backdrops = document.querySelectorAll('.modal-backdrop');
-      if (backdrops.length > 0) {
-        if (modalId === 'postModal') {
-          backdrops[backdrops.length - 1].remove();
-        } else if (modalId === 'mediaPostModal' && backdrops.length > 1) {
-          backdrops[backdrops.length - 2].remove();
-        } else if (modalId === 'pollpostModal' && backdrops.length > 0) {
-          backdrops[backdrops.length - 1].remove();
-        } else if (modalId === 'postSettingModal' && backdrops.length > 0) {
-          backdrops[backdrops.length - 1].remove();
-        }
-      }
-    },
+    
     toggleEmojiPicker() {
       this.showEmojiPicker = !this.showEmojiPicker;
     },
     onSelectEmoji(emoji) {
-      this.textContent += emoji.native;
+      this.textContent += emoji.i;
+    },
+    onDocumentClickCloseEmoji(event) {
+      if (!this.showEmojiPicker) return;
+      const container = this.$refs.emojiPickerContainer;
+      if (container && !container.contains(event.target)) {
+        this.showEmojiPicker = false;
+      }
     },
     selectColor(style) {
       this.currentPostType = 'color';
@@ -1135,7 +1150,13 @@ export default {
 
 .v3-emoji-picker {
   position: absolute;
-  top: -60px;
+  top: 100%;
+  left: 0;
+  z-index: 1050;
+}
+
+.emoji-picker-container {
+  position: relative;
 }
 
 .single-photo {

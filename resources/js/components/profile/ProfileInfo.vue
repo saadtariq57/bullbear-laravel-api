@@ -14,6 +14,14 @@
           >
             {{ userProfileData.subscription_plan }}
           </span>
+          <span
+            class="profile-completed-badge bg-success text-white px-2 py-1 fs-10 fw-bold rounded-2 d-flex align-items-center gap-1"
+            v-if="isProfileComplete"
+            title="Profile Completed"
+          >
+            <i class="bi bi-check-circle-fill"></i>
+            Profile Completed
+          </span>
         </div>
         <p class="text-black fs-5">
           <span>{{ followersCount }} Followers</span> |
@@ -64,6 +72,16 @@ export default {
       'followersCount',
       'followingsCount',
     ]),
+    isProfileComplete() {
+      // Check if all required profile fields are filled
+      const hasCustomAvatar = this.userProfileData?.avatar && this.userProfileData.avatar !== 'photos/d-avatar.jpg';
+      const hasCustomCover = this.userProfileData?.cover && this.userProfileData.cover !== 'photos/d-cover.jpg';
+      const hasSocialLinks = !!(this.userProfileData?.twitter || this.userProfileData?.linkedin || this.userProfileData?.youtube);
+      const hasPhoneNumber = !!this.userProfileData?.phone_number;
+      const hasAbout = !!this.userProfileData?.about;
+      
+      return hasCustomAvatar && hasCustomCover && hasSocialLinks && hasPhoneNumber && hasAbout;
+    },
   },
   methods: {
     

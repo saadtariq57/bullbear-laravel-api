@@ -9,9 +9,12 @@
                 <span class="notification-count">{{ $followers->count() }}</span>
             @endif
         </button>
-        <ul class="dropdown-menu dropdown-menu-end m-0 p-0" aria-label="Followers Menu">
+        <ul class="dropdown-menu dropdown-menu-end m-0 p-0 followers_dropdown" aria-label="Followers Menu">
             @forelse ($followers as $follower)
-                <li class="py-0">
+                <li class="py-0 position-relative @unless($follower->read_at) unread-notification-wrapper @endunless">
+                    @unless($follower->read_at)
+                        <span class="unread-nav-notification position-absolute rounded-circle"></span>
+                    @endunless
                     <a href="{{ '/profile/' . $follower->user->name }}" class="dropdown-item d-flex gap-3 align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
                             <img src="{{ '/uploads/' . $follower->user->avatar }}" alt="{{ $follower->user->name }} Avatar" class="rounded-circle" width="45" height="45" onerror="this.onerror=null;this.src='/uploads/photos/d-avatar.jpg';">
@@ -26,6 +29,9 @@
                     <span class="dropdown-item text-center text-muted">No followers yet.</span>
                 </li>
             @endforelse
+            <li class="py-0">
+                <a href="/followers" class="dropdown-item text-center py-2">See All</a>
+            </li>
         </ul>
     </div>
 
@@ -39,7 +45,10 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown" aria-label="Messages Menu">
             @forelse ($messages as $message)
-                <li class="py-0">
+                <li class="py-0 position-relative @unless($message->read_at) unread-notification-wrapper @endunless">
+                    @unless($message->read_at)
+                        <span class="unread-nav-notification position-absolute rounded-circle"></span>
+                    @endunless
                     <a href="{{ $message->url }}" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
                         <img src="{{ '/uploads/' . $message->user->avatar }}" alt="{{ $message->user->name }} Avatar" width="50" height="50" class="rounded-circle" onerror="this.onerror=null;this.src='/uploads/photos/d-avatar.jpg';">
                         <div>
@@ -70,7 +79,10 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-end m-0 p-0 header_notification" aria-label="Notifications Menu">
             @forelse ($notifications as $notification)
-                <li class="py-2 px-3 @unless($notification->read_at) unread-notification-wrapper @endunless">
+                <li class="py-2 px-3 position-relative @unless($notification->read_at) unread-notification-wrapper @endunless">
+                    @unless($notification->read_at)
+                        <span class="unread-nav-notification position-absolute rounded-circle"></span>
+                    @endunless
                     <a href="{{ $notification->url }}" class="dropdown-item d-flex gap-3 align-items-center p-0">
                         <img src="{{ '/uploads/' . $notification->user->avatar }}" alt="{{ $notification->user->name }} Avatar" width="45" height="45" class="rounded-circle" onerror="this.onerror=null;this.src='/uploads/photos/d-avatar.jpg';">
                         <div>

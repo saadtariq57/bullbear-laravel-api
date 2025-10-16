@@ -2326,6 +2326,48 @@ p.user-message {
     width: 330px;
 }
 
+/* Navbar notifications: unread dot indicator */
+.unread-nav-notification{
+    width: 10px;
+    height: 10px;
+    background-color: #EDB043;
+    left: 7px;
+}
+
+/* Ensure unread items have no blue background */
+.unread-notification-wrapper{
+    background-color: transparent !important;
+}
+.unread-notification-wrapper:hover{
+    background-color: transparent !important;
+}
+
+/* Consistent dropdown heights */
+.header_notification,
+.message_dropdown,
+.followers_dropdown {
+    max-height: 316px !important;
+    overflow: auto !important;
+    padding-bottom: 0 !important; /* sticky row occupies flow height */
+}
+
+/* Sticky footer inside dropdowns; keep a fixed height to avoid overlap */
+.dropdown-menu .see-all{
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 10;
+    border-top: 1px solid #eee;
+    height: 56px; /* fixed height; containers no longer padded */
+}
+.dropdown-menu .see-all > a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 12px;
+}
+
 .empty-notifications {
     height: 300px;
 }
