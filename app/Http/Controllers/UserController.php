@@ -448,9 +448,6 @@ class UserController extends Controller
             'city' => 'nullable|string|max:255',
             'zip' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
-            'twitter' => 'nullable|url|max:255',
-            'linkedin' => 'nullable|url|max:255',
-            'youtube' => 'nullable|url|max:255',
         ]);
 
         $dataToUpdate = $validatedData ?: $request->only([
@@ -463,10 +460,7 @@ class UserController extends Controller
             'country', 
             'city', 
             'zip', 
-            'website',
-            'twitter',
-            'linkedin',
-            'youtube'
+            'website'
         ]);
     
         // Update the user with the data
@@ -474,6 +468,30 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+    public function updateSocialLinks(Request $request)
+    {
+        $user = Auth::user();
+
+        $validatedData = $request->validate([
+            'twitter' => 'nullable|url|max:255',
+            'linkedin' => 'nullable|url|max:255',
+            'youtube' => 'nullable|url|max:255',
+        ]);
+
+        $dataToUpdate = $validatedData ?: $request->only([
+            'twitter',
+            'linkedin',
+            'youtube',
+        ]);
+
+        $user->update($dataToUpdate);
+
+        return response()->json([
+            'message' => 'Social links updated successfully.',
             'user' => $user
         ]);
     }

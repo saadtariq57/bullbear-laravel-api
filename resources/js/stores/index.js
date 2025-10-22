@@ -151,6 +151,54 @@ const store = createStore({
                         title: message
                     });
                 });
+        },
+        updateUserSocialLinks({ commit }, socialLinks) {
+            axios.post('/api/user/update-social-links', socialLinks)
+                .then(response => {
+                    commit('SET_USER_DATA', response.data.user);
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "400px",
+                        timer: 1200,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Social links updated successfully!"
+                    });
+                })
+                .catch(error => {
+                    let message = 'Error updating social links';
+                    if (error?.response?.status === 422 && error.response.data?.errors) {
+                        const firstField = Object.keys(error.response.data.errors)[0];
+                        const firstMsg = error.response.data.errors[firstField]?.[0];
+                        if (firstMsg) message = firstMsg;
+                    } else if (error?.response?.data?.message) {
+                        message = error.response.data.message;
+                    }
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        width: "420px",
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "error",
+                        title: message
+                    });
+                });
         }
     },
     modules: {

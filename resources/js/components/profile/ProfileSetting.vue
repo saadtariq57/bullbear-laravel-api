@@ -264,7 +264,7 @@
                   </div>
                 </div>
               </div>
-              <form @submit.prevent="updateGeneralUserData" class="mt-5 pt-3">
+              <form @submit.prevent="updateSocialLinks" class="mt-5 pt-3">
                 <div class="row g-3 px-3 ">
                   <div class="col-md-6 pt-3 pt-md-0">
                     <label for="twitter-FormLabelLg" class="form-label col-form-label-lg mb-0 ">Twitter</label>
@@ -1120,7 +1120,7 @@ export default {
     updateGeneralUserData() {
       // Client-side guard validation
       const errors = [];
-      const urlFields = ['website', 'twitter', 'linkedin', 'youtube'];
+      const urlFields = ['website'];
       const urlPattern = /^(https?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#\[\]@!$&'()*+,;=.]*$/i;
       urlFields.forEach((field) => {
         const value = (this.userData?.[field] || '').trim();
@@ -1137,7 +1137,42 @@ export default {
         Toast.fire({ icon: 'error', title: errors[0] });
         return;
       }
-      this.$store.dispatch('updateUserData', this.userData);
+      const generalPayload = {
+        phone_number: this.userData?.phone_number,
+        first_name: this.userData?.first_name,
+        last_name: this.userData?.last_name,
+        about: this.userData?.about,
+        gender: this.userData?.gender,
+        birthday: this.userData?.birthday,
+        country: this.userData?.state, // map UI "Country" to backend expected field
+        city: this.userData?.city,
+        zip: this.userData?.zip,
+        website: (this.userData?.website || '').trim(),
+      };
+      this.$store.dispatch('updateUserData', generalPayload);
+    },
+    updateSocialLinks() {
+      // Validate only social link URLs
+      const errors = [];
+      const urlFields = ['twitter', 'linkedin', 'youtube'];
+      const urlPattern = /^(https?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#\[\]@!$&'()*+,;=.]*$/i;
+      urlFields.forEach((field) => {
+        const value = (this.userData?.[field] || '').trim();
+        if (value && !urlPattern.test(value)) {
+          errors.push(`${field} must be a valid URL starting with http:// or https://`);
+        }
+      });
+      if (errors.length) {
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, width: '400px', timer: 2000, timerProgressBar: true, didOpen: (t)=>{t.onmouseenter=Swal.stopTimer; t.onmouseleave=Swal.resumeTimer;} });
+        Toast.fire({ icon: 'error', title: errors[0] });
+        return;
+      }
+      const socialPayload = {
+        twitter: (this.userData?.twitter || '').trim(),
+        linkedin: (this.userData?.linkedin || '').trim(),
+        youtube: (this.userData?.youtube || '').trim(),
+      };
+      this.$store.dispatch('updateUserSocialLinks', socialPayload);
     },
     ensureUrlProtocol(field) {
       const value = (this.userData?.[field] || '').trim();
