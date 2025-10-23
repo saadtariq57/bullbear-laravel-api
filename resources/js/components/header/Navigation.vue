@@ -219,18 +219,20 @@
                   <!-- Finance Dropdown -->
                     <li>
                       <div class="dropdown d-flex gap-2 align-items-center">
-                        <!-- 1. This is now ONLY a link. The data-bs-toggle attribute is removed. -->
-                        <a href="/blog/finance" class="nav-link nav-clr dropdown-toggle">
+                        <button
+                          class="nav-link dropdown-toggle d-flex nav-clr"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
                           Finance
-                        </a>
+                        </button>
+                        <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
 
-                        <!-- 2. The arrow is now wrapped in its own link that ACTS as the dropdown toggle. -->
-                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle Dropdown">
-                          <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img " />
-                        </a>
-
-                        <!-- 3. Your dropdown menu remains unchanged -->
                         <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/finance">Finance Insights</a>
+                          </li>
                           <li>
                             <a class="dropdown-item nav-link" href="/blog/investing-money-management">Investing Money Management</a>
                           </li>
@@ -371,22 +373,12 @@
               </div>
             </div>
 
-            <!-- Offcanvas Dark Navbar -->
-            <div
-              class="offcanvas offcanvas-end text-bg-white"
-              tabindex="-1"
-              id="offcanvasDarkNavbar"
-              aria-labelledby="offcanvasDarkNavbarLabel"
-            >
+            <!-- Offcanvas Dark Navbar (Mobile) -->
+            <div class="offcanvas offcanvas-end text-bg-white" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
               <div class="offcanvas-header mobile_nav_header">
                 <div class="site-logo">
                   <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
-                    <img
-                      class="header-image is-logo-image"
-                      alt="Rich TV"
-                      src="/build/images/logo.svg"
-                      title="Rich TV"
-                    />
+                    <img class="header-image is-logo-image" alt="Rich TV" src="/build/images/logo.svg" title="Rich TV" />
                   </a>
                 </div>
                 <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -394,20 +386,11 @@
 
               <div class="offcanvas-body mobile-nav-body pt-5">
                 <div class="main-menu-container">
-                  <ul class="main-list mb-0 flex-column ps-0">
-                    <li>
-                      <div class="accordion mobile-navbar-accordion" id="accordionMobilenavbar">
-                        <!-- Markets Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseMarket_analysis"
-                              aria-expanded="false"
-                              aria-controls="collapseMarket_analysis"
-                            >
+                  <div class="accordion mobile-navbar-accordion" id="mobileNavAccordion">
+                    <!-- Markets -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-markets">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='markets' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('markets', $event)" @click.stop.prevent="onHeaderActivateImmediate('markets', $event)" :aria-expanded="openMobileSection==='markets'" aria-controls="mnav-markets">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/market.png" alt="market-img" />
                               </div>
@@ -416,306 +399,154 @@
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapseMarket_analysis"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-markets" class="accordion-collapse collapse" :class="{ show: openMobileSection==='markets' }" aria-labelledby="mnav-heading-markets">
                             <div class="accordion-body pt-0">
-                              <ul class="list-unstyled mega-menu-dropdown">
-                                <!-- Nested Markets Accordion -->
-                                <li>
-                                  <div class="accordion mobile-navbar-accordion" id="accordionFlushmarket">
-                                    <!-- Indices Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
-                                        <a
-                                          class="accordion-button collapsed dropdown-item nav-link p-0 border-0 mobile-nav-btn bg-transparent"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#flush-collapsemarketIndices"
-                                          aria-expanded="false"
-                                          aria-controls="flush-collapsemarketIndices"
-                                          href="/markets/indices"
-                                        >
-                                          Indices
-                                        </a>
-                                      </h2>
-                                      <div
-                                        id="flush-collapsemarketIndices"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionFlushmarket"
-                                      >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/indices-futures">Indices Futures</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/major-indices">Major Indices</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/indices-realtime">Indices Real-Time</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/world-indices">World Indices</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/indices/global-indices">Global Indices</a>
-                                            </li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^DJI">Dow Jones Futures</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
-                                          </ul>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <!-- Stocks Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
-                                        <a
-                                          class="accordion-button collapsed dropdown-item nav-link p-0 border-0 mobile-nav-btn bg-transparent"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#flush-collapsemarketStocks"
-                                          aria-expanded="false"
-                                          aria-controls="flush-collapsemarketStocks"
-                                          href="/markets/stocks"
-                                        >
-                                          Stocks
-                                        </a>
-                                      </h2>
-                                      <div
-                                        id="flush-collapsemarketStocks"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionFlushmarket"
-                                      >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/trading-stocks">Trending Stocks</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/united-states">United States</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/most-active">Most Active</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/top-gainers">Top Gainers</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/top-losers">Top Losers</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/world-adrs">World ADRs</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/marijuana-stocks">Marijuana Stocks</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks/top-bank-stocks">Top Bank Stocks</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <!-- Commodities Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
-                                        <a
-                                          class="accordion-button collapsed dropdown-item nav-link p-0 border-0 mobile-nav-btn bg-transparent"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#flush-collapsemarketCommodities"
-                                          aria-expanded="false"
-                                          aria-controls="flush-collapsemarketCommodities"
-                                          href="/markets/commodities"
-                                        >
-                                          Commodities
-                                        </a>
-                                      </h2>
-                                      <div
-                                        id="flush-collapsemarketCommodities"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionFlushmarket"
-                                      >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/real-time-commodities">Real Time Commodities</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/metals">Metals</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/energy">Energy</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/grains">Grains</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/softs">Softs</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities/meats">Meats</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <!-- Cryptocurrency Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
-                                        <a
-                                          class="accordion-button collapsed dropdown-item nav-link p-0 border-0 mobile-nav-btn bg-transparent"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#flush-collapsemarketCryptocurrency"
-                                          aria-expanded="false"
-                                          aria-controls="flush-collapsemarketCryptocurrency"
-                                          href="/markets/cryptocurrency"
-                                        >
-                                          Cryptocurrency
-                                        </a>
-                                      </h2>
-                                      <div
-                                        id="flush-collapsemarketCryptocurrency"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionFlushmarket"
-                                      >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin ETFs</a>
-                                            </li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/BTC-USD">Bitcoin</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ETH-USD">Ethereum</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ADA-USD">Cardano</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SOL-USD">Solana</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/DOGE-USD">Dogecoin</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SHIB-USD">SHIBA INU</a></li>
-                                          </ul>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <!-- ETFs Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
-                                        <a
-                                          class="accordion-button collapsed dropdown-item nav-link p-0 border-0 mobile-nav-btn bg-transparent"
-                                          type="button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#flush-collapsemarketETFs"
-                                          aria-expanded="false"
-                                          aria-controls="flush-collapsemarketETFs"
-                                          href="/markets/etfs"
-                                        >
-                                          ETFs
-                                        </a>
-                                      </h2>
-                                      <div
-                                        id="flush-collapsemarketETFs"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionFlushmarket"
-                                      >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/etfs/usa-etfs">USA ETFs</a>
-                                            </li>
-                                            <li>
-                                              <a class="dropdown-item nav-link py-1" href="/markets/etfs/marijuana-etfs">Marijuana ETFs</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                              <div class="accordion mobile-navbar-accordion" id="mobileMarketsAccordion">
+                                <!-- Indices nested -->
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
+                                    <button :class="['accordion-button','dropdown-item','nav-link','p-0','border-0','mobile-nav-btn','bg-transparent', { collapsed: openMarketsSubsection!=='indices' }]" type="button" @click="toggleMarketsSub('indices')" :aria-expanded="openMarketsSubsection==='indices'" aria-controls="mnav-markets-indices">
+                                      Indices
+                                    </button>
+                                  </h2>
+                                  <div id="mnav-markets-indices" class="accordion-collapse collapse" :class="{ show: openMarketsSubsection==='indices' }">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/indices/indices-futures">Indices Futures</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/indices/major-indices">Major Indices</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/indices/indices-realtime">Indices Real-Time</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/indices/world-indices">World Indices</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/indices/global-indices">Global Indices</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^DJI">Dow Jones Futures</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
+                                      </ul>
                                     </div>
                                   </div>
-                                </li>
+                                </div>
 
-                                <!-- Additional Markets Links -->
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency">Cryptocurrency</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/markets/etfs">ETFs</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/markets/funds">Funds</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/markets/bonds">Bonds</a>
-                                </li>
+                                <!-- Stocks nested -->
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
+                                    <button :class="['accordion-button','dropdown-item','nav-link','p-0','border-0','mobile-nav-btn','bg-transparent', { collapsed: openMarketsSubsection!=='stocks' }]" type="button" @click="toggleMarketsSub('stocks')" :aria-expanded="openMarketsSubsection==='stocks'" aria-controls="mnav-markets-stocks">
+                                      Stocks
+                                    </button>
+                                  </h2>
+                                  <div id="mnav-markets-stocks" class="accordion-collapse collapse" :class="{ show: openMarketsSubsection==='stocks' }">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/trading-stocks">Trending Stocks</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/united-states">United States</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/most-active">Most Active</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/top-gainers">Top Gainers</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/top-losers">Top Losers</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/world-adrs">World ADRs</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/marijuana-stocks">Marijuana Stocks</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/stocks/top-bank-stocks">Top Bank Stocks</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Commodities nested -->
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
+                                    <button :class="['accordion-button','dropdown-item','nav-link','p-0','border-0','mobile-nav-btn','bg-transparent', { collapsed: openMarketsSubsection!=='commodities' }]" type="button" @click="toggleMarketsSub('commodities')" :aria-expanded="openMarketsSubsection==='commodities'" aria-controls="mnav-markets-commodities">
+                                      Commodities
+                                    </button>
+                                  </h2>
+                                  <div id="mnav-markets-commodities" class="accordion-collapse collapse" :class="{ show: openMarketsSubsection==='commodities' }">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/real-time-commodities">Real Time Commodities</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/metals">Metals</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/energy">Energy</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/grains">Grains</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/softs">Softs</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/commodities/meats">Meats</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Cryptocurrency nested -->
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
+                                    <button :class="['accordion-button','dropdown-item','nav-link','p-0','border-0','mobile-nav-btn','bg-transparent', { collapsed: openMarketsSubsection!=='crypto' }]" type="button" @click="toggleMarketsSub('crypto')" :aria-expanded="openMarketsSubsection==='crypto'" aria-controls="mnav-markets-crypto">
+                                      Cryptocurrency
+                                    </button>
+                                  </h2>
+                                  <div id="mnav-markets-crypto" class="accordion-collapse collapse" :class="{ show: openMarketsSubsection==='crypto' }">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin ETFs</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/BTC-USD">Bitcoin</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/ETH-USD">Ethereum</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/ADA-USD">Cardano</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/SOL-USD">Solana</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/DOGE-USD">Dogecoin</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/SHIB-USD">SHIBA INU</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- ETFs nested -->
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
+                                    <button :class="['accordion-button','dropdown-item','nav-link','p-0','border-0','mobile-nav-btn','bg-transparent', { collapsed: openMarketsSubsection!=='etfs' }]" type="button" @click="toggleMarketsSub('etfs')" :aria-expanded="openMarketsSubsection==='etfs'" aria-controls="mnav-markets-etfs">
+                                      ETFs
+                                    </button>
+                                  </h2>
+                                  <div id="mnav-markets-etfs" class="accordion-collapse collapse" :class="{ show: openMarketsSubsection==='etfs' }">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/etfs/usa-etfs">USA ETFs</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/markets/etfs/marijuana-etfs">Marijuana ETFs</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <ul class="list-unstyled mega-menu-dropdown mt-2">
+                                <li><a class="dropdown-item nav-link py-1" href="/markets/funds">Funds</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/markets/bonds">Bonds</a></li>
                               </ul>
                             </div>
                           </div>
-                        </div>
+                                    </div>
 
-                       <!-- Finance Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <a
-                              href="/blog/finance"
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              role="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseGroup_chat"
-                              aria-expanded="false"
-                              aria-controls="collapseGroup_chat"
-                            >
+                    <!-- Finance -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-finance">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='finance' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('finance', $event)" @click.stop.prevent="onHeaderActivateImmediate('finance', $event)" :aria-expanded="openMobileSection==='finance'" aria-controls="mnav-finance">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/finance.png" alt="finance-img" />
                               </div>
                               <div class="lh-sm">
                                 <p class="mobile-nav-heading m-0 fw-6">Finance</p>
                               </div>
-                            </a>
+                            </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapseGroup_chat"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-finance" class="accordion-collapse collapse" :class="{ show: openMobileSection==='finance' }" aria-labelledby="mnav-heading-finance">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/investing-money-management/">Investing Money Management</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/investing101/">Investing 101</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/investment-strategy/">Investment Strategy</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/stock-market-basics/">Stock Market Basics</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/how-to-invest/">How to Invest</a>
-                                </li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/finance">Financial Insights</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/investing-money-management/">Investing Money Management</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/investing101/">Investing 101</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/investment-strategy/">Investment Strategy</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/stock-market-basics/">Stock Market Basics</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/how-to-invest/">How to Invest</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        <!-- Analysis Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseTrading_guide"
-                              aria-expanded="false"
-                              aria-controls="collapseTrading_guide"
-                            >
+                    <!-- Analysis -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-analysis">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='analysis' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('analysis', $event)" @click.stop.prevent="onHeaderActivateImmediate('analysis', $event)" :aria-expanded="openMobileSection==='analysis'" aria-controls="mnav-analysis">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/anaylsis-market.png" alt="analysis-img" />
                               </div>
@@ -724,36 +555,20 @@
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapseTrading_guide"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-analysis" class="accordion-collapse collapse" :class="{ show: openMobileSection==='analysis' }" aria-labelledby="mnav-heading-analysis">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/technical-analysis/">Technical Analysis</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/fundamental-analysis/">Fundamental Analysis</a>
-                                </li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/technical-analysis/">Technical Analysis</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/fundamental-analysis/">Fundamental Analysis</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        <!-- Academy Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseVector_smart"
-                              aria-expanded="false"
-                              aria-controls="collapseVector_smart"
-                            >
+                    <!-- Academy -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-academy">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='academy' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('academy', $event)" @click.stop.prevent="onHeaderActivateImmediate('academy', $event)" :aria-expanded="openMobileSection==='academy'" aria-controls="mnav-academy">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/academy.png" alt="academy-img" />
                               </div>
@@ -762,34 +577,22 @@
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapseVector_smart"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-academy" class="accordion-collapse collapse" :class="{ show: openMobileSection==='academy' }" aria-labelledby="mnav-heading-academy">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
                                 <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/glossary/">Glossary</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
-                                <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        <!-- News Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapsenews"
-                              aria-expanded="false"
-                              aria-controls="collapsenews"
-                            >
+                    <!-- News -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-news">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='news' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('news', $event)" @click.stop.prevent="onHeaderActivateImmediate('news', $event)" :aria-expanded="openMobileSection==='news'" aria-controls="mnav-news">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/news.png" alt="news-img" />
                               </div>
@@ -798,42 +601,22 @@
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapsenews"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-news" class="accordion-collapse collapse" :class="{ show: openMobileSection==='news' }" aria-labelledby="mnav-heading-news">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/cryptocurrency/">Cryptocurrency</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/stocks/">Stocks</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/investing/">Investing</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/blog/press-release/">Press Release</a>
-                                </li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/cryptocurrency/">Cryptocurrency</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/stocks/">Stocks</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/investing/">Investing</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/press-release/">Press Release</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        <!-- Resources Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseresources"
-                              aria-expanded="false"
-                              aria-controls="collapseresources"
-                            >
+                    <!-- Resources -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-resources">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='resources' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('resources', $event)" @click.stop.prevent="onHeaderActivateImmediate('resources', $event)" :aria-expanded="openMobileSection==='resources'" aria-controls="mnav-resources">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/resources.png" alt="resources-img" />
                               </div>
@@ -842,94 +625,47 @@
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapseresources"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-resources" class="accordion-collapse collapse" :class="{ show: openMobileSection==='resources' }" aria-labelledby="mnav-heading-resources">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/economic-calendar">Economic Calendar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/earning-calendar">Earnings Calendar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/dividend-calendar">Dividend Calendar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/splits-calendar">Splits Calendar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/ipo-calendar">IPO Calendar</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/watchlist">Watchlist</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/groups">Chat Rooms</a>
-                                </li>
+                            <li><a class="dropdown-item nav-link py-1" href="/economic-calendar">Economic Calendar</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/earning-calendar">Earnings Calendar</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/dividend-calendar">Dividend Calendar</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/splits-calendar">Splits Calendar</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/ipo-calendar">IPO Calendar</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/watchlist">Watchlist</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/groups">Chat Rooms</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        <!-- RichTv Pro Accordion Item -->
-                        <div class="accordion-item">
-                          <h2 class="accordion-header">
-                            <button
-                              class="accordion-button collapsed nav-link d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapserichtvpro"
-                              aria-expanded="false"
-                              aria-controls="collapserichtvpro"
-                            >
+                    <!-- RichTv Pro -->
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="mnav-heading-pro">
+                        <button :class="['accordion-button','nav-link','d-flex','align-items-center','gap-4','px-0','py-1','mobile-nav-btn','bg-transparent', { collapsed: openMobileSection!=='pro' }]" type="button" @touchstart.stop.prevent="onHeaderActivateImmediate('pro', $event)" @click.stop.prevent="onHeaderActivateImmediate('pro', $event)" :aria-expanded="openMobileSection==='pro'" aria-controls="mnav-pro">
                               <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
                                 <img class="img-fluid" src="/build/images/richtv.png" alt="richtv-img" />
                               </div>
                               <div class="lh-sm">
-                                <p class="mobile-nav-heading m-0 fw-6">
-                                  <span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span>
-                                </p>
+                            <p class="mobile-nav-heading m-0 fw-6"><span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span></p>
                               </div>
                             </button>
                           </h2>
-                          <hr />
-                          <div
-                            id="collapserichtvpro"
-                            class="accordion-collapse collapse"
-                            data-bs-parent="#accordionMobilenavbar"
-                          >
+                      <div id="mnav-pro" class="accordion-collapse collapse" :class="{ show: openMobileSection==='pro' }" aria-labelledby="mnav-heading-pro">
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/trading-education">Trading Education</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/exams">Trading Exams</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/stocks-screener">Stock Screener</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/personal-access">Personal Access</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/pro-picks">Pro Picks</a>
-                                </li>
-                                <li>
-                                  <a class="dropdown-item nav-link py-1" href="/specialize-reports">Specialize Reports</a>
-                                </li>
+                            <li><a class="dropdown-item nav-link py-1" href="/trading-education">Trading Education</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/exams">Trading Exams</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/stocks-screener">Stock Screener</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/personal-access">Personal Access</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/pro-picks">Pro Picks</a></li>
+                            <li><a class="dropdown-item nav-link py-1" href="/blog/specialized-reports">Specialize Reports</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </li>
-                  </ul>
                 </div>
               </div>
             </div>
@@ -945,12 +681,58 @@ import { mapState } from 'vuex';
 import Login from './Login.vue';
 import Search from './Search.vue';
 import Profile from './Profile.vue'
+import { Offcanvas } from 'bootstrap';
 
 export default {
     components: {
         Login,
         Search,
         Profile
+    },
+    data() {
+        return {
+            openMobileSection: null,
+            openMarketsSubsection: null
+        };
+    },
+    mounted() {
+        // Close offcanvas when a link inside mobile nav is clicked
+        const offcanvasEl = document.getElementById('offcanvasDarkNavbar');
+        if (offcanvasEl) {
+            offcanvasEl.addEventListener('click', (e) => {
+                const link = e.target && e.target.closest('a[href]');
+                if (link && offcanvasEl.contains(link)) {
+                    const instance = Offcanvas.getOrCreateInstance(offcanvasEl);
+                    instance.hide();
+                }
+            });
+        }
+    },
+    methods: {
+        toggleMobileSection(sectionKey) {
+            this.openMobileSection = this.openMobileSection === sectionKey ? null : sectionKey;
+            if (sectionKey !== 'markets') {
+                this.openMarketsSubsection = null;
+            }
+        },
+        onHeaderActivate(sectionKey, event) {
+            // Guard against double toggles from rapid events
+            if (this._toggling) return;
+            this._toggling = true;
+            this.toggleMobileSection(sectionKey);
+            // Allow another toggle after a short frame
+            requestAnimationFrame(() => { this._toggling = false; });
+        },
+        onHeaderActivateImmediate(sectionKey, event) {
+            // Ensure immediate, single toggle on touch/click without delay
+            if (this._toggling) return;
+            this._toggling = true;
+            this.toggleMobileSection(sectionKey);
+            requestAnimationFrame(() => { this._toggling = false; });
+        },
+        toggleMarketsSub(subKey) {
+            this.openMarketsSubsection = this.openMarketsSubsection === subKey ? null : subKey;
+        }
     },
     computed: {
         ...mapState(['userData'])
@@ -1050,6 +832,40 @@ ul.nested-mega-menu {
 .navbar-search::-webkit-search-results-button,
 .navbar-search::-webkit-search-results-decoration {
     display: none;
+}
+
+/* Ensure mobile accordion headers capture taps above content */
+.mobile-nav-body .mobile-navbar-accordion .accordion-item {
+    position: relative;
+}
+.mobile-nav-body .mobile-navbar-accordion .accordion-button {
+    position: relative;
+    z-index: 2;
+}
+.mobile-nav-body .mobile-navbar-accordion .accordion-collapse {
+    position: relative;
+    z-index: 1;
+}
+
+/* Smooth collapse animation for Vue-controlled accordions (override Bootstrap's display:none) */
+.mobile-nav-body .mobile-navbar-accordion .accordion-collapse {
+    display: block;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: max-height;
+}
+.mobile-nav-body .mobile-navbar-accordion .accordion-collapse.show {
+    max-height: 1400px; /* should exceed expected content height */
+}
+
+/* Improve alignment/spacing of the chevron in mobile accordion headers */
+.mobile-nav-body .mobile-navbar-accordion .accordion-button {
+    padding-right: 14px; /* space for chevron */
+}
+.mobile-nav-body .mobile-navbar-accordion .accordion-button::after {
+    margin-left: auto;
+    margin-right: 6px; /* small breathing room from the edge */
 }
 
 @media (max-width: 767px) {
