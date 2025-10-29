@@ -757,8 +757,8 @@
                           >
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-stocks">How to Buy Stocks</a></li>
-                                <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/academy/how-to-buy-stocks">How to Buy Stocks</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/glossary/">Trading Glossary</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
                                 <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
