@@ -219,18 +219,17 @@
                   <!-- Finance Dropdown -->
                     <li>
                       <div class="dropdown d-flex gap-2 align-items-center">
-                        <!-- 1. This is now ONLY a link. The data-bs-toggle attribute is removed. -->
-                        <a href="/blog/finance" class="nav-link nav-clr dropdown-toggle">
+                        <!-- Finance acts purely as a dropdown toggle (no navigation) -->
+                        <button class="nav-link dropdown-toggle d-flex nav-clr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                           Finance
-                        </a>
+                        </button>
+                        <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
 
-                        <!-- 2. The arrow is now wrapped in its own link that ACTS as the dropdown toggle. -->
-                        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle Dropdown">
-                          <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img " />
-                        </a>
-
-                        <!-- 3. Your dropdown menu remains unchanged -->
+                        <!-- Dropdown menu with Finance Insights as first item -->
                         <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                          <li>
+                            <a class="dropdown-item nav-link" href="/blog/finance">Finance Insights</a>
+                          </li>
                           <li>
                             <a class="dropdown-item nav-link" href="/blog/investing-money-management">Investing Money Management</a>
                           </li>
@@ -398,7 +397,7 @@
                     <li>
                       <div class="accordion mobile-navbar-accordion" id="accordionMobilenavbar">
                         <!-- Markets Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -427,8 +426,8 @@
                                 <li>
                                   <div class="accordion mobile-navbar-accordion" id="accordionFlushmarket">
                                     <!-- Indices Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
                                         <button
                                           class="accordion-button collapsed p-0 border-0 mobile-nav-btn bg-transparent"
                                           type="button"
@@ -436,16 +435,16 @@
                                           aria-expanded="false"
                                           aria-controls="flush-collapsemarketIndices"
                                         >
-                                          Indices
-                                        </button>
-                                      </h2>
+                                      Indices
+                                    </button>
+                                  </h2>
                                       <div
                                         id="flush-collapsemarketIndices"
                                         class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushmarket"
                                       >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/indices/indices-futures">Indices Futures</a>
                                             </li>
@@ -461,17 +460,17 @@
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/indices/global-indices">Global Indices</a>
                                             </li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^DJI">Dow Jones Futures</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^DJI">Dow Jones Futures</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
+                                      </ul>
                                     </div>
+                                  </div>
+                                </div>
 
                                     <!-- Stocks Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
                                         <button
                                           class="accordion-button collapsed p-0 border-0 mobile-nav-btn bg-transparent"
                                           type="button"
@@ -479,16 +478,16 @@
                                           aria-expanded="false"
                                           aria-controls="flush-collapsemarketStocks"
                                         >
-                                          Stocks
-                                        </button>
-                                      </h2>
+                                      Stocks
+                                    </button>
+                                  </h2>
                                       <div
                                         id="flush-collapsemarketStocks"
                                         class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushmarket"
                                       >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/stocks/trading-stocks">Trending Stocks</a>
                                             </li>
@@ -513,14 +512,14 @@
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/stocks/top-bank-stocks">Top Bank Stocks</a>
                                             </li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                                      </ul>
                                     </div>
+                                  </div>
+                                </div>
 
                                     <!-- Commodities Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
                                         <button
                                           class="accordion-button collapsed p-0 border-0 mobile-nav-btn bg-transparent"
                                           type="button"
@@ -528,16 +527,16 @@
                                           aria-expanded="false"
                                           aria-controls="flush-collapsemarketCommodities"
                                         >
-                                          Commodities
-                                        </button>
-                                      </h2>
+                                      Commodities
+                                    </button>
+                                  </h2>
                                       <div
                                         id="flush-collapsemarketCommodities"
                                         class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushmarket"
                                       >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/commodities/real-time-commodities">Real Time Commodities</a>
                                             </li>
@@ -556,14 +555,14 @@
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/commodities/meats">Meats</a>
                                             </li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                                      </ul>
                                     </div>
+                                  </div>
+                                </div>
 
                                     <!-- Cryptocurrency Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
                                         <button
                                           class="accordion-button collapsed p-0 border-0 mobile-nav-btn bg-transparent"
                                           type="button"
@@ -571,33 +570,33 @@
                                           aria-expanded="false"
                                           aria-controls="flush-collapsemarketCryptocurrency"
                                         >
-                                          Cryptocurrency
-                                        </button>
-                                      </h2>
+                                      Cryptocurrency
+                                    </button>
+                                  </h2>
                                       <div
                                         id="flush-collapsemarketCryptocurrency"
                                         class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushmarket"
                                       >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/cryptocurrency/bitcoin-etfs">Bitcoin ETFs</a>
                                             </li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/BTC-USD">Bitcoin</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ETH-USD">Ethereum</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/ADA-USD">Cardano</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SOL-USD">Solana</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/DOGE-USD">Dogecoin</a></li>
-                                            <li><a class="dropdown-item nav-link py-1" href="/quotes/SHIB-USD">SHIBA INU</a></li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/BTC-USD">Bitcoin</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/ETH-USD">Ethereum</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/ADA-USD">Cardano</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/SOL-USD">Solana</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/DOGE-USD">Dogecoin</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/quotes/SHIB-USD">SHIBA INU</a></li>
+                                      </ul>
                                     </div>
+                                  </div>
+                                </div>
 
                                     <!-- ETFs Accordion -->
-                                    <div class="accordion-item border-0">
-                                      <h2 class="accordion-header">
+                                <div class="accordion-item border-0">
+                                  <h2 class="accordion-header">
                                         <button
                                           class="accordion-button collapsed p-0 border-0 mobile-nav-btn bg-transparent"
                                           type="button"
@@ -605,27 +604,27 @@
                                           aria-expanded="false"
                                           aria-controls="flush-collapsemarketETFs"
                                         >
-                                          ETFs
-                                        </button>
-                                      </h2>
+                                      ETFs
+                                    </button>
+                                  </h2>
                                       <div
                                         id="flush-collapsemarketETFs"
                                         class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushmarket"
                                       >
-                                        <div class="accordion-body pt-0">
-                                          <ul class="list-unstyled mega-menu-dropdown">
+                                    <div class="accordion-body pt-0">
+                                      <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/etfs/usa-etfs">USA ETFs</a>
                                             </li>
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/etfs/marijuana-etfs">Marijuana ETFs</a>
                                             </li>
-                                          </ul>
-                                        </div>
-                                      </div>
+                                      </ul>
                                     </div>
                                   </div>
+                                </div>
+                              </div>
                                 </li>
 
                                 <!-- Additional Markets Links -->
@@ -644,10 +643,10 @@
                               </ul>
                             </div>
                           </div>
-                        </div>
+                                    </div>
 
                        <!-- Finance Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -673,6 +672,9 @@
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
                                 <li>
+                                  <a class="dropdown-item nav-link py-1" href="/blog/finance">Finance Insights</a>
+                                </li>
+                                <li>
                                   <a class="dropdown-item nav-link py-1" href="/blog/investing-money-management/">Investing Money Management</a>
                                 </li>
                                 <li>
@@ -693,7 +695,7 @@
                         </div>
 
                         <!-- Analysis Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -730,7 +732,7 @@
                         </div>
 
                         <!-- Academy Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -755,17 +757,18 @@
                           >
                             <div class="accordion-body pt-0">
                               <ul class="list-unstyled mega-menu-dropdown">
-                                <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
-                                <li><a class="dropdown-item nav-link py-1" href="/glossary/">Glossary</a></li>
-                                <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
+                                <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-stocks">How to Buy Stocks</a></li>
                                 <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/glossary/">Trading Glossary</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
+                                <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
                         <!-- News Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -808,7 +811,7 @@
                         </div>
 
                         <!-- Resources Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -860,7 +863,7 @@
                         </div>
 
                         <!-- RichTv Pro Accordion Item -->
-                        <div class="accordion-item">
+                    <div class="accordion-item">
                           <h2 class="accordion-header">
                             <button
                               class="accordion-button collapsed d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent"
@@ -1086,6 +1089,18 @@ ul.nested-mega-menu {
     transition-property: height;
     transition-duration: 0.12s; /* ~120ms, snappy */
     transition-timing-function: ease-in-out;
+}
+
+/* Equalize top & bottom padding on mobile dropdown lists (not between items) */
+.mobile-navbar-accordion .mega-menu-dropdown {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+/* Remove default bottom padding on accordion body that caused extra space */
+.mobile-navbar-accordion .accordion-body {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 
