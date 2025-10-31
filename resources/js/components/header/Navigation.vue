@@ -17,9 +17,14 @@
                 </a>
               </div>
 
-              <!-- Search Component -->
-              <div class="flex-fill">
-                <Search />
+              <!-- Search Component (offcanvas available on all viewports) -->
+              <Search />
+              <MobileMessagesDrawer ref="messagesDrawer" />
+              <MobileFollowingDrawer ref="followingDrawer" />
+              <MobileNotificationsDrawer ref="notificationsDrawer" />
+
+              <!-- Search input only on desktop -->
+              <div class="flex-fill d-none d-xl-block">
                 <div
                   class="position-relative d-none d-xl-block"
                   data-bs-toggle="offcanvas"
@@ -43,54 +48,39 @@
               <!-- User Profile or Login -->
               <template v-if="userData">
                 <div class="d-flex gap-5 align-items-center profile-wrapper">
-                  <Profile />
-                  <button
-                    class="bg-transparent border-0 fs-3 nav-clr d-block d-xl-none"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasTop"
-                    aria-controls="offcanvasTop"
-                    type="button"
-                  >
-                    <i class="bi bi-search"></i>
-                  </button>
+              <Profile @open-notifications="openNotificationsDrawer" />
                 </div>
               </template>
-
               <template v-else>
                 <Login />
-                <button
-                  class="bg-transparent border-0 fs-3 nav-clr d-block d-xl-none"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasTop"
-                  aria-controls="offcanvasTop"
-                  type="button"
-                >
-                  <i class="bi bi-search"></i>
-                </button>
               </template>
             </div>
 
             <!-- Mobile Bottom Navbar -->
             <div class="d-block d-xl-none mobile-bottom-navbar fixed-bottom bg-white">
               <ul class="d-flex px-2 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
+                <!-- Search (1st) -->
                 <li class="text-center cursor-pointer nav-bottom-link">
-                  <a href="/trading-education" class="text-black">
-                    <img class="img-fluid" src="/build/images/academy.png" alt="academy-img" width="31px" />
-                    <span class="d-block fw-5 fs-16">Trading School</span>
-                  </a>
+                  <button class="bg-transparent border-0 w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+                    <i class="bi bi-search fs-3"></i>
+                    <span class="d-block fw-5 fs-16">Search</span>
+                  </button>
                 </li>
+                <!-- Messages (2nd) -->
                 <li class="text-center cursor-pointer nav-bottom-link">
-                  <a href="/watchlist" class="text-black">
-                    <i class="bi bi-star-fill fs-3"></i>
-                    <span class="d-block fw-5 fs-16">Watchlists</span>
-                  </a>
+                  <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openMessagesDrawer">
+                    <i class="bi bi-chat-dots fs-3"></i>
+                    <span class="d-block fw-5 fs-16">Messages</span>
+                  </button>
                 </li>
+                <!-- Following (3rd) -->
                 <li class="text-center cursor-pointer nav-bottom-link">
-                  <a href="/ceo-interviews" class="text-black">
-                    <i class="bi bi-youtube fs-3"></i>
-                    <span class="d-block fw-5 fs-16">Ceo Interviews</span>
-                  </a>
+                  <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openFollowingDrawer">
+                    <i class="bi bi-person-fill-add fs-3"></i>
+                    <span class="d-block fw-5 fs-16">Following</span>
+                  </button>
                 </li>
+                <!-- Menu (4th) -->
                 <li
                   class="text-center nav-bottom-link"
                   data-bs-toggle="offcanvas"
@@ -391,7 +381,7 @@
                 <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
 
-              <div class="offcanvas-body mobile-nav-body pt-5">
+              <div class="offcanvas-body mobile-nav-body pt-5" @click="handleOffcanvasLinkClick">
                 <div class="main-menu-container">
                   <ul class="main-list mb-0 flex-column ps-0">
                     <li>
@@ -464,9 +454,11 @@
                                         <li><a class="dropdown-item nav-link py-1" href="/quotes/^SPX">S&P 500 Futures</a></li>
                                         <li><a class="dropdown-item nav-link py-1" href="/quotes/^NDX">Nasdaq Futures</a></li>
                                       </ul>
-                                    </div>
-                                  </div>
-                                </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    
 
                                     <!-- Stocks Accordion -->
                                 <div class="accordion-item border-0">
@@ -912,8 +904,31 @@
                             </div>
                           </div>
                         </div>
+                        <!-- CEO Interviews -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <a href="/ceo-interviews" class="accordion-button d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent no-chevron">
+                              <span class="nav_mobile-img bg-white px-2 pt-2 rounded-3 shadow">
+                                <i class="bi bi-youtube px-1" style="font-size: 26px; color: #000;"></i>
+                              </span>
+                              <span class="lh-sm"><span class="mobile-nav-heading m-0 fw-6">Ceo Interviews</span></span>
+                            </a>
+                          </h2>
+                        </div>
+                        <!-- Watchlists -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <a href="/watchlist" class="accordion-button d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent no-chevron">
+                              <span class="nav_mobile-img bg-white px-2 pt-2 rounded-3 shadow">
+                                <i class="bi bi-star-fill px-1" style="font-size: 26px; color: #000;"></i>
+                              </span>
+                              <span class="lh-sm"><span class="mobile-nav-heading m-0 fw-6">Watchlists</span></span>
+                            </a>
+                          </h2>
+                        </div>
                       </div>
                     </li>
+                    
                   </ul>
                 </div>
               </div>
@@ -929,13 +944,19 @@
 import { mapState } from 'vuex';
 import Login from './Login.vue';
 import Search from './Search.vue';
+import MobileFollowingDrawer from './MobileFollowingDrawer.vue'
+import MobileMessagesDrawer from './MobileMessagesDrawer.vue'
+import MobileNotificationsDrawer from './MobileNotificationsDrawer.vue'
 import Profile from './Profile.vue'
 
 export default {
     components: {
         Login,
         Search,
-        Profile
+        Profile,
+        MobileFollowingDrawer,
+        MobileMessagesDrawer,
+        MobileNotificationsDrawer
     },
     computed: {
         ...mapState(['userData'])
@@ -965,6 +986,40 @@ export default {
                     btn.setAttribute('aria-expanded', 'true');
                 }
             }
+        },
+        handleOffcanvasLinkClick(event) {
+            const target = event.target;
+            if (!target) return;
+            const anchor = target.closest('a');
+            if (!anchor) return;
+            // Only act on internal navigation links
+            const href = anchor.getAttribute('href') || '';
+            if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+            const offcanvasEl = anchor.closest('.offcanvas');
+            if (!offcanvasEl) return;
+            const bootstrapObj = window.bootstrap;
+            if (bootstrapObj && bootstrapObj.Offcanvas) {
+                const instance = bootstrapObj.Offcanvas.getOrCreateInstance(offcanvasEl);
+                instance.hide();
+            }
+        },
+        openFollowingDrawer() {
+            const drawer = this.$refs.followingDrawer;
+            if (drawer && typeof drawer.open === 'function') {
+                drawer.open();
+            }
+        },
+        openMessagesDrawer() {
+            const drawer = this.$refs.messagesDrawer;
+            if (drawer && typeof drawer.open === 'function') {
+                drawer.open();
+            }
+        },
+        openNotificationsDrawer() {
+            const drawer = this.$refs.notificationsDrawer;
+            if (drawer && typeof drawer.open === 'function') {
+                drawer.open();
+            }
         }
     },
     mounted() {
@@ -980,6 +1035,10 @@ export default {
 </script>
 
 <style>
+.nav-top-header{
+    justify-content: space-between;
+}
+
 .mobile-nav-body,
 .mobile_nav_header,
 .mobile-drop {
@@ -1103,6 +1162,11 @@ ul.nested-mega-menu {
     padding-bottom: 0 !important;
 }
 
+/* Remove chevron for direct-link accordion header */
+.mobile-navbar-accordion .no-chevron::after {
+    display: none !important;
+}
+
 
 @media (max-width: 767px) {
     .main-header {
@@ -1170,5 +1234,21 @@ ul.nested-mega-menu {
     .nav-bottom-link span {
         font-size: 11px !important;
     }
+}
+
+/* Ensure tiny screens keep the header within viewport */
+@media (max-width: 425px) {
+    header.main-header { padding: 0 10px !important; }
+}
+
+@media (max-width: 340px) {
+    header.main-header { padding: 0 8px !important; }
+}
+
+/* Mobile bottom navbar safe-area support and separation */
+.mobile-bottom-navbar {
+    padding-bottom: env(safe-area-inset-bottom);
+    border-top: 1px solid #eee;
+    z-index: 1030; /* above content, below modals */
 }
 </style>

@@ -2,7 +2,7 @@
   <div v-if="!isCheckingAuthState">
     <Navigation></Navigation>
     <div class="page-content">
-      <section class="feed-main container-fluid px-0">
+      <section class="feed-main container-fluid">
         <router-view></router-view>
         <email-popup v-if="!isUserLoggedIn"></email-popup>
       </section>
@@ -77,5 +77,12 @@ export default {
 .modal.show {
   display: block;
   z-index: 1050;
+}
+
+/* Prevent mobile bottom navbar from overlapping content */
+@media (max-width: 1199.98px) {
+  .page-content {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
 }
 </style>

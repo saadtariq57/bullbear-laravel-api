@@ -1,7 +1,7 @@
 <template>
-    <div class="d-flex gap-3">
-        <!-- Followers -->
-        <div class="btn-group btn-drps">
+    <div class="d-flex gap-3 align-items-center">
+        <!-- Followers (hidden on mobile; moved to bottom nav) -->
+        <div class="btn-group btn-drps d-none d-xl-block">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
                 <span class="notification-count" v-if="followers.length > 0">{{ followers.length }}</span>
@@ -22,31 +22,8 @@
             </ul>
         </div>
 
-        <!-- Messages -->
-        <div class="btn-group btn-drps">
-            <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
-                <i class="bi bi-chat-dots fs-4"></i>
-                <span class="notification-count" v-if="messages.length > 0">{{ messages.length }}</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
-                <li v-for="message in formattedMessages" :key="message.message_id" class="py-0 position-relative" :class="{ 'unread-notification-wrapper': !message.read_at }">
-                    <span v-if="!message.read_at" class="unread-nav-notification position-absolute rounded-circle"></span>
-                    <a @click.prevent="handleMessageClick(message)" :href="message.url" class="dropdown-item d-flex align-items-center gap-2 border-bottom px-3 py-2">
-                        <img :src="'/uploads/' + message.user.avatar" alt="" width="50" height="50" class="rounded-circle">
-                        <div>
-                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">{{ message.user.name }}</h6>
-                            <p class="text-uppercase mb-0 fs-12 fw-5 w180 text-wrap text-oneline">{{ message.preview }}</p>
-                            <!-- <span class="badge bg-primary ">{{ message.unread_count }}</span> -->
-                            <div class="fs-6 fw-5 ms-auto">{{ message.formattedTime }}</div>
-                        </div>
-                    </a>
-                </li>
-                <li class="py-0 see-all"><a href="/messages" class="dropdown-item text-center py-2">See All</a></li>
-            </ul>
-        </div>
-
         <!-- General Notifications -->
-        <div class="btn-group btn-drps">
+        <div class="btn-group btn-drps d-none d-xl-block">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill fs-4"></i>
                 <span class="notification-count" v-if="unreadCount > 0">{{ unreadCount }}</span>
@@ -66,6 +43,16 @@
                 <li class="py-0 see-all"><a href="/notifications" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
+
+        <button
+            type="button"
+            class="btn border-0 bg-transparent p-0 btn-drps d-xl-none position-relative profile-mobile-btn"
+            aria-label="Open notifications"
+            @click="$emit('open-notifications')"
+        >
+            <i class="bi bi-bell-fill fs-4"></i>
+            <span class="notification-count" v-if="unreadCount > 0">{{ unreadCount }}</span>
+        </button>
     <!-- Profile Links -->
     <div class="dropdown-center btn-drps">
         <button class="btn dropdown-toggle border-0 profile-dropdown-toggle p-0" type="button" data-bs-toggle="dropdown"
@@ -107,25 +94,17 @@ import { mapActions, mapState } from 'vuex';
 import { formatNotificationTime } from '../../utils.js';
 
 export default {
+    emits: ['open-notifications'],
     computed: {
         ...mapState(['userData']),
         ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
-        ...mapState('userNotification', ['followers', 'messages', 'notifications']),
+        ...mapState('userNotification', ['followers', 'notifications']),
         unreadCount() {
             try {
                 return this.notifications.filter(n => !n.read_at).length;
             } catch (e) {
                 return 0;
             }
-        },
-        formattedMessages() {
-            return this.messages.map(message => {
-                // console.log(message);
-                return {
-                    ...message,
-                    formattedTime: formatNotificationTime(message.last_message_time)
-                };
-            });
         },
         formattedNotifications() {
             return this.notifications.map(notification => {
@@ -152,14 +131,6 @@ export default {
                 this.markNotificationAsRead(notification.id);
             }
             const url = new URL(notification.url, window.location.origin);
-            window.location.href = url.pathname + url.search + url.hash;
-        },
-
-        handleMessageClick(message) {
-            if (!message.read_at) {
-                this.markNotificationAsRead(message.id);
-            }
-            const url = new URL(message.url, window.location.origin);
             window.location.href = url.pathname + url.search + url.hash;
         },
 
@@ -195,6 +166,9 @@ export default {
 <style>
 .btn-drps{
     padding: 10px 5px;
+}
+.profile-mobile-btn {
+    line-height: 1;
 }
 .header_notification{
     max-height: 316px;

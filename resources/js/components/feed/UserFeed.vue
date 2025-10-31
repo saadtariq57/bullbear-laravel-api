@@ -1,5 +1,5 @@
 <template>
-    <div class="container-md px-0 px-sm-3 my-4">
+    <div class="container-md px-sm-3 my-4">
         <div class="row">
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
