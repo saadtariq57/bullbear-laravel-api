@@ -68,17 +68,33 @@
                 </li>
                 <!-- Messages (2nd) -->
                 <li class="text-center cursor-pointer nav-bottom-link">
-                  <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openMessagesDrawer">
-                    <i class="bi bi-chat-dots fs-3"></i>
-                    <span class="d-block fw-5 fs-16">Messages</span>
-                  </button>
+                  <template v-if="userData">
+                    <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openMessagesDrawer">
+                      <i class="bi bi-chat-dots fs-3"></i>
+                      <span class="d-block fw-5 fs-16">Messages</span>
+                    </button>
+                  </template>
+                  <template v-else>
+                    <a href="/watchlist" class="text-black">
+                      <i class="bi bi-star-fill fs-3"></i>
+                      <span class="d-block fw-5 fs-16">Watchlist</span>
+                    </a>
+                  </template>
                 </li>
                 <!-- Following (3rd) -->
                 <li class="text-center cursor-pointer nav-bottom-link">
-                  <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openFollowingDrawer">
-                    <i class="bi bi-person-fill-add fs-3"></i>
-                    <span class="d-block fw-5 fs-16">Following</span>
-                  </button>
+                  <template v-if="userData">
+                    <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openFollowingDrawer">
+                      <i class="bi bi-person-fill-add fs-3"></i>
+                      <span class="d-block fw-5 fs-16">Following</span>
+                    </button>
+                  </template>
+                  <template v-else>
+                    <a href="/ceo-interviews" class="text-black">
+                      <i class="bi bi-youtube fs-3"></i>
+                      <span class="d-block fw-5 fs-16">CEO Interviews</span>
+                    </a>
+                  </template>
                 </li>
                 <!-- Menu (4th) -->
                 <li
@@ -323,7 +339,7 @@
                         <li><a class="dropdown-item nav-link" href="/dividend-calendar">Dividend Calendar</a></li>
                         <li><a class="dropdown-item nav-link" href="/splits-calendar">Splits Calendar</a></li>
                         <li><a class="dropdown-item nav-link" href="/ipo-calendar">IPO Calendar</a></li>
-                        <li><a class="dropdown-item nav-link" href="/watchlist">Watchlist</a></li>
+                        <li v-if="userData"><a class="dropdown-item nav-link" href="/watchlist">Watchlist</a></li>
                         <li><a class="dropdown-item nav-link" href="/groups">Chat Rooms</a></li>
                       </ul>
                     </div>
@@ -353,7 +369,7 @@
                   </li>
 
                   <!-- CEO Interviews Link -->
-                  <li>
+                  <li v-if="userData">
                     <a href="/ceo-interviews" class="nav-link nav-clr fw-bolder">Ceo Interviews</a>
                   </li>
                 </ul>
@@ -843,7 +859,7 @@
                                 <li>
                                   <a class="dropdown-item nav-link py-1" href="/ipo-calendar">IPO Calendar</a>
                                 </li>
-                                <li>
+                                <li v-if="userData">
                                   <a class="dropdown-item nav-link py-1" href="/watchlist">Watchlist</a>
                                 </li>
                                 <li>
@@ -905,7 +921,7 @@
                           </div>
                         </div>
                         <!-- CEO Interviews -->
-                        <div class="accordion-item">
+                        <div class="accordion-item" v-if="userData">
                           <h2 class="accordion-header">
                             <a href="/ceo-interviews" class="accordion-button d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent no-chevron">
                               <span class="nav_mobile-img bg-white px-2 pt-2 rounded-3 shadow">
@@ -916,7 +932,7 @@
                           </h2>
                         </div>
                         <!-- Watchlists -->
-                        <div class="accordion-item">
+                        <div class="accordion-item" v-if="userData">
                           <h2 class="accordion-header">
                             <a href="/watchlist" class="accordion-button d-flex align-items-center gap-4 px-0 py-1 mobile-nav-btn bg-transparent no-chevron">
                               <span class="nav_mobile-img bg-white px-2 pt-2 rounded-3 shadow">
