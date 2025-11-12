@@ -67,7 +67,7 @@
           <!-- Share Buttons -->
           <div class="share-buttons mt-4">
             <h5>Share This Post</h5>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2 share-buttons-list">
               <button class="btn btn-primary" @click="sharePost('facebook')">
                 <i class="bi bi-facebook"></i> Facebook
               </button>
@@ -722,6 +722,22 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.share-buttons-list {
+  max-width: 100%;
+}
+
+.share-buttons-list .btn {
+  flex: 1 1 calc(50% - 0.5rem);
+  min-width: 150px;
+  justify-content: center;
+}
+
+@media (max-width: 576px) {
+  .share-buttons-list .btn {
+    flex: 1 1 100%;
+  }
 }
 
 /* Comments Section */

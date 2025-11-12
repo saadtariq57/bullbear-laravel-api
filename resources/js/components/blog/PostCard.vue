@@ -19,8 +19,8 @@
             </span>
           </div>
           <!-- Read More Button with Icon -->
-          <router-link :to="postLink" class="btn btn-primary btn-sm">
-            <i class="bi bi-arrow-right-circle me-1"></i> Read More
+          <router-link :to="postLink" class="btn btn-primary btn-sm read-more-btn">
+            Read More <i class="bi bi-arrow-right-circle"></i>
           </router-link>
         </div>
       </div>
@@ -93,5 +93,15 @@ export default {
 .author-date span {
   display: inline-flex;
   align-items: center;
+}
+
+.read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 </style>

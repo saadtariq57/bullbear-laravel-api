@@ -50,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    topGapRatio: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -71,6 +75,10 @@ export default {
       resizeHandler: null,
       keydownHandler: null,
       focusBeforeOpen: null,
+      viewportHeightPx: 0,
+      maxSheetHeightPx: 0,
+      baseViewportHeightPx: 0,
+      viewportWidthPx: 0,
     };
   },
   computed: {
@@ -82,9 +90,16 @@ export default {
       };
     },
     panelStyle() {
-      return {
-        height: `${this.currentHeightPx}px`,
+      const constrainedHeight = this.maxSheetHeightPx > 0
+        ? Math.min(this.currentHeightPx, this.maxSheetHeightPx)
+        : this.currentHeightPx;
+      const styles = {
+        height: `${Math.max(constrainedHeight, 0)}px`,
       };
+      if (this.maxSheetHeightPx > 0) {
+        styles.maxHeight = `${this.maxSheetHeightPx}px`;
+      }
+      return styles;
     },
   },
   watch: {
@@ -113,10 +128,18 @@ export default {
       this.isMounted = true;
       this.$nextTick(() => {
         this.updateSnapPoints();
-        const initialIndex = Math.min(Math.max(this.initialSnap, 0), this.snapPointsPx.length - 1);
-        this.currentHeightPx = this.snapPointsPx[initialIndex] || Math.round(window.innerHeight * 0.5);
+        const hasSnapPoints = this.snapPointsPx.length > 0;
+        const maxIndex = hasSnapPoints ? this.snapPointsPx.length - 1 : 0;
+        const initialIndex = hasSnapPoints
+          ? Math.min(Math.max(this.initialSnap, 0), maxIndex)
+          : 0;
+        const viewportHeight = this.viewportHeightPx || window.innerHeight || 0;
+        const fallbackHeight = Math.round(viewportHeight * 0.5);
+        const initialHeight = this.snapPointsPx[initialIndex] ?? fallbackHeight;
+        const maxAllowed = this.maxSheetHeightPx > 0 ? this.maxSheetHeightPx : initialHeight;
+        this.currentHeightPx = Math.min(initialHeight, maxAllowed);
         this.isVisible = true;
-        this.isExpanded = initialIndex === this.snapPointsPx.length - 1;
+        this.isExpanded = hasSnapPoints ? initialIndex === maxIndex : false;
         this.focusBeforeOpen = document.activeElement;
         this.$nextTick(() => {
           const panel = this.$refs.panel;
@@ -199,20 +222,69 @@ export default {
         this.previousBodyOverflow = null;
       }
     },
+    measureViewportSize() {
+      if (typeof window === 'undefined') {
+        return { width: 0, height: 0 };
+      }
+      const height = window.innerHeight || document.documentElement?.clientHeight || 0;
+      const width = window.innerWidth || document.documentElement?.clientWidth || 0;
+      return { width, height };
+    },
     updateSnapPoints() {
-      const vh = window.innerHeight || 0;
+      const { width: measuredWidth, height: measuredHeight } = this.measureViewportSize();
+      const widthChanged = measuredWidth > 0 && (this.viewportWidthPx === 0 || Math.abs(measuredWidth - this.viewportWidthPx) > 32);
+      if (widthChanged) {
+        this.baseViewportHeightPx = measuredHeight;
+      } else if (measuredHeight > 0) {
+        if (!this.baseViewportHeightPx || measuredHeight > this.baseViewportHeightPx) {
+          this.baseViewportHeightPx = measuredHeight;
+        }
+      }
+      if (measuredWidth > 0) {
+        this.viewportWidthPx = measuredWidth;
+      }
+      const viewportHeight = this.baseViewportHeightPx || measuredHeight;
+      if (!viewportHeight) {
+        this.viewportHeightPx = 0;
+        this.maxSheetHeightPx = 0;
+        this.snapPointsPx = [];
+        return;
+      }
+      this.viewportHeightPx = viewportHeight;
+
+      const safeTopGap = Number.isFinite(this.topGapRatio) ? this.topGapRatio : 0;
+      const clampedTopGap = Math.min(Math.max(safeTopGap, 0), 0.9);
+      this.viewportHeightPx = viewportHeight;
+      this.maxSheetHeightPx = Math.round(viewportHeight * (1 - clampedTopGap));
+
       const sanitized = this.snapPoints.length ? this.snapPoints : [0.5, 1];
-      this.snapPointsPx = sanitized.map((ratio) => {
-        const clamped = Math.min(Math.max(ratio, 0.25), 1);
-        return Math.round(clamped * vh);
-      }).sort((a, b) => a - b);
+      this.snapPointsPx = sanitized
+        .map((ratio) => {
+          const normalized = Number.isFinite(ratio) ? ratio : 0.5;
+          const clampedRatio = Math.min(Math.max(normalized, 0.25), 1);
+          const px = Math.round(clampedRatio * viewportHeight);
+          return Math.min(px, this.maxSheetHeightPx);
+        })
+        .filter((value) => Number.isFinite(value) && value > 0)
+        .sort((a, b) => a - b);
       // ensure unique values
       this.snapPointsPx = [...new Set(this.snapPointsPx)];
+      if (!this.snapPointsPx.length) {
+        this.currentHeightPx = Math.min(this.currentHeightPx, this.maxSheetHeightPx || this.currentHeightPx);
+        return;
+      }
+
+      const nearestIndex = this.findNearestSnapIndex();
+      const clampedIndex = Math.min(Math.max(nearestIndex, 0), this.snapPointsPx.length - 1);
+      this.currentHeightPx = this.snapPointsPx[clampedIndex];
+      this.isExpanded = clampedIndex === this.snapPointsPx.length - 1;
     },
     snapToIndex(index) {
       if (!this.snapPointsPx.length) this.updateSnapPoints();
       const clamped = Math.min(Math.max(index, 0), this.snapPointsPx.length - 1);
-      this.currentHeightPx = this.snapPointsPx[clamped];
+      const targetHeight = this.snapPointsPx[clamped];
+      const maxAllowed = this.maxSheetHeightPx > 0 ? this.maxSheetHeightPx : targetHeight;
+      this.currentHeightPx = Math.min(targetHeight, maxAllowed);
       this.isExpanded = clamped === this.snapPointsPx.length - 1;
       this.$emit('expanded-change', this.isExpanded);
     },
@@ -243,12 +315,13 @@ export default {
       if (this.rafId) return;
       this.rafId = requestAnimationFrame(() => {
         this.rafId = null;
-        const viewport = window.innerHeight;
         const minHeight = Math.min(...this.snapPointsPx);
-        const maxHeight = Math.max(...this.snapPointsPx);
+        const maxHeightCandidate = this.maxSheetHeightPx > 0
+          ? this.maxSheetHeightPx
+          : Math.max(...this.snapPointsPx);
         let target = this.dragStartHeight + dy;
         if (Number.isFinite(minHeight)) target = Math.max(target, minHeight * 0.6);
-        if (Number.isFinite(maxHeight)) target = Math.min(target, maxHeight);
+        if (Number.isFinite(maxHeightCandidate)) target = Math.min(target, maxHeightCandidate);
         this.currentHeightPx = target;
       });
       event.preventDefault();
@@ -263,8 +336,9 @@ export default {
         this.rafId = null;
       }
 
-      const vh = window.innerHeight;
-      const heightRatio = this.currentHeightPx / vh;
+      const viewportHeight = this.viewportHeightPx || window.innerHeight;
+      const vh = viewportHeight || 1;
+      const heightRatio = vh ? this.currentHeightPx / vh : 0;
       const dt = Math.max(1, performance.now() - this.lastPointerTs);
       const velocity = (event.clientY - this.prevPointerY) / dt; // px per ms (positive = down)
       const fastSwipe = Math.abs(velocity) > 0.32;

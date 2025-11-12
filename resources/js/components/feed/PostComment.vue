@@ -1,53 +1,156 @@
 <template>
   <div v-if="showCommentEmojiPicker || showNestedCommentEmojiPicker" class="emoji-close-overlay" @click="closeAllEmojis"></div>
   <!-- Comment box -->
-  <div class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
+  <div v-if="!isMobileView" class="comment-box p-2 px-3 d-flex gap-2 align-items-center">
     <div class="user-icon">
-      <img class="avatar rounded-circle" :src="`/uploads/${userData.avatar}`" width="40" height="40">
+      <img class="avatar rounded-circle avatar-sm" :src="`/uploads/${userData.avatar}`" width="36" height="36">
     </div>
     <div class="comment-form w-100">
-      <form @submit.prevent="submitComment(postId, null, false)" class="position-relative">
-        <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a Comment and hit submit"
-          class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
-        <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
-          <!-- Add emoji and image upload functionality -->
-          <!-- Emojis Model Button-->
-          <div class="position-relative comment-emoji-picker">
-            <button type="button" class="btn px-1 py-0" v-on:click="toggleEmojiPicker">
+      <form @submit.prevent="submitComment(postId, null, false)" class="comment-form-wrapper">
+        <div class="comment-input-wrapper position-relative">
+          <!-- Emoji Button -->
+          <div class="comment-emoji-picker comment-emoji-left">
+            <button type="button" class="btn emoji-btn px-1 py-0" v-on:click="toggleEmojiPicker">
               <abbr title="Open Emoji">
                 <i class="bi bi-emoji-smile fs-5"></i>
               </abbr>
             </button>
             <EmojiPicker v-if="showCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
           </div>
-          <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
+          <textarea v-model="newContent" rows="1" :disabled="isSubmitting" placeholder="Write a comment"
+            class="comment-input rounded-5 w-100 d-block ps-5 py-2 border-opacity-25 border-secondary"
+            @input="autoResize"></textarea>
+          <button type="submit" class="btn btn-sm send-btn border-0 mr-3">
+            <i class="bi bi-send"></i>
+          </button>
         </div>
       </form>
     </div>
   </div>
+  <div v-else class="comment-box-mobile p-2 px-3">
+    <div class="d-flex gap-2 align-items-center">
+      <div class="user-icon">
+        <img class="avatar rounded-circle avatar-sm" :src="`/uploads/${userData.avatar}`" width="36" height="36">
+      </div>
+      <button type="button" class="btn comment-mobile-trigger w-100 text-start rounded-5" @click="openCommentDrawer">
+        <span class="text-muted">{{ newContent ? newContent : 'Write a comment' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Comment Drawer -->
+  <BottomSheet
+    v-if="isMobileView"
+    ref="commentSheet"
+    v-model="isCommentDrawerOpen"
+    :snap-points="[0.14, 0.55, 0.9]"
+    :initial-snap="0"
+    :close-threshold="0.25"
+    :backdrop-closes-expanded="false"
+    :top-gap-ratio="0.2"
+  >
+    <template #default="{ close }">
+      <div class="comment-sheet" :style="drawerContentStyle">
+        <div class="comment-sheet__header d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-semibold">Write a comment</h6>
+        </div>
+        <form @submit.prevent="submitComment(postId, null, false)" class="comment-form-wrapper">
+          <div class="comment-input-wrapper position-relative">
+            <div
+              class="comment-emoji-picker comment-emoji-left"
+              :class="{ 'is-expanded': isMobileView && drawerExpanded }"
+            >
+              <button type="button" class="btn emoji-btn px-1 py-0" v-on:click="toggleEmojiPicker">
+                <abbr title="Open Emoji">
+                  <i class="bi bi-emoji-smile fs-5"></i>
+                </abbr>
+              </button>
+              <EmojiPicker v-if="showCommentEmojiPicker" :native="true" @select="onSelectCommentEmoji" />
+            </div>
+            <textarea
+              ref="commentDrawerTextarea"
+              v-model="newContent"
+              rows="1"
+              :disabled="isSubmitting"
+              placeholder="Write a comment"
+              class="comment-input rounded-5 w-100 d-block ps-5 pe-5 py-2 border-opacity-25 border-secondary"
+              @input="autoResize"
+            ></textarea>
+            <button
+              type="submit"
+              class="btn btn-sm send-btn border-0"
+              :class="{ 'is-expanded': isMobileView && drawerExpanded }"
+            >
+              <i class="bi bi-send fs-5"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </template>
+  </BottomSheet>
+
+  <!-- Mobile Reply Drawer -->
+  <BottomSheet
+    v-if="isMobileView"
+    ref="replySheet"
+    v-model="isReplyDrawerOpen"
+    :snap-points="[0.14, 0.55, 0.9]"
+    :initial-snap="0"
+    :close-threshold="0.25"
+    :backdrop-closes-expanded="false"
+    :top-gap-ratio="0.2"
+  >
+    <template #default="{ close }">
+      <div class="comment-sheet" :style="replyDrawerContentStyle">
+        <div class="comment-sheet__header d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-semibold">Write a reply</h6>
+        </div>
+        <form @submit.prevent="submitComment(postId, activeReplyId, true)" class="comment-form-wrapper">
+          <div class="comment-input-wrapper position-relative">
+            <div class="comment-emoji-picker comment-emoji-left" :class="{ 'is-expanded': replyDrawerExpanded }">
+              <button type="button" class="btn emoji-btn px-1 py-0" v-on:click="toggleNestedCommentEmojiPicker">
+                <abbr title="Open Emoji">
+                  <i class="bi bi-emoji-smile fs-5"></i>
+                </abbr>
+              </button>
+              <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true"
+                @select="onSelectNestedCommentEmoji" />
+            </div>
+            <textarea
+              ref="replyDrawerTextarea"
+              v-model="activeReplyTextareaModel"
+              rows="1"
+              :disabled="isSubmitting"
+              placeholder="Write a reply"
+              class="comment-input rounded-5 w-100 d-block ps-5 pe-5 py-2 border-opacity-25 border-secondary"
+              @input="autoResize"
+            ></textarea>
+            <button type="submit" class="btn btn-sm send-btn border-0"
+              :class="{ 'is-expanded': replyDrawerExpanded }">
+              <i class="bi bi-send fs-5"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </template>
+  </BottomSheet>
 
   <!-- Comments Section -->
   <div class="post-footer post-comments p-3 bh-white">
     <div class="comment-lists">
       <div v-for="comment in postComments" :key="comment.id" class="comment comment-container mb-2">
-        <div class="d-flex gap-2">
-          <div class="user-icon">
-            <a :href="`/${comment.user.username}`">
-              <img :src="`/uploads/${comment.user.avatar}`" class="rounded-circle" width="40" height="40">
-            </a>
-          </div>
-          <div class="comment-body w-100">
-            <!-- Comment content -->
             <div class="bg-light-grey position-relative px-sm-3 px-2 py-2">
               <div class="comment-heading position-relative">
-                <span class="user-popover d-flex gap-1 align-items-center mb-2">
-                  <a href="" class="text-black">
+            <div class="comment-meta-grid mb-2">
+              <a :href="`/${comment.user.username}`" class="comment-avatar-link">
+                <img :src="`/uploads/${comment.user.avatar}`" class="comment-avatar" width="40" height="40">
+              </a>
+              <a :href="`/${comment.user.username}`" class="comment-author-link text-black text-decoration-none">
                     <h4 class="user fs-14 fw-bold m-0">{{ comment.user.name }}</h4>
                   </a>
-                  <span class="time-comment fs-10">{{ formatDateTime(comment.created_at) }}</span>
-                </span>
+              <span class="time-comment fs-10 text-muted">{{ formatDateTime(comment.created_at) }}</span>
+            </div>
 
-                <!-- Comment Edit/Delete Options -->
                 <div v-if="userData.id === comment.user.id" class="comment-edit position-absolute">
                   <div class="btn-group">
                     <button type="button" class="bg-transparent border-0 p-0 dropdown-toggle"
@@ -64,80 +167,67 @@
                       <li><button class="dropdown-item" @click="deleteComment(postId, comment.id, null, false)"><i
                             class="bi bi-trash3-fill me-2"></i>Delete</button></li>
                     </ul>
+              </div>
                   </div>
                 </div>
 
-                <!-- Comment Text -->
-                <div v-if="!isEditing(comment.id)" class="comment-text">
-                  <p class="text-start">{{ comment.text }}</p>
+          <div v-if="!isEditing(comment.id)" class="comment-text mt-2">
+            <p class="text-start m-0">{{ comment.text }}</p>
                 </div>
 
-                <div v-else>
+          <div v-else class="mt-2">
                   <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
                   <button class="btn btn-primary btn-sm me-2 px-3"
                     @click="editComment(postId, comment.id, null, false)">Save Changes</button>
                   <button class="btn rounded-2 btn-sm border-btn py-2 px-3"
                     @click="cancelEdit(comment.id)">Cancel</button>
                 </div>
-              </div>
-              <div class="comment-options">
-                <div class="like-comment-count row align-items-center px-sm-3 px-1">
-                  <button type="button"
-                    class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
-                    @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
-                    @click="handleReaction(postId, comment.id, 1, null, false)">
-                    <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
-                    <i v-else :class="getReactionName(comment.userReaction)"></i>
-                    <span :class="getReactionName(comment.userReaction)">
-                      {{ comment.userReaction ? getReactionName(comment.userReaction) : 'Like' }}
-                    </span>
-                    <div v-if="showReactionsForComment[comment.id]"
-                      class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                      <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                        @click.stop="handleReaction(postId, comment.id, reactionType.id, null, false)">
-                        <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
-                      </span>
-                    </div>
-                  </button>
-                  <!-- Reaction Icons and Count -->
-                  <div class="like-count col-2 col-sm-1 px-sm-2 px-0 min-max-content">
-                    <div class="reaction-icons d-flex align-items-center justify-content-center">
-                      <button @click="emitShowReactions(postId, comment.organizedReactions)" class="btn">
-                        <span v-for="(reactionDetail, index) in Object.values(comment.organizedReactions).slice(0, 3)"
-                          :key="index">
-                          <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
-        reactionDetail.count }}
-                        </span>
-                        <span v-if="Object.keys(comment.organizedReactions).length > 3">+{{
-        Object.values(comment.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="reply col-3 col-sm-1 px-sm-2 px-1 w-auto">
-                    <button @click="toggleReplyInput(comment.id)" type="button"
-                      class="btn fs-6 btn-feed-hover border-0">Reply</button>
-                  </div>
-                  <div class="reply-count col-sm-2 col-3 px-sm-2 w-auto fs-6">
-                    <span @click="nestedReplies()">
-                      {{ comment.replies_count === 0 ? '' : `${comment.replies_count} Reply` }}
+
+          <div class="comment-options mt-3">
+            <div class="comment-actions d-flex align-items-center flex-wrap">
+              <div class="d-flex align-items-center">
+                <button type="button"
+                  class="btn btn-action btn-feed-hover border-0 position-relative"
+                  @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
+                  @click="handleReaction(postId, comment.id, 1, null, false)">
+                  <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
+                  <i v-else :class="getReactionName(comment.userReaction)"></i>
+                  <span :class="getReactionName(comment.userReaction)">
+                    {{ comment.userReaction ? getReactionName(comment.userReaction) : 'Like' }}
+                  </span>
+                  <div v-if="showReactionsForComment[comment.id]"
+                    class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                    <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                      @click.stop="handleReaction(postId, comment.id, reactionType.id, null, false)">
+                      <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
                     </span>
                   </div>
-                </div>
+                </button>
               </div>
-              <!-- Replies -->
-              <div v-if="showReplyInput[comment.id]" class="reply-input-area d-flex align-items-center gap-2 mt-2">
+              <button @click="toggleReplyInput(comment.id)" type="button"
+                class="btn btn-action muted-btn border-0">
+                <i class="bi bi-reply"></i>
+                <span>Reply</span>
+              </button>
+              <button v-if="comment.replies_count > 0" type="button"
+                class="btn btn-action muted-btn border-0"
+                @click="nestedReplies()">
+                <i class="bi bi-chat-left-text"></i>
+                <span>{{ `${comment.replies_count} Reply` }}</span>
+              </button>
+            </div>
+          </div>
+
+          <div v-if="showReplyInput[comment.id] && !isMobileView" class="reply-input-area d-flex align-items-start gap-2 mt-2">
                 <div class="user-icon">
-                  <img class="avatar rounded-circle" :src="`/${userData.avatar}`" width="40" height="40">
+              <img class="avatar rounded-circle avatar-sm" :src="`/${userData.avatar}`" width="36" height="36">
                 </div>
                 <div class="comment-form w-100">
-                  <form @submit.prevent="submitComment(postId, comment.id, true)" class="position-relative">
-                    <textarea v-model="newContent" rows="1" :disabled="isSubmitting"
-                      placeholder="Write a Reply and hit submit"
-                      class="rounded-5 w-100 d-block ps-3 pe-5 py-2 border-opacity-25 border-secondary"></textarea>
-                    <div class="reply-comment-elements-wrapper d-flex justify-content-end gap-2 position-absolute">
-                      <!-- Add emoji and image upload functionality -->
-                      <div class="position-relative comment-emoji-picker">
-                        <button type="button" class="btn px-1 py-0" v-on:click="toggleNestedCommentEmojiPicker">
+              <form @submit.prevent="submitComment(postId, comment.id, true)" class="comment-form-wrapper">
+                <div class="comment-input-wrapper position-relative">
+                  <div class="comment-emoji-picker comment-emoji-left">
+                    <button type="button" class="btn emoji-btn px-1 py-0"
+                      v-on:click="toggleNestedCommentEmojiPicker">
                           <abbr title="Open Emoji">
                             <i class="bi bi-emoji-smile fs-5"></i>
                           </abbr>
@@ -145,30 +235,37 @@
                         <EmojiPicker v-if="showNestedCommentEmojiPicker" :native="true"
                           @select="onSelectNestedCommentEmoji" />
                       </div>
-                      <button type="submit" class="btn btn-sm p-0 border-0"><i class="bi bi-send fs-5"></i></button>
+                  <textarea
+                    :ref="`replyTextarea-${comment.id}`"
+                    v-model="newReplyContent[comment.id]"
+                    rows="1"
+                    :disabled="isSubmitting"
+                    placeholder="Write a reply"
+                    class="comment-input rounded-5 w-100 d-block ps-5 pe-5 py-2 border-opacity-25 border-secondary"
+                    @focus="handleReplyFocus(comment.id)"
+                    @blur="handleReplyBlur(comment.id)"
+                    @input="autoResize"
+                  ></textarea>
+                  <button type="submit" class="btn btn-sm send-btn p-0 border-0"><i class="bi bi-send fs-5"></i></button>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
 
-            <div class="nested-replies">
-              <div v-for="reply in comment.replies" :key="reply.id" class="reply-container mt-2">
-                <div class="d-flex gap-2">
-                  <div class="user-icon">
-                    <a :href="`/${reply.user.username}`">
-                      <img :src="`/${reply.user.avatar}`" class="rounded-circle" width="40" height="40">
-                    </a>
-                  </div>
-                  <div class="comment-body w-100 bg-light-grey px-sm-3 px-2 py-2">
-                    <div class="comment-heading position-relative">
-                      <span class="user-popover d-flex gap-1 align-items-center mb-2">
-                        <a :href="`/${reply.user.username}`" class="text-black">
+        <div class="nested-replies mt-2">
+          <div v-for="reply in comment.replies" :key="reply.id" class="reply-container mb-2">
+            <div class="bg-light-grey px-sm-3 px-2 py-2">
+              <div class="comment-heading position-relative">
+                <div class="comment-meta-grid mb-2">
+                  <a :href="`/${reply.user.username}`" class="comment-avatar-link">
+                    <img :src="`/${reply.user.avatar}`" class="comment-avatar" width="36" height="36">
+                  </a>
+                  <a :href="`/${reply.user.username}`" class="comment-author-link text-black text-decoration-none">
                           <h4 class="user fs-14 fw-bold m-0">{{ reply.user.name }}</h4>
                         </a>
-                        <span class="time-comment fs-10">{{ formatDateTime(reply.created_at) }}</span>
-                      </span>
-                      <!-- Reply options (Edit/Delete) -->
+                  <span class="time-comment fs-10 text-muted">{{ formatDateTime(reply.created_at) }}</span>
+                </div>
                       <div v-if="userData.id === reply.user.id" class="comment-edit position-absolute">
                         <div class="btn-group">
                           <button type="button" class="bg-transparent border-0 p-0 dropdown-toggle"
@@ -184,7 +281,8 @@
                           </ul>
                         </div>
                       </div>
-                      <div v-if="editingId === reply.id" class="reply-edit-form">
+              </div>
+              <div v-if="editingId === reply.id" class="reply-edit-form mt-2">
                         <textarea v-model="editedText" rows="2" class="form-control mb-2"></textarea>
                         <button class="btn btn-primary btn-sm px-3 me-2"
                           @click="editComment(postId, comment.id, reply.id, true)">Save
@@ -192,48 +290,40 @@
                         <button class="btn rounded-2 btn-sm border-btn py-2 px-3"
                           @click="cancelEdit(reply.id)">Cancel</button>
                       </div>
-                      <div v-else class="comment-text">
-                        <p class="text-start">{{ reply.text }}</p>
+              <div v-else class="comment-text mt-2">
+                <p class="text-start m-0">{{ reply.text }}</p>
                       </div>
-                      <!-- Reply reaction options -->
-                      <div class="reply-options">
-                        <!-- Dynamic Like/Liked Button -->
-                        <div class="like-comment-count row align-items-center justify-content-start gap-2">
-                          <button type="button"
-                            class="btn min-max-content fs-6 btn-feed-hover border-0 position-relative col-3 col-sm-1 px-0"
-                            @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
-                            @click="handleReaction(postId, reply.id, 1, comment.id, true)">
-                            <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
-                            <i v-else :class="getReactionName(reply.userReaction)"></i>
-                            <span :class="getReactionName(reply.userReaction)">
-                              {{ reply.userReaction ? getReactionName(reply.userReaction) : 'Like' }}
-                            </span>
-                            <div v-if="showReactionsForComment[reply.id]"
-                              class="reaction-icons-wrapper position-absolute d-flex gap-1">
-                              <span v-for="reactionType in reactionTypes" :key="reactionType.id"
-                                @click.stop="handleReaction(postId, reply.id, reactionType.id, comment.id, true)">
-                                <img :src="reactionType.icon" class="reply-reaction-icons-img">
-                              </span>
-                            </div>
-                          </button>
-                          <!-- Reaction Icons and Count -->
-                          <div class="like-count col-4 px-sm-3 px-1 w-auto">
-                            <div class="reaction-icons">
-                              <button @click="emitShowReactions(postId, reply.organizedReactions)" class="btn">
-                                <span
-                                  v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)"
-                                  :key="index">
-                                  <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
+              <div class="reply-options mt-3">
+                <div class="comment-actions d-flex align-items-center flex-wrap">
+                  <div class="d-flex align-items-center">
+                    <button type="button"
+                      class="btn btn-action btn-feed-hover border-0 position-relative"
+                      @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
+                      @click="handleReaction(postId, reply.id, 1, comment.id, true)">
+                      <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
+                      <i v-else :class="getReactionName(reply.userReaction)"></i>
+                      <span :class="getReactionName(reply.userReaction)">
+                        {{ reply.userReaction ? getReactionName(reply.userReaction) : 'Like' }}
+                      </span>
+                      <div v-if="showReactionsForComment[reply.id]"
+                        class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                        <span v-for="reactionType in reactionTypes" :key="reactionType.id"
+                          @click.stop="handleReaction(postId, reply.id, reactionType.id, comment.id, true)">
+                          <img :src="reactionType.icon" class="reply-reaction-icons-img">
+                        </span>
+                      </div>
+                    </button>
+                    <button @click="emitShowReactions(postId, reply.organizedReactions)"
+                      class="btn btn-action muted-btn border-0">
+                      <span
+                        v-for="(reactionDetail, index) in Object.values(reply.organizedReactions).slice(0, 3)"
+                        :key="index" class="d-inline-flex align-items-center gap-1">
+                        <img :src="reactionDetail.details[0].reactionImage" class="reaction-icon"> {{
         reactionDetail.count }}
-                                </span>
-                                <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{
+                      </span>
+                      <span v-if="Object.keys(reply.organizedReactions).length > 3">+{{
         Object.values(reply.organizedReactions).reduce((acc, r) => acc + r.count, 0) }}</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -251,13 +341,33 @@ import { formatDateTime } from '../../utils';
 import { Dropdown } from 'bootstrap';
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
+import BottomSheet from '../header/BottomSheet.vue';
+
+const throttle = (fn, wait = 100) => {
+  let timeout = null;
+  let lastArgs = null;
+  return function throttled(...args) {
+    lastArgs = args;
+    if (!timeout) {
+      fn.apply(this, lastArgs);
+      lastArgs = null;
+      timeout = setTimeout(() => {
+        timeout = null;
+        if (lastArgs) {
+          fn.apply(this, lastArgs);
+          lastArgs = null;
+        }
+      }, wait);
+    }
+  };
+};
 export default {
   emits: ['show-reactions', 'comment-submitted', 'comment-deleted'],
   props: {
     postId: Number,
     reactionTypes: Array,
   },
-  components: { EmojiPicker },
+  components: { EmojiPicker, BottomSheet },
   data() {
     return {
       newContent: '',
@@ -267,17 +377,30 @@ export default {
       isSubmitting: false,
       showReactionsForComment: {},
       showCommentEmojiPicker: false,
-      showNestedCommentEmojiPicker: false
+      showNestedCommentEmojiPicker: false,
+      isMobileView: false,
+      isCommentDrawerOpen: false,
+      drawerExpanded: false,
+      drawerBaseHeight: 0,
+      keyboardOffset: 0,
+      _throttledViewportResize: null,
+      newReplyContent: {},
+      activeReplyId: null,
+      isReplyDrawerOpen: false,
+      replyDrawerBaseHeight: 0,
+      replyDrawerExpanded: false,
+      viewportListenerRefs: 0,
+      drawerHistoryTokens: {
+        comment: null,
+        reply: null,
+      },
+      drawerHistorySkipReplace: {
+        comment: false,
+        reply: false,
+      },
+      historySupportAvailable: true,
+      emojiOutsideEventTypes: [],
     };
-  },
-  mounted() {
-    // Close any open emoji pickers when clicking outside
-    document.addEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
-    document.addEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
-  },
-  beforeUnmount() {
-    document.removeEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
-    document.removeEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
   },
   computed: {
     ...mapState(['userData']),
@@ -286,6 +409,61 @@ export default {
     postComments() {
       return this.comments[this.postId] || [];
     },
+    drawerContentStyle() {
+      if (!this.isMobileView) return {};
+      const extra = Math.max(this.keyboardOffset - 24, 0);
+      return {
+        paddingBottom: `${12 + extra}px`,
+      };
+    },
+    replyDrawerContentStyle() {
+      if (!this.isMobileView) return {};
+      const extra = Math.max(this.keyboardOffset - 24, 0);
+      return {
+        paddingBottom: `${12 + extra}px`,
+      };
+    },
+    activeReplyTextareaModel: {
+      get() {
+        if (this.activeReplyId === null) return '';
+        this.ensureReplyModel(this.activeReplyId);
+        return this.newReplyContent[this.activeReplyId] || '';
+      },
+      set(value) {
+        if (this.activeReplyId === null) return;
+        this.newReplyContent = {
+          ...this.newReplyContent,
+          [this.activeReplyId]: value,
+        };
+      },
+    },
+  },
+  mounted() {
+    this.updateViewport();
+    window.addEventListener('resize', this.updateViewport);
+    this._throttledViewportResize = throttle(this._handleViewportResize.bind(this), 100);
+    if (typeof window !== 'undefined') {
+      if ('PointerEvent' in window) {
+        document.addEventListener('pointerdown', this.onDocumentClickCloseEmoji, true);
+        this.emojiOutsideEventTypes = ['pointerdown'];
+      } else {
+        document.addEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
+        document.addEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
+        this.emojiOutsideEventTypes = ['mousedown', 'touchstart'];
+      }
+      window.addEventListener('popstate', this.handlePopState);
+    }
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateViewport);
+    this.emojiOutsideEventTypes.forEach((type) => {
+      document.removeEventListener(type, this.onDocumentClickCloseEmoji, true);
+    });
+    this.emojiOutsideEventTypes = [];
+    this.detachViewportListener();
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('popstate', this.handlePopState);
+    }
   },
   methods: {
     ...mapActions('userFeedComment', [
@@ -296,6 +474,192 @@ export default {
       'deleteCommentOrReply'
     ]),
     formatDateTime,
+    updateViewport() {
+      this.isMobileView = window.innerWidth <= 768;
+      if (!this.isMobileView && this.isCommentDrawerOpen) {
+        this.closeCommentDrawer();
+      }
+      if (!this.isMobileView && this.isReplyDrawerOpen) {
+        this.closeReplyDrawer();
+      }
+    },
+    openCommentDrawer() {
+      if (this.isSubmitting) return;
+      this.isCommentDrawerOpen = true;
+      this.showCommentEmojiPicker = false;
+      this.showNestedCommentEmojiPicker = false;
+      this.$nextTick(() => {
+        const focusTextarea = () => {
+          const input = this.$refs.commentDrawerTextarea;
+          if (input) {
+            input.focus({ preventScroll: true });
+            const valueLength = input.value.length;
+            input.setSelectionRange(valueLength, valueLength);
+            this.syncDrawerTextareaState();
+            if (this.$refs.commentSheet && typeof this.$refs.commentSheet.expand === 'function') {
+              this.$refs.commentSheet.expand();
+            }
+          }
+        };
+        requestAnimationFrame(() => requestAnimationFrame(focusTextarea));
+      });
+    },
+    closeCommentDrawer(closeFn) {
+      if (typeof closeFn === 'function') {
+        closeFn();
+      } else if (this.$refs.commentSheet && typeof this.$refs.commentSheet.requestClose === 'function') {
+        this.$refs.commentSheet.requestClose();
+      } else {
+        this.isCommentDrawerOpen = false;
+      }
+      this.showCommentEmojiPicker = false;
+      this.showNestedCommentEmojiPicker = false;
+      this.drawerExpanded = false;
+      this.drawerBaseHeight = 0;
+    },
+    closeReplyDrawer(closeFn) {
+      if (typeof closeFn === 'function') {
+        closeFn();
+      } else if (this.$refs.replySheet && typeof this.$refs.replySheet.requestClose === 'function') {
+        this.$refs.replySheet.requestClose();
+      } else {
+        this.isReplyDrawerOpen = false;
+      }
+      this.replyDrawerExpanded = false;
+      this.replyDrawerBaseHeight = 0;
+      this.activeReplyId = null;
+      this.showNestedCommentEmojiPicker = false;
+    },
+    syncDrawerTextareaState() {
+      if (!this.isMobileView) return;
+      const input = this.$refs.commentDrawerTextarea;
+      if (!input) return;
+      const styles = window.getComputedStyle(input);
+      const minHeight = parseFloat(styles.minHeight) || parseFloat(styles.height) || input.scrollHeight;
+      this.drawerBaseHeight = minHeight;
+      this.autoResize({ target: input });
+    },
+    syncReplyDrawerTextareaState() {
+      if (!this.isMobileView) return;
+      const input = this.$refs.replyDrawerTextarea;
+      if (!input) return;
+      const styles = window.getComputedStyle(input);
+      const minHeight = parseFloat(styles.minHeight) || parseFloat(styles.height) || input.scrollHeight;
+      this.replyDrawerBaseHeight = minHeight;
+      this.autoResize({ target: input });
+    },
+    attachViewportListener() {
+      if (!this.isMobileView || typeof window.visualViewport === 'undefined') return;
+      if (!this._throttledViewportResize) {
+        this._throttledViewportResize = throttle(this._handleViewportResize.bind(this), 100);
+      }
+      if (this.viewportListenerRefs === 0) {
+        this._handleViewportResize();
+        window.visualViewport.addEventListener('resize', this._throttledViewportResize, { passive: true });
+      }
+      this.viewportListenerRefs += 1;
+    },
+    detachViewportListener() {
+      if (typeof window.visualViewport === 'undefined') return;
+      if (this.viewportListenerRefs > 0) {
+        this.viewportListenerRefs -= 1;
+        if (this.viewportListenerRefs === 0 && this._throttledViewportResize) {
+          window.visualViewport.removeEventListener('resize', this._throttledViewportResize);
+          this.keyboardOffset = 0;
+        }
+      }
+    },
+    _handleViewportResize() {
+      if (!this.isMobileView || typeof window.visualViewport === 'undefined') {
+        this.keyboardOffset = 0;
+        return;
+      }
+      const viewport = window.visualViewport;
+      const heightDiff = window.innerHeight - viewport.height;
+      this.keyboardOffset = heightDiff > 0 ? heightDiff : 0;
+    },
+    historyAvailable() {
+      return this.historySupportAvailable
+        && typeof window !== 'undefined'
+        && window.history
+        && typeof window.history.pushState === 'function'
+        && typeof window.history.replaceState === 'function';
+    },
+    registerDrawerHistory(type) {
+      if (!['comment', 'reply'].includes(type)) return;
+      if (!this.isMobileView) return;
+      if (!this.historyAvailable()) {
+        this.historySupportAvailable = false;
+        return;
+      }
+      if (this.drawerHistoryTokens[type]) return;
+      const token = `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      try {
+        const currentState = window.history.state;
+        const nextState = (currentState && typeof currentState === 'object')
+          ? { ...currentState }
+          : {};
+        nextState[`__rtvDrawer_${type}`] = token;
+        window.history.pushState(nextState, document.title);
+        this.drawerHistoryTokens = {
+          ...this.drawerHistoryTokens,
+          [type]: token,
+        };
+        this.drawerHistorySkipReplace = {
+          ...this.drawerHistorySkipReplace,
+          [type]: false,
+        };
+      } catch (error) {
+        this.historySupportAvailable = false;
+      }
+    },
+    clearDrawerHistory(type, { replaceState = true } = {}) {
+      if (!['comment', 'reply'].includes(type)) return;
+      const token = this.drawerHistoryTokens[type];
+      if (!token) {
+        if (this.drawerHistoryTokens[type] !== null) {
+          this.drawerHistoryTokens = {
+            ...this.drawerHistoryTokens,
+            [type]: null,
+          };
+        }
+        return;
+      }
+      if (replaceState && this.historyAvailable()) {
+        try {
+          const currentState = window.history.state;
+          if (currentState && typeof currentState === 'object' && currentState[`__rtvDrawer_${type}`]) {
+            const nextState = { ...currentState };
+            delete nextState[`__rtvDrawer_${type}`];
+            window.history.replaceState(nextState, document.title);
+          }
+        } catch (error) {
+          this.historySupportAvailable = false;
+        }
+      }
+      this.drawerHistoryTokens = {
+        ...this.drawerHistoryTokens,
+        [type]: null,
+      };
+    },
+    handlePopState() {
+      if (!this.isMobileView) return;
+      if (this.isReplyDrawerOpen) {
+        this.drawerHistorySkipReplace = {
+          ...this.drawerHistorySkipReplace,
+          reply: true,
+        };
+        this.closeReplyDrawer();
+        return;
+      }
+      if (this.isCommentDrawerOpen) {
+        this.drawerHistorySkipReplace = {
+          ...this.drawerHistorySkipReplace,
+          comment: true,
+        };
+        this.closeCommentDrawer();
+      }
+    },
     emitShowReactions(postId, reactionData) {
       this.$emit('show-reactions', { postId, reactionData });
     },
@@ -311,23 +675,41 @@ export default {
       }
     },
     submitComment(postId, commentId, isReply = false) {
-      if (!this.newContent.trim()) return;
+      let text;
+      if (isReply) {
+        this.ensureReplyModel(commentId);
+        text = this.newReplyContent[commentId] || '';
+      } else {
+        text = this.newContent;
+      }
+      if (!text.trim()) return;
       this.isSubmitting = true;
       this.submitCommentOrReply({
         postId: postId,
         commentId: commentId,
         parentCommentId: isReply ? commentId : null,
-        text: this.newContent,
+        text,
         isReply: isReply
       }).then(() => {
-        this.newContent = '';
         this.isSubmitting = false;
         if (isReply) {
+          const updatedReplies = { ...this.newReplyContent };
+          updatedReplies[commentId] = '';
+          this.newReplyContent = updatedReplies;
           this.showReplyInput[commentId] = false;
           const commentIndex = this.postComments.findIndex(comment => comment.id === commentId);
           if (commentIndex !== -1) {
             this.postComments[commentIndex].replies_count += 1;
             // console.log(this.postComments[commentIndex].replies.length);
+          }
+          if (this.isMobileView) {
+            this.closeReplyDrawer();
+          }
+        } else {
+          this.newContent = '';
+          if (this.isMobileView) {
+            this.closeCommentDrawer();
+            this.drawerBaseHeight = 0;
           }
         }
         this.$emit('comment-submitted', { postId: postId, increment: 1 });
@@ -382,8 +764,54 @@ export default {
       dropdownInstance.toggle();
     },
     toggleReplyInput(commentId) {
-      this.showReplyInput[commentId] = !this.showReplyInput[commentId];
-      this.newReply = '';
+      if (this.isMobileView) {
+        if (this.isReplyDrawerOpen && this.activeReplyId === commentId) {
+          this.closeReplyDrawer();
+        } else {
+          this.ensureReplyModel(commentId);
+          this.activeReplyId = commentId;
+          this.showReplyInput = { ...this.showReplyInput, [commentId]: false };
+          this.isReplyDrawerOpen = true;
+          this.$nextTick(() => {
+            const focusTextarea = () => {
+              const input = this.$refs.replyDrawerTextarea;
+              if (input) {
+                input.focus({ preventScroll: true });
+                this.syncReplyDrawerTextareaState();
+                if (this.$refs.replySheet && typeof this.$refs.replySheet.expand === 'function') {
+                  this.$refs.replySheet.expand();
+                }
+              }
+            };
+            requestAnimationFrame(() => requestAnimationFrame(focusTextarea));
+          });
+        }
+        return;
+      }
+      const next = !this.showReplyInput[commentId];
+      this.showReplyInput = {
+        ...this.showReplyInput,
+        [commentId]: next,
+      };
+      if (next) {
+        this.ensureReplyModel(commentId);
+        this.activeReplyId = commentId;
+        this.$nextTick(() => {
+          const textareaRef = this.$refs[`replyTextarea-${commentId}`];
+          const textarea = Array.isArray(textareaRef) ? textareaRef[0] : textareaRef;
+          if (textarea) {
+            this.autoResize({ target: textarea });
+            textarea.focus();
+          }
+        });
+      } else if (this.newReplyContent[commentId] !== undefined) {
+        const updatedReplies = { ...this.newReplyContent };
+        updatedReplies[commentId] = '';
+        this.newReplyContent = updatedReplies;
+        if (this.activeReplyId === commentId) {
+          this.activeReplyId = null;
+        }
+      }
     },
     getReactionName(reactionTypeId) {
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
@@ -430,32 +858,189 @@ export default {
       this.newContent += emoji.i;
     },
     onSelectNestedCommentEmoji(emoji) {
+      if (this.activeReplyId !== null && this.newReplyContent[this.activeReplyId] !== undefined) {
+        const updatedReplies = { ...this.newReplyContent };
+        updatedReplies[this.activeReplyId] = (updatedReplies[this.activeReplyId] || '') + emoji.i;
+        this.newReplyContent = updatedReplies;
+        this.$nextTick(() => {
+          const textareaRef = this.$refs[`replyTextarea-${this.activeReplyId}`];
+          const textarea = Array.isArray(textareaRef) ? textareaRef[0] : textareaRef;
+          if (textarea) {
+            this.autoResize({ target: textarea });
+          }
+        });
+      } else {
       this.newContent += emoji.i;
+      }
     },
     closeAllEmojis() {
       this.showCommentEmojiPicker = false;
       this.showNestedCommentEmojiPicker = false;
     },
+    ensureReplyModel(commentId) {
+      if (commentId === null || typeof commentId === 'undefined') return;
+      if (this.newReplyContent[commentId] === undefined) {
+        this.newReplyContent = {
+          ...this.newReplyContent,
+          [commentId]: '',
+        };
+      }
+    },
+    handleReplyFocus(commentId) {
+      this.ensureReplyModel(commentId);
+      this.activeReplyId = commentId;
+      if (this.isMobileView && !this.isReplyDrawerOpen) {
+        this.attachViewportListener();
+      }
+    },
+    handleReplyBlur(commentId) {
+      if (!this.isMobileView && this.activeReplyId === commentId) {
+        this.activeReplyId = null;
+      }
+    },
+    autoResize(event) {
+      const target = event?.target;
+      if (!target) return;
+      const styles = window.getComputedStyle(target);
+      const lineHeight = parseFloat(styles.lineHeight) || 20;
+      const paddingY = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0);
+      const borderY = (parseFloat(styles.borderTopWidth) || 0) + (parseFloat(styles.borderBottomWidth) || 0);
+      const maxHeight = lineHeight * 6 + paddingY + borderY;
+
+      target.style.height = 'auto';
+      const scrollHeight = target.scrollHeight;
+      const limitedHeight = Math.min(scrollHeight, maxHeight);
+      target.style.height = `${limitedHeight}px`;
+      target.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden';
+
+      const isCommentDrawerTextarea = target === this.$refs.commentDrawerTextarea;
+      const isReplyDrawerTextarea = this.$refs.replyDrawerTextarea && target === this.$refs.replyDrawerTextarea;
+
+      if (isCommentDrawerTextarea && this.isMobileView) {
+        if (!this.drawerBaseHeight) {
+          this.drawerBaseHeight = parseFloat(styles.minHeight) || parseFloat(styles.height) || scrollHeight;
+        }
+        const base = this.drawerBaseHeight || parseFloat(styles.minHeight) || scrollHeight;
+        const threshold = base + 6;
+        this.drawerExpanded = scrollHeight > threshold;
+        if (this.$refs.commentSheet && typeof this.$refs.commentSheet.expand === 'function') {
+          if (scrollHeight > 120) {
+            this.$refs.commentSheet.expand();
+          }
+        }
+      } else if (isReplyDrawerTextarea && this.isMobileView) {
+        if (!this.replyDrawerBaseHeight) {
+          this.replyDrawerBaseHeight = parseFloat(styles.minHeight) || parseFloat(styles.height) || scrollHeight;
+        }
+        const base = this.replyDrawerBaseHeight || parseFloat(styles.minHeight) || scrollHeight;
+        const threshold = base + 6;
+        this.replyDrawerExpanded = scrollHeight > threshold;
+        if (this.$refs.replySheet && typeof this.$refs.replySheet.expand === 'function') {
+          if (scrollHeight > 120) {
+            this.$refs.replySheet.expand();
+          }
+        }
+      }
+    },
     onDocumentClickCloseEmoji(event) {
       if (!this.showCommentEmojiPicker && !this.showNestedCommentEmojiPicker) return;
-      // If click originated inside any emoji picker container, ignore
-      let clickedInside = false;
-      const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
-      if (path && path.length) {
-        clickedInside = path.some((el) => el && el.classList && el.classList.contains && el.classList.contains('comment-emoji-picker'));
+      const isEmojiContainer = (node) => {
+        if (!node) return false;
+        if (node.classList && (node.classList.contains('comment-emoji-picker') || node.classList.contains('v3-emoji-picker'))) {
+          return true;
+        }
+        if (typeof node.closest === 'function') {
+          return Boolean(node.closest('.comment-emoji-picker, .v3-emoji-picker'));
+        }
+        return false;
+      };
+
+      if (isEmojiContainer(event.target)) return;
+
+      const path = typeof event.composedPath === 'function' ? event.composedPath() : null;
+      if (path && path.some(isEmojiContainer)) return;
+
+      if (typeof document !== 'undefined') {
+        const detachedPickers = document.querySelectorAll('.v3-emoji-picker');
+        for (const picker of detachedPickers) {
+          if (picker.contains(event.target)) {
+            return;
+          }
+        }
       }
-      if (!clickedInside) {
-        const root = this.$el;
-        const containers = root ? root.querySelectorAll('.comment-emoji-picker') : [];
-        containers.forEach((el) => {
-          if (el.contains && el.contains(event.target)) {
-            clickedInside = true;
+
+      this.closeAllEmojis();
+    },
+  },
+  watch: {
+    newContent() {
+      if (this.isMobileView && this.isCommentDrawerOpen && this.$refs.commentDrawerTextarea) {
+        this.$nextTick(() => {
+          const input = this.$refs.commentDrawerTextarea;
+          if (input) {
+            this.autoResize({ target: input });
           }
         });
       }
-      if (clickedInside) return;
-      this.showCommentEmojiPicker = false;
-      this.showNestedCommentEmojiPicker = false;
+    },
+    activeReplyId() {
+      if (this.isMobileView && this.isReplyDrawerOpen && this.$refs.replyDrawerTextarea) {
+        this.$nextTick(() => {
+          const input = this.$refs.replyDrawerTextarea;
+          if (input) {
+            this.autoResize({ target: input });
+          }
+        });
+      }
+    },
+    isCommentDrawerOpen(val) {
+      if (val) {
+        this.attachViewportListener();
+        this.syncDrawerTextareaState();
+        if (this.isMobileView) {
+          this.registerDrawerHistory('comment');
+        }
+      } else {
+        this.showCommentEmojiPicker = false;
+        this.showNestedCommentEmojiPicker = false;
+        this.$nextTick(() => {
+          const input = this.$refs.commentDrawerTextarea;
+          if (input) input.blur();
+        });
+        this.drawerExpanded = false;
+        this.drawerBaseHeight = 0;
+        const skipReplace = this.drawerHistorySkipReplace.comment;
+        this.clearDrawerHistory('comment', { replaceState: !skipReplace });
+        if (skipReplace) {
+          this.drawerHistorySkipReplace = {
+            ...this.drawerHistorySkipReplace,
+            comment: false,
+          };
+        }
+        this.detachViewportListener();
+      }
+    },
+    isReplyDrawerOpen(val) {
+      if (val) {
+        this.attachViewportListener();
+        if (this.isMobileView) {
+          this.registerDrawerHistory('reply');
+        }
+      } else {
+        this.replyDrawerExpanded = false;
+        this.replyDrawerBaseHeight = 0;
+        this.activeReplyId = null;
+        this.showNestedCommentEmojiPicker = false;
+        const skipReplace = this.drawerHistorySkipReplace.reply;
+        this.clearDrawerHistory('reply', { replaceState: !skipReplace });
+        if (skipReplace) {
+          this.drawerHistorySkipReplace = {
+            ...this.drawerHistorySkipReplace,
+            reply: false,
+          };
+        }
+        this.detachViewportListener();
+      }
     },
   },
 };
@@ -471,11 +1056,279 @@ export default {
   min-width: max-content;
 }
 
+.avatar-sm {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.comment-box .user-icon,
+.reply-input-area .user-icon {
+  margin-top: 0;
+}
+
+.comment-box-mobile .comment-mobile-trigger {
+  background-color: #f6f7fa;
+  border: 1px solid rgba(11, 31, 54, 0.15);
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.comment-box-mobile .comment-mobile-trigger span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comment-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 12px;
+  padding-inline: 0.25rem;
+}
+
+.comment-sheet__header {
+  border-bottom: 1px solid rgba(11, 31, 54, 0.08);
+  padding-bottom: 0.75rem;
+}
+
+.comment-sheet__header h6 {
+  font-size: 1rem;
+}
+
+.comment-sheet .comment-input {
+  min-height: 40px;
+  line-height: 1.6;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.comment-form-wrapper {
+  width: 100%;
+}
+
+.comment-input-wrapper {
+  position: relative;
+}
+
+.comment-input {
+  resize: none;
+  overflow-y: hidden;
+  min-height: 36px;
+  line-height: 1.4;
+  max-height: 14rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(237, 176, 67, 0.6) transparent;
+}
+
+.comment-input::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comment-input::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px;
+}
+
+.comment-input::-webkit-scrollbar-thumb {
+  background: rgba(237, 176, 67, 0.6);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.comment-emoji-picker {
+  position: absolute;
+  bottom: 0.3rem;
+  transform: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.comment-emoji-left {
+  left: 0.5rem;
+}
+
+.comment-input-wrapper .send-btn {
+  position: absolute;
+  bottom: 0.32rem;
+  right: 0.5rem;
+  transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #edb043;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(237, 176, 67, 0.3);
+}
+
+.comment-input-wrapper .send-btn i {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-right: 0;
+  transform: translateX(-1px);
+}
+
+.comment-box .comment-input,
+.reply-input-area .comment-input {
+  padding-left: 2rem;
+  padding-right: 2.5rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.comment-meta-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0.6rem;
+  row-gap: 0.05rem;
+  align-items: center;
+}
+
+.comment-meta-grid .time-comment {
+  grid-column: 2;
+  margin-top: -0.05rem;
+  color: #6c757d;
+}
+
+.comment-avatar-link {
+  grid-row: 1 / span 2;
+  display: inline-flex;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nested-replies .comment-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.nested-replies .comment-meta-grid {
+  column-gap: 0.6rem;
+}
+
+.nested-replies {
+  margin-left: 2.5rem;
+}
+
+.comment-author-link h4 {
+  color: #0b1f36;
+}
+
+.comment-heading {
+  padding-right: 2.25rem;
+}
+
+.comment-edit {
+  top: 0.25rem;
+  right: 0;
+}
+
+.comment-text {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.comment-text p {
+  margin: 0;
+}
+
+.comment-text * {
+  word-break: inherit;
+  overflow-wrap: inherit;
+  white-space: inherit;
+}
+
+.comment-actions {
+  padding: 0 0.5rem;
+}
+
+.comment-actions .btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.9rem;
+  color: #0b1f36;
+  background: transparent;
+}
+
+.comment-actions .btn-action.muted-btn {
+  color: #6c757d;
+}
+
+.comment-actions .btn-action i {
+  font-size: 1rem;
+}
+
+.comment-actions .reaction-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.comment-actions .btn-action span {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .comment-sheet .comment-input-wrapper .comment-emoji-picker {
+    bottom: 0.4rem;
+  }
+
+  .comment-sheet .comment-input-wrapper .send-btn {
+    bottom: 0.45rem;
+    right: 0.52rem;
+    transition: bottom 0.2s ease;
+  }
+
+  .comment-sheet .comment-input-wrapper .send-btn.is-expanded {
+    bottom: 0.95rem;
+  }
+
+  .comment-sheet .comment-input-wrapper .comment-emoji-picker.is-expanded {
+    bottom: 0.9rem;
+  }
+
+  .comment-sheet .comment-input-wrapper .send-btn i {
+    transform: translate(-1px, 3px);
+  }
+
+  .nested-replies {
+    margin-left: 1.5rem;
+  }
+
+  .comment-actions {
+    padding-left: 0;
+    padding-right: 0;
+    gap: 0.4rem;
+  }
+}
+
+.emoji-btn {
+  color: inherit;
+}
+
 .comment-emoji-picker .v3-emoji-picker {
   position: absolute;
   top: 35px;
-  right: 0;
-  left: auto;
+  left: 0;
+  right: auto;
   z-index: 10001;
   max-width: calc(100vw - 24px);
 }
@@ -486,7 +1339,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: 1047;
   background: transparent;
 }
 
@@ -504,8 +1357,8 @@ export default {
     height: 15px;
   }
   .comment-emoji-picker .v3-emoji-picker {
-    right: 0;
-    left: auto;
+    left: 0;
+    right: auto;
     max-width: calc(100vw - 16px);
   }
 }
