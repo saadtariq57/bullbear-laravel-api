@@ -1,5 +1,5 @@
  <!-- footer html end  -->
- <footer class="main-foot text-white">
+<footer class="main-foot text-white main-foot-bottom-margin">
      <section class="main-footer container-fluid">
          <div class="container">
              <div class="row">

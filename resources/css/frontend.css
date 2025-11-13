@@ -1286,6 +1286,16 @@ footer {
     line-height: 21px;
 }
 
+.main-foot-bottom-margin {
+    margin-bottom: 0;
+}
+
+@media (max-width: 1199px) {
+    .main-foot-bottom-margin {
+        margin-bottom: 72px;
+    }
+}
+
 /* footer css End */
 /* Home page CSS End */
 /* login page CSS End */
