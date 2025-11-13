@@ -187,16 +187,20 @@
             <div class="comment-actions d-flex align-items-center flex-wrap">
               <div class="d-flex align-items-center">
                 <button type="button"
-                  class="btn btn-action btn-feed-hover border-0 position-relative"
+                  class="btn btn-action btn-feed-hover border-0 position-relative comment-reaction-trigger"
                   @mouseover="onReactionHover(comment.id)" @mouseleave="hideReactionsForComment(comment.id)"
-                  @click="handleReaction(postId, comment.id, 1, null, false)">
+                  @click="onCommentReactionButtonClick(postId, comment.id, null, false)"
+                  @touchstart.passive="onCommentReactionTouchStart($event, postId, comment.id, null, false)"
+                  @touchend="onCommentReactionTouchEnd($event, postId, comment.id, null, false)"
+                  @touchmove.passive="onCommentReactionTouchMove($event, postId, comment.id, null, false)"
+                  @touchcancel="onCommentReactionTouchCancel($event, postId, comment.id, null, false)">
                   <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
                   <i v-else :class="getReactionName(comment.userReaction)"></i>
                   <span :class="getReactionName(comment.userReaction)">
                     {{ comment.userReaction ? getReactionName(comment.userReaction) : 'Like' }}
                   </span>
                   <div v-if="showReactionsForComment[comment.id]"
-                    class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                    class="reaction-icons-wrapper comment-reaction-icons-wrapper position-absolute d-flex gap-1">
                     <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                       @click.stop="handleReaction(postId, comment.id, reactionType.id, null, false)">
                       <img :src="`/${reactionType.icon}`" class="reply-reaction-icons-img">
@@ -297,16 +301,20 @@
                 <div class="comment-actions d-flex align-items-center flex-wrap">
                   <div class="d-flex align-items-center">
                     <button type="button"
-                      class="btn btn-action btn-feed-hover border-0 position-relative"
+                      class="btn btn-action btn-feed-hover border-0 position-relative comment-reaction-trigger"
                       @mouseover="onReactionHover(reply.id)" @mouseleave="hideReactionsForComment(reply.id)"
-                      @click="handleReaction(postId, reply.id, 1, comment.id, true)">
+                      @click="onCommentReactionButtonClick(postId, reply.id, comment.id, true)"
+                      @touchstart.passive="onCommentReactionTouchStart($event, postId, reply.id, comment.id, true)"
+                      @touchend="onCommentReactionTouchEnd($event, postId, reply.id, comment.id, true)"
+                      @touchmove.passive="onCommentReactionTouchMove($event, postId, reply.id, comment.id, true)"
+                      @touchcancel="onCommentReactionTouchCancel($event, postId, reply.id, comment.id, true)">
                       <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
                       <i v-else :class="getReactionName(reply.userReaction)"></i>
                       <span :class="getReactionName(reply.userReaction)">
                         {{ reply.userReaction ? getReactionName(reply.userReaction) : 'Like' }}
                       </span>
                       <div v-if="showReactionsForComment[reply.id]"
-                        class="reaction-icons-wrapper position-absolute d-flex gap-1">
+                        class="reaction-icons-wrapper comment-reaction-icons-wrapper position-absolute d-flex gap-1">
                         <span v-for="reactionType in reactionTypes" :key="reactionType.id"
                           @click.stop="handleReaction(postId, reply.id, reactionType.id, comment.id, true)">
                           <img :src="reactionType.icon" class="reply-reaction-icons-img">
@@ -400,6 +408,11 @@ export default {
       },
       historySupportAvailable: true,
       emojiOutsideEventTypes: [],
+      commentReactionTouchData: {},
+      commentTouchHandled: {},
+      reactionHoldDelay: 400,
+      commentReactionOutsideHandler: null,
+      commentReactionOutsideEvents: [],
     };
   },
   computed: {
@@ -443,13 +456,25 @@ export default {
     window.addEventListener('resize', this.updateViewport);
     this._throttledViewportResize = throttle(this._handleViewportResize.bind(this), 100);
     if (typeof window !== 'undefined') {
+      let outsideEvents = [];
       if ('PointerEvent' in window) {
         document.addEventListener('pointerdown', this.onDocumentClickCloseEmoji, true);
-        this.emojiOutsideEventTypes = ['pointerdown'];
+        outsideEvents = ['pointerdown'];
       } else {
         document.addEventListener('mousedown', this.onDocumentClickCloseEmoji, true);
         document.addEventListener('touchstart', this.onDocumentClickCloseEmoji, true);
-        this.emojiOutsideEventTypes = ['mousedown', 'touchstart'];
+        outsideEvents = ['mousedown', 'touchstart'];
+      }
+      this.emojiOutsideEventTypes = outsideEvents.slice();
+      if (outsideEvents.length && typeof document !== 'undefined') {
+        this.commentReactionOutsideHandler = (event) => {
+          if (this.shouldIgnoreCommentReactionOutside(event)) return;
+          this.closeAllCommentReactions();
+        };
+        outsideEvents.forEach((type) => {
+          document.addEventListener(type, this.commentReactionOutsideHandler, true);
+        });
+        this.commentReactionOutsideEvents = outsideEvents.slice();
       }
       window.addEventListener('popstate', this.handlePopState);
     }
@@ -460,6 +485,13 @@ export default {
       document.removeEventListener(type, this.onDocumentClickCloseEmoji, true);
     });
     this.emojiOutsideEventTypes = [];
+    if (this.commentReactionOutsideHandler) {
+      this.commentReactionOutsideEvents.forEach((type) => {
+        document.removeEventListener(type, this.commentReactionOutsideHandler, true);
+      });
+      this.commentReactionOutsideHandler = null;
+      this.commentReactionOutsideEvents = [];
+    }
     this.detachViewportListener();
     if (typeof window !== 'undefined') {
       window.removeEventListener('popstate', this.handlePopState);
@@ -818,13 +850,16 @@ export default {
       return reactionType ? reactionType.name : 'Like';
     },
     onReactionHover(commentId) {
+      if (this.isMobileView) return;
       this.showReactionsForComment[commentId] = true;
     },
 
     hideReactionsForComment(commentId) {
+      if (this.isMobileView) return;
       this.showReactionsForComment[commentId] = false;
     },
     handleReaction(postId, commentId, reactionTypeId, parentId, isReply) {
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
       if (isReply) {
         for (let comment of this.comments[postId]) {
           const reply = comment.replies.find(r => r.id === commentId);
@@ -847,6 +882,125 @@ export default {
           }
         }
       }
+      this.showReactionsForComment[commentId] = false;
+      this.clearCommentReactionTouchData(reactionKey);
+      if (this.commentTouchHandled[reactionKey]) {
+        this.commentTouchHandled[reactionKey] = false;
+      }
+      this.closeAllCommentReactions();
+    },
+    closeAllCommentReactions(exceptCommentId = null) {
+      Object.keys(this.showReactionsForComment).forEach((key) => {
+        if (exceptCommentId !== null && String(key) === String(exceptCommentId)) {
+          return;
+        }
+        this.showReactionsForComment[key] = false;
+      });
+    },
+    getCommentReactionKey(commentId, isReply) {
+      return `${isReply ? 'reply' : 'comment'}-${commentId}`;
+    },
+    onCommentReactionButtonClick(postId, commentId, parentId, isReply) {
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
+      if (this.isMobileView && this.commentTouchHandled[reactionKey]) {
+        this.commentTouchHandled[reactionKey] = false;
+        return;
+      }
+      this.handleReaction(postId, commentId, 1, parentId, isReply);
+    },
+    onCommentReactionTouchStart(event, postId, commentId, parentId, isReply) {
+      if (!this.isMobileView) return;
+      if (this.isTouchWithinCommentReactionTray(event)) return;
+      const touch = event.touches && event.touches[0];
+      if (!touch) return;
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
+      this.clearCommentReactionTouchData(reactionKey);
+      const holdTimer = setTimeout(() => {
+        const data = this.commentReactionTouchData[reactionKey];
+        if (!data) return;
+        data.longPress = true;
+        this.showReactionsForComment[commentId] = true;
+      }, this.reactionHoldDelay);
+      this.commentReactionTouchData[reactionKey] = {
+        timer: holdTimer,
+        longPress: false,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        hasMoved: false,
+      };
+    },
+    onCommentReactionTouchMove(event, postId, commentId, parentId, isReply) {
+      if (!this.isMobileView) return;
+      if (this.isTouchWithinCommentReactionTray(event)) return;
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
+      const data = this.commentReactionTouchData[reactionKey];
+      if (!data || data.longPress) return;
+      const touch = event.touches && event.touches[0];
+      if (!touch) return;
+      const deltaX = Math.abs(touch.clientX - data.startX);
+      const deltaY = Math.abs(touch.clientY - data.startY);
+      const MOVE_THRESHOLD = 10;
+      if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
+        if (data.timer) {
+          clearTimeout(data.timer);
+          data.timer = null;
+        }
+        data.hasMoved = true;
+      }
+    },
+    onCommentReactionTouchEnd(event, postId, commentId, parentId, isReply) {
+      this.closeAllCommentReactions(commentId);
+      if (!this.isMobileView) return;
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
+      if (this.isTouchWithinCommentReactionTray(event)) {
+        this.commentTouchHandled[reactionKey] = true;
+        this.clearCommentReactionTouchData(reactionKey);
+        return;
+      }
+      this.commentTouchHandled[reactionKey] = true;
+      const data = this.commentReactionTouchData[reactionKey];
+      if (data && data.timer) {
+        clearTimeout(data.timer);
+        data.timer = null;
+      }
+      if (data) {
+        if (data.longPress) {
+          this.showReactionsForComment[commentId] = true;
+        } else if (!data.hasMoved) {
+          this.handleReaction(postId, commentId, 1, parentId, isReply);
+        }
+      }
+      this.clearCommentReactionTouchData(reactionKey);
+    },
+    onCommentReactionTouchCancel(event, postId, commentId, parentId, isReply) {
+      this.closeAllCommentReactions(commentId);
+      if (!this.isMobileView) return;
+      const reactionKey = this.getCommentReactionKey(commentId, isReply);
+      if (this.isTouchWithinCommentReactionTray(event)) {
+        this.commentTouchHandled[reactionKey] = true;
+        this.clearCommentReactionTouchData(reactionKey);
+        return;
+      }
+      this.commentTouchHandled[reactionKey] = true;
+      this.clearCommentReactionTouchData(reactionKey);
+      this.showReactionsForComment[commentId] = false;
+    },
+    clearCommentReactionTouchData(reactionKey) {
+      const data = this.commentReactionTouchData[reactionKey];
+      if (data && data.timer) {
+        clearTimeout(data.timer);
+      }
+      if (Object.prototype.hasOwnProperty.call(this.commentReactionTouchData, reactionKey)) {
+        delete this.commentReactionTouchData[reactionKey];
+      }
+    },
+    isTouchWithinCommentReactionTray(event) {
+      if (!event || !event.target) return false;
+      return Boolean(event.target.closest('.comment-reaction-icons-wrapper'));
+    },
+    shouldIgnoreCommentReactionOutside(event) {
+      if (!event || !event.target) return false;
+      return Boolean(event.target.closest('.comment-reaction-icons-wrapper, .comment-reaction-trigger'));
     },
     toggleNestedCommentEmojiPicker() {
       this.showNestedCommentEmojiPicker = !this.showNestedCommentEmojiPicker;
@@ -1050,6 +1204,19 @@ export default {
 .reply-reaction-icons-img {
   width: 25px;
   height: 25px;
+}
+
+.comment-actions .btn.btn-action {
+  overflow: visible;
+}
+
+.comment-reaction-icons-wrapper {
+  top: auto;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-45%);
+  z-index: 5;
+  padding: 4px 6px;
 }
 
 .min-max-content {
@@ -1268,7 +1435,7 @@ export default {
 }
 
 .comment-actions .btn-action.muted-btn {
-  color: #6c757d;
+  color: #0b1f36;
 }
 
 .comment-actions .btn-action i {

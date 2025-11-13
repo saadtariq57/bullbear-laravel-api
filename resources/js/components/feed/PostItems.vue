@@ -480,7 +480,11 @@
               class="btn fs-5 btn-feed-hover border-0 position-relative col-4"
               @mouseover="onReactionHover(post.id)"
               @mouseleave="hideReactionsForPost(post.id)"
-              @click="handleReaction(post.id, 1)"
+              @click="onReactionButtonClick(post.id)"
+              @touchstart.passive="onReactionTouchStart($event, post.id)"
+              @touchend="onReactionTouchEnd($event, post.id)"
+              @touchmove.passive="onReactionTouchMove($event, post.id)"
+              @touchcancel="onReactionTouchCancel($event, post.id)"
             >
               <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
               <i
@@ -807,6 +811,9 @@ export default {
       bottomReachCheckInterval: null,
       immediateBottomCheck: null,
       scrollPositionBeforeLoad: null,
+      reactionTouchData: {},
+      touchHandledPosts: {},
+      reactionHoldDelay: 400,
     };
   },
   computed: {
@@ -1188,6 +1195,7 @@ export default {
       return options.reduce((sum, option) => sum + option.votes, 0);
     },
     onReactionHover(postId) {
+      if (this.isMobile) return;
       this.showReactionsForPost[postId] = true;
     },
     hideReactionsForPost(postId) {
@@ -1203,7 +1211,101 @@ export default {
           // Add or update the reaction
           this.addOrUpdateReaction({ post_id, reactionTypeId });
         }
+        this.showReactionsForPost[post_id] = false;
+        this.clearReactionTouchData(post_id);
       }
+    },
+    onReactionButtonClick(postId) {
+      if (this.isMobile && this.touchHandledPosts[postId]) {
+        this.touchHandledPosts[postId] = false;
+        return;
+      }
+      this.handleReaction(postId, 1);
+    },
+    onReactionTouchStart(event, postId) {
+      if (!this.isMobile) return;
+      if (this.isTouchWithinReactionTray(event)) return;
+      const touch = event.touches && event.touches[0];
+      if (!touch) return;
+      this.clearReactionTouchData(postId);
+      const holdTimer = setTimeout(() => {
+        const data = this.reactionTouchData[postId];
+        if (!data) return;
+        data.longPress = true;
+        this.showReactionsForPost[postId] = true;
+      }, this.reactionHoldDelay);
+      this.reactionTouchData[postId] = {
+        timer: holdTimer,
+        longPress: false,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        hasMoved: false,
+      };
+    },
+    onReactionTouchMove(event, postId) {
+      if (!this.isMobile) return;
+      if (this.isTouchWithinReactionTray(event)) return;
+      const data = this.reactionTouchData[postId];
+      if (!data || data.longPress) return;
+      const touch = event.touches && event.touches[0];
+      if (!touch) return;
+      const deltaX = Math.abs(touch.clientX - data.startX);
+      const deltaY = Math.abs(touch.clientY - data.startY);
+      const MOVE_THRESHOLD = 10;
+      if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
+        if (data.timer) {
+          clearTimeout(data.timer);
+          data.timer = null;
+        }
+        data.hasMoved = true;
+      }
+    },
+    onReactionTouchEnd(event, postId) {
+      if (!this.isMobile) return;
+      if (this.isTouchWithinReactionTray(event)) {
+        this.touchHandledPosts[postId] = true;
+        this.clearReactionTouchData(postId);
+        return;
+      }
+      this.touchHandledPosts[postId] = true;
+      const data = this.reactionTouchData[postId];
+      if (data && data.timer) {
+        clearTimeout(data.timer);
+        data.timer = null;
+      }
+      if (data) {
+        if (data.longPress) {
+          // Tray already shown, keep it open for selection
+          this.showReactionsForPost[postId] = true;
+        } else if (!data.hasMoved) {
+          this.handleReaction(postId, 1);
+        }
+      }
+      this.clearReactionTouchData(postId);
+    },
+    onReactionTouchCancel(event, postId) {
+      if (!this.isMobile) return;
+      if (this.isTouchWithinReactionTray(event)) {
+        this.touchHandledPosts[postId] = true;
+        this.clearReactionTouchData(postId);
+        return;
+      }
+      this.touchHandledPosts[postId] = true;
+      this.clearReactionTouchData(postId);
+      this.showReactionsForPost[postId] = false;
+    },
+    clearReactionTouchData(postId) {
+      const data = this.reactionTouchData[postId];
+      if (data && data.timer) {
+        clearTimeout(data.timer);
+      }
+      if (Object.prototype.hasOwnProperty.call(this.reactionTouchData, postId)) {
+        delete this.reactionTouchData[postId];
+      }
+    },
+    isTouchWithinReactionTray(event) {
+      if (!event || !event.target) return false;
+      return Boolean(event.target.closest('.reaction-icons-wrapper'));
     },
     handleShareModalMounted(modalElement) { 
       this.shareModalInstance = new Modal(modalElement, { backdrop: 'static' });
@@ -1470,7 +1572,7 @@ export default {
   top: -30px;
   left: 50%;
   padding-bottom: 5px;
-  transform: translateX(-40%);
+  transform: translateX(-30%);
   /* transform: translateY(-10px); */
 }
 
