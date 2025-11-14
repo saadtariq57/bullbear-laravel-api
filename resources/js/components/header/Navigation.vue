@@ -99,11 +99,8 @@
                 <!-- Menu (4th) -->
                 <li
                   class="text-center nav-bottom-link"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasDarkNavbar"
-                  aria-controls="offcanvasDarkNavbar"
                 >
-                  <button class="navbar-toggler border-0" type="button">
+                  <button class="navbar-toggler border-0" type="button" @click.prevent="toggleMobileMenu" aria-controls="offcanvasDarkNavbar">
                     <svg width="23" height="25" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
                       <path
                         fill-rule="evenodd"
@@ -964,6 +961,7 @@ import MobileFollowingDrawer from './MobileFollowingDrawer.vue'
 import MobileMessagesDrawer from './MobileMessagesDrawer.vue'
 import MobileNotificationsDrawer from './MobileNotificationsDrawer.vue'
 import Profile from './Profile.vue'
+import { Offcanvas as ModuleOffcanvas } from 'bootstrap';
 
 export default {
     components: {
@@ -1036,7 +1034,28 @@ export default {
             if (drawer && typeof drawer.open === 'function') {
                 drawer.open();
             }
-        }
+        },
+        getOffcanvasController() {
+            if (typeof window !== 'undefined' && window.bootstrap && window.bootstrap.Offcanvas) {
+                return window.bootstrap.Offcanvas;
+            }
+            if (ModuleOffcanvas) {
+                return ModuleOffcanvas;
+            }
+            return null;
+        },
+        toggleMobileMenu() {
+            const offcanvasEl = document.getElementById('offcanvasDarkNavbar');
+            if (!offcanvasEl) {
+                return;
+            }
+            const OffcanvasController = this.getOffcanvasController();
+            if (!OffcanvasController) {
+                return;
+            }
+            const instance = OffcanvasController.getOrCreateInstance(offcanvasEl);
+            instance.toggle();
+        },
     },
     mounted() {
         const collapseEl = document.getElementById('collapseMarkets');
