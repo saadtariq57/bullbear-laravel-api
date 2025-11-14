@@ -32,12 +32,20 @@
                                     <div class="notification_setting">
                                         <div class="fs-6 fw-5 notification_time">{{ notification.formattedTime }}</div>
                                         <div class="dropdown">
-                                            <button class="btn p-0 text-end w-100 border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="btn p-0 text-end w-100 border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" @click.stop="toggleDropdown($event)">
                                                 <i class="bi bi-three-dots fs-4"></i>
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item d-flex gap-2 align-iteme-center" href="#"><i class="bi bi-trash3-fill"></i> Delate notification</a></li>
-                                                <li><a class="dropdown-item d-flex gap-2 align-iteme-center" href="#"><i class="bi bi-bell-slash-fill"></i> Turn off this notification type</a></li>
+                                                <li>
+                                                    <button class="dropdown-item d-flex gap-2 align-items-center" type="button" @click="deleteNotification(notification)">
+                                                        <i class="bi bi-trash3-fill"></i> Delete notification
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item d-flex gap-2 align-items-center" type="button" @click="muteNotification(notification)">
+                                                        <i class="bi bi-bell-slash-fill"></i> Turn off this notification type
+                                                    </button>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -65,6 +73,7 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex';
+import { Dropdown } from 'bootstrap';
 import { formatNotificationTime } from '../../utils.js';
 
 export default {
@@ -92,7 +101,11 @@ export default {
     },
 
     methods: {
-        ...mapActions('userNotification', ['fetchNotifications', 'listenToUpdates', 'markNotificationAsRead']),
+        ...mapActions('userNotification', [
+            'fetchNotifications',
+            'listenToUpdates',
+            'markNotificationAsRead'
+        ]),
 
         handleNotificationClick(notification) {
             if (!notification.read_at) {
@@ -100,6 +113,18 @@ export default {
             }
             const url = new URL(notification.url, window.location.origin);
             window.location.href = url.pathname + url.search + url.hash;
+        },
+        toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdownElement = event.currentTarget;
+            const dropdownInstance = Dropdown.getOrCreateInstance(dropdownElement);
+            dropdownInstance.toggle();
+        },
+        deleteNotification(notification) {
+            console.warn('Delete notification not implemented yet.', notification);
+        },
+        muteNotification(notification) {
+            console.warn('Mute notification not implemented yet.', notification);
         },
 
         logout() {
@@ -150,5 +175,47 @@ export default {
 }
 .my_mentions p{
     max-width: 400px;
+}
+.my_post img,
+.my_mentions img{
+    max-width: 100%;
+    height: auto;
+}
+@media (max-width: 575.98px){
+    .notifications_data .all_notify li > .d-flex{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .notifications_data .all_notify li > .d-flex .dropdown-item{
+        align-items: flex-start;
+        width: 100%;
+        white-space: normal;
+        gap: 0.65rem;
+    }
+    .notifications_data .all_notify li > .d-flex .dropdown-item .flex-grow-1{
+        width: 100%;
+    }
+    .notifications_data .all_notify li > .d-flex .dropdown-item h6{
+        font-size: 0.95rem;
+        word-break: break-word;
+    }
+    .notifications_data .all_notify li > .d-flex .dropdown-item p{
+        font-size: 0.8rem;
+    }
+    .notifications_data .all_notify li > .d-flex .notification_setting{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .notification_setting .notification_time{
+        min-width: auto;
+        font-size: 0.85rem;
+    }
+    .notifications_data .all_notify li > .d-flex .notification_setting .dropdown{
+        margin-left: auto;
+    }
 }
 </style>
