@@ -195,9 +195,9 @@
                   @touchmove.passive="onCommentReactionTouchMove($event, postId, comment.id, null, false)"
                   @touchcancel="onCommentReactionTouchCancel($event, postId, comment.id, null, false)">
                   <i v-if="!comment.userReaction" class="bi bi-hand-thumbs-up"></i>
-                  <i v-else :class="getReactionName(comment.userReaction)"></i>
-                  <span :class="getReactionName(comment.userReaction)">
-                    {{ comment.userReaction ? getReactionName(comment.userReaction) : 'Like' }}
+                  <i v-else :class="getReactionClassName(comment.userReaction)"></i>
+                  <span :class="getReactionClassName(comment.userReaction)">
+                    {{ getReactionName(comment.userReaction) }}
                   </span>
                   <div v-if="showReactionsForComment[comment.id]"
                     class="reaction-icons-wrapper comment-reaction-icons-wrapper position-absolute d-flex gap-1">
@@ -309,9 +309,9 @@
                       @touchmove.passive="onCommentReactionTouchMove($event, postId, reply.id, comment.id, true)"
                       @touchcancel="onCommentReactionTouchCancel($event, postId, reply.id, comment.id, true)">
                       <i v-if="!reply.userReaction" class="bi bi-hand-thumbs-up pe-1"></i>
-                      <i v-else :class="getReactionName(reply.userReaction)"></i>
-                      <span :class="getReactionName(reply.userReaction)">
-                        {{ reply.userReaction ? getReactionName(reply.userReaction) : 'Like' }}
+                      <i v-else :class="getReactionClassName(reply.userReaction)"></i>
+                      <span :class="getReactionClassName(reply.userReaction)">
+                        {{ getReactionName(reply.userReaction) }}
                       </span>
                       <div v-if="showReactionsForComment[reply.id]"
                         class="reaction-icons-wrapper comment-reaction-icons-wrapper position-absolute d-flex gap-1">
@@ -845,9 +845,20 @@ export default {
         }
       }
     },
-    getReactionName(reactionTypeId) {
+    getReactionBaseName(reactionTypeId) {
+      if (!reactionTypeId) return null;
+      if (!Array.isArray(this.reactionTypes)) return null;
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-      return reactionType ? reactionType.name : 'Like';
+      if (!reactionType || !reactionType.name) return null;
+      return reactionType.name.toString().trim().toLowerCase();
+    },
+    getReactionName(reactionTypeId) {
+      const baseName = this.getReactionBaseName(reactionTypeId) || 'like';
+      return baseName.charAt(0).toUpperCase() + baseName.slice(1);
+    },
+    getReactionClassName(reactionTypeId) {
+      const baseName = this.getReactionBaseName(reactionTypeId);
+      return baseName || '';
     },
     onReactionHover(commentId) {
       if (this.isMobileView) return;

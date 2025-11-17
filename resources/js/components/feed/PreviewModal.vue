@@ -94,9 +94,9 @@
                                             @mouseover="onReactionHover(post.id)"
                                             @mouseleave="hideReactionsForPost(post.id)"
                                             @click="handleReaction(post.id, 1)">
-                                            <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
-                                            <i v-if="getReactionName(post.userReaction) == 'Like'" class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"></i>
-                                            <span :class="getReactionName(post.userReaction)">
+                                            <i :class="`${getReactionClassName(post.userReaction)} pe-sm-2 pe-1`"></i>
+                                            <i v-if="!post.userReaction" class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"></i>
+                                            <span :class="getReactionClassName(post.userReaction)">
                                                 {{ getReactionName(post.userReaction) }}
                                             </span>
                                             <div v-if="showReactionsForPost[post.id]"
@@ -179,13 +179,20 @@ export default {
         ]),
         ...mapActions('userFeedComment', ['fetchCommentsForPost']),
         formatDateTime,
-        getReactionName(reactionTypeId) {
-            if (!this.reactionTypes || !Array.isArray(this.reactionTypes)) {
-                console.error('Reaction types are not available or not an array.');
-                return 'Like';
-            }
+        getReactionBaseName(reactionTypeId) {
+            if (!reactionTypeId) return null;
+            if (!Array.isArray(this.reactionTypes)) return null;
             const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-            return reactionType ? reactionType.name : 'Like';
+            if (!reactionType || !reactionType.name) return null;
+            return reactionType.name.toString().trim().toLowerCase();
+        },
+        getReactionName(reactionTypeId) {
+            const baseName = this.getReactionBaseName(reactionTypeId) || 'like';
+            return baseName.charAt(0).toUpperCase() + baseName.slice(1);
+        },
+        getReactionClassName(reactionTypeId) {
+            const baseName = this.getReactionBaseName(reactionTypeId);
+            return baseName || '';
         },
         showData() {
             this.showPostData = true;

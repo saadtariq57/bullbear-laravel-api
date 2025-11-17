@@ -13,9 +13,14 @@
         <header class="following-sheet__header">
           <h2 class="following-sheet__title">Following</h2>
         </header>
-        <ul class="following-sheet__list list-unstyled m-0">
+        <div v-if="followersList.length === 0" class="following-sheet__empty text-center py-4">
+          <p class="mb-1 fw-6">No followers yet</p>
+          <p class="text-muted fs-12 mb-0">When someone follows you, they’ll appear here.</p>
+        </div>
+
+        <ul v-else class="following-sheet__list list-unstyled m-0">
           <li
-            v-for="follower in followers"
+            v-for="follower in followersList"
             :key="follower.id"
             class="following-sheet__item position-relative"
             :class="{ 'has-unread': !follower.read_at }"
@@ -54,7 +59,10 @@ export default {
     };
   },
   computed: {
-    ...mapState('userNotification', ['followers'])
+    ...mapState('userNotification', ['followers']),
+    followersList() {
+      return this.followers || [];
+    }
   },
   methods: {
     ...mapActions('userNotification', ['markNotificationAsRead']),
@@ -98,6 +106,10 @@ export default {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
+}
+
+.following-sheet__empty {
+  padding: 24px 8px;
 }
 
 .following-sheet__list {

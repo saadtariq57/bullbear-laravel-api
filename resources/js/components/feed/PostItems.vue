@@ -486,12 +486,12 @@
               @touchmove.passive="onReactionTouchMove($event, post.id)"
               @touchcancel="onReactionTouchCancel($event, post.id)"
             >
-              <i :class="getReactionName(post.userReaction) + ' pe-sm-2 pe-1'"></i>
+              <i :class="`${getReactionClassName(post.userReaction)} pe-sm-2 pe-1`"></i>
               <i
-                v-if="getReactionName(post.userReaction) === 'Like'"
+                v-if="!post.userReaction"
                 class="bi bi-hand-thumbs-up fs-5 pe-sm-2 pe-1"
               ></i>
-              <span :class="getReactionName(post.userReaction)">
+              <span :class="getReactionClassName(post.userReaction)">
                 {{ getReactionName(post.userReaction) }}
               </span>
               <div
@@ -1023,9 +1023,20 @@ export default {
         }
       });
     },
-    getReactionName(reactionTypeId) {
+    getReactionBaseName(reactionTypeId) {
+      if (!reactionTypeId) return null;
+      if (!Array.isArray(this.reactionTypes)) return null;
       const reactionType = this.reactionTypes.find(rt => rt.id === reactionTypeId);
-      return reactionType ? reactionType.name : 'Like';
+      if (!reactionType || !reactionType.name) return null;
+      return reactionType.name.toString().trim().toLowerCase();
+    },
+    getReactionName(reactionTypeId) {
+      const baseName = this.getReactionBaseName(reactionTypeId) || 'like';
+      return baseName.charAt(0).toUpperCase() + baseName.slice(1);
+    },
+    getReactionClassName(reactionTypeId) {
+      const baseName = this.getReactionBaseName(reactionTypeId);
+      return baseName || '';
     },
     toggleDropdown(event) {
       const dropdownElement = event.target.closest('.dropdown-toggle');
@@ -1590,12 +1601,15 @@ export default {
 .post-reach span.angry::before {
   content: "";
   background-repeat: no-repeat;
-  background-size: cover;
-  width: 20px;
-  height: 20px;
+  background-size: contain;
+  background-position: center;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
   display: inline-block;
   margin-right: 5px;
-  vertical-align: text-top;
+  vertical-align: middle;
 }
 
 .love {

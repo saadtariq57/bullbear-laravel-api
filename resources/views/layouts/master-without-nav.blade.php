@@ -10,12 +10,13 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.png') }}">
 
+    @include('layouts.partials.gtm-head')
     <!-- include head css -->
     @include('layouts.head-css')
 </head>
 
 <body>
-    
+    @include('layouts.partials.gtm-body')
     @yield('content')
 
     @yield('scripts')
