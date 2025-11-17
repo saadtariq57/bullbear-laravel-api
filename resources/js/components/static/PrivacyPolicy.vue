@@ -107,7 +107,7 @@
           <!-- Contact Section -->
           <section id="contact" class="mb-5">
             <h2 class="h3 mb-3"><i class="bi bi-envelope-fill me-2"></i>Contact Us</h2>
-            <p>If you have any additional questions, please visit <a href="/contact/" aria-label="Visit Contact Page">https://richtv.io/contact-us/</a></p>
+            <p>If you have any additional questions, please visit <a href="/contact-us" aria-label="Visit Contact Page">https://richtv.io/contact-us/</a></p>
             <ul class="list-unstyled">
               <li><i class="bi bi-envelope me-2"></i>Email: <a href="mailto:support@richtv.io">support@richtv.io</a></li>
               <li><i class="bi bi-telephone me-2"></i>Phone: +1 778-237-2402</li>

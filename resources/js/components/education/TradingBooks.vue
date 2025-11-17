@@ -39,15 +39,17 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
-import subscriptionStatusModule from '@/stores/subscriptionStatus';
 
 export default {
   props: {
     ebooks: {
       type: Array,
       required: true
-    }
+    },
+    isAuthenticated: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     this.$nextTick(() => {

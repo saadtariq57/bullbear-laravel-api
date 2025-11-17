@@ -431,8 +431,8 @@ export default {
     };
 
     const handleCreateAccount = () => {
-      store.dispatch('showSignUpPopup');
       store.dispatch('setRedirectPath', '/personal-access');
+      window.location.href = '/register';
     };
 
     const fetchSubscriptionStatus = async () => {

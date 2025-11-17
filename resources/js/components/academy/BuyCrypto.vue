@@ -217,7 +217,7 @@
           <a href="https://web.telegram.org/a/#-1001399691536" target="_blank" class="btn btn-primary">👉 Join our Telegram Group</a> to ask questions, share insights, and learn from others.
         </p>
         <p>
-          <a href="https://richtv.io/login" class="btn btn-border">👉 Create your account now</a> and start your cryptocurrency journey today.
+          <a href="/register" class="btn btn-border">👉 Create your account now</a> and start your cryptocurrency journey today.
         </p>
         <h4>We also offer:</h4>
         <ul>

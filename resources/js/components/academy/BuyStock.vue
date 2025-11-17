@@ -319,7 +319,7 @@
             <p class="community__text">Investing is better with support and ongoing learning.</p>
             <div class="cta-buttons d-flex gap-3 pb-3">
               <a href="https://web.telegram.org/a/#-1001399691536" class="btn btn-primary" target="_blank">Join our Telegram Group</a>
-              <a href="https://richtv.io/login" class="btn btn-border">Create Your Account Now</a>
+              <a href="/register" class="btn btn-border">Create Your Account Now</a>
             </div>
             <div class="additional-offers">
               <p>We also offer:</p>

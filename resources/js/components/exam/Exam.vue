@@ -115,7 +115,7 @@
                   <button
                     :class="['btn', buttonClass(exam)]"
                     @click="handleExamClick(exam)"
-                    :disabled="!exam.canAttempt || !canAccessExam(exam)"
+                    :disabled="isAuthenticated ? (!exam.canAttempt || !canAccessExam(exam)) : false"
                     data-bs-toggle="tooltip"
                     :title="buttonTooltip(exam)"
                   >
@@ -131,6 +131,7 @@
               @click="toggleSeeMore(category)"
               class="btn btn-outline-secondary"
               data-bs-toggle="tooltip"
+              :data-category-see-more="category"
               title="See more exams in this category"
             >
               {{ seeMoreText(category) }}
@@ -449,7 +450,7 @@ export default {
       if (this.showAllExams[category]) {
         return exams;
       }
-      return exams.slice(0, 2); // Show up to 2 exams per category initially
+      return exams.slice(0, 3); // Show up to 3 exams per category initially
     },
 
     /**
@@ -459,7 +460,7 @@ export default {
      * @returns {Boolean} - Whether more exams can be seen.
      */
     canSeeMore(exams, category) {
-      return exams.length > 2 && !this.showAllExams[category];
+      return exams.length > 3 && !this.showAllExams[category];
     },
 
     /**
@@ -467,6 +468,18 @@ export default {
      * @param {String} category - The category name.
      */
     toggleSeeMore(category) {
+      // Dispose tooltip for the See More button before hiding it
+      if (!this.showAllExams[category]) {
+        const seeMoreButton = document.querySelector(
+          `[data-category-see-more="${category}"]`
+        );
+        if (seeMoreButton && typeof window.bootstrap !== "undefined") {
+          const tooltipInstance = window.bootstrap.Tooltip.getInstance(seeMoreButton);
+          if (tooltipInstance) {
+            tooltipInstance.dispose();
+          }
+        }
+      }
       this.showAllExams[category] = !this.showAllExams[category];
     },
 
