@@ -23,9 +23,14 @@
         <p class="lead">
           Rich TV is the traders’ favorite community for help, support, and guidance on investing smartly in stock and crypto markets. With an enormous pool of educational resources, penny stocks with huge upside, round-the-clock market data, latest news, in-depth analysis and insights, and tools that facilitate efficient trading, Rich TV remains a 360-degree platform for investors looking to grow their wealth significantly.
         </p>
-        <router-link to="/register" class="btn btn-primary btn-lg mt-3" aria-label="Get Started Today">
+        <a
+          v-if="!isUserLoggedIn"
+          href="/register"
+          class="btn btn-primary btn-lg mt-3"
+          aria-label="Get Started Today"
+        >
           <i class="bi bi-people-fill me-2"></i> Get Started Today
-        </router-link>
+        </a>
       </section>
 
       <!-- Video Section -->
@@ -83,9 +88,6 @@
           <p class="lead">
             Our aim is to make a positive difference to the way you trade. For this purpose, we’ve got a wide range of benefits for you to avail, such as the ones stated below.
           </p>
-          <router-link to="/register" class="btn btn-primary btn-lg mt-3" aria-label="Get Started Today">
-            <i class="bi bi-people-fill me-2"></i> Get Started Today
-          </router-link>
         </div>
         <div class="row">
           <div
@@ -149,7 +151,8 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { isLoggedIn as isLoggedInStore } from '@/stores';
 
 export default {
   name: 'AboutPage',
@@ -217,6 +220,8 @@ export default {
       isVideoPlaying.value = !isVideoPlaying.value;
     };
 
+    const isUserLoggedIn = computed(() => isLoggedInStore());
+
     // Scroll-based animations using Intersection Observer
     const onScroll = () => {
       const elements = document.querySelectorAll('.benefit-item, .accordion-item, .our-story-section');
@@ -253,6 +258,7 @@ export default {
       isVideoPlaying,
       videoUrl,
       toggleVideo,
+      isUserLoggedIn,
     };
   },
 };
@@ -264,7 +270,7 @@ export default {
   width: 60px;
   height: 4px;
   background-color: #EDB043;
-  margin: 0 auto;
+  margin: 1rem auto;
 }
 
 .btn-primary {

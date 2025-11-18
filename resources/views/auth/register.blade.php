@@ -127,10 +127,10 @@
                                                             </div>
                                                         </div>
 
-                                                        <div>
-                                                            <p class="mb-0">By registering you agree to the Reactly <a
-                                                                    href="#" class="text-primary">Terms of Use</a></p>
-                                                        </div>
+                    <div>
+                        <p class="mb-0">By registering you agree to the Rich TV <a
+                                href="{{ url('/terms-of-use') }}" class="text-primary" target="_blank" rel="noopener">Terms of Use</a></p>
+                    </div>
 
                                                         <div class="mt-4">
                                                             <button class="btn btn-primary w-100"

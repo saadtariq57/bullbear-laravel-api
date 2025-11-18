@@ -71,7 +71,7 @@
         <h2>Upgrade to Access the Stock Screener</h2>
         <p>Enhance your trading strategy by upgrading your subscription to utilize our advanced stock screener.</p>
         <div class="mt-3">
-          <a href="/upgrade" class="btn btn-primary">Upgrade Now</a>
+          <a href="/pricing" class="btn btn-primary">Upgrade Now</a>
         </div>
       </div>
 

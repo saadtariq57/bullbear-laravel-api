@@ -161,7 +161,7 @@ export default {
           cancelButtonText: 'Cancel'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = '/upgrade';
+            window.location.href = '/pricing';
           }
         });
       } else if (error.response && error.response.status === 401) {

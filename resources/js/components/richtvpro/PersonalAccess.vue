@@ -63,7 +63,7 @@
         <h2>Upgrade to Unlock Personal Sessions</h2>
         <p>Enhance your experience by upgrading your subscription to access personal sessions with our experts.</p>
         <div class="mt-3">
-          <a href="/upgrade" class="btn btn-primary">Upgrade Now</a>
+          <a href="/pricing" class="btn btn-primary">Upgrade Now</a>
         </div>
       </div>
 
