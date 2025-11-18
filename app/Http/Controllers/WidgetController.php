@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Models\Message;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
@@ -739,8 +740,16 @@ class WidgetController extends Controller
             ];
         }
 
+        $retryAttempts = (int) config('services.wordpress.retry_attempts', 3);
+        $retryDelay = (int) config('services.wordpress.retry_delay', 250);
+        $timeoutSeconds = (int) config('services.wordpress.timeout', 8);
+
         try {
-            $response = Http::get($wordpressApiUrl, $params);
+            $response = Http::retry($retryAttempts, $retryDelay, function ($exception) {
+                return $exception instanceof ConnectionException;
+            })
+            ->timeout($timeoutSeconds)
+            ->get($wordpressApiUrl, $params);
 
             if ($response->successful()) {
                 if ($request->has('id') || $request->has('slug')) {
