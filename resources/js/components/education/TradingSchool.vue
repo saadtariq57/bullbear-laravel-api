@@ -36,7 +36,7 @@
           <!-- Content or Messages -->
           <div>
             <!-- If user can view videos -->
-            <div v-if="canViewContent && hasEducationalContent" class="row gy-5">
+            <div v-if="canViewVideos" class="row gy-5">
               <div
                 class="col-lg-4 col-md-6"
                 v-for="(video, index) in displayedVideos"
@@ -96,7 +96,7 @@
           </div>
 
           <!-- View More Videos Button -->
-          <div class="text-center my-5" v-if="canViewContent && hasEducationalContent && displayedVideos.length < videos.length">
+          <div class="text-center my-5" v-if="canViewVideos && displayedVideos.length < videos.length">
             <button class="btn btn-primary" @click="loadMore">VIEW MORE</button>
           </div>
         </div>
@@ -316,6 +316,7 @@ export default {
       isAuthenticated: false,
       hasExclusiveMarketIntelligence: false,
       hasEducationalContent: false,
+      hasAdvancedExamTradingVideos: false,
       ebooks: [],
       videos: [],
       courses: [],
@@ -333,7 +334,18 @@ export default {
   },
   computed: {
     canViewContent() {
-      return this.hasExclusiveMarketIntelligence || this.hasEducationalContent;
+      return (
+        this.hasExclusiveMarketIntelligence ||
+        this.hasEducationalContent ||
+        this.hasAdvancedExamTradingVideos
+      );
+    },
+    canViewVideos() {
+      return (
+        this.hasEducationalContent ||
+        this.hasAdvancedExamTradingVideos ||
+        this.hasExclusiveMarketIntelligence
+      );
     },
   },
   methods: {
@@ -348,6 +360,8 @@ export default {
           data.features['exclusive_market_intelligence']?.can_access || false;
         this.hasEducationalContent =
           data.features['educational_content']?.can_access || false;
+        this.hasAdvancedExamTradingVideos =
+          data.features['advanced_exam_trading_videos']?.can_access || false;
       } catch (error) {
         console.error('Error fetching subscription status:', error);
         this.isAuthenticated = false;
@@ -460,8 +474,10 @@ export default {
     this.fetchEbooks();
     if (isLoggedIn()) {
       this.fetchSubscriptionStatus().then(() => {
-        if (this.canViewContent) {
+        if (this.canViewVideos) {
           this.fetchVideos('PLSr6qDstKBtkEd9zsFFxWPDUlkjU1KR3H');
+        }
+        if (this.canViewContent) {
           this.fetchCourses();
         }
       });
