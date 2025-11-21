@@ -18,6 +18,9 @@ use Carbon\Carbon;
 
 class WidgetController extends Controller
 {
+        private const IPO_MAX_RESULTS = 500;
+        private const IPO_DEFAULT_CHUNK_DAYS = 10;
+        private const IPO_MAX_CHUNK_DAYS = 90;
         public function getActiveGroups()
         {
             $mostActiveGroups = Group::withCount(['messages' => function ($query) {
@@ -476,10 +479,37 @@ class WidgetController extends Controller
 
                 // Get the appropriate endpoint for the given type
                 $apiEndpoint = $typeToEndpoint[$type];
-                $apiUrl = env('STOCKS_API_URL') . "/api/{$apiEndpoint}?startDate={$startDate}&endDate={$endDate}";
 
-                // Make the API request with a 15-second timeout
-                $response = Http::timeout(20)->get($apiUrl);
+                $chunkMetadata = null;
+                $resolvedStartDate = $startDate;
+                $resolvedEndDate = $endDate;
+
+                if ($type === 'ipo') {
+                    $chunkDays = max(
+                        1,
+                        min(
+                            (int) $request->query('chunkDays', self::IPO_DEFAULT_CHUNK_DAYS),
+                            self::IPO_MAX_CHUNK_DAYS
+                        )
+                    );
+                    $page = max(1, (int) $request->query('page', 1));
+                    $chunkMetadata = $this->resolveIpoChunkBounds($startDate, $endDate, $chunkDays, $page);
+
+                    if (!$chunkMetadata['chunkStart'] || !$chunkMetadata['chunkEnd']) {
+                        return response()->json([
+                            'data' => [],
+                            'pagination' => $chunkMetadata['pagination'],
+                        ]);
+                    }
+
+                    $resolvedStartDate = $chunkMetadata['chunkStart']->toDateString();
+                    $resolvedEndDate = $chunkMetadata['chunkEnd']->toDateString();
+                }
+
+                $apiUrl = env('STOCKS_API_URL') . "/api/{$apiEndpoint}?startDate={$resolvedStartDate}&endDate={$resolvedEndDate}";
+
+                // Make the API request with an increased timeout to accommodate large payloads
+                $response = Http::timeout(60)->get($apiUrl);
 
                 // Check if the response was successful
                 if (!$response->successful()) {
@@ -496,8 +526,23 @@ class WidgetController extends Controller
                     ], 503);
                 }
 
+                $payload = $response->json();
+
+                if ($type === 'ipo') {
+                    $preparedPayload = $this->prepareIpoCalendarPayload(
+                        is_array($payload) ? $payload : [],
+                        $resolvedStartDate,
+                        $resolvedEndDate
+                    );
+
+                    return response()->json([
+                        'data' => $preparedPayload,
+                        'pagination' => $chunkMetadata['pagination'],
+                    ]);
+                }
+
                 // Return the JSON response from the API
-                return $response->json();
+                return $payload;
 
             } catch (\Exception $e) {
                 // Handle unexpected exceptions and log the error
@@ -1115,6 +1160,180 @@ class WidgetController extends Controller
         }
     }
 
+
+        private function prepareIpoCalendarPayload(array $payload, ?string $startDate, ?string $endDate): array
+        {
+            $startBoundary = $this->parseBoundaryDate($startDate, false);
+            $endBoundary = $this->parseBoundaryDate($endDate, true);
+
+            return collect($payload)
+                ->map(function ($item) use ($startBoundary, $endBoundary) {
+                    if (!is_array($item)) {
+                        return null;
+                    }
+
+                    $filingDateString = $this->extractValue($item, ['filing_date', 'filingDate', 'date']);
+                    $filingDate = $this->tryParseDate($filingDateString);
+
+                    if (!$filingDate) {
+                        return null;
+                    }
+
+                    if (($startBoundary && $filingDate->lt($startBoundary)) || ($endBoundary && $filingDate->gt($endBoundary))) {
+                        return null;
+                    }
+
+                    $ipoType = $this->extractValue($item, ['ipo_type', 'ipoType', 'ipo_type_name']);
+
+                    if (is_string($ipoType)) {
+                        $ipoType = strtolower($ipoType);
+                    }
+
+                    return [
+                        'id' => $item['id'] ?? md5(implode('|', [
+                            $this->extractValue($item, ['symbol', 'ticker']) ?? '',
+                            $filingDate->toDateString(),
+                            $this->extractValue($item, ['name', 'company', 'company_name']) ?? '',
+                        ])),
+                        'name' => $this->extractValue($item, ['name', 'company', 'company_name']),
+                        'symbol' => $this->extractValue($item, ['symbol', 'ticker']),
+                        'form' => $this->extractValue($item, ['form', 'form_type', 'formType']),
+                        'ipo_type' => $ipoType,
+                        'price_public_total' => $this->normalizeNumericValue($this->extractValue($item, ['price_public_total', 'pricePublicTotal', 'ipo_value'])),
+                        'price_public_per_share' => $this->normalizeNumericValue($this->extractValue($item, ['price_public_per_share', 'pricePublicPerShare', 'ipo_price'])),
+                        'url' => $this->extractValue($item, ['url', 'filing_url', 'filingUrl', 'pdf']),
+                        'filing_date' => $filingDate->toDateString(),
+                    ];
+                })
+                ->filter()
+                ->unique(fn ($item) => $item['id'])
+                ->sortByDesc('filing_date')
+                ->take(self::IPO_MAX_RESULTS)
+                ->values()
+                ->all();
+        }
+
+        private function parseBoundaryDate(?string $dateString, bool $endOfDay = false): ?Carbon
+        {
+            if (!$dateString) {
+                return null;
+            }
+
+            try {
+                $date = Carbon::parse($dateString);
+
+                return $endOfDay ? $date->endOfDay() : $date->startOfDay();
+            } catch (\Throwable $exception) {
+                Log::warning('Invalid calendar date boundary provided', [
+                    'value' => $dateString,
+                    'boundary' => $endOfDay ? 'end' : 'start',
+                ]);
+
+                return null;
+            }
+        }
+
+        private function tryParseDate(?string $dateString): ?Carbon
+        {
+            if (!$dateString) {
+                return null;
+            }
+
+            try {
+                return Carbon::parse($dateString);
+            } catch (\Throwable $exception) {
+                return null;
+            }
+        }
+
+        private function extractValue(array $item, array $keys)
+        {
+            foreach ($keys as $key) {
+                if (array_key_exists($key, $item) && $item[$key] !== null && $item[$key] !== '') {
+                    return $item[$key];
+                }
+            }
+
+            return null;
+        }
+
+        private function normalizeNumericValue($value): ?float
+        {
+            if ($value === null || $value === '') {
+                return null;
+            }
+
+            if (is_numeric($value)) {
+                return (float) $value;
+            }
+
+            if (is_string($value)) {
+                $sanitized = preg_replace('/[^\d\.\-]/', '', $value);
+
+                return is_numeric($sanitized) ? (float) $sanitized : null;
+            }
+
+            return null;
+        }
+
+        private function resolveIpoChunkBounds(?string $startDate, ?string $endDate, int $chunkDays, int $page): array
+        {
+            $rangeEnd = $this->parseBoundaryDate($endDate, true) ?? Carbon::today()->endOfDay();
+            $rangeStart = $this->parseBoundaryDate($startDate, false) ?? $rangeEnd->copy()->subDays(30)->startOfDay();
+
+            if ($rangeStart->gt($rangeEnd)) {
+                [$rangeStart, $rangeEnd] = [$rangeEnd->copy()->startOfDay(), $rangeStart->copy()->endOfDay()];
+            }
+
+            $chunkDays = max(1, min($chunkDays, self::IPO_MAX_CHUNK_DAYS));
+            $page = max(1, $page);
+
+            $offsetDays = $chunkDays * ($page - 1);
+            $chunkEnd = $rangeEnd->copy()->subDays($offsetDays);
+
+            if ($chunkEnd->lt($rangeStart)) {
+                return [
+                    'chunkStart' => null,
+                    'chunkEnd' => null,
+                    'rangeStart' => $rangeStart,
+                    'rangeEnd' => $rangeEnd,
+                    'pagination' => [
+                        'page' => $page,
+                        'chunk_days' => $chunkDays,
+                        'chunk_start' => null,
+                        'chunk_end' => null,
+                        'requested_start' => $rangeStart->toDateString(),
+                        'requested_end' => $rangeEnd->toDateString(),
+                        'has_more' => false,
+                        'next_page' => null,
+                    ],
+                ];
+            }
+
+            $chunkStart = $chunkEnd->copy()->subDays($chunkDays - 1);
+            if ($chunkStart->lt($rangeStart)) {
+                $chunkStart = $rangeStart->copy();
+            }
+
+            $hasMore = $chunkStart->gt($rangeStart);
+
+            return [
+                'chunkStart' => $chunkStart,
+                'chunkEnd' => $chunkEnd,
+                'rangeStart' => $rangeStart,
+                'rangeEnd' => $rangeEnd,
+                'pagination' => [
+                    'page' => $page,
+                    'chunk_days' => $chunkDays,
+                    'chunk_start' => $chunkStart->toDateString(),
+                    'chunk_end' => $chunkEnd->toDateString(),
+                    'requested_start' => $rangeStart->toDateString(),
+                    'requested_end' => $rangeEnd->toDateString(),
+                    'has_more' => $hasMore,
+                    'next_page' => $hasMore ? $page + 1 : null,
+                ],
+            ];
+        }
 
 
 

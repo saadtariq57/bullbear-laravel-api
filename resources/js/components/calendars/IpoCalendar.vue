@@ -77,7 +77,7 @@
                         </thead>
                         <tbody>
                           <template v-if="filteredIpoEvents[tabName] && filteredIpoEvents[tabName].length > 0">
-                            <tr v-for="event in filteredIpoEvents[tabName].slice(0, visibleRows[tabName])" :key="event.id">
+                            <tr v-for="event in filteredIpoEvents[tabName]" :key="event.id">
                               <td class="text-start">{{ formatDate(event.filing_date) }}</td>
                               <td class="text-start fw-5">{{ event.name || 'N/A' }}</td>
                               <td class="text-start fw-5">
@@ -101,13 +101,16 @@
                         </tbody>
                       </table>
                       <div class="gap-3 d-flex align-items-center justify-content-center mt-3">
-                        <button v-if="filteredIpoEvents[tabName] && filteredIpoEvents[tabName].length > visibleRows[tabName]" 
+                        <button v-if="pagination[tabName]?.hasMore && filteredIpoEvents[tabName] && filteredIpoEvents[tabName].length" 
                                 class="btn btn-primary" 
+                                :disabled="isLoadingMore[tabName]"
                                 @click="showMore(tabName)">
-                          Show More
+                          <span v-if="isLoadingMore[tabName]">Loading...</span>
+                          <span v-else>Show More</span>
                         </button>
-                        <button v-if="visibleRows[tabName] > initialRowCount" 
+                        <button v-if="pagination[tabName]?.page > 1" 
                                 class="btn btn-border" 
+                                :disabled="isLoading[tabName]"
                                 @click="showLess(tabName)">
                           Show Less
                         </button>
@@ -130,6 +133,14 @@
 import axios from 'axios';
 import SidebarCalendars from './SidebarCalendars.vue';
 
+const createPaginationState = () => ({
+  page: 1,
+  nextPage: 2,
+  hasMore: true,
+  chunkStart: null,
+  chunkEnd: null,
+});
+
 export default {
   components: {
     SidebarCalendars
@@ -144,48 +155,107 @@ export default {
         upcoming: [],
         recent: []
       },
-      visibleRows: {
-        upcoming: 50,
-        recent: 50
-      },
       activeTab: 'recent',
       tabNames: ['upcoming', 'recent'],
       loadedTabs: new Set(),
-      initialRowCount: 50,
       selectedIpoType: 'all',
       contentLoaded: false,
+      chunkDays: 10,
+      pagination: {
+        upcoming: createPaginationState(),
+        recent: createPaginationState()
+      },
+      isLoading: {
+        upcoming: false,
+        recent: false
+      },
+      isLoadingMore: {
+        upcoming: false,
+        recent: false
+      },
     };
   },
   methods: {
-    async fetchIpoCalendar(tabName) {
-      if (this.loadedTabs.has(tabName)) return;
-      
+    async fetchIpoCalendar(tabName, options = {}) {
+      const { page = 1, append = false, force = false } = options;
+
+      if (!append && !force && this.loadedTabs.has(tabName)) return;
+
+      const { startDate, endDate } = this.buildDateRange(tabName);
+      const params = new URLSearchParams({
+        startDate: this.formatDateParam(startDate),
+        endDate: this.formatDateParam(endDate),
+        page,
+        chunkDays: this.chunkDays,
+      });
+
+      const loadingKey = append ? 'isLoadingMore' : 'isLoading';
+      this[loadingKey][tabName] = true;
+
+      try {
+        const response = await axios.get(`/api/calendar/ipo?${params.toString()}`);
+        const payload = response.data;
+        const events = Array.isArray(payload) ? payload : (payload.data || []);
+
+        if (append) {
+          this.ipoEvents[tabName] = [...this.ipoEvents[tabName], ...events];
+        } else {
+          this.ipoEvents[tabName] = events;
+        }
+
+        this.updatePagination(tabName, payload.pagination, page);
+        this.filterIpoEvents();
+
+        if (!append) {
+          this.loadedTabs.add(tabName);
+        }
+      } catch (error) {
+        console.error(`Error fetching IPO calendar for ${tabName}:`, error);
+        if (!append) {
+          this.ipoEvents[tabName] = [];
+          this.filteredIpoEvents[tabName] = [];
+          this.pagination[tabName] = createPaginationState();
+          this.loadedTabs.add(tabName);
+        }
+      } finally {
+        this[loadingKey][tabName] = false;
+      }
+    },
+    buildDateRange(tabName) {
       const today = new Date();
-      let startDate, endDate;
-      
+      let startDate;
+      let endDate;
+
       if (tabName === 'upcoming') {
         startDate = today;
         endDate = new Date(today);
         endDate.setDate(today.getDate() + 30);
       } else {
+        endDate = today;
         startDate = new Date(today);
         startDate.setDate(today.getDate() - 30);
-        endDate = today;
       }
 
-      const formatDate = (date) => date.toISOString().split('T')[0];
-      
-      try {
-        const response = await axios.get(`/api/calendar/ipo?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`);
-        this.ipoEvents[tabName] = response.data;
-        this.filterIpoEvents();
-        this.loadedTabs.add(tabName);
-      } catch (error) {
-        console.error(`Error fetching IPO calendar for ${tabName}:`, error);
-        this.ipoEvents[tabName] = [];
-        this.filteredIpoEvents[tabName] = [];
-        this.loadedTabs.add(tabName);
-      }
+      return { startDate, endDate };
+    },
+    formatDateParam(date) {
+      return date.toISOString().split('T')[0];
+    },
+    updatePagination(tabName, paginationMeta, fallbackPage = 1) {
+      const currentState = this.pagination[tabName] || createPaginationState();
+
+      const pageValue = paginationMeta?.page ?? fallbackPage ?? 1;
+      const hasMore = paginationMeta?.has_more ?? false;
+      const nextPage = paginationMeta?.next_page ?? (hasMore ? pageValue + 1 : null);
+
+      this.pagination[tabName] = {
+        ...currentState,
+        page: pageValue,
+        nextPage,
+        hasMore,
+        chunkStart: paginationMeta?.chunk_start ?? null,
+        chunkEnd: paginationMeta?.chunk_end ?? null,
+      };
     },
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -198,11 +268,26 @@ export default {
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
-    showMore(tab) {
-      this.visibleRows[tab] = Math.min(this.visibleRows[tab] + this.initialRowCount, this.filteredIpoEvents[tab].length);
+    async showMore(tabName) {
+      const paginationState = this.pagination[tabName];
+      if (!paginationState?.hasMore || this.isLoadingMore[tabName]) {
+        return;
+      }
+
+      const nextPage = paginationState.nextPage ?? (paginationState.page + 1);
+      await this.fetchIpoCalendar(tabName, { page: nextPage, append: true, force: true });
     },
-    showLess(tab) {
-      this.visibleRows[tab] = Math.max(this.initialRowCount, this.visibleRows[tab] - this.initialRowCount);
+    async showLess(tabName) {
+      if (this.isLoading[tabName]) {
+        return;
+      }
+
+      this.pagination[tabName] = createPaginationState();
+      this.ipoEvents[tabName] = [];
+      this.filteredIpoEvents[tabName] = [];
+      this.loadedTabs.delete(tabName);
+
+      await this.fetchIpoCalendar(tabName, { page: 1, force: true });
     },
     setActiveTab(tabName) {
       this.activeTab = tabName;
@@ -217,11 +302,10 @@ export default {
     },
     filterIpoEvents() {
       for (const tabName of this.tabNames) {
-        if (this.selectedIpoType === 'all') {
-          this.filteredIpoEvents[tabName] = this.ipoEvents[tabName];
-        } else {
-          this.filteredIpoEvents[tabName] = this.ipoEvents[tabName].filter(event => event.ipo_type === this.selectedIpoType);
-        }
+        const events = this.ipoEvents[tabName] || [];
+        this.filteredIpoEvents[tabName] = this.selectedIpoType === 'all'
+          ? events
+          : events.filter(event => event.ipo_type === this.selectedIpoType);
       }
     }
   },

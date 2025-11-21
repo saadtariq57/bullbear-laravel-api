@@ -29,3 +29,5 @@ cloudflared_tunnel.log
 script.js
 deactivate_bots_empty_templates.sql
 check_bot_cooldown.sql
+original.php
+test.php
