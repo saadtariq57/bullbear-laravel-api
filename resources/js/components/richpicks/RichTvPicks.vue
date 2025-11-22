@@ -225,10 +225,12 @@ export default {
       try {
         const response = await axios.get('/api/subscriptionStatus');
         const data = response.data;
+        const proFeature = data.features['richpicks_pro_access'];
+        const premiumFeature = data.features['richpicks_premium'];
+        // Premium members should inherit Pro Picks access
         this.canAccessPro =
-          data.features['richpicks_pro_access']?.can_access || false;
-        this.canAccessPremium =
-          data.features['richpicks_premium']?.can_access || false;
+          proFeature?.can_access || premiumFeature?.can_access || false;
+        this.canAccessPremium = premiumFeature?.can_access || false;
       } catch (error) {
         console.error('Error fetching subscription status:', error);
       }
