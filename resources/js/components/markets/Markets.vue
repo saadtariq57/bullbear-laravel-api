@@ -27,28 +27,40 @@
               </thead>
               <tbody v-if="widget.symbols">
                 <tr v-for="(widgetData, key) in widget.symbols" :key="key">
-                  <td class="fw-5">{{ widgetData.symbol }}</td>
-                  <td class="fw-5 symbol-name-width">{{ widgetData.name }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.price">
-                    <Skeletor width="40px" />
+                  <td class="fw-5">{{ formatValue(widgetData.symbol) }}</td>
+                  <td class="fw-5 symbol-name-width">{{ formatValue(widgetData.name) }}</td>
+                  <td class="text-end fw-5">
+                    <template v-if="shouldShowSkeleton(widgetData.price)">
+                      <Skeletor width="40px" />
+                    </template>
+                    <template v-else>
+                      {{ formatValue(widgetData.price) }}
+                    </template>
                   </td>
-                  <td class="text-end fw-5" v-else>{{ widgetData.price }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.change">
-                    <Skeletor width="40px" />
+                  <td class="text-end fw-5" :class="getChangeClass(widgetData.change)">
+                    <template v-if="shouldShowSkeleton(widgetData.change)">
+                      <Skeletor width="40px" />
+                    </template>
+                    <template v-else>
+                      {{ formatValue(widgetData.change) }}
+                    </template>
                   </td>
-                  <td class="text-end fw-5" v-else :class="widgetData.change > 0 ? 'Green' : 'Red'">
-                    {{
-                      widgetData.change }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.change_percent">
-                    <Skeletor width="40px" />
+                  <td class="text-end fw-5" :class="getChangePercentClass(widgetData.change_percent)">
+                    <template v-if="shouldShowSkeleton(widgetData.change_percent)">
+                      <Skeletor width="40px" />
+                    </template>
+                    <template v-else>
+                      {{ formatValue(widgetData.change_percent) }}
+                    </template>
                   </td>
-                  <td class="text-end fw-5" v-else
-                    :class="widgetData.change_percent > 0 ? 'Green positive-arrow-icon-after' : 'Red negative-arrow-icon-after'">
-                    {{ widgetData.change_percent }}</td>
-                  <td class="text-end fw-5" v-if="!widgetData.volume">
-                    <Skeletor width="40px" />
+                  <td class="text-end fw-5">
+                    <template v-if="shouldShowSkeleton(widgetData.volume)">
+                      <Skeletor width="40px" />
+                    </template>
+                    <template v-else>
+                      {{ formatValue(widgetData.volume) }}
+                    </template>
                   </td>
-                  <td class="text-end fw-5" v-else>{{ widgetData.volume }}</td>
                 </tr>
               </tbody>
             </table>
@@ -127,6 +139,75 @@ export default {
     fetchWidgets() {
       const { category, subCategory } = this.$route.params;
       this.getWidgetsByCategory({ category, subCategory });
+    },
+
+    hasValue(value) {
+      return value !== null && value !== undefined && value !== '';
+    },
+
+    formatValue(value) {
+      return this.hasValue(value) ? value : 'N/A';
+    },
+
+    shouldShowSkeleton(value) {
+      return this.isLoading && !this.hasValue(value);
+    },
+
+    normalizeNumber(value) {
+      if (!this.hasValue(value)) {
+        return null;
+      }
+
+      if (typeof value === 'number') {
+        return value;
+      }
+
+      if (typeof value === 'string') {
+        const cleanedValue = value.replace(/[,%]/g, '').trim();
+        if (!cleanedValue) {
+          return null;
+        }
+        const parsedValue = parseFloat(cleanedValue);
+        return Number.isNaN(parsedValue) ? null : parsedValue;
+      }
+
+      return null;
+    },
+
+    getChangeClass(value) {
+      const numericValue = this.normalizeNumber(value);
+
+      if (numericValue === null) {
+        return '';
+      }
+
+      if (numericValue > 0) {
+        return 'Green';
+      }
+
+      if (numericValue < 0) {
+        return 'Red';
+      }
+
+      return '';
+    },
+
+    getChangePercentClass(value) {
+      const numericValue = this.normalizeNumber(value);
+
+      if (numericValue === null) {
+        return '';
+      }
+
+      if (numericValue > 0) {
+        return 'Green positive-arrow-icon-after';
+      }
+
+      if (numericValue < 0) {
+        return 'Red negative-arrow-icon-after';
+      }
+
+      return '';
     },
   },
 };

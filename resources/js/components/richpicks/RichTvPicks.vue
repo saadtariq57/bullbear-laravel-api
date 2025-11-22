@@ -189,7 +189,7 @@ export default {
         pro: null,
         premium: null,
       },
-      showWatchlist: false,
+      showWatchlist: false, 
       selectedPick: null,
       canAccessPro: false,
       canAccessPremium: false,
