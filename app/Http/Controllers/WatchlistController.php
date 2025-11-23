@@ -309,9 +309,17 @@ class WatchlistController extends Controller
             // Initialize variables for authorization
             $canAccessWatchlists = false;
             $errorMessage = null;
+            $isOwner = $isAuthenticated && $loggedInUser && $requestedUserId == $loggedInUser->id;
+            $viewerIsFollower = false;
+
+            if (!$isOwner && $isAuthenticated && $loggedInUser) {
+                $viewerIsFollower = Follower::where('follower_id', $loggedInUser->id)
+                    ->where('following_id', $requestedUser->id)
+                    ->exists();
+            }
 
             // 1. If Requested userId == Logged In user, allow access
-            if ($isAuthenticated && $requestedUserId == $loggedInUser->id) {
+            if ($isOwner) {
                 $canAccessWatchlists = true;
             } else {
                 // 2. If requested user id is different, check watchlists_privacy
@@ -325,16 +333,13 @@ class WatchlistController extends Controller
 
                     case 'Followers':
                         // 4. If watchlists_privacy is Followers, check if logged-in user follows requested user
-                        if ($isAuthenticated) {
-                            $isFollowing = Follower::where('follower_id', $loggedInUser->id)
-                                ->where('following_id', $requestedUser->id)
-                                ->exists();
+                        if (!$isAuthenticated) {
+                            $errorMessage = 'You need to follow this user to view their watchlists.';
+                            break;
+                        }
 
-                            if ($isFollowing) {
-                                $canAccessWatchlists = true;
-                            } else {
-                                $errorMessage = 'You need to follow this user to view their watchlists.';
-                            }
+                        if ($viewerIsFollower) {
+                            $canAccessWatchlists = true;
                         } else {
                             $errorMessage = 'You need to follow this user to view their watchlists.';
                         }
@@ -386,6 +391,12 @@ class WatchlistController extends Controller
             } else {
                 $hasUserWatchlist = true; // User has watchlists
             }
+
+            // Filter watchlists based on individual privacy controls
+            $watchlists = $watchlists->filter(function ($watchlist) use ($loggedInUser, $isAuthenticated, $viewerIsFollower) {
+                return $this->canViewSpecificWatchlist($watchlist, $loggedInUser, $isAuthenticated, $viewerIsFollower);
+            })->values();
+
 
             // Collect all symbols from watchlists, handling watchlists with no symbols gracefully
             $symbols = $watchlists->pluck('watchlistSymbols')
@@ -515,6 +526,66 @@ class WatchlistController extends Controller
         return response()->json([
             'watchlistDetails' => $featuredWatchlists
         ]);
+    }
+
+    /**
+     * Determine if the current viewer can see a specific watchlist.
+     */
+    private function canViewSpecificWatchlist(UserWatchlist $watchlist, ?User $viewer, bool $isAuthenticated, bool $viewerIsFollower): bool
+    {
+        if ($viewer && $watchlist->user_id === $viewer->id) {
+            return true;
+        }
+
+        if ($viewer && Gate::forUser($viewer)->allows('isAdmin')) {
+            return true;
+        }
+
+        $visibility = strtolower(trim($watchlist->who_can_view ?? 'everyone'));
+        $visibility = str_replace([' ', '_', '-'], '', $visibility);
+
+        switch ($visibility) {
+            case 'onlyme':
+            case 'private':
+                return false;
+            case 'followers':
+                return $viewerIsFollower;
+            case 'everoneloggedin':
+            case 'everyoneloggedin':
+            case 'loggedin':
+            case 'loggedinonly':
+                return $isAuthenticated;
+            case 'prousers':
+            case 'pro':
+                return $this->viewerHasProAccess($viewer);
+            case 'everyone':
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Determine if the viewer has a paid/pro subscription that should grant access.
+     */
+    private function viewerHasProAccess(?User $viewer): bool
+    {
+        if (!$viewer) {
+            return false;
+        }
+
+        $proFeatures = [
+            'richpicks_pro_access',
+            'richpicks_premium',
+            'pro_chatroom_access',
+        ];
+
+        foreach ($proFeatures as $feature) {
+            if (Gate::forUser($viewer)->allows('access-feature', $feature)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getSymbolNews(array $symbols)

@@ -20,8 +20,13 @@
                     <span v-else>You do</span>not have watchlists checkout Richtv's featured watchlists below
                 </p>
             </div>
+            <div v-if="hasHiddenWatchlists" class="my-3">
+                <p class="text-center mb-0">
+                    Watchlists are hidden based on the {{ userProfileData.name }}'s privacy settings.
+                </p>
+            </div>
             <div>
-                <div class="row" v-show="watchlists">
+                <div class="row" v-if="hasVisibleWatchlists">
                     <div class="col-lg-6 col-md-12 my-4" v-for="watchlist in watchlists">
                         <div :class="watchlist.featured == 1 ? 'featuredWathclist watchlist-dashboard-container border p-3 shadow-sm' : 'watchlist-dashboard-container border p-3 shadow-sm'">
                             <div class="d-flex justify-content-between align-items-center"
@@ -217,6 +222,12 @@ export default {
     ...mapState(['userData']),
     ...mapState('userWatchlists', ['watchlists', 'userHasWatchlist', 'isLoading']),
     ...mapState('userProfile', ['userProfileData', 'message', 'success', 'isOwnProfile', 'isFollowing']),
+    hasVisibleWatchlists() {
+      return Array.isArray(this.watchlists) && this.watchlists.length > 0;
+    },
+    hasHiddenWatchlists() {
+      return !this.isOwnProfile && this.userHasWatchlist !== false && !this.hasVisibleWatchlists && !this.isLoading;
+    },
   },
   props: {
     user: {
