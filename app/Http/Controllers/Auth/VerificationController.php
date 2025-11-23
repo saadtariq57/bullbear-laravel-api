@@ -67,7 +67,9 @@ class VerificationController extends Controller
 
         Auth::login($user);
 
-        return redirect($this->redirectPath())->with('verified', true);
+        $intendedCheckout = $request->session()->pull('intended_checkout_url');
+
+        return redirect($intendedCheckout ?? $this->redirectPath())->with('verified', true);
     }
 
     public function resend(Request $request)

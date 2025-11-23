@@ -334,8 +334,8 @@ export default {
           showConfirmButton: false,
         });
 
-        // Redirect to email verification notice
-        window.location.href = `/email/verify`;
+        // Redirect to thank you page
+        this.$router.push({ name: 'thank-you' });
       } catch (error) {
         let errorMessage = 'An error occurred while subscribing to the plan.';
         if (error.response && error.response.data && error.response.data.message) {

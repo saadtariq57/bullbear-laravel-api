@@ -144,8 +144,7 @@ class RegisterController extends Controller
 
         if ($period && $plan_id && in_array($period, $allowedPeriods) && $plan_id > 1) {
             $redirectUrl = "/{$period}/{$plan_id}/checkout";
-
-            return redirect($redirectUrl);
+            $request->session()->put('intended_checkout_url', $redirectUrl);
         }
 
         // Do not log the user in yet; require email verification
