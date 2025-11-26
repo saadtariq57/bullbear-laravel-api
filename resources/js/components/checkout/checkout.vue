@@ -334,8 +334,8 @@ export default {
           showConfirmButton: false,
         });
 
-        // Redirect to thank you page
-        this.$router.push({ name: 'thank-you' });
+        // Redirect to thank you page with full reload so analytics/widgets reset
+        window.location.href = this.$router.resolve({ name: 'thank-you' }).href;
       } catch (error) {
         let errorMessage = 'An error occurred while subscribing to the plan.';
         if (error.response && error.response.data && error.response.data.message) {
