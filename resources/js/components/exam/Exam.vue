@@ -262,8 +262,8 @@ export default {
         for (const [category, exams] of Object.entries(categories)) {
           if (!this.groupedExams[type][category]) {
             this.groupedExams[type][category] = [];
-            // Initialize 'show all' for the category
-            this.showAllExams[category] = false;
+            // Newly loaded categories should show all exams immediately
+            this.showAllExams[category] = true;
           }
 
           // Push new exams into the category array

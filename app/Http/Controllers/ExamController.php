@@ -9,6 +9,7 @@ use App\Models\ExamQuestion;
 use App\Models\ExamResult;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ExamController extends Controller
 {
@@ -18,8 +19,6 @@ class ExamController extends Controller
         // Retrieve query parameters
         $search = $request->query('search');
         $type = $request->query('type');
-        $perPage = 10;
-
         // Initialize the query builder for Exam
         $query = Exam::query();
 
@@ -36,13 +35,13 @@ class ExamController extends Controller
             });
         }
 
-        // Fetch exams with pagination
+        // Fetch all exams (will paginate by category blocks manually)
         $exams = $query->orderBy('type')
                        ->orderBy('category')
                        ->orderByDesc('created_at')
-                       ->paginate($perPage);
+                       ->get();
 
-        // Get the exams IDs from the current page
+        // Get the exams IDs for results lookup
         $examIds = $exams->pluck('id')->toArray();
 
         // Retrieve the authenticated user, if any
@@ -69,7 +68,7 @@ class ExamController extends Controller
         $oneWeekAgo = Carbon::now()->subWeek();
 
         // Attach 'canAttempt' to each exam
-        $exams->getCollection()->transform(function ($exam) use ($latestResults, $oneWeekAgo, $userId) {
+        $exams->transform(function ($exam) use ($latestResults, $oneWeekAgo, $userId) {
             if (!$userId) {
                 // No authenticated user; cannot attempt
                 $exam->canAttempt = false;
@@ -91,20 +90,56 @@ class ExamController extends Controller
         });
 
         // Group exams by Type and then by Category
-        $groupedExams = $exams->getCollection()->groupBy('type')->map(function ($typeGroup) {
+        $groupedExams = $exams->groupBy('type')->map(function ($typeGroup) {
             return $typeGroup->groupBy('category');
+        });
+
+        // Flatten grouped exams into category blocks for manual pagination
+        $categoryBlocks = collect();
+        foreach ($groupedExams as $type => $categories) {
+            foreach ($categories as $category => $items) {
+                $categoryBlocks->push([
+                    'type' => $type,
+                    'category' => $category,
+                    'exams' => $items->values(),
+                ]);
+            }
+        }
+
+        $categoriesPerPage = 4;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $paginatedBlocks = $categoryBlocks
+            ->slice(($currentPage - 1) * $categoriesPerPage, $categoriesPerPage)
+            ->values();
+
+        $paginator = new LengthAwarePaginator(
+            $paginatedBlocks,
+            $categoryBlocks->count(),
+            $categoriesPerPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
+        // Reconstruct nested structure using only paginated blocks
+        $paginatedGrouped = $paginatedBlocks->groupBy('type')->map(function ($blocks) {
+            return $blocks->mapWithKeys(function ($block) {
+                return [$block['category'] => $block['exams']];
+            });
         });
 
         // Prepare the final response structure
         $response = [
-            'data' => $groupedExams,
+            'data' => $paginatedGrouped,
             'pagination' => [
-                'current_page' => $exams->currentPage(),
-                'last_page'    => $exams->lastPage(),
-                'per_page'     => $exams->perPage(),
-                'total'        => $exams->total(),
-                'from'         => $exams->firstItem(),
-                'to'           => $exams->lastItem(),
+                'current_page' => $paginator->currentPage(),
+                'last_page'    => $paginator->lastPage(),
+                'per_page'     => $paginator->perPage(),
+                'total'        => $paginator->total(),
+                'from'         => $paginator->firstItem(),
+                'to'           => $paginator->lastItem(),
             ],
         ];
 
