@@ -190,6 +190,7 @@ export default {
       currentPage: 1,
       perPage: 5,
       showTooltip: false,
+      tooltipInstances: [],
     };
   },
   computed: {
@@ -271,9 +272,27 @@ export default {
       this.initializeTooltips();
     },
     initializeTooltips() {
-      // Initialize Bootstrap tooltips
-      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
+      if (typeof window.bootstrap === 'undefined') {
+        return;
+      }
+
+      this.disposeTooltips();
+
+      const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      this.tooltipInstances = tooltipTriggerList.map(
+        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+      );
+    },
+    disposeTooltips() {
+      if (!this.tooltipInstances?.length) {
+        return;
+      }
+      this.tooltipInstances.forEach((instance) => {
+        if (instance && typeof instance.dispose === 'function') {
+          instance.dispose();
+        }
+      });
+      this.tooltipInstances = [];
     },
   },
   mounted() {
@@ -281,6 +300,9 @@ export default {
     this.$nextTick(() => {
       this.initializeTooltips();
     });
+  },
+  beforeUnmount() {
+    this.disposeTooltips();
   },
 };
 </script>

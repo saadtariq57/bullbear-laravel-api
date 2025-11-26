@@ -184,6 +184,7 @@ export default {
       currentPage: 1,
       lastPage: 1,
       isLoadingExams: false,
+      tooltipInstances: [],
     };
   },
   computed: {
@@ -496,15 +497,30 @@ export default {
      * Initialize Bootstrap tooltips.
      */
     initTooltips() {
-      // Ensure Bootstrap's tooltip JS is available
-      if (typeof window.bootstrap !== "undefined") {
-        const tooltipTriggerList = Array.from(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        );
-        tooltipTriggerList.forEach((tooltipTriggerEl) => {
-          new window.bootstrap.Tooltip(tooltipTriggerEl);
-        });
+      if (typeof window.bootstrap === "undefined") {
+        return;
       }
+
+      this.disposeTooltips();
+
+      const tooltipTriggerList = Array.from(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      this.tooltipInstances = tooltipTriggerList.map(
+        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+      );
+    },
+
+    disposeTooltips() {
+      if (!this.tooltipInstances?.length) {
+        return;
+      }
+      this.tooltipInstances.forEach((instance) => {
+        if (instance && typeof instance.dispose === "function") {
+          instance.dispose();
+        }
+      });
+      this.tooltipInstances = [];
     },
   },
   created() {
@@ -524,6 +540,7 @@ export default {
     this.initTooltips();
   },
   beforeUnmount() {
+    this.disposeTooltips();
     unregisterVuexModule("subscriptionStatus");
     //unregisterVuexModule("exam");
   },
