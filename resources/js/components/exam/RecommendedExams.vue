@@ -66,7 +66,7 @@
 // Import necessary modules and dependencies
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import examStoreModule from '@/stores/examStore';
 import subscriptionStatusModule from '@/stores/subscriptionStatus';
@@ -83,9 +83,9 @@ export default {
     // Map Vuex state to computed properties
     ...mapState({
       isAuthenticated: state => state.subscriptionStatus.isAuthenticated,
-      features: state => state.subscriptionStatus.features,
       isLoadingSubscription: state => state.subscriptionStatus.isLoading,
     }),
+    ...mapGetters('subscriptionStatus', ['hasBasicExam', 'hasAdvanceExam']),
   },
   methods: {
     // Map Vuex actions
@@ -193,12 +193,11 @@ export default {
      * @returns {Boolean} - Whether the user has access.
      */
     checkExamAccess(type) {
-      if (!this.features) return false;
-
       if (type === "basic") {
-        return this.features.basic_trading_exams?.can_access || false;
-      } else if (type === "advanced") {
-        return this.features.advanced_trading_exams?.can_access || false;
+        return this.hasBasicExam;
+      }
+      if (type === "advanced") {
+        return this.hasAdvanceExam;
       }
       return false;
     },

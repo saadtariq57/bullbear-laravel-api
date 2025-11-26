@@ -1,5 +1,12 @@
 import axios from 'axios';
 
+const ACTIVE_SUBSCRIPTION_STATUSES = ['active', 'trialing'];
+const normalizePlanName = (name = '') => name.toString().trim().toLowerCase();
+const planMatches = (planNames = [], keywords = []) =>
+    planNames.some((plan) =>
+        keywords.some((keyword) => plan.includes(keyword))
+    );
+
 const state = () => ({
     isAuthenticated: false,
     features: {},
@@ -12,12 +19,40 @@ const getters = {
     isAuthenticated: (state) => state.isAuthenticated,
     subscriptionPlans: (state) => state.subscription,
     isLoading: (state) => state.isLoading,
+    activeSubscriptions: (state) => {
+        if (!Array.isArray(state.subscription)) {
+            return [];
+        }
+        return state.subscription.filter((subscription) => {
+            const status = subscription?.stripe_status?.toLowerCase() || '';
+            return ACTIVE_SUBSCRIPTION_STATUSES.includes(status) && !subscription?.ends_at;
+        });
+    },
+    activePlanNames: (state, getters) =>
+        getters.activeSubscriptions.map((subscription) =>
+            normalizePlanName(subscription?.name || '')
+        ),
 
     // Boolean Feature Getters
     hasExclusiveMarketIntelligence: (state) => state.features['exclusive_market_intelligence']?.can_access || false,
     hasEducationalContent: (state) => state.features['educational_content']?.can_access || false,
-    hasBasicExam: (state) => state.features['basic_trading_exams']?.can_access || false,
-    hasAdvanceExam: (state) => state.features['advanced_trading_exams']?.can_access || false,
+    hasBasicExam: (state, getters) => {
+        if (state.features['basic_trading_exams']?.can_access) {
+            return true;
+        }
+        if (state.features['advanced_trading_exams']?.can_access) {
+            return true;
+        }
+        const planNames = getters.activePlanNames;
+        return planMatches(planNames, ['pro', 'premium']);
+    },
+    hasAdvanceExam: (state, getters) => {
+        if (state.features['advanced_trading_exams']?.can_access) {
+            return true;
+        }
+        const planNames = getters.activePlanNames;
+        return planMatches(planNames, ['premium']);
+    },
 
     hasMarketInsightsDigest: (state) => state.features['market_insights_digest']?.can_access || false,
     hasCommunityChatroomAccess: (state) => state.features['community_chatroom_access']?.can_access || false,
@@ -28,7 +63,7 @@ const getters = {
     hasRichpicksProAccess: (state) => state.features['richpicks_pro_access']?.can_access || false,
     hasProChatroomAccess: (state) => state.features['pro_chatroom_access']?.can_access || false,
     hasDailyProWatchlistEmail: (state) => state.features['daily_pro_watchlist_email']?.can_access || false,
-    hasBasicTradingExams: (state) => state.features['basic_trading_exams']?.can_access || false,
+    hasBasicTradingExams: (state, getters) => getters.hasBasicExam,
     hasAdvancedStockScreener: (state) => state.features['advanced_stock_screener']?.can_access || false,
     hasRichpicksPremium: (state) => state.features['richpicks_premium']?.can_access || false,
     hasAdvancedExamTradingVideos: (state) => state.features['advanced_exam_trading_videos']?.can_access || false,
