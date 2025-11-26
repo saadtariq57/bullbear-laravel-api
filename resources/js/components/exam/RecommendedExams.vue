@@ -77,6 +77,7 @@ export default {
     return {
       recommendedExams: [],
       loading: false,
+      tooltipInstances: [],
     };
   },
   computed: {
@@ -273,15 +274,30 @@ export default {
      * Initialize Bootstrap tooltips.
      */
     initTooltips() {
-      // Ensure Bootstrap's tooltip JS is available
-      if (typeof window.bootstrap !== "undefined") {
-        const tooltipTriggerList = Array.from(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        );
-        tooltipTriggerList.forEach((tooltipTriggerEl) => {
-          new window.bootstrap.Tooltip(tooltipTriggerEl);
-        });
+      if (typeof window.bootstrap === "undefined") {
+        return;
       }
+
+      this.disposeTooltips();
+
+      const tooltipTriggerList = Array.from(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      this.tooltipInstances = tooltipTriggerList.map(
+        (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+      );
+    },
+    disposeTooltips() {
+      if (!this.tooltipInstances?.length) {
+        return;
+      }
+
+      this.tooltipInstances.forEach((instance) => {
+        if (instance && typeof instance.dispose === "function") {
+          instance.dispose();
+        }
+      });
+      this.tooltipInstances = [];
     },
   },
   mounted() {
@@ -300,9 +316,9 @@ export default {
     });
   },
   beforeUnmount() {
-    // Unregister Vuex modules to prevent state leakage
-    unregisterVuexModule('exam');
+    // Keep exam module alive so ongoing exams retain state
     unregisterVuexModule('subscriptionStatus');
+    this.disposeTooltips();
   },
   updated() {
     this.initTooltips();
@@ -311,9 +327,6 @@ export default {
 </script>
 
 <style scoped>
-.recommended-exams-wrapper {
-  /* Additional styling if necessary */
-}
 
 .list-group-item {
   border: none;
