@@ -115,7 +115,7 @@
                   <button
                     :class="['btn', buttonClass(exam)]"
                     @click="handleExamClick(exam)"
-                    :disabled="isAuthenticated ? (!exam.canAttempt || !canAccessExam(exam)) : false"
+                    :disabled="isAuthenticated ? !exam.canAttempt : false"
                     data-bs-toggle="tooltip"
                     :title="buttonTooltip(exam)"
                   >
@@ -601,13 +601,13 @@ export default {
   color: #fff;
 }
 .btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
-  color: #212529;
+  background-color: #ffda6d;
+  border-color: #ffd45b;
+  color: #3a2f00;
 }
 .btn-warning:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
-  color: #fff;
+  background-color: #ffd45b;
+  border-color: #ffc933;
+  color: #3a2f00;
 }
 </style>
