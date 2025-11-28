@@ -28,14 +28,13 @@
                             <div class="form-inline float-md-start mb-3">
                                 <form action="{{ route('admin.trading_reports.index') }}" method="GET">
                                     <div class="search-box me-2">
-                                        <div class="position-relative d-flex align-items-center reports_serch" style="background: #e3e3e385;">
+                                        <div class="position-relative">
                                             <input 
                                                 type="text" 
                                                 name="search" 
                                                 class="form-control border" 
                                                 placeholder="Search..." 
                                                 value="{{ request()->query('search') }}"
-                                                style="background: #e3e3e385;"
                                             >
                                             <button type="submit" style="background: none; border: none;">
                                                 <i class="ri-search-line search-icon"></i>

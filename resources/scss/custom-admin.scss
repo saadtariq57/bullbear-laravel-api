@@ -26,6 +26,108 @@ body[data-sidebar=colored] {
     background: #183B56;
     border-color: #003566;
   }
+
+  .card-body {
+    > .row.mb-2 {
+      align-items: center;
+      gap: 0.5rem 0;
+    }
+  }
+
+  .form-inline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+
+    > form {
+      width: 100%;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 420px;
+
+      .position-relative {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .form-control {
+        height: 44px;
+        padding: 0.5rem 2.75rem 0.5rem 1rem;
+        border-radius: 0.65rem;
+        font-size: 0.95rem;
+      }
+
+      button[type="submit"] {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bs-gray-600);
+        padding: 0;
+        cursor: pointer;
+        z-index: 2;
+
+        &:hover {
+          color: var(--bs-dark);
+        }
+      }
+
+      .search-icon {
+        position: static;
+        font-size: 16px;
+        line-height: 1;
+      }
+    }
+
+    .input-group {
+      width: 100%;
+      flex-wrap: nowrap;
+
+      > .form-control,
+      > .form-select {
+        height: 44px;
+        font-size: 0.95rem;
+      }
+
+      > .btn {
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 1rem;
+      }
+    }
+
+    .form-select,
+    .form-control,
+    .btn {
+      font-size: 0.95rem;
+    }
+
+    .filter-select {
+      flex: 0 0 auto;
+      min-width: 180px;
+      max-width: 220px;
+      width: 100%;
+
+      select {
+        width: 100%;
+        height: 44px;
+      }
+    }
+  }
 }
 .theme-img-wrapper{
   width: 250px;

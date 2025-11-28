@@ -28,7 +28,7 @@
                                                 <button type="submit" style="background: none; border: none;"><i class="ri-search-line search-icon"></i></button>
                                             </div>
                                         </div>
-                                        <div class="form-group me-2">
+                                        <div class="form-group filter-select me-2">
                                             <select name="type" class="form-control">
                                                 <option value="">Select Type</option>
                                                 <option value="stocks" {{ request()->query('type') == 'stocks' ? 'selected' : '' }}>Stocks</option>
@@ -41,7 +41,7 @@
                                                 <option value="fund" {{ request()->query('type') == 'fund' ? 'selected' : '' }}>Fund</option>
                                             </select>
                                         </div>
-                                        <div class="form-group me-2">
+                                        <div class="form-group filter-select me-2">
                                             <select name="active" class="form-control">
                                                 <option value="">Select Status</option>
                                                 <option value="1" {{ request()->query('active') == '1' ? 'selected' : '' }}>Active</option>

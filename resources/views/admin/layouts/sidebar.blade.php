@@ -11,7 +11,7 @@
             </span>
         </a>
 
-        <a href="/" class="logo logo-light">
+        <a href="/" class="logo logo-light" style="padding-right: 40px;";">
             <span class="logo-sm">
                 <img src="{{ asset('build/images/favicon.png') }}" alt="logo-sm-light" height="24">
             </span>
