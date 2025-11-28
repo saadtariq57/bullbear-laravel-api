@@ -344,13 +344,11 @@
 
                     <!-- Pagination -->
                     @if($symbols->count() > 0)
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="">
-                                    {{ $symbols->appends(request()->query())->links() }}
-                                </div>
-                            </div>
-                        </div>
+                        @include('admin.components.pagination-footer', [
+                            'collection' => $symbols,
+                            'appends' => request()->except('page'),
+                            'summaryFormat' => 'Showing :first to :last of :total symbols',
+                        ])
                     @endif
                 </div>
             </div>

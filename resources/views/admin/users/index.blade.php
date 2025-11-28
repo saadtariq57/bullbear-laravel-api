@@ -111,20 +111,10 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="row mt-4">
-                            <div class="col-sm-6">
-                                <div>
-                                    <p class="mb-sm-0">{{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="float-sm-end">
-                                    <ul class="pagination mb-sm-0">
-                                        {{ $users->appends(['search' => request()->query('search')])->links() }}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        @include('admin.components.pagination-footer', [
+                            'collection' => $users,
+                            'appends' => request()->only('search'),
+                        ])
                     </div>
                 </div>
             </div>

@@ -113,22 +113,10 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="row mt-4">
-                        <div class="col-sm-6">
-                            <div>
-                                <p class="mb-sm-0">
-                                    Showing {{ $sessions->firstItem() }} to {{ $sessions->lastItem() }} of {{ $sessions->total() }} entries
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="float-sm-end">
-                                <ul class="pagination mb-sm-0">
-                                    {{ $sessions->links() }}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    @include('admin.components.pagination-footer', [
+                        'collection' => $sessions,
+                        'appends' => request()->only('user_id'),
+                    ])
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
         </div> <!-- end col -->

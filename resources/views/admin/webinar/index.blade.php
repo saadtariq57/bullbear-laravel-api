@@ -102,20 +102,7 @@ Webinars
             </tbody>
         </table>
     </div>
-    <div class="row mt-4">
-        <div class="col-sm-6">
-            <div>
-                <p class="mb-sm-0">{{ $webinars->firstItem() }} to {{ $webinars->lastItem() }} of {{ $webinars->total() }} entries</p>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="float-sm-end">
-                <ul class="pagination mb-sm-0">
-                    {{ $webinars->links() }}
-                </ul>
-            </div>
-        </div>
-    </div>
+    @include('admin.components.pagination-footer', ['collection' => $webinars])
 @endsection
 @section('scripts')
     <!-- App js -->

@@ -175,13 +175,7 @@
 
                     <!-- Pagination -->
                     @if($bots->hasPages())
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <ul class="pagination pagination-rounded justify-content-center mb-2">
-                                    {{ $bots->links() }}
-                                </ul>
-                            </div>
-                        </div>
+                        @include('admin.components.pagination-footer', ['collection' => $bots])
                     @endif
                 </div>
             </div>

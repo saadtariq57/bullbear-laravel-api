@@ -207,22 +207,7 @@
                     <!-- End Profits Table -->
 
                     <!-- Pagination -->
-                    <div class="row mt-4">
-                        <div class="col-sm-6">
-                            <div>
-                                <p class="mb-sm-0">
-                                    {{ $profits->firstItem() }} to {{ $profits->lastItem() }} of {{ $profits->total() }} entries
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="float-sm-end">
-                                <ul class="pagination mb-sm-0">
-                                    {{ $profits->links() }}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    @include('admin.components.pagination-footer', ['collection' => $profits, 'appends' => request()->except('page')])
                 </div>
             </div>
         </div>

@@ -113,22 +113,10 @@
                     <!-- End Reports Table -->
 
                     <!-- Pagination -->
-                    <div class="row mt-4">
-                        <div class="col-sm-6">
-                            <div>
-                                <p class="mb-sm-0">
-                                    {{ $reports->firstItem() }} to {{ $reports->lastItem() }} of {{ $reports->total() }} entries
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="float-sm-end">
-                                <ul class="pagination mb-sm-0">
-                                    {{ $reports->appends(['search' => request()->query('search')])->links() }}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    @include('admin.components.pagination-footer', [
+                        'collection' => $reports,
+                        'appends' => request()->only('search'),
+                    ])
                 </div>
             </div>
         </div>

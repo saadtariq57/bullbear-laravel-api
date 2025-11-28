@@ -112,13 +112,7 @@
                     </div>
 
                     @if($contentApis->hasPages())
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <ul class="pagination pagination-rounded justify-content-center mb-2">
-                                    {{ $contentApis->links() }}
-                                </ul>
-                            </div>
-                        </div>
+                        @include('admin.components.pagination-footer', ['collection' => $contentApis])
                     @endif
                 </div>
             </div>

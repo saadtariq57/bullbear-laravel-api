@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 use Cmixin\BusinessDay;
 use App\Models\Group;
@@ -33,5 +34,9 @@ class AppServiceProvider extends ServiceProvider
         // Register model observers
         Group::observe(GroupObserver::class);
         User::observe(UserObserver::class);
+
+        Paginator::useBootstrapFive();
+        Paginator::defaultView('vendor.pagination.rich-admin');
+        Paginator::defaultSimpleView('vendor.pagination.rich-admin-simple');
     }
 }
