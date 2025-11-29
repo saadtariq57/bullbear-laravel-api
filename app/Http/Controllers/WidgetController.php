@@ -752,7 +752,8 @@ class WidgetController extends Controller
      */
     public function destroy(Widget $widget)
     {
-        $widget->symbols()->delete();
+        // Delete related widget symbols (cascade delete will also handle this, but explicit for clarity)
+        $widget->widgetSymbols()->delete();
         $widget->delete();
 
         return redirect('/admin/widgets')->with('success', 'Widget and its symbols deleted!');
