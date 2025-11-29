@@ -217,3 +217,36 @@ p.embeded_code{
   color: white !important;
   }
 }
+
+// Form button alignment fixes
+form {
+  .row {
+    > .col-md-6 {
+      .form-group {
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  // Add spacing between form fields and submit button row
+  // Target rows that contain submit buttons
+  .row:last-child {
+    margin-top: 1.5rem;
+    
+    .col-md-6 {
+      .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Additional spacing for button rows (more specific)
+  .row > .col-md-6 > .form-group > button[type="submit"] {
+    margin-top: 0;
+  }
+}

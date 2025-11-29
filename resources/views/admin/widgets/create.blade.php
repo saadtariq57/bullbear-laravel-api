@@ -80,10 +80,10 @@
             </div>
 
             <!-- Submit Button -->
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
+                        <button type="submit" class="btn btn-success">
                             Create Widget
                         </button>
                     </div>
