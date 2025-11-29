@@ -52,6 +52,12 @@
                             <a href="{{ route('admin.symbols.index') }}" class="waves-effect d-flex align-items-center">
                                 <span>Symbols</span>
                             </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.symbols.create') }}" class="waves-effect d-flex align-items-center">
+                                <span>Add Symbol</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('admin.symbols.profiles') }}" class="waves-effect d-flex align-items-center">
                                 <span>Symbol Profiles</span>
@@ -79,7 +85,9 @@
                     </a>
                     <ul class="sub-menu">
                         <li><a href="{{ route('admin.exams.categories.index') }}">Exam Categories</a></li>
+                        <li><a href="{{ route('admin.exams.categories.create') }}">Add New Exam Category</a></li>
                         <li><a href="{{ route('admin.exams.index') }}">Exams</a></li>
+                        <li><a href="{{ route('admin.exams.create') }}">Add New Exam</a></li>
                         <li><a href="{{ route('admin.exams.results.index') }}">Exam Results</a></li>
                     </ul>
                 </li>
