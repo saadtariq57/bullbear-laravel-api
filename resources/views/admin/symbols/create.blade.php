@@ -14,60 +14,139 @@
         <form action="{{ route('admin.symbols.store') }}" method="POST">
             @csrf
 
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Please fix the following errors:</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="symbol">Symbol</label>
-                        <input type="text" class="form-control" name="symbol" id="symbol">
+                        <label for="symbol">Symbol <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('symbol') is-invalid @enderror" 
+                            name="symbol" 
+                            id="symbol"
+                            value="{{ old('symbol') }}"
+                            required
+                        >
+                        @error('symbol')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" id="name">
+                        <label for="name">Name <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('name') is-invalid @enderror" 
+                            name="name" 
+                            id="name"
+                            value="{{ old('name') }}"
+                            required
+                        >
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="exchange">Exchange</label>
-                        <input type="text" class="form-control" name="exchange">
+                        <label for="exchange">Exchange <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('exchange') is-invalid @enderror" 
+                            name="exchange"
+                            id="exchange"
+                            value="{{ old('exchange') }}"
+                            required
+                        >
+                        @error('exchange')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="currency">Currency</label>
-                        <input type="text" class="form-control" name="currency">
+                        <label for="currency">Currency <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('currency') is-invalid @enderror" 
+                            name="currency"
+                            id="currency"
+                            value="{{ old('currency') }}"
+                            required
+                        >
+                        @error('currency')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="cik_code">CIK Code</label>
-                        <input type="text" class="form-control" name="cik_code">
+                        <input 
+                            type="text" 
+                            class="form-control @error('cik_code') is-invalid @enderror" 
+                            name="cik_code"
+                            id="cik_code"
+                            value="{{ old('cik_code') }}"
+                        >
+                        @error('cik_code')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" name="country">
+                        <label for="country">Country <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('country') is-invalid @enderror" 
+                            name="country"
+                            id="country"
+                            value="{{ old('country') }}"
+                            required
+                        >
+                        @error('country')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="type">Type</label>
-                        <select class="form-control" name="type">
-                            <option value="stocks">Stocks</option>
-                            <option value="etf">ETF</option>
-                            <option value="indices">Indices</option>
-                            <option value="crypto">Crypto</option>
-                            <option value="futures">Futures</option>
-                            <option value="bonds">Bonds</option>
-                            <option value="trust">Trust</option>
-                            <option value="fund">Fund</option>
+                        <label for="type">Type <span class="text-danger">*</span></label>
+                        <select class="form-control @error('type') is-invalid @enderror" name="type" id="type" required>
+                            <option value="">Select Type</option>
+                            <option value="stocks" {{ old('type') == 'stocks' ? 'selected' : '' }}>Stocks</option>
+                            <option value="etf" {{ old('type') == 'etf' ? 'selected' : '' }}>ETF</option>
+                            <option value="indices" {{ old('type') == 'indices' ? 'selected' : '' }}>Indices</option>
+                            <option value="crypto" {{ old('type') == 'crypto' ? 'selected' : '' }}>Crypto</option>
+                            <option value="futures" {{ old('type') == 'futures' ? 'selected' : '' }}>Futures</option>
+                            <option value="bonds" {{ old('type') == 'bonds' ? 'selected' : '' }}>Bonds</option>
+                            <option value="trust" {{ old('type') == 'trust' ? 'selected' : '' }}>Trust</option>
+                            <option value="fund" {{ old('type') == 'fund' ? 'selected' : '' }}>Fund</option>
                         </select>
+                        @error('type')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="active">Active</label>
-                        <select class="form-control" name="active">
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
+                        <label for="active">Active <span class="text-danger">*</span></label>
+                        <select class="form-control @error('active') is-invalid @enderror" name="active" id="active" required>
+                            <option value="">Select Status</option>
+                            <option value="1" {{ old('active') == '1' || old('active') === null ? 'selected' : '' }}>Yes</option>
+                            <option value="0" {{ old('active') == '0' ? 'selected' : '' }}>No</option>
                         </select>
+                        @error('active')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
+                        <button type="submit" class="btn btn-success">
                             Create Symbol
                         </button>
                     </div>
