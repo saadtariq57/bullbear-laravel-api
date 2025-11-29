@@ -19,60 +19,142 @@
             @csrf
             @method('PUT')
 
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Please fix the following errors:</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="symbol">Symbol</label>
-                        <input type="text" class="form-control" name="symbol" value="{{$symbol->symbol}}">
+                        <label for="symbol">Symbol <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('symbol') is-invalid @enderror" 
+                            name="symbol" 
+                            id="symbol"
+                            value="{{ old('symbol', $symbol->symbol) }}"
+                            required
+                        >
+                        @error('symbol')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" value="{{$symbol->name}}">
+                        <label for="name">Name <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('name') is-invalid @enderror" 
+                            name="name" 
+                            id="name"
+                            value="{{ old('name', $symbol->name) }}"
+                            required
+                        >
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="exchange">Exchange</label>
-                        <input type="text" class="form-control" name="exchange" value="{{$symbol->exchange}}">
+                        <label for="exchange">Exchange <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('exchange') is-invalid @enderror" 
+                            name="exchange"
+                            id="exchange"
+                            value="{{ old('exchange', $symbol->exchange) }}"
+                            required
+                        >
+                        @error('exchange')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="currency">Currency</label>
-                        <input type="text" class="form-control" name="currency" value="{{$symbol->currency}}">
+                        <label for="currency">Currency <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('currency') is-invalid @enderror" 
+                            name="currency"
+                            id="currency"
+                            value="{{ old('currency', $symbol->currency) }}"
+                            required
+                        >
+                        @error('currency')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="cik_code">CIK Code</label>
-                        <input type="text" class="form-control" name="cik_code" value="{{$symbol->cik_code}}">
+                        <input 
+                            type="text" 
+                            class="form-control @error('cik_code') is-invalid @enderror" 
+                            name="cik_code"
+                            id="cik_code"
+                            value="{{ old('cik_code', $symbol->cik_code) }}"
+                        >
+                        @error('cik_code')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" name="country" value="{{$symbol->country}}">
+                        <label for="country">Country <span class="text-danger">*</span></label>
+                        <input 
+                            type="text" 
+                            class="form-control @error('country') is-invalid @enderror" 
+                            name="country"
+                            id="country"
+                            value="{{ old('country', $symbol->country) }}"
+                            required
+                        >
+                        @error('country')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="type">Type</label>
-                        <select class="form-control" name="type">
-                            <option value="stocks" {{ $symbol->type == 'stocks' ? 'selected' : '' }}>Stocks</option>
-                            <option value="etf" {{ $symbol->type == 'etf' ? 'selected' : '' }}>ETF</option>
-                            <option value="indices" {{ $symbol->type == 'indices' ? 'selected' : '' }}>Indices</option>
-                            <option value="crypto" {{ $symbol->type == 'crypto' ? 'selected' : '' }}>Crypto</option>
-                            <option value="futures" {{ $symbol->type == 'futures' ? 'selected' : '' }}>Futures</option>
-                            <option value="bonds" {{ $symbol->type == 'bonds' ? 'selected' : '' }}>Bonds</option>
-                            <option value="trust" {{ $symbol->type == 'trust' ? 'selected' : '' }}>Trust</option>
-                            <option value="fund" {{ $symbol->type == 'fund' ? 'selected' : '' }}>Fund</option>
+                        <label for="type">Type <span class="text-danger">*</span></label>
+                        <select class="form-control @error('type') is-invalid @enderror" name="type" id="type" required>
+                            <option value="">Select Type</option>
+                            <option value="stocks" {{ old('type', $symbol->type) == 'stocks' ? 'selected' : '' }}>Stocks</option>
+                            <option value="etf" {{ old('type', $symbol->type) == 'etf' ? 'selected' : '' }}>ETF</option>
+                            <option value="indices" {{ old('type', $symbol->type) == 'indices' ? 'selected' : '' }}>Indices</option>
+                            <option value="crypto" {{ old('type', $symbol->type) == 'crypto' ? 'selected' : '' }}>Crypto</option>
+                            <option value="futures" {{ old('type', $symbol->type) == 'futures' ? 'selected' : '' }}>Futures</option>
+                            <option value="bonds" {{ old('type', $symbol->type) == 'bonds' ? 'selected' : '' }}>Bonds</option>
+                            <option value="trust" {{ old('type', $symbol->type) == 'trust' ? 'selected' : '' }}>Trust</option>
+                            <option value="fund" {{ old('type', $symbol->type) == 'fund' ? 'selected' : '' }}>Fund</option>
                         </select>
+                        @error('type')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="active">Active</label>
-                        <select class="form-control" name="active">
-                            <option value="1" {{ $symbol->active ? 'selected' : '' }}>Yes</option>
-                            <option value="0" {{ !$symbol->active ? 'selected' : '' }}>No</option>
+                        <label for="active">Active <span class="text-danger">*</span></label>
+                        <select class="form-control @error('active') is-invalid @enderror" name="active" id="active" required>
+                            <option value="">Select Status</option>
+                            @php
+                                $activeValue = old('active', $symbol->active);
+                            @endphp
+                            <option value="1" {{ $activeValue == '1' || $activeValue == 1 ? 'selected' : '' }}>Yes</option>
+                            <option value="0" {{ $activeValue == '0' || $activeValue == 0 ? 'selected' : '' }}>No</option>
                         </select>
+                        @error('active')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
+                        <button type="submit" class="btn btn-success">
                             Save Changes
                         </button>
                     </div>
