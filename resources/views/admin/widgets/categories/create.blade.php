@@ -47,10 +47,10 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success float-right">
+                        <button type="submit" class="btn btn-success">
                             Create Category
                         </button>
                     </div>
@@ -61,28 +61,10 @@
 @endsection
 
 @section('scripts')
+    <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <!-- Sweet Alerts js -->
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('.delete-category').on('click', function() {
-                let categoryId = $(this).data('category-id');
-                
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).closest('form').submit();
-                    }
-                });
-            });
-        });
 
         @if(session('success'))
             <script>
@@ -105,5 +87,4 @@
                 });
             </script>
         @endif
-    </script>
 @endsection

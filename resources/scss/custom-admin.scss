@@ -250,3 +250,20 @@ form {
     margin-top: 0;
   }
 }
+
+// Center-align empty placeholders (dashes) in table cells
+body[data-sidebar=colored] {
+  .table {
+    td {
+      // Style for empty placeholder
+      .empty-placeholder {
+        color: #6c757d;
+      }
+      
+      // Center-align cells with empty-cell class (added via JavaScript)
+      &.empty-cell {
+        text-align: center !important;
+      }
+    }
+  }
+}

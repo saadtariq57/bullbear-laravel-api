@@ -99,20 +99,20 @@
                                                     </div>
                                                 @endif
                                                 <div>
-                                                    <div class="fw-medium">{{ $result->user->name ?? 'N/A' }}</div>
-                                                    <small class="text-muted">{{ $result->user->email ?? 'N/A' }}</small>
+                                                    <div class="fw-medium">{!! $result->user->name ?? '<span class="empty-placeholder">—</span>' !!}</div>
+                                                    <small class="text-muted">{!! $result->user->email ?? '<span class="empty-placeholder">—</span>' !!}</small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="fw-medium">{{ $result->exam->title ?? 'N/A' }}</div>
+                                            <div class="fw-medium">{!! $result->exam->title ?? '<span class="empty-placeholder">—</span>' !!}</div>
                                             @if($result->exam)
-                                                <small class="text-muted">{{ $result->exam->category ?? 'N/A' }}</small>
+                                                <small class="text-muted">{!! $result->exam->category ?? '<span class="empty-placeholder">—</span>' !!}</small>
                                             @endif
                                         </td>
-                                        <td>{{ \Carbon\Carbon::parse($result->exam_date)->format('M d, Y') }}</td>
-                                        <td>{{ $result->total_questions }}</td>
-                                        <td>{{ $result->correct_answers }}</td>
+                                        <td>{!! $result->exam_date ? \Carbon\Carbon::parse($result->exam_date)->format('M d, Y') : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $result->total_questions ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $result->correct_answers ?? '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <span class="fw-bold">{{ number_format($result->percentage, 2) }}%</span>
                                         </td>

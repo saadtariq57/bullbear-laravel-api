@@ -20,7 +20,7 @@
 @section('content')
     <!-- Start your content -->
     <div class="row">
-        <form action="{{ route('admin.widget.categories.update', $category->id) }}" method="POST">
+        <form action="{{ route('admin.widgets.categories.update', $category->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -48,10 +48,10 @@
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary float-right">
+                        <button type="submit" class="btn btn-primary">
                             Update Category
                         </button>
                     </div>
@@ -62,30 +62,11 @@
     <!-- End your content -->
 @endsection
 
-
 @section('scripts')
+    <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <!-- Sweet Alerts js -->
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('.delete-group').on('click', function() {
-                let groupId = $(this).data('group-id');
-                
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $(this).closest('form').submit();
-                    }
-                });
-            });
-        });
 
         @if(session('success'))
             <script>

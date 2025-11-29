@@ -50,30 +50,25 @@
                             <tbody>
                                 @foreach($posts as $post)
                                     <tr>
-                                        <td>{{ $post->user->name ?? 'N/A' }}</td>
-                                        <td>{{ $post->group_id ? 'Group ' . $post->group_id : 'N/A' }}</td>
-                                        <td>{{ Str::limit($post->post_text, 50) }}</td>
-                                        <td>{{ ucfirst($post->post_type) }}</td>
+                                        <td>{!! $post->user->name ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $post->group_id ? 'Group ' . $post->group_id : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $post->post_text ? Str::limit($post->post_text, 50) : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $post->post_type ? ucfirst($post->post_type) : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>{{ $post->active ? 'Yes' : 'No' }}</td>
-                                        <td>{{ $post->created_at }}</td>
-                                        <td>{{ $post->updated_at }}</td>
+                                        <td>{!! $post->created_at ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $post->updated_at ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
-                                                    <a href="{{ route('admin.posts.edit', $post) }}" class="px-2 text-primary">
-                                                        <i class="ri-pencil-line font-size-18"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="{{ route('admin.posts.view', $post) }}" class="px-2 text-info">
+                                                    <a href="{{ route('admin.posts.view', $post->id) }}" class="px-2 text-info" title="View Post">
                                                         <i class="ri-eye-line font-size-18"></i>
                                                     </a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <form action="{{route('admin.posts.destroy', $post->id)}}" method="POST">
+                                                    <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button class="btn btn-danger delete-post" type="button" data-post-id="{{ $post->id }}">
+                                                        <button class="btn btn-danger btn-sm delete-post" type="button" data-post-id="{{ $post->id }}" title="Delete Post">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
                                                     </form>
@@ -104,10 +99,11 @@
         $(document).ready(function() {
             $('.delete-post').on('click', function() {
                 let postId = $(this).data('post-id');
+                let form = $(this).closest('form');
                 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "You won't be able to revert this! This will permanently delete the post.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -115,7 +111,7 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $(this).closest('form').submit();
+                        form.submit();
                     }
                 });
             });

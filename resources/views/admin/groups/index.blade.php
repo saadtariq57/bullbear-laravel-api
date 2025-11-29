@@ -67,15 +67,19 @@
                                         <tr>
                                             <td>{{ $group->id }}</td>
                                             <td>
-                                                <img src="{{ URL::asset('uploads/' . $group->avatar) }}" alt="" class="avatar-xs rounded-circle">
+                                                @if($group->avatar)
+                                                    <img src="{{ URL::asset('uploads/' . $group->avatar) }}" alt="" class="avatar-xs rounded-circle">
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
                                             </td>
-                                            <td></td>
-                                            <td>{{ $group->group_name }}</td>
-                                            <td>{{ ucfirst($group->join_privacy) }}</td>
+                                            <td><span class="empty-placeholder">—</span></td>
+                                            <td>{!! $group->group_name ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $group->join_privacy ? ucfirst($group->join_privacy) : '<span class="empty-placeholder">—</span>' !!}</td>
                                             <td>{{ $group->active == 0 ? 'Inactive' : 'Active' }}</td>
-                                            <td>{{ $group->symbol }}</td>
-                                            <td>{{ $group->exchange }}</td>
-                                            <td>{{ $group->members_count }}</td>
+                                            <td>{!! $group->symbol ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $group->exchange ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $group->members_count ?? '<span class="empty-placeholder">—</span>' !!}</td>
                                             <td>
                                                 <ul class="list-inline mb-0">
                                                     <!-- Existing Edit Action -->

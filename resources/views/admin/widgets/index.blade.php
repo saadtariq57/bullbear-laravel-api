@@ -62,14 +62,14 @@
                                                         <label class="form-check-label" for="widgetcheck-{{ $widget->id }}"></label>
                                                     </div>
                                                 </th>
-                                                <td>{{ $widget->widget_type }}</td>
-                                                <td>{{ $widget->created_at }}</td>
-                                                <td>{{ $widget->layout }}</td>
-                                                <td>{{ $widget->widget_title }}</td>
-                                                <td>{{ $widget->category->name ?? 'N/A' }}</td>
-                                                <td>{{ $widget->display_order }}</td>
-                                                <td>{{ $widget->widget_width }}</td>
-                                                <td>{{ $widget->widget_height }}</td>
+                                                <td>{!! $widget->widget_type ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->created_at ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->layout ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->widget_title ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->category->name ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->display_order ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->widget_width ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                                <td>{!! $widget->widget_height ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                                 <td>
                                                     <ul class="list-inline mb-0">
                                                         <li class="list-inline-item">

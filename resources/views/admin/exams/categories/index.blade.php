@@ -54,8 +54,8 @@
                                 @foreach($categories as $category)
                                     <tr>
                                         <td>{{ $category->id }}</td>
-                                        <td><a href="#" class="text-body">{{ $category->name }}</a></td>
-                                        <td>{{ $category->description }}</td>
+                                        <td><a href="#" class="text-body">{!! $category->name ?: '<span class="empty-placeholder">—</span>' !!}</a></td>
+                                        <td>{!! $category->description ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

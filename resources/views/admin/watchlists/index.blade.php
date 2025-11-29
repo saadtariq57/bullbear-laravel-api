@@ -68,12 +68,12 @@
                                             </div>
                                         </th>
                                         <td>{{ $watchlist->id }}</td>
-                                        <td>{{ $watchlist->title }}</td>
-                                        <td>{{ $watchlist->user->name ?? 'N/A' }}</td>
-                                        <td>{{ $watchlist->who_can_view }}</td>
+                                        <td>{!! $watchlist->title ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $watchlist->user->name ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $watchlist->who_can_view ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>{{ $watchlist->featured ? 'Yes' : 'No' }}</td>
-                                        <td>{{ $watchlist->symbol_count }}</td>
-                                        <td>{{ $watchlist->position }}</td>
+                                        <td>{!! $watchlist->symbol_count ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $watchlist->position ?? '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

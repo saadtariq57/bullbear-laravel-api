@@ -51,8 +51,8 @@ class PostController extends Controller
 
     public function view($postId)
     {
-        $post = Post::findOrFail($postId); 
-        // Additional logic to retrieve any related data if needed
+        $post = Post::with(['user', 'photos', 'poll.options', 'coloredPost', 'comments.user', 'reactions.reactionType'])
+                    ->findOrFail($postId); 
 
         return view('admin.posts.show', compact('post'));
     }
@@ -879,6 +879,48 @@ class PostController extends Controller
 
         // Redirect back with a success message
         return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully');
+    }
+
+    /**
+     * Remove the specified post from storage.
+     */
+    public function destroy(Post $post)
+    {
+        // Handle associated data based on post type
+        switch ($post->post_type) {
+            case 'poll':
+                // Delete poll options and votes
+                if ($post->poll) {
+                    $post->poll->options()->delete();
+                    $post->poll->userVotes()->delete();
+                    $post->poll->delete();
+                }
+                break;
+
+            case 'photo':
+                // Delete associated photos
+                foreach ($post->photos as $photo) {
+                    Storage::disk('public')->delete($photo->image);
+                    $photo->delete();
+                }
+                break;
+
+            case 'link':
+                // Optionally, delete link images if stored
+                if ($post->post_link_image) {
+                    Storage::disk('public')->delete($post->post_link_image);
+                }
+                break;
+        }
+
+        // Delete comments and reactions
+        $post->comments()->delete();
+        $post->reactions()->delete();
+
+        // Delete the main post
+        $post->delete();
+
+        return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully');
     }
     public function editComment(Request $request)
     {

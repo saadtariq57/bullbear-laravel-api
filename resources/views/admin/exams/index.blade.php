@@ -103,19 +103,19 @@
                                         <td>
                                             <a href="#" class="text-body">{{ $exam->title }}</a>
                                         </td>
-                                        <td>{{ $exam->category ?? 'N/A' }}</td>
+                                        <td>{!! $exam->category ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             @if($exam->type === 'basic')
                                                 <span class="badge badge-basic">Basic</span>
                                             @elseif($exam->type === 'advanced')
                                                 <span class="badge badge-advanced">Advanced</span>
                                             @else
-                                                <span class="badge bg-secondary">N/A</span>
+                                                <span class="badge bg-secondary">{!! '<span class="empty-placeholder">—</span>' !!}</span>
                                             @endif
                                         </td>
-                                        <td>{{ Str::limit($exam->description, 50) }}</td>
-                                        <td>{{ $exam->number_of_questions }}</td>
-                                        <td>{{ $exam->per_question_time_limit }} seconds</td>
+                                        <td>{!! $exam->description ? Str::limit($exam->description, 50) : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $exam->number_of_questions ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $exam->per_question_time_limit ? $exam->per_question_time_limit . ' seconds' : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

@@ -70,9 +70,9 @@
                                 @forelse($reports as $report)
                                     <tr>
                                         <td>{{ $report->id }}</td>
-                                        <td>{{ $report->title }}</td>
-                                        <td>{{ $report->category->name }}</td>
-                                        <td>{{ Str::limit($report->description, 50) }}</td>
+                                        <td>{!! $report->title ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $report->category->name ?? '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $report->description ? Str::limit($report->description, 50) : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

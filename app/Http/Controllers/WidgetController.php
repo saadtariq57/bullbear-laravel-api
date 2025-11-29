@@ -1492,7 +1492,8 @@ class WidgetController extends Controller
 
     public function categoriesEdit(WidgetCategory $category)
     {
-        return view('admin.widgets.categories.edit', compact('category'));
+        $categories = WidgetCategory::where('id', '!=', $category->id)->get();
+        return view('admin.widgets.categories.edit', compact('category', 'categories'));
     }
 
     public function categoriesUpdate(Request $request, WidgetCategory $category)

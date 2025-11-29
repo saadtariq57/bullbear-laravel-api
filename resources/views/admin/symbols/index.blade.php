@@ -91,13 +91,13 @@
                                                     <label class="form-check-label" for="symbolcheck-{{ $symbol->id }}"></label>
                                                 </div>
                                             </th>
-                                            <td>{{ $symbol->symbol }}</td>
-                                            <td>{{ $symbol->name }}</td>
-                                            <td>{{ $symbol->exchange }}</td>
-                                            <td>{{ $symbol->currency }}</td>
-                                            <td>{{ $symbol->country }}</td>
-                                            <td>{{ $symbol->cik_code }}</td>
-                                            <td>{{ $symbol->type }}</td>
+                                            <td>{!! $symbol->symbol ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->name ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->exchange ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->currency ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->country ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->cik_code ?: '<span class="empty-placeholder">—</span>' !!}</td>
+                                            <td>{!! $symbol->type ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                             <td>{{ $symbol->active ? 'Yes' : 'No' }}</td>
                                             <td>
                                                 <ul class="list-inline mb-0">

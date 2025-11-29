@@ -67,10 +67,14 @@
                                                 </div>
                                             </th>
                                             <td>
-                                                <img src="{{ URL::asset('uploads/' . $user->avatar) }}" alt="" class="avatar-xs rounded-circle me-2">
-                                                <a href="#" class="text-body">{{ $user->name }}</a>
+                                                @if($user->avatar)
+                                                    <img src="{{ URL::asset('uploads/' . $user->avatar) }}" alt="" class="avatar-xs rounded-circle me-2">
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                                <a href="#" class="text-body">{!! $user->name ?: '<span class="empty-placeholder">—</span>' !!}</a>
                                             </td>
-                                            <td>{{ $user->email }}</td>
+                                            <td>{!! $user->email ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                             <td>
                                                 <span class="badge bg-{{ $user->type === 'admin' ? 'danger' : ($user->type === 'bot' ? 'warning' : 'primary') }}">
                                                     {{ ucfirst($user->type) }}

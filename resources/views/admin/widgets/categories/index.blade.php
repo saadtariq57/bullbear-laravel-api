@@ -60,9 +60,9 @@
                                 @foreach($categories as $category)
                                     <tr>
                                         <td>{{ $category->id }}</td>
-                                        <td><a href="#" class="text-body">{{ $category->name }}</a></td>
-                                        <td>{{ Str::limit($category->description, 50) }}</td>
-                                        <td>{{ $category->parent ? $category->parent->name : 'N/A' }}</td>
+                                        <td><a href="#" class="text-body">{!! $category->name ?: '<span class="empty-placeholder">—</span>' !!}</a></td>
+                                        <td>{!! $category->description ? Str::limit($category->description, 50) : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $category->parent ? $category->parent->name : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
@@ -99,12 +99,16 @@
 @endsection
 
 @section('scripts')
+    <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <!-- Sweet Alerts js -->
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    
     <script>
         $(document).ready(function() {
             $('.delete-category').on('click', function() {
                 let categoryId = $(this).data('category-id');
+                let form = $(this).closest('form');
                 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -116,32 +120,32 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $(this).closest('form').submit();
+                        form.submit();
                     }
                 });
             });
         });
-
-        @if(session('success'))
-            <script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: '{{ session("success") }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
-
-        @if(session('error'))
-            <script>
-                Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session("error") }}',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
     </script>
+
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session("success") }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session("error") }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection

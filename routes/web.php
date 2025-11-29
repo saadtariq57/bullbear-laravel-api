@@ -243,7 +243,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('{post}', [PostController::class, 'destroy'])->name('destroy');
             Route::get('search', [PostController::class, 'search'])->name('search');
             // Additional routes for post management can be added here
-            Route::get('view/{post}', [PostController::class, 'view'])->name('view');
+            Route::get('view/{postId}', [PostController::class, 'view'])->name('view');
         });
 
         // Route group for SubscriptionPlanController

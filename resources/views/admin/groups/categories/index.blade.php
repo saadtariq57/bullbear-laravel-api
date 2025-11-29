@@ -60,8 +60,8 @@
                                 @foreach($categories as $category)
                                     <tr>
                                         <td>{{ $category->id }}</td>
-                                        <td><a href="#" class="text-body">{{ $category->name }}</a></td>
-                                        <td>{{ Str::limit($category->about, 50) }}</td>
+                                        <td><a href="#" class="text-body">{!! $category->name ?: '<span class="empty-placeholder">—</span>' !!}</a></td>
+                                        <td>{!! $category->about ? Str::limit($category->about, 50) : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">

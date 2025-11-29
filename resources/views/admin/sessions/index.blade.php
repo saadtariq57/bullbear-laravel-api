@@ -65,9 +65,9 @@
                                 @forelse($sessions as $session)
                                     <tr>
                                         <td>{{ $session->id }}</td>
-                                        <td>{{ $session->user->name }} ({{ $session->user->email }})</td>
-                                        <td>{{ \Carbon\Carbon::parse($session->scheduled_at)->format('F d, Y h:i A') }}</td>
-                                        <td>{{ $session->meet_link }}</td>
+                                        <td>{!! $session->user ? ($session->user->name ?? '<span class="empty-placeholder">—</span>') . ' (' . ($session->user->email ?? '<span class="empty-placeholder">—</span>') . ')' : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $session->scheduled_at ? \Carbon\Carbon::parse($session->scheduled_at)->format('F d, Y h:i A') : '<span class="empty-placeholder">—</span>' !!}</td>
+                                        <td>{!! $session->meet_link ?: '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <span class=" 
                                                 @if($session->status == 'pending') badge-warning 
@@ -75,10 +75,10 @@
                                                 @elseif($session->status == 'completed') badge-secondary 
                                                 @elseif($session->status == 'cancelled') badge-danger 
                                                 @else badge-light @endif">
-                                                {{ ucfirst($session->status) }}
+                                                {!! $session->status ? ucfirst($session->status) : '<span class="empty-placeholder">—</span>' !!}
                                             </span>
                                         </td>
-                                        <td>{{ ucfirst(str_replace('_', ' ', $session->feature)) }}</td>
+                                        <td>{!! $session->feature ? ucfirst(str_replace('_', ' ', $session->feature)) : '<span class="empty-placeholder">—</span>' !!}</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
