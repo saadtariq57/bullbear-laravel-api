@@ -99,6 +99,9 @@ Route::middleware(['auth'])->group(function () {
             // Questions Routes
             Route::match(['get', 'post'], '{exam}/add_questions', [ExamController::class, 'addQuestions'])->name('add_questions');
 
+            // Results Routes
+            Route::get('results', [ExamController::class, 'resultsIndex'])->name('results.index');
+
             // Categories Routes
             Route::get('categories', [ExamController::class, 'categoriesIndex'])->name('categories.index');
             Route::get('categories/create', [ExamController::class, 'categoriesCreate'])->name('categories.create');

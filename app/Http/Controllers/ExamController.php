@@ -262,6 +262,31 @@ class ExamController extends Controller
     // Admin panel Routes Below
 
     /**
+     * Display a listing of exam results for admin.
+     */
+    public function resultsIndex(Request $request)
+    {
+        $search = $request->query('search');
+        
+        $query = ExamResult::with(['user', 'exam'])
+            ->orderBy('exam_date', 'desc');
+
+        // Search functionality
+        if ($search) {
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%");
+            })->orWhereHas('exam', function($q) use ($search) {
+                $q->where('title', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $results = $query->paginate(15);
+
+        return view('admin.exams.results.index', compact('results'));
+    }
+
+    /**
      * Display a listing of the resource.
      */
 

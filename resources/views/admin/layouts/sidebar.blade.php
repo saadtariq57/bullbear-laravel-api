@@ -80,7 +80,7 @@
                     <ul class="sub-menu">
                         <li><a href="{{ route('admin.exams.categories.index') }}">Exam Categories</a></li>
                         <li><a href="{{ route('admin.exams.index') }}">Exams</a></li>
-                        <li><a href="#">Exam Results</a></li>
+                        <li><a href="{{ route('admin.exams.results.index') }}">Exam Results</a></li>
                     </ul>
                 </li>
 
