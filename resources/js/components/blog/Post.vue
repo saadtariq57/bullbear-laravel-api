@@ -770,6 +770,14 @@ export default {
   align-items: center;
   gap: 0.5rem;
 }
+.new-comment textarea.form-control {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  color: #212529;
+  min-height: 120px;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+}
 .smooth-transition {
   transition: top 0.6s ease, position 0.5s ease;
 }

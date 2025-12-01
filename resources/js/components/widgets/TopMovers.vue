@@ -164,10 +164,12 @@ export default {
     const stocks = ref([]);
     const loading = ref(false);
     const error = ref(null);
+    const tooltipInstances = ref([]);
 
     const setActiveTab = (tab) => {
+      // Hide any visible tooltips when switching tabs/breadcrumbs
+      hideAllTooltips();
       activeTab.value = tab;
-      fetchStockData(tab);
     };
 
     const fetchStockData = async (type) => {
@@ -222,8 +224,34 @@ export default {
     };
 
     const initializeTooltips = () => {
-      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
+      // Dispose previously created tooltip instances
+      hideAllTooltips(true);
+
+      const tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+
+      tooltipInstances.value = tooltipTriggerList.map(
+        (el) => new Tooltip(el)
+      );
+    };
+
+    const hideAllTooltips = (dispose = false) => {
+      if (!tooltipInstances.value) return;
+      tooltipInstances.value.forEach((instance) => {
+        if (!instance) return;
+        try {
+          instance.hide();
+          if (dispose && typeof instance.dispose === 'function') {
+            instance.dispose();
+          }
+        } catch (e) {
+          console.error('Error hiding tooltip:', e);
+        }
+      });
+      if (dispose) {
+        tooltipInstances.value = [];
+      }
     };
 
     onMounted(() => {
