@@ -1,5 +1,5 @@
 <template>
-  <div class="border-primary pt-4 pb-2 px-3 border mb-2 rounded-1" style="background-color: #ffb8001a">
+  <div class="risk-disclaimer border-primary pt-4 pb-2 px-3 border mb-2 rounded-1">
     <h1 class="fw-6 fs-5 text-secondary">
       <img src="/build/images/alert-icon.png" alt="" width="20" height="20"
         class="align-top">
@@ -21,5 +21,9 @@ export default {
 </script>
 
 <style scoped>
-/* Add any specific styles if necessary */
+.risk-disclaimer {
+  background-color: #ffb8001a;
+  width: 100%;
+  box-sizing: border-box;
+}
 </style>
