@@ -241,8 +241,7 @@ export default {
     async stripePaymentMethod() {
       try {
         // Load Stripe
-        this.stripe = await loadStripe('pk_test_51Hwe7XJYG6q3yq60zNuah9X3DSCMF4142Y43Ufsz2KlZJpz1cLTKzrMkUMlFB3OATwluVbqWdzqrp2unJOAUt5Gg00EipuAVQa');
-
+        this.stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
         if (!this.stripe) {
           throw new Error('Stripe failed to load.');
         }
