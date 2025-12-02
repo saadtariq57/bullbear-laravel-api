@@ -218,6 +218,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/joined-chats', [GroupController::class, 'joinedChats']);
     Route::get('/joined-chats-share', [GroupController::class, 'joinedChatsShare']);
     Route::post('/groups/join/{groupId}', [GroupController::class, 'joinGroup']);
+    Route::post('/groups/{groupId}/leave', [GroupController::class, 'leaveGroup']);
     Route::get('/groups/{id}', [GroupController::class, 'getGroupById']);
     Route::post('/group-cover-position', [GroupController::class, 'groupCoverPosition']);
     Route::post('/uploadGroupCover', [GroupController::class, 'updateGroupCover']);

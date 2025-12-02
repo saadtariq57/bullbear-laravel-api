@@ -115,6 +115,29 @@ class GroupController extends Controller
         return response()->json(['message' => 'Member removed successfully.']);
     }
 
+    /**
+     * Allow the currently authenticated user to leave a group.
+     */
+    public function leaveGroup(Request $request, $groupId)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $group = Group::find($groupId);
+        if (!$group) {
+            return response()->json(['message' => 'Group not found'], 404);
+        }
+
+        $group->members()->detach($user->id);
+
+        return response()->json([
+            'message' => 'You have left the group.',
+            'id' => $group->id,
+        ]);
+    }
+
     public function joinGroup(Request $request, $groupId)
     {
         $user = $request->user();

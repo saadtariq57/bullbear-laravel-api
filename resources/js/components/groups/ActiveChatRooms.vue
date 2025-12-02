@@ -108,16 +108,27 @@
                   <span v-if="chat.requestPending">Request Pending</span>
                   <span v-else>Join Group</span>
                 </button>
-                <a
-                  v-else
-                  :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`"
-                  class="btn btn-success btn-sm w-100 mt-2"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Visit Chat Room"
-                >
-                  Visit Chat Room
-                </a>
+                <template v-else>
+                  <a
+                    :href="`/groups/${chat.id}/${formatGroupName(chat.group_title)}`"
+                    class="btn btn-success btn-sm w-100 mt-2"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Visit Chat Room"
+                  >
+                    Visit Chat Room
+                  </a>
+                  <button
+                    v-if="joined"
+                    @click="leaveGroup(chat)"
+                    class="btn btn-outline-danger btn-sm w-100 mt-2"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Leave this group"
+                  >
+                    Leave Group
+                  </button>
+                </template>
               </template>
             </div>
           </div>
@@ -287,6 +298,50 @@ export default {
             title: 'Failed to join the chat. Please try again.',
           });
         });
+    },
+    leaveGroup(chat) {
+      if (!chat.joined) return;
+
+      Swal.fire({
+        title: 'Leave this group?',
+        text: 'You will no longer receive messages from this chat room.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, leave group',
+      }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        axios
+          .post(`/api/groups/${chat.id}/leave`)
+          .then(() => {
+            chat.joined = false;
+            chat.requestPending = false;
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              width: '400px',
+              timer: 2000,
+              timerProgressBar: true,
+              icon: 'success',
+              title: 'You have left the group.',
+            });
+          })
+          .catch(() => {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              width: '400px',
+              timer: 2000,
+              timerProgressBar: true,
+              icon: 'error',
+              title: 'Failed to leave the group. Please try again.',
+            });
+          });
+      });
     },
     formatGroupName(groupTitle) {
       return groupTitle.replace(/ /g, '-').toLowerCase();
