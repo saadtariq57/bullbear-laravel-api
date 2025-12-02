@@ -1,5 +1,4 @@
 import GroupService from '../services/groupService';
-import UserFeedService from '../services/userFeedService'
 import ablyService from '../services/ablyService.js';
 
 const userGroupModule = {
@@ -28,7 +27,17 @@ const userGroupModule = {
     }),
     mutations: {
         setGroup(state, groupData){
-            state.groupData = groupData;
+            // Preserve join status if it was already set (from joinedChats)
+            const existingJoinStatus = {
+                isJoined: state.groupData?.isJoined,
+                requestPending: state.groupData?.requestPending,
+            };
+            state.groupData = {
+                ...groupData,
+                // Only preserve join status if API response doesn't include it
+                isJoined: groupData.isJoined !== undefined ? groupData.isJoined : existingJoinStatus.isJoined,
+                requestPending: groupData.requestPending !== undefined ? groupData.requestPending : existingJoinStatus.requestPending,
+            };
         },
         setJoinedStatus(state, payload) {
             state.groupData.isJoined = payload.joined;
@@ -106,6 +115,9 @@ const userGroupModule = {
         },
         setError(state, error) {
             state.error = error;
+        },
+        setAllMessagesLoaded(state, loaded) {
+            state.allMessagesLoaded = loaded;
         }
     },
     actions: {
@@ -156,6 +168,7 @@ const userGroupModule = {
         },
         async fetchJoinedChats({ commit, state}, { userName = null, page = 1 } = {}) {
             commit('setLoading', true);
+            commit('setLoadingJoinedChats', true);
             try {
                 const per_page = state.perPage;
                 const chats = await GroupService.fetchJoinedChats(userName, page, per_page);
@@ -174,6 +187,8 @@ const userGroupModule = {
         },
         async fetchMessages({ commit, rootState }, groupId) {
           commit('setLoading', true);
+          commit('setMessages', []); // Clear previous messages when switching groups
+          commit('setAllMessagesLoaded', false);
           try {
             let messages;
               messages = await GroupService.fetchGroupMessages(groupId);
@@ -205,8 +220,10 @@ const userGroupModule = {
                 const messageData = { text, userId, replyTo };
                 const message = await GroupService.sendMessage(groupId, messageData);
                 commit('addMessage', message.data);
+                return message;
             } catch (error) {
                 console.error('Error sending message:', error);
+                throw error;
             }
         },
         async editMessage({commit}, { groupId, messageId, newText } ){
@@ -216,6 +233,7 @@ const userGroupModule = {
 
             } catch(error) {
                 console.error('Error updateing message:', error)
+                throw error;
             }
         },
         async deleteMessage({commit}, {messageId}){
@@ -224,6 +242,7 @@ const userGroupModule = {
                 commit('deleteMessage', messageId);
             } catch (error) {
                 console.error('Error Deleting Message' , error);
+                throw error;
             }
         },
         initializeRealTimeMessages({commit, rootState}, groupId){
@@ -234,6 +253,12 @@ const userGroupModule = {
                         commit('addMessage', message.data);
                     }
                   });
+            });
+        },
+        unsubscribeFromGroupChat({ rootState }, groupId) {
+            if (!rootState.loggedIn || !rootState.userData) return;
+            ablyService.initializeAbly().then(() => {
+                ablyService.unsubscribeFromGroupChat(groupId);
             });
         }
     },
@@ -260,3 +285,4 @@ const userGroupModule = {
 };
 
 export default userGroupModule;
+

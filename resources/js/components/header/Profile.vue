@@ -22,6 +22,58 @@
             </ul>
         </div>
 
+        <!-- Message Notifications (Desktop) -->
+        <div class="btn-group btn-drps d-none d-xl-block">
+            <button
+                type="button"
+                class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0"
+                data-bs-toggle="dropdown"
+            >
+                <i class="bi bi-chat-dots fs-4"></i>
+                <span class="notification-count" v-if="unreadMessagesCount > 0">{{ unreadMessagesCount }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end m-0 p-0 message_dropdown">
+                <li
+                    v-for="message in formattedMessages"
+                    :key="message.id || message.message_id"
+                    class="py-2 px-3 position-relative"
+                    :class="{ 'unread-notification-wrapper': !message.read_at }"
+                >
+                    <span
+                        v-if="!message.read_at"
+                        class="unread-nav-notification position-absolute rounded-circle"
+                    ></span>
+                    <a
+                        @click.prevent="handleMessageNotificationClick(message)"
+                        :href="message.url"
+                        class="dropdown-item d-flex gap-3 align-items-center p-0"
+                    >
+                        <img
+                            :src="'/uploads/' + message.user.avatar"
+                            alt=""
+                            width="45"
+                            height="45"
+                            class="rounded-circle"
+                        >
+                        <div>
+                            <h6 class="text-uppercase fs-6 fw-6 text-cta mb-0">
+                                {{ message.user.name }}
+                            </h6>
+                            <p class="mb-0 fs-12 fw-5 text-wrap text-oneline">
+                                {{ message.preview }}
+                            </p>
+                            <div class="fs-6 fw-5">
+                                {{ message.formattedTime }}
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="py-0 see-all">
+                    <a href="/messages" class="dropdown-item text-center py-2">See All</a>
+                </li>
+            </ul>
+        </div>
+
         <!-- General Notifications -->
         <div class="btn-group btn-drps d-none d-xl-block">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
@@ -98,13 +150,28 @@ export default {
     computed: {
         ...mapState(['userData']),
         ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
-        ...mapState('userNotification', ['followers', 'notifications']),
+        ...mapState('userNotification', ['followers', 'notifications', 'messages']),
         unreadCount() {
             try {
                 return this.notifications.filter(n => !n.read_at).length;
             } catch (e) {
                 return 0;
             }
+        },
+        unreadMessagesCount() {
+            try {
+                return this.messages.filter(m => !m.read_at).length;
+            } catch (e) {
+                return 0;
+            }
+        },
+        formattedMessages() {
+            return (this.messages || []).map(message => {
+                return {
+                    ...message,
+                    formattedTime: formatNotificationTime(message.last_message_time),
+                };
+            });
         },
         formattedNotifications() {
             return this.notifications.map(notification => {
@@ -124,6 +191,14 @@ export default {
                 this.markNotificationAsRead(notification.id);
             }
             window.location.href = notification.url;
+        },
+
+        handleMessageNotificationClick(message) {
+            if (!message.read_at) {
+                this.markNotificationAsRead(message.id);
+            }
+            const url = new URL(message.url, window.location.origin);
+            window.location.href = url.pathname + url.search + url.hash;
         },
 
         handleGeneralNotificationClick(notification) {

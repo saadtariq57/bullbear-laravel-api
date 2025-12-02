@@ -4,29 +4,29 @@
       <div class="row">
         <!-- Profile Completion Widget -->
         <div class="col-12">
-          <ProfileCompletionWidget
-            v-if="completionPercentage < 100"
-            :completionPercentage="completionPercentage"
-            :profileSteps="profileSteps"
-          />
+        <ProfileCompletionWidget
+          v-if="completionPercentage < 100"
+          :completionPercentage="completionPercentage"
+          :profileSteps="profileSteps"
+        />
         </div>
 
         <!-- Info Widget -->
         <div class="col-12 mt-3">
-          <InfoWidget
-            :userProfileData="userProfileData"
-            :userOnline="userOnline"
-          />
+        <InfoWidget
+          :userProfileData="userProfileData"
+          :userOnline="userOnline"
+        />
         </div>
 
         <!-- Suggested Traders To Follow Widget -->
         <div class="col-12 mt-3">
-          <SuggestedTradersWidget />
-        </div>
+        <SuggestedTradersWidget />
+      </div>
 
-        <!-- Risk Disclaimer -->
+      <!-- Risk Disclaimer -->
         <div class="col-12 mt-3">
-          <RiskDisclaimer />
+      <RiskDisclaimer />
         </div>
       </div>
 

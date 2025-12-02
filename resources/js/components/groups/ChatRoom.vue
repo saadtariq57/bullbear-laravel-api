@@ -5,7 +5,7 @@
           <div>
             <div class="all_chats">
               <h2 class="fs-2 fw-bold icon-heading">Chats</h2>
-              <form action="">
+              <form @submit.prevent>
                 <input v-model="searchQuery" type="search" placeholder="search group" class="search_group">
               </form>
               <div class="all_groups">
@@ -52,7 +52,7 @@
                 </div>
               </div>
               <div class="chat_body">
-                <LiveChat v-if="selectedGroup" :groupId="selectedGroup.group_id" />
+                <LiveChat v-if="selectedGroup" :groupId="selectedGroup.actualId" />
               </div>
             </div>
           </div>
@@ -72,6 +72,17 @@ export default {
   components: {
     LiveChat
   },
+  beforeCreate() {
+    // Ensure the Vuex modules needed for chats are registered
+    if (!this.$store.hasModule('UserGroups')) {
+      registerVuexModule('UserGroups', userGroupsModule);
+      this.moduleRegistered = true;
+    }
+    // This module powers the live chat (messages, groupData, join status)
+    if (!this.$store.hasModule('userGroup')) {
+      registerVuexModule('userGroup', userGroupsModule);
+    }
+  },
   data() {
     return {
       selectedGroup: null,
@@ -90,12 +101,8 @@ export default {
     }
   },
   created() {
-    // Register the UserGroups module if not already registered
-    if (!this.$store.hasModule('UserGroups')) {
-      registerVuexModule('UserGroups', userGroupsModule);
-      this.moduleRegistered = true;
-    }
-    this.fetchJoinedChats();
+    // Fetch user's joined chats
+    this.fetchJoinedChats()
   },
   watch: {
     joinedChats(newChats) {
@@ -113,7 +120,31 @@ export default {
       chat.avatarFailed = true;
     },
     selectGroup(chat) {
-      this.selectedGroup = chat;  // Set the selectedGroup when a group card is clicked
+      if (!chat) return;
+      // Prefer the real group id (chat.id); fallback to group_id if necessary
+      const actualId =
+        chat.id != null
+          ? Number(chat.id)
+          : chat.group_id != null
+          ? Number(chat.group_id)
+          : null;
+
+      if (!actualId) return;
+
+      // Cache the resolved group id on the selected group object
+      this.selectedGroup = {
+        ...chat,
+        actualId,
+      };
+
+      // Set join status immediately from the joinedChats data
+      this.$store.commit('userGroup/setJoinedStatus', {
+        joined: !!chat.joined,
+        requestPending: !!chat.requestPending,
+      });
+
+      // Load full group data into the userGroup store so LiveChat works correctly
+      this.$store.dispatch('userGroup/fetchGroupData', actualId);
     },
   },
   beforeDestroy() {

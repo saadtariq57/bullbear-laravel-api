@@ -69,16 +69,16 @@
     </div>
 
     <!-- Overlay for Non-Joined Users -->
-    <div v-if="!groupData.isJoined || groupData.requestPending" class="join-overlay">
+    <div v-if="!resolvedMembership.isJoined || resolvedMembership.requestPending" class="join-overlay">
       <div class="overlay-content">
-        <p v-if="groupData.requestPending">
+        <p v-if="resolvedMembership.requestPending">
           Your join request is pending approval. Please wait for confirmation.
         </p>
         <p v-else>
           You need to join the group to participate in the Live Chat.
         </p>
         <button 
-          v-if="!groupData.requestPending" 
+          v-if="!resolvedMembership.requestPending" 
           @click="joinChat" 
           class="btn btn-primary">
           Join Group
@@ -96,7 +96,7 @@
     <form 
       @submit.prevent="submitMessage" 
       class="chat-form d-flex align-items-center" 
-      :class="{ 'disabled-form': !groupData.isJoined || groupData.requestPending}"
+      :class="{ 'disabled-form': !resolvedMembership.isJoined || resolvedMembership.requestPending}"
     >
       <div class="d-flex align-items-end chat-sec-input flex-fill gap-3">
         <div class="form-group position-relative flex-fill">
@@ -120,7 +120,7 @@
             class="form-control-lg border-0 bg-light-grey resize-none w-100 fw-5 fs-6 py-3 pe-5 align-bottom" 
             id="exampleFormControlInput1" 
             placeholder="Write Something .." 
-            :disabled="!groupData.isJoined || groupData.requestPending"
+            :disabled="!canSendMessages"
           >
           <i class="bi bi-emoji-smile chat-emoji-icon text-cta fs-4 position-absolute"></i>
         </div>
@@ -129,7 +129,7 @@
         <button 
           class="bg-cta border-0 rounded-3 chat-btn" 
           type="submit" 
-          :disabled="!groupData.isJoined || groupData.requestPending || isSendingMessage">
+          :disabled="!canSendMessages || isSendingMessage">
           <i class="bi bi-send fs-5 text-white"></i>
         </button>
       </div>
@@ -160,8 +160,49 @@ export default {
   computed: {
     ...mapState(['userData']),
     ...mapState('userGroup', ['messages', 'allMessagesLoaded', 'groupData']),
+    ...mapState('UserGroups', ['joinedChats']),
     orderedMessages() {
       return [...this.messages].reverse();
+    },
+    resolvedMembership() {
+      const numericGroupId =
+        this.groupId != null ? Number(this.groupId) : null;
+
+      const list = Array.isArray(this.joinedChats) ? this.joinedChats : [];
+      const match =
+        numericGroupId != null
+          ? list.find((chat) => {
+              const chatGroupId =
+                chat.group_id != null ? Number(chat.group_id) : null;
+              const chatId = chat.id != null ? Number(chat.id) : null;
+              return (
+                (chatGroupId != null && chatGroupId === numericGroupId) ||
+                (chatId != null && chatId === numericGroupId)
+              );
+            })
+          : null;
+
+      let joined = match?.joined;
+      let pending = match?.requestPending;
+
+      if (joined === undefined && typeof this.groupData?.isJoined === 'boolean') {
+        joined = this.groupData.isJoined;
+      }
+      if (
+        pending === undefined &&
+        typeof this.groupData?.requestPending === 'boolean'
+      ) {
+        pending = this.groupData.requestPending;
+      }
+
+      return {
+        isJoined: !!joined,
+        requestPending: !!pending,
+      };
+    },
+    canSendMessages() {
+      const { isJoined, requestPending } = this.resolvedMembership;
+      return isJoined && !requestPending;
     },
   },
   methods: {
@@ -178,7 +219,7 @@ export default {
      * Submits a new message or edits an existing one.
      */
     submitMessage() {
-      if (!this.groupData.isJoined) {
+      if (!this.resolvedMembership.isJoined) {
         Swal.fire({
           toast: true,
           position: 'top-end',
@@ -192,7 +233,7 @@ export default {
         return;
       }
 
-      if (this.groupData.requestPending) {
+      if (this.resolvedMembership.requestPending) {
         Swal.fire({
           toast: true,
           position: 'top-end',
@@ -217,8 +258,11 @@ export default {
           replyTo: this.replyToMessage ? this.replyToMessage.id : null,
         })
           .then(() => {
+            // Clear the input and optional reply preview
             this.newMessage = '';
             this.replyToMessage = null;
+            // Re-fetch messages to ensure the latest message list is shown
+            return this.fetchMessages(this.groupId);
           })
           .catch(error => {
             if (error.response && error.response.status === 403) {
@@ -560,9 +604,40 @@ export default {
         this.scrollToBottom();
       }
     },
+    groupId(newId, oldId) {
+      // Unsubscribe from previous group's realtime channel
+      if (oldId) {
+        this.$store.dispatch('userGroup/unsubscribeFromGroupChat', oldId);
+      }
+
+      if (!newId) return;
+
+      // Load messages for the newly selected group
+      this.fetchMessages(newId)
+        .then(() => {
+          this.scrollToBottom();
+        })
+        .catch(() => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            width: '400px',
+            timer: 2000,
+            timerProgressBar: true,
+            icon: 'error',
+            title: 'Failed to load messages. Please try again.',
+          });
+        });
+
+      // Subscribe to realtime updates for the new group
+      this.initializeRealTimeMessages(newId);
+    },
   },
   beforeDestroy() {
+    if (this.groupId) {
     this.$store.dispatch('userGroup/unsubscribeFromGroupChat', this.groupId);
+    }
   },
 };
 </script>
