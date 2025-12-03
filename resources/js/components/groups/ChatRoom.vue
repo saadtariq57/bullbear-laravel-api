@@ -1,15 +1,50 @@
 <template>
     <section class="chats_main">
       <div class="container-fluid">
-        <div class="d-flex px-lg-3">
+        <!-- Full-width empty state when user has not joined any groups -->
+        <div
+          v-if="isLoading || !joinedChats || joinedChats.length === 0"
+          class="no-groups-page d-flex flex-column align-items-center justify-content-center text-center"
+        >
+          <h2 class="fs-2 fw-bold icon-heading mb-3">Chats</h2>
+          <div v-if="isLoading" class="text-muted">
+            <p>Loading...</p>
+          </div>
+          <div v-else>
+            <p class="mb-2 fw-5">
+              You haven’t joined any chat groups yet.
+            </p>
+            <p class="mb-3 small">
+              Discover communities that match your interests and start a conversation.
+            </p>
+            <a href="/groups" class="btn btn-primary">
+              Browse groups
+            </a>
+          </div>
+        </div>
+
+        <!-- Normal layout when there are joined groups -->
+        <div v-else-if="joinedChats && joinedChats.length > 0" class="d-flex px-lg-3">
           <div>
             <div class="all_chats">
               <h2 class="fs-2 fw-bold icon-heading">Chats</h2>
+
               <form @submit.prevent>
-                <input v-model="searchQuery" type="search" placeholder="search group" class="search_group">
+                <input
+                  v-model="searchQuery"
+                  type="search"
+                  placeholder="search group"
+                  class="search_group"
+                >
               </form>
+
               <div class="all_groups">
-                <div v-for="chat in filteredChats" :key="chat.id" @click="selectGroup(chat)" class="group_card d-flex gap-2 align-items-center group_card_chat">
+                <div
+                  v-for="chat in filteredChats"
+                  :key="chat.id"
+                  @click="selectGroup(chat)"
+                  class="group_card d-flex gap-2 align-items-center group_card_chat"
+                >
                   <div class="group_avatar">
                     <img
                       v-if="!chat.avatarFailed && chat.avatar"
@@ -189,6 +224,8 @@ export default {
     padding-top: 20px;
     border-right: 1px solid #ccc;
     height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   .grow-1 {
     flex-grow: 1;
@@ -218,6 +255,10 @@ export default {
   .all_groups {
     max-height: 70vh;
     overflow: auto;
+  }
+  .no-groups-page {
+    min-height: calc(100vh - 200px); /* between header and footer */
+    padding: 40px 16px;
   }
   .active_chat {
     padding-top: 20px;
