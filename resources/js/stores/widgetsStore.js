@@ -45,8 +45,9 @@ const userWidgetsModule = {
             commit('SET_ERROR', null);
             try {
                 const widgets = await widgetsService.getWidgetsByCategory({ category, subCategory });
-                commit('SET_WIDGETS', widgets);
-                for (const widget of widgets) {
+                const safeWidgets = Array.isArray(widgets) ? widgets : [];
+                commit('SET_WIDGETS', safeWidgets);
+                for (const widget of safeWidgets) {
                     try {
                         const quotes = await widgetsService.getQuotes([widget.id]);
                         dispatch('updateWidgetSymbolQuotes', { widgetId: widget.id, quotes });
@@ -54,10 +55,11 @@ const userWidgetsModule = {
                         console.error(`Error fetching quotes for widget ${widget.id}:`, quoteError);
                     }
                 }
-
                 commit('SET_LOADING', false);
             } catch (error) {
                 commit('SET_ERROR', error.message);
+                // Ensure widgets is always an array so views don't break
+                commit('SET_WIDGETS', []);
                 commit('SET_LOADING', false);
             }
         },

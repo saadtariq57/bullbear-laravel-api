@@ -7,6 +7,8 @@ const widgetsService = {
             return response.data;
         } catch (error) {
             console.error('Error getting widgets by category:', error);
+            // Always return an array so callers can safely iterate / check length
+            return [];
         }
     },
     async getQuotes(widgetId) {
