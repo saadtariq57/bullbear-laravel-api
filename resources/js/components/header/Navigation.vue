@@ -118,20 +118,32 @@
             <!-- Desktop Navigation -->
             <div class="desktop-nav d-none d-xl-block flex-fill">
               <div class="main-menu-container d-flex gap-4 align-items-center justify-content-center">
-                <ul class="main-list mb-0 gap-4 align-items-center p-0">
+                <!--
+                  We control desktop dropdowns via Vue hover state instead of pure CSS/Bootstrap JS.
+                  - Hovering a top-level item opens its menu immediately.
+                  - Moving between items switches menus immediately (no double-open delay).
+                  - Leaving the whole nav starts a short delay before closing all menus.
+                -->
+                <ul
+                  class="main-list mb-0 gap-4 align-items-center p-0"
+                  @mouseenter="cancelDesktopClose"
+                  @mouseleave="scheduleCloseDesktopMenus"
+                >
                   <!-- Markets Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('markets')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'markets' ? 'true' : 'false'"
                       >
                         Markets
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu py-3 mega-menu rounded-3 flex-column">
+                      <ul
+                        class="dropdown-menu py-3 mega-menu rounded-3 flex-column"
+                        :class="{ show: desktopOpenMenuId === 'markets' }"
+                      >
                         <!-- Indices -->
                         <li>
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
@@ -220,16 +232,23 @@
                   </li>
 
                   <!-- Finance Dropdown -->
-                    <li>
+                    <li @mouseenter="openDesktopMenu('finance')">
                       <div class="dropdown d-flex gap-2 align-items-center">
                         <!-- Finance acts purely as a dropdown toggle (no navigation) -->
-                        <button class="nav-link dropdown-toggle d-flex nav-clr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button
+                          class="nav-link dropdown-toggle d-flex nav-clr"
+                          type="button"
+                          :aria-expanded="desktopOpenMenuId === 'finance' ? 'true' : 'false'"
+                        >
                           Finance
                         </button>
                         <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
 
                         <!-- Dropdown menu with Finance Insights as first item -->
-                        <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                        <ul
+                          class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                          :class="{ show: desktopOpenMenuId === 'finance' }"
+                        >
                           <li>
                             <a class="dropdown-item nav-link" href="/blog/finance">Finance Insights</a>
                           </li>
@@ -253,18 +272,20 @@
                     </li>
 
                   <!-- Analysis Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('analysis')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'analysis' ? 'true' : 'false'"
                       >
                         Analysis
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                      <ul
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                        :class="{ show: desktopOpenMenuId === 'analysis' }"
+                      >
                         <li>
                           <a class="dropdown-item nav-link" href="/blog/technical-analysis/">Technical Analysis</a>
                         </li>
@@ -276,18 +297,20 @@
                   </li>
 
                   <!-- Academy Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('academy')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'academy' ? 'true' : 'false'"
                       >
                         Academy
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                      <ul
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                        :class="{ show: desktopOpenMenuId === 'academy' }"
+                      >
                         <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-stocks">How to Buy Stocks</a></li>
                         <li><a class="dropdown-item nav-link" href="/academy/how-to-buy-cryptocurrency">How to Buy Cryptocurrency</a></li>
                         <li><a class="dropdown-item nav-link" href="/glossary/">Trading Glossary</a></li>
@@ -298,18 +321,20 @@
                   </li>
 
                   <!-- News Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('news')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'news' ? 'true' : 'false'"
                       >
                         News
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                      <ul
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                        :class="{ show: desktopOpenMenuId === 'news' }"
+                      >
                         <li><a class="dropdown-item nav-link" href="/blog/cryptocurrency/">Cryptocurrency</a></li>
                         <li><a class="dropdown-item nav-link" href="/blog/stocks/">Stocks</a></li>
                         <li><a class="dropdown-item nav-link" href="/blog/investing/">Investing</a></li>
@@ -319,18 +344,20 @@
                   </li>
 
                   <!-- Resources Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('resources')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'resources' ? 'true' : 'false'"
                       >
                         Resources
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                      <ul
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                        :class="{ show: desktopOpenMenuId === 'resources' }"
+                      >
                         <li><a class="dropdown-item nav-link" href="/economic-calendar">Economic Calendar</a></li>
                         <li><a class="dropdown-item nav-link" href="/earning-calendar">Earnings Calendar</a></li>
                         <li><a class="dropdown-item nav-link" href="/dividend-calendar">Dividend Calendar</a></li>
@@ -343,18 +370,20 @@
                   </li>
 
                   <!-- RichTv Pro Dropdown -->
-                  <li>
+                  <li @mouseenter="openDesktopMenu('richtvpro')">
                     <div class="dropdown d-flex gap-2 align-items-center">
                       <button
                         class="nav-link dropdown-toggle d-flex nav-clr"
                         type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                        :aria-expanded="desktopOpenMenuId === 'richtvpro' ? 'true' : 'false'"
                       >
                         <span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span>
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
-                      <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown">
+                      <ul
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown"
+                        :class="{ show: desktopOpenMenuId === 'richtvpro' }"
+                      >
                         <li><a class="dropdown-item nav-link" href="/trading-education">Trading Education</a></li>
                         <li><a class="dropdown-item nav-link" href="/exams">Trading Exams</a></li>
                         <li><a class="dropdown-item nav-link" href="/stocks-screener">Stock Screener</a></li>
@@ -972,10 +1001,52 @@ export default {
         MobileMessagesDrawer,
         MobileNotificationsDrawer
     },
+    data() {
+        return {
+            // Which top-level desktop menu is currently open (e.g. 'markets', 'finance', etc.)
+            desktopOpenMenuId: null,
+            // Timeout id for delayed close when leaving the whole desktop nav
+            desktopCloseTimeout: null,
+        };
+    },
     computed: {
         ...mapState(['userData'])
     },
     methods: {
+        /**
+         * Open a specific desktop dropdown menu immediately.
+         * Called on mouseenter of each top-level <li>.
+         */
+        openDesktopMenu(id) {
+            if (this.desktopCloseTimeout) {
+                clearTimeout(this.desktopCloseTimeout);
+                this.desktopCloseTimeout = null;
+            }
+            this.desktopOpenMenuId = id;
+        },
+        /**
+         * Start a short delay to close all desktop dropdowns when leaving
+         * the entire nav area. This avoids flicker when the cursor briefly
+         * leaves but comes back quickly.
+         */
+        scheduleCloseDesktopMenus() {
+            if (this.desktopCloseTimeout) {
+                clearTimeout(this.desktopCloseTimeout);
+            }
+            this.desktopCloseTimeout = setTimeout(() => {
+                this.desktopOpenMenuId = null;
+                this.desktopCloseTimeout = null;
+            }, 200); // tweak 150–250ms as needed
+        },
+        /**
+         * Cancel a pending delayed close when the user moves back into the nav.
+         */
+        cancelDesktopClose() {
+            if (this.desktopCloseTimeout) {
+                clearTimeout(this.desktopCloseTimeout);
+                this.desktopCloseTimeout = null;
+            }
+        },
         toggleSection(event, targetId) {
             const el = document.getElementById(targetId);
             if (!el) return;

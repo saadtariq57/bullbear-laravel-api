@@ -746,7 +746,11 @@ export default {
       if (page < 1 || page > this.totalPages) return;
       this.currentPage = page;
       this.paginatedStocks = this.allStocks.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
-      window.scrollTo({ top: 500, behavior: 'smooth' });
+      // Only scroll on larger (desktop) viewports; avoid jarring jumps on mobile
+      // 992px matches the Bootstrap "lg" breakpoint commonly used for desktop layouts
+      if (window.innerWidth >= 992) {
+        window.scrollTo({ top: 500, behavior: 'smooth' });
+      }
     },
     initializeTooltips() {
       const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
