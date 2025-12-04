@@ -5,30 +5,86 @@
       <div class="col-lg-4 col-xl-3 shadow-sm rounded-4 bg-custom p-4">
       <nav id="privacyTableOfContents">
         <h2 class="h4">Contents</h2>
-        <ul class="nav flex-column" data-bs-spy="scroll" data-bs-target="#privacyTableOfContents" data-bs-offset="0" tabindex="0">
+        <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="#introduction">Introduction</a>
+            <a
+              class="nav-link"
+              href="#introduction"
+              :class="{ 'active-link': activeLink === '#introduction' }"
+              @click="setActiveLink('#introduction')"
+            >
+              Introduction
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#information-collection">Information Collection</a>
+            <a
+              class="nav-link"
+              href="#information-collection"
+              :class="{ 'active-link': activeLink === '#information-collection' }"
+              @click="setActiveLink('#information-collection')"
+            >
+              Information Collection
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#cookies">Cookies</a>
+            <a
+              class="nav-link"
+              href="#cookies"
+              :class="{ 'active-link': activeLink === '#cookies' }"
+              @click="setActiveLink('#cookies')"
+            >
+              Cookies
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#opt-out">Opt-Out</a>
+            <a
+              class="nav-link"
+              href="#opt-out"
+              :class="{ 'active-link': activeLink === '#opt-out' }"
+              @click="setActiveLink('#opt-out')"
+            >
+              Opt-Out
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#california-rights">California Privacy Rights</a>
+            <a
+              class="nav-link"
+              href="#california-rights"
+              :class="{ 'active-link': activeLink === '#california-rights' }"
+              @click="setActiveLink('#california-rights')"
+            >
+              California Privacy Rights
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#security">Security</a>
+            <a
+              class="nav-link"
+              href="#security"
+              :class="{ 'active-link': activeLink === '#security' }"
+              @click="setActiveLink('#security')"
+            >
+              Security
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#data-retention">Data Retention</a>
+            <a
+              class="nav-link"
+              href="#data-retention"
+              :class="{ 'active-link': activeLink === '#data-retention' }"
+              @click="setActiveLink('#data-retention')"
+            >
+              Data Retention
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#contact">Contact</a>
+            <a
+              class="nav-link"
+              href="#contact"
+              :class="{ 'active-link': activeLink === '#contact' }"
+              @click="setActiveLink('#contact')"
+            >
+              Contact
+            </a>
           </li>
         </ul>
       </nav>
@@ -42,7 +98,7 @@
         </div>
         <div class="privacy-content">
           <!-- Introduction Section -->
-          <section id="introduction" class="mb-5">
+          <section id="introduction" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-info-circle me-2"></i>Introduction</h2>
             <p>RICH TV. (“RICH TV”, “we,” or “us”) is committed to protecting your privacy. This Privacy Policy explains
               how your personal information is collected, used, and disclosed by RICH TV.</p>
@@ -56,7 +112,7 @@
           </section>
 
           <!-- Information Collection Section -->
-          <section id="information-collection" class="mb-5">
+          <section id="information-collection" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-collection me-2"></i>What Information Does RICH TV Collect?</h2>
             <p>By registering with Rich TV or signing up to receive a newsletter from Rich TV, we will automatically opt
               your email address into our email lists, where we will look to send you relevant content. You can
@@ -72,25 +128,25 @@
           </section>
 
           <!-- Cookies Section -->
-          <section id="cookies" class="mb-5">
+          <section id="cookies" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-cup me-2"></i>Does RICH TV Use Cookies?</h2>
             <p class="mb-4">To optimize the user experience RICH TV may make use of cookies technology...</p>
           </section>
 
           <!-- Opt-Out Section -->
-          <section id="opt-out" class="mb-5">
+          <section id="opt-out" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-x-circle me-2"></i>How Do I Opt-Out?</h2>
             <p class="mb-4">Commercial email communications from RICH TV come with an unsubscribe link at the bottom...</p>
           </section>
 
           <!-- California Privacy Rights Section -->
-          <section id="california-rights" class="mb-5">
+          <section id="california-rights" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-flag-fill me-2"></i>Your California Privacy Rights</h2>
             <p class="mb-4">The California Consumer Privacy Act (CCPA), also known as AB-375, provides California residents...</p>
           </section>
 
           <!-- Security Section -->
-          <section id="security" class="mb-5">
+          <section id="security" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-shield-lock-fill me-2"></i>How Does RICH TV Protect Your Information?</h2>
             <p class="mb-4">To prevent unauthorized access, maintain data accuracy, and ensure the appropriate use of
               information, we have put in place commercially reasonable physical, electronic, and managerial
@@ -98,14 +154,14 @@
           </section>
 
           <!-- Data Retention Section -->
-          <section id="data-retention" class="mb-5">
+          <section id="data-retention" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-hourglass-split me-2"></i>How Long Does RICH TV Store Your Data?</h2>
             <p class="mb-4">RICH TV can store usage data for the life of the service starting from its release date.
               Personal data can be stored indefinitely or until a request has been made to delete the data.</p>
           </section>
 
           <!-- Contact Section -->
-          <section id="contact" class="mb-5">
+          <section id="contact" class="mb-5 anchor-section">
             <h2 class="h3 mb-3"><i class="bi bi-envelope-fill me-2"></i>Contact Us</h2>
             <p>If you have any additional questions, please visit <a href="/contact-us" aria-label="Visit Contact Page">https://richtv.io/contact-us/</a></p>
             <ul class="list-unstyled">
@@ -136,34 +192,91 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 export default {
   name: 'PrivacyPolicy',
   setup() {
     const loading = ref(true);
+    const activeLink = ref('#introduction');
+    let scrollHandler = null;
 
     onMounted(() => {
       // Simulate content loading
       setTimeout(() => {
         loading.value = false;
 
-        // Initialize Bootstrap Scrollspy
-        const scrollSpy = new bootstrap.ScrollSpy(document.body, {
-          target: '#privacyTableOfContents',
-          offset: 100,
+        // Wait for main content to render, then wire up scroll tracking
+        nextTick(() => {
+          const sections = Array.from(
+            document.querySelectorAll('.anchor-section[id]')
+          );
+          if (!sections.length) return;
+
+          const handleScroll = () => {
+            const offset = 140;
+            let bestSection = null;
+            let bestTop = -Infinity;
+
+            sections.forEach((section) => {
+              const rect = section.getBoundingClientRect();
+              if (rect.top <= offset && rect.top > bestTop) {
+                bestTop = rect.top;
+                bestSection = section;
+              }
+            });
+
+            if (bestSection && bestSection.id) {
+              const href = `#${bestSection.id}`;
+              if (activeLink.value !== href) {
+                activeLink.value = href;
+              }
+            }
+          };
+
+          scrollHandler = handleScroll;
+          window.addEventListener('scroll', scrollHandler, { passive: true });
+          handleScroll();
         });
       }, 1000); // Adjust the timeout as needed
     });
 
+    onBeforeUnmount(() => {
+      if (scrollHandler) {
+        window.removeEventListener('scroll', scrollHandler);
+      }
+    });
+
+    const setActiveLink = (href) => {
+      activeLink.value = href;
+    };
+
     return {
       loading,
+      activeLink,
+      setActiveLink,
     };
   },
 };
 </script>
 
 <style scoped>
+.anchor-section {
+  scroll-margin-top: 120px;
+}
+
+@media (max-width: 768px) {
+  /* Reduce large top margin from Bootstrap's my-5 on small screens */
+  .container.my-5 {
+    margin-top: 0.1rem !important;
+  }
+}
+
+#privacyTableOfContents .nav-link.active-link {
+  color: #0056b3;
+  font-weight: 600;
+}
+
 .list-group-item strong {
   display: block;
   margin-bottom: 0.5rem;

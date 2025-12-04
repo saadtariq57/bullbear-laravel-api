@@ -1,7 +1,7 @@
 <template>
-	<div class="container my-5">
+	<div class="container my-5 glossary-page">
 		<div class="row">
-	      <div class="col-lg-4 col-xl-3 shadow-sm rounded-4 bg-custom p-4">
+	      <div class="col-lg-4 col-xl-3 shadow-sm rounded-4 bg-custom p-4 gloss-sidebar-col mb-3">
 		  <aside class="gloss-sidebar" id="gloss-sidebar">
 		    <h3>Table of Contents</h3>
 		    <div class="accordion">
@@ -28,7 +28,13 @@
 		          <div class="accordion-body">
 		            <ul>
 		              <li v-for="(link, linkIndex) in item.links" :key="linkIndex">
-		                <a :href="link.href">{{ link.text }}</a>
+		                <a
+		                  :href="link.href"
+		                  :class="{ 'active-link': activeLink === link.href }"
+		                  @click="setActiveLink(link.href)"
+		                >
+		                  {{ link.text }}
+		                </a>
 		              </li>
 		            </ul>
 		          </div>
@@ -42,7 +48,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2 class="text-left">Understanding Risk</h2>
 	          <div class="border-heading"></div>
-	          <div class="understanding pt-3" id="assessing">
+	          <div class="understanding pt-3 anchor-section" id="assessing">
 	            <h3>Assessing Your Risk Tolerance</h3>
 	            <p>Assessing your risk tolerance is a crucial step in the investment process. It involves evaluating your
 	              comfort level with different levels of financial risk based on your investment goals and time horizon.
@@ -74,7 +80,7 @@
 	              choices, consider consulting with a financial advisor. They can help you assess your risk tolerance and
 	              develop an investment strategy that aligns with your unique circumstances.</p>
 	          </div>
-	          <div class="balancing pt-3" id="Balancing">
+	          <div class="balancing pt-3 anchor-section" id="Balancing">
 	            <h3>Balancing Risk and Reward</h3>
 	            <p><b>Risk Assessment:</b> Acknowledge that investments carry inherent risks. It's possible to experience
 	              losses, and there's a chance you may receive back less than your initial investment. Only invest funds you
@@ -113,7 +119,7 @@
 	              override general rules of thumb.</p>
 	          </div>
 
-	          <div class="investors pt-3" id="Investor">
+	          <div class="investors pt-3 anchor-section" id="Investor">
 	            <h3>Investor Profiles and Their Risk Preferences</h3>
 	            <p><b>Young Professionals:</b> Individuals in their early 20s, just starting their careers, often have a
 	              long
@@ -153,7 +159,7 @@
 	          </div>
 
 
-	          <div class="contrasting pt-3" id="Contrasting">
+	          <div class="contrasting pt-3 anchor-section" id="Contrasting">
 	            <h3>Contrasting Passive and Active Investment Strategies</h3>
 	            <p>Investors have two primary approaches when it comes to managing their portfolios: passive and active
 	              investment strategies. These strategies differ significantly in their approach, objectives, and level of
@@ -201,7 +207,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2 class="text-left">Exploring Investment Strategies</h2>
 	          <div class="border-heading"></div>
-	          <div class="understanding pt-3" id="fundamental">
+	          <div class="understanding pt-3 anchor-section" id="fundamental">
 	            <h3>Fundamental Analysis vs. Technical Analysis</h3>
 	            <p>When it comes to analyzing financial markets, investors and traders have two primary approaches at their
 	              disposal: fundamental analysis and technical analysis. These methods are distinct in their methodologies
@@ -239,7 +245,7 @@
 	              movements. Therefore, many market participants use a combination of both fundamental and technical
 	              analysis to inform their decisions.</p>
 	          </div>
-	          <div class="balancing pt-3" id="investment">
+	          <div class="balancing pt-3 anchor-section" id="investment">
 	            <h3>Defining Investment Strategy</h3>
 	            <p>An investment strategy is a comprehensive approach that individuals use to guide their investment
 	              decisions with the aim of achieving their financial goals. These strategies can vary widely and encompass
@@ -256,7 +262,7 @@
 	              metrics. This approach allows them to make informed investment decisions based on a company's
 	              fundamentals.</p>
 	          </div>
-	          <div class="investors pt-3" id="crafting">
+	          <div class="investors pt-3 anchor-section" id="crafting">
 	            <h3>Crafting a Well-Balanced Investment Portfolio</h3>
 	            <p>Building a well-balanced investment portfolio is a strategic process that involves selecting and
 	              combining various assets to achieve specific financial objectives while carefully managing risk and
@@ -306,7 +312,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2 class="text-left">Types of Investment Strategies</h2>
 	          <div class="border-heading"></div>
-	          <div class="understanding pt-3" id="exploring">
+	          <div class="understanding pt-3 anchor-section" id="exploring">
 	            <h3>Exploring Momentum Investing</h3>
 	            <p>Momentum investing is an investment strategy that capitalizes on the momentum or trend of an asset's
 	              price movement over a specific time period known as the Lookback Period. This strategy is grounded in the
@@ -331,7 +337,7 @@
 	              strategy's performance is simulated. The momentum indicator is recalculated at each rebalancing date
 	              within the backtest period. </p>
 	          </div>
-	          <div class="balancing pt-3" id="value-investing">
+	          <div class="balancing pt-3 anchor-section" id="value-investing">
 	            <h3>Understanding Value Investing</h3>
 	            <p>Value investing is an investment strategy that revolves around evaluating whether an asset's current
 	              market price is above or below its intrinsic value. This strategy aims to identify opportunities where
@@ -381,7 +387,7 @@
 	            </ul>
 	          </div>
 
-	          <div class="investors pt-3" id="moving-average">
+	          <div class="investors pt-3 anchor-section" id="moving-average">
 	            <h3>The Moving Average Strategy in Depth</h3>
 	            <p>The Moving Average Strategy is a powerful tool in technical analysis that allows investors to gain
 	              valuable insights into asset price trends, enabling informed decisions in building and managing investment
@@ -420,7 +426,7 @@
 	                insights derived from moving averages.</li>
 	            </ul>
 	          </div>
-	          <div class="investors pt-3" id="strength-indicators">
+	          <div class="investors pt-3 anchor-section" id="strength-indicators">
 	            <h3>Demystifying Relative Strength Indicators</h3>
 	            <p>Relative Strength Indicators (RSI) are a fundamental tool in technical analysis, designed to assess the
 	              magnitude of recent price changes in an asset and gauge the momentum of its price movements. By tracking
@@ -457,7 +463,7 @@
 	                foreshadow a potential upward price correction.</li>
 	            </ul>
 	          </div>
-	          <div class="investors pt-3" id="volume-investment">
+	          <div class="investors pt-3 anchor-section" id="volume-investment">
 	            <h3>Exploring On-Balance Volume (OBV) in Investment</h3>
 	            <p>On-Balance Volume (OBV) is a technical analysis indicator that focuses on tracking the momentum of
 	              trading volumes associated with an asset. This indicator is utilized to identify potential divergences
@@ -503,7 +509,7 @@
 	                often precede price movements.</li>
 	            </ul>
 	          </div>
-	          <div class="investors pt-3" id="dividend-Investing">
+	          <div class="investors pt-3 anchor-section" id="dividend-Investing">
 	            <h3>Diving into Dividend Investing</h3>
 	            <p>Dividend investing is a strategy that focuses on acquiring stocks from companies that regularly
 	              distribute a portion of their earnings to shareholders. These distributions typically take the form of
@@ -555,7 +561,7 @@
 	              </li>
 	            </ul>
 	          </div>
-	          <div class="investors pt-3" id="comprehensive">
+	          <div class="investors pt-3 anchor-section" id="comprehensive">
 	            <h3>Comprehensive Guide to the Moving Average Convergence Divergence (MACD) Strategy</h3>
 	            <p>The Moving Average Convergence Divergence, commonly known as MACD, is a powerful indicator used in
 	              technical analysis to identify trend changes and generate buy or sell signals. Unlike simple moving
@@ -608,7 +614,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2 class="text-left">Sustainable Investment Approaches</h2>
 	          <div class="border-heading"></div>
-	          <div class="understanding pt-3" id="significance">
+	          <div class="understanding pt-3 anchor-section" id="significance">
 	            <h3>Understanding ESG Ratings and Their Significance</h3>
 	            <p>ESG, which stands for Environmental, Social, and Governance, has become a critical consideration for
 	              investors looking to align their investments with ethical values and sustainability goals. ESG ratings
@@ -662,7 +668,7 @@
 	                and operational risks.</li>
 	            </ul>
 	          </div>
-	          <div class="balancing pt-3" id="sustainable-investing">
+	          <div class="balancing pt-3 anchor-section" id="sustainable-investing">
 	            <h3>Assessing Carbon Emissions in Sustainable Investing</h3>
 	            <p>In the quest for sustainable investing, one of the <b>paramount considerations</b> is the assessment of
 	              carbon emissions and their profound impact on the environment. Carbon emissions, primarily in the form of
@@ -705,7 +711,7 @@
 	                environmental and social challenges.</li>
 	            </ul>
 	          </div>
-	          <div class="investors pt-3" id="exploring-methane">
+	          <div class="investors pt-3 anchor-section" id="exploring-methane">
 	            <h3>Exploring Methane Emissions in Sustainable Investment Strategies</h3>
 	            <p>Methane emissions, much like carbon emissions, represent a critical aspect of the sustainability
 	              landscape, with profound implications for our environment and the ongoing climate crisis. Methane, a
@@ -753,7 +759,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2>Foundations of Investment</h2>
 	          <div class="border-heading"></div>
-	          <div class="investors pt-3" id="diversification-investments">
+	          <div class="investors pt-3 anchor-section" id="diversification-investments">
 	            <h3>Principles of Diversification in Investments</h3>
 	            <p>Diversification is a fundamental concept in the world of investing, aimed at managing risk and achieving
 	              a well-balanced investment portfolio. It involves spreading your investments across a range of assets,
@@ -799,7 +805,7 @@
 	              can make it challenging to monitor and manage effectively. Investors should strike a balance between
 	              diversification and the practicality of portfolio management.</p>
 	          </div>
-	          <div class="investors pt-3" id="understanding">
+	          <div class="investors pt-3 anchor-section" id="understanding">
 	            <h3>Understanding and Managing Volatility in Portfolios</h3>
 	            <p>In the world of investing, volatility refers to how much an asset's returns vary over a certain period of
 	              time. When volatility is high, the price of an asset bounces up and down quickly, showing rapid rise and
@@ -809,7 +815,7 @@
 	              in their investments look for lower volatility in their portfolios. Understanding volatility is important
 	              when deciding which investments align with your risk appetite and financial goals.</p>
 	          </div>
-	          <div class="investors pt-3" id="Investment-Assets">
+	          <div class="investors pt-3 anchor-section" id="Investment-Assets">
 	            <h3>Exploring Correlation in Investment Assets</h3>
 	            <p>Correlation is a statistical term that describes how two variables are related in terms of their strength
 	              and direction. When there is a positive correlation, both variables move in the same direction, while a
@@ -819,7 +825,7 @@
 	              assets can help reduce overall volatility and risk. On the other hand, portfolios with higher positive
 	              correlations among their assets entail higher levels of risk and volatility.</p>
 	          </div>
-	          <div class="investors pt-3" id="Assessing-Profitability">
+	          <div class="investors pt-3 anchor-section" id="Assessing-Profitability">
 	            <h3>Assessing Profitability Metrics in Investment Analysis</h3>
 	            <p>Understanding profitability is crucial in assessing a company's efficient utilization of capital and its
 	              potential for growth and financial stability. Higher profitability enables businesses to achieve greater
@@ -827,7 +833,7 @@
 	              organizations can ensure optimal resource allocation and make informed decisions to enhance their
 	              performance.</p>
 	          </div>
-	          <div class="investors pt-3" id="Significance-Rate">
+	          <div class="investors pt-3 anchor-section" id="Significance-Rate">
 	            <h3>The Significance of Rate of Return in Investments</h3>
 	            <p>The rate of return on an investment is the percentage change in its value over a period of time. To
 	              calculate this, divide the present value of the investment by the original value, subtract 1, and multiply
@@ -836,7 +842,7 @@
 	              of return would be 10%:</p>
 	            <p>(1,100 - 1,000 / 1,000) × 100 =10%</p>
 	          </div>
-	          <div class="investors pt-3" id="Investment-Projections">
+	          <div class="investors pt-3 anchor-section" id="Investment-Projections">
 	            <h3>Calculating Expected Returns in Investment Projections</h3>
 	            <p>Investors often seek to estimate the potential returns of their investments, taking into account
 	              different scenarios and their associated probabilities. Calculating the expected return is a fundamental
@@ -873,7 +879,7 @@
 	            <p>In this example, the expected return for the investment is 5.6%, indicating that, on average, the
 	              investor can anticipate a return of 5.6% based on the provided scenarios and their probabilities.</p>
 	          </div>
-	          <div class="investors pt-3" id="liquidity">
+	          <div class="investors pt-3 anchor-section" id="liquidity">
 	            <h3>A Key Factor of Liquidity</h3>
 	            <p>Liquidity is a critical concept in the world of investments, influencing various aspects of investment
 	              decision-making. It refers to the degree of ease with which assets can be bought or sold in a market
@@ -909,7 +915,7 @@
 	              prices tend to remain stable. However, if there is an imbalance, with more sell orders than buy orders,
 	              prices can fall, and vice versa.</p>
 	          </div>
-	          <div class="investors pt-3" id="Capital-Allocation">
+	          <div class="investors pt-3 anchor-section" id="Capital-Allocation">
 	            <h3>Capital Allocation</h3>
 	            <p>Capital allocation is a fundamental aspect of corporate financial management. It encompasses the process
 	              of effectively distributing and reinvesting a company's financial resources across various areas of the
@@ -917,14 +923,14 @@
 	              efficiency, and promote financial stability and resilience. Directors aim to allocate in ways which will
 	              generate the highest returns for its shareholders providing capital.</p>
 	          </div>
-	          <div class="investors pt-3" id="Dividends">
+	          <div class="investors pt-3 anchor-section" id="Dividends">
 	            <h3>Dividends</h3>
 	            <p>Dividends represent a fundamental aspect of corporate finance and serve as a means of distributing a
 	              portion of a company's earnings to its shareholders. These regular payments are typically made in the form
 	              of cash or additional stock and play a pivotal role in shaping the financial landscape of both companies
 	              and their investors.</p>
 	          </div>
-	          <div class="investors pt-3" id="Balance-Sheet">
+	          <div class="investors pt-3 anchor-section" id="Balance-Sheet">
 	            <h3>Balance Sheet</h3>
 	            <p>A balance sheet is a concise overview of data that enables us to evaluate a company's financial status at
 	              a specific moment. This overview encompasses total values for assets, liabilities, and equity. A robust
@@ -935,7 +941,7 @@
 	              follows:</p>
 	            <p>Total Assets = Total Liabilities + Total Equity</p>
 	          </div>
-	          <div class="investors pt-3" id="Income-Statement">
+	          <div class="investors pt-3 anchor-section" id="Income-Statement">
 	            <h3>Income Statement</h3>
 	            <p>An Income Statement bears resemblance to a Balance Sheet by offering a momentary glimpse of valuable
 	              financial data at a specific juncture. However, its primary focus is on a company's revenue. This
@@ -950,7 +956,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2>Financial Ratio Essentials</h2>
 	          <div class="border-heading"></div>
-	          <div class="investors pt-3" id="Payout-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Payout-Ratio">
 	            <h3>Understanding the Dividend Payout Ratio</h3>
 	            <p>The dividend payout ratio evaluates the total dividend payments as a fraction of the company's overall
 	              income. This metric is valuable in assessing the extent to which a company distributes its earnings to
@@ -962,7 +968,7 @@
 	              payments.</p>
 	            <p>DPR Formula: DPR = Total Dividends / Net Income</p>
 	          </div>
-	          <div class="investors pt-3" id="Share-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Share-Ratio">
 	            <h3>Analyzing the Dividend Per Share Ratio</h3>
 	            <p>Dividend per share ratios serve as a means to assess the extent of income distributed by a company to its
 	              investors through dividend disbursements. This is computed by dividing the total amount of dividends paid
@@ -976,7 +982,7 @@
 	              dividends over the year, including a one-time dividend of £50,000. In this case, the DPS ratio would be
 	              calculated as follows: [(200,000 - 50,000) / 1,000,000] = £0.15.</p>
 	          </div>
-	          <div class="investors pt-3" id="Per-Share">
+	          <div class="investors pt-3 anchor-section" id="Per-Share">
 	            <h3>Earnings Per Share (EPS)</h3>
 	            <p>Earnings per share (EPS) stands as a valuable metric employed to assess a company's corporate value and
 	              profitability. A high EPS ratio signifies that a company generates substantial income for each share of
@@ -990,7 +996,7 @@
 	              £500,000 in preferred dividends, and has 3 million shares outstanding. In this case, EPS would be computed
 	              as follows: [(7.5 - 0.5) / 3] = £2.33.</p>
 	          </div>
-	          <div class="investors pt-3" id="Earnings-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Earnings-Ratio">
 	            <h3>Price to Earnings (P/E) Ratio</h3>
 	            <p>The Price-to-Earnings (P/E) ratio is a metric that evaluates a company's current stock price in relation
 	              to its earnings per share. It serves as a valuable tool for assessing the valuation of companies and their
@@ -1003,7 +1009,7 @@
 	            <p>The formula to calculate the P/E ratio is straightforward:</p>
 	            <p>P/E = Share Price / Earnings Per Share</p>
 	          </div>
-	          <div class="investors pt-3" id="Value-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Value-Ratio">
 	            <h3>Price to Book Value (P/BV) Ratio</h3>
 	            <p>The Price to Book Value (P/BV) ratio is a metric that assesses a company's current market value relative
 	              to its book value, which represents the cost of including an asset on the company's balance sheet. In the
@@ -1016,7 +1022,7 @@
 	            <p>The formula to calculate the Price to Book Value ratio is as follows:</p>
 	            <p>P/BV = Stock Price Per Share / Book Value Per Share</p>
 	          </div>
-	          <div class="investors pt-3" id="Asset-Value">
+	          <div class="investors pt-3 anchor-section" id="Asset-Value">
 	            <h3>Net Asset Value (NAV)</h3>
 	            <p>Net Asset Value (NAV) offers a per-share assessment of a company's assets and is a valuable tool for
 	              identifying potential investment opportunities. To calculate NAV, one subtracts the total value of
@@ -1025,7 +1031,7 @@
 	            <p>The formula to compute Net Asset Value is as follows:</p>
 	            <p>NAV = (Total Assets - Total Liabilities) / Shares Outstanding</p>
 	          </div>
-	          <div class="investors pt-3" id="Current-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Current-Ratio">
 	            <h3>Current Ratio</h3>
 	            <p>The Current Ratio is a metric used to assess a company's short-term liquidity, offering insights into its
 	              ability to meet pending liabilities while potentially generating cash from its current assets. This ratio
@@ -1036,7 +1042,7 @@
 	            <p>To calculate the Current Ratio, use the formula provided below:</p>
 	            <p>CR = Current Assets / Current Liabilities</p>
 	          </div>
-	          <div class="investors pt-3" id="Quick-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Quick-Ratio">
 	            <h3>Quick Ratio</h3>
 	            <p>The Quick Ratio, also known as the Acid-Test Ratio, is a metric used to evaluate a company's liquidity by
 	              measuring its ability to settle all outstanding liabilities using its most liquid assets. A higher Quick
@@ -1049,7 +1055,7 @@
 	              = 0.93. Therefore, Company D is in a favorable position, as it can nearly cover each pound of its
 	              short-term obligations with its most liquid assets.</p>
 	          </div>
-	          <div class="investors pt-3" id="Equity-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Equity-Ratio">
 	            <h3>Debt to Equity (D/E) Ratio</h3>
 	            <p>The Debt to Equity (D/E) ratio serves as a valuable indicator of a company's financial strength and
 	              resilience. It highlights the proportion of capital financing sourced from lenders in comparison to
@@ -1061,7 +1067,7 @@
 	            <p>Where Total Shareholder Equity can be determined by subtracting Liabilities from Assets.</p>
 
 	          </div>
-	          <div class="investors pt-3" id="Debt-Asset">
+	          <div class="investors pt-3 anchor-section" id="Debt-Asset">
 	            <h3>Debt to Asset (D/A) Ratio</h3>
 	            <p>The Debt to Asset (D/A) ratio is a valuable metric for comprehending a company's capital structure and
 	              its ability to meet short and long-term debt obligations relative to its total assets. A higher D/A ratio
@@ -1073,7 +1079,7 @@
 	            <p>The formula for the Debt to Asset ratio is as follows:</p>
 	            <p>D/A = Total Debt / Total Assets</p>
 	          </div>
-	          <div class="investors pt-3" id="Return-Equity">
+	          <div class="investors pt-3 anchor-section" id="Return-Equity">
 	            <h3>Return on Equity (ROE)</h3>
 	            <p>The Return on Equity (ROE) ratio is a valuable tool for analyzing a company's profitability over a
 	              specific period, often compared to the sector's average. It is computed by dividing net income by the
@@ -1085,7 +1091,7 @@
 	              you use the formula provided below: <br>Average Shareholder Equity = (Beginning Shareholder Equity + End
 	              Shareholder Equity) / 2 <br>Net Income is usually found in a company's Income Statement.</p>
 	          </div>
-	          <div class="investors pt-3" id="Invested-Capital">
+	          <div class="investors pt-3 anchor-section" id="Invested-Capital">
 	            <h3>Return on Invested Capital (ROIC)</h3>
 	            <p>Return on Invested Capital (ROIC) is a key metric used to evaluate how effectively a company allocates
 	              its financial resources for reinvestment into profitable ventures. It provides insights into whether a
@@ -1101,7 +1107,7 @@
 	        <div class="glossary-content pb-5">
 	          <h2>Glossary of Investment Terms</h2>
 	          <div class="border-heading"></div>
-	          <div class="investors pt-3" id="High-Low">
+	          <div class="investors pt-3 anchor-section" id="High-Low">
 	            <h3>52-Week High and Low</h3>
 	            <p>
 	              As a technical indicator, a <b>52-week High and Low</b> refers to the highest and lowest trading prices of
@@ -1109,7 +1115,7 @@
 	              used by investors and analysts to gauge the recent price range and potential volatility of a security.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Below-Market">
+	          <div class="investors pt-3 anchor-section" id="Below-Market">
 	            <h3>Above and Below The Market</h3>
 	            <p>
 	              This term describes an evaluation of the performance of a strategy, taking into account the prevailing
@@ -1117,7 +1123,7 @@
 	              results given the existing market conditions and associated risks.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Alpha">
+	          <div class="investors pt-3 anchor-section" id="Alpha">
 	            <h3>Alpha</h3>
 	            <p>
 	              <b>Alpha</b> (α) is a metric used to evaluate the performance of an investment strategy relative to the
@@ -1128,7 +1134,7 @@
 	              underperformance compared to the market benchmark.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Beta">
+	          <div class="investors pt-3 anchor-section" id="Beta">
 	            <h3>Beta</h3>
 	            <p>
 	              <b>Beta</b> (β) is a metric that measures the volatility of a stock or portfolio in relation to the
@@ -1137,7 +1143,7 @@
 	              index, such as the S&amp;P 500.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Backtest">
+	          <div class="investors pt-3 anchor-section" id="Backtest">
 	            <h3>Backtest</h3>
 	            <p>
 	              <b>Backtesting</b> is a systematic process that involves using historical data to simulate and evaluate
@@ -1152,7 +1158,7 @@
 	              potential for generating returns under different market conditions.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Benchmark">
+	          <div class="investors pt-3 anchor-section" id="Benchmark">
 	            <h3>Benchmark</h3>
 	            <p>A benchmark is typically a well-known financial instrument that serves as a reference point, representing a broad segment of the market. It is used as a yardstick to measure and evaluate the performance of a specific investment strategy. Commonly used benchmarks include well-known indexes like the FTSE100 and S&amp;P 500.</p>
 	            <p>In the context of your strategy, ETFs (Exchange-Traded Funds) tracking these benchmark indexes are often used as benchmarks. This practice ensures that the benchmark chosen is representative of the market in which you are investing.</p>
@@ -1161,66 +1167,66 @@
 	            <p><b>Lower Volatility (Beta):</b> The strategy exhibits less price volatility compared to the benchmark, suggesting it may be less risky.</p>
 	            <p><b>Better Risk-Adjusted Performance (Sharpe Ratio):</b> The strategy offers a higher risk-adjusted return, indicating that it generates more significant returns relative to the risk taken.</p>
 	          </div>
-	          <div class="investors pt-3" id="CO-Footprint">
+	          <div class="investors pt-3 anchor-section" id="CO-Footprint">
 	            <h3>CO2 Footprint</h3>
 	            <p>Carbon emissions are typically measured in units of carbon dioxide equivalents (CO2e), which quantify the amount of carbon dioxide and other greenhouse gases that may be released into the atmosphere as a result of human activities. A "Carbon Footprint" refers to the total sum of all emissions associated with a particular entity, activity, or portfolio over a specified period of time. This metric is instrumental in helping individuals and organizations comprehend and assess the environmental impact and contribution to climate change associated with their actions, investments, or operations.</p>
 	          </div>
-	          <div class="investors pt-3" id="Correlation">
+	          <div class="investors pt-3 anchor-section" id="Correlation">
 	            <h3>Correlation</h3>
 	            <p>Correlation is a measure of the strength and direction of the relationship between two variables. When two variables move in the same direction, they are positively correlated, whereas if they move in opposite directions, they are negatively correlated. A negative or weak positive correlation between assets in a portfolio can help reduce overall portfolio volatility because these assets tend to offset each other's movements. On the other hand, when assets in a portfolio are positively correlated, they move in sync, which can lead to higher levels of risk since they are more likely to experience simultaneous gains or losses.</p>
 	          </div>
-	          <div class="investors pt-3" id="Diversification">
+	          <div class="investors pt-3 anchor-section" id="Diversification">
 	            <h3>Diversification</h3>
 	            <p>Enhance portfolio diversification by including a variety of stocks, different asset classes, and investments from various regions and sectors. Increased diversification helps reduce portfolio volatility. Typically, a larger and more diversified selection of assets is advisable for individuals with lower risk tolerance.</p>
 	          </div>
-	          <div class="investors pt-3" id="Dividends-represent">
+	          <div class="investors pt-3 anchor-section" id="Dividends-represent">
 	            <h3>Dividends</h3>
 	            <p>Dividends represent a periodic allocation of a portion of a company's profits, typically distributed to shareholders in the form of either cash payments or additional stock. The decision to make dividend payments is typically made by the company's board of directors.</p>
 	          </div>
-	          <div class="investors pt-3" id="Environmental">
+	          <div class="investors pt-3 anchor-section" id="Environmental">
 	            <h3>Environmental</h3>
 	            <p>Evaluate the environmental impact of companies and formulate your investment strategy with a strong emphasis on those that align with your values. </p>
 	            <p>Environmental considerations are a vital component of the ESG (Environmental, Social, and Governance) framework and encompass the ways in which a company's operations, either directly or indirectly, impact our natural environment.</p>
 	            <p>Key environmental areas of concern include climate change, pollution and waste management, and the sustainable use of natural resources.</p>
 	          </div>
-	          <div class="investors pt-3" id="Governance">
+	          <div class="investors pt-3 anchor-section" id="Governance">
 	            <h3>Governance</h3>
 	            <p>Choose to construct a strategy that consists of securities with high governance ratings, which are a vital component of the ESG (Environmental, Social, and Governance) framework. Governance, in this context, pertains to the established standards and procedures governing decision-making processes. It delves into the dynamics between the company's board of directors and shareholders, as well as the distribution of rights and responsibilities within the organization.</p>
 	            <p>Effective governance standards encompass proficient reporting, well-defined policies, and transparent communication practices. These elements collectively contribute to a company's long-term success and stability.</p>
 	          </div>
-	          <div class="investors pt-3" id="Liquidity-refers">
+	          <div class="investors pt-3 anchor-section" id="Liquidity-refers">
 	            <h3>Liquidity</h3>
 	            <p>Liquidity refers to the degree of ease with which assets can be bought or sold in a market without causing significant fluctuations in market prices. For instance, when buy and sell orders are in equilibrium for an asset that is actively traded with high volumes, the market price remains relatively stable.</p>
 	            <p>Cash is often considered the most liquid asset because it can be readily used to settle financial obligations and transactions quickly. Its high liquidity means it can be easily converted into other assets or used to cover outstanding liabilities without causing substantial price movements in the market.</p>
 	          </div>
-	          <div class="investors pt-3" id="MACD-Strategy">
+	          <div class="investors pt-3 anchor-section" id="MACD-Strategy">
 	            <h3>MACD Strategy</h3>
 	            <p>The Moving Average Convergence Divergence, commonly known as MACD, is a widely used indicator designed to identify shifts in market trends and generate buy or sell signals accordingly. Unlike traditional moving averages, which are based on simple arithmetic calculations (SMA), the MACD is constructed using Exponential Moving Averages (EMA).</p>
 	            <p>In contrast to SMAs, which treat all data points equally and have uniform weighting, EMAs assign more significance or weight to recent price data. This design reflects the intuitive idea that recent price movements are more influenced by current market events and conditions.</p>
 	          </div>
-	          <div class="investors pt-3" id="Market-Capitalisation">
+	          <div class="investors pt-3 anchor-section" id="Market-Capitalisation">
 	            <h3>Market Capitalisation</h3>
 	            <p>Market Capitalization, often abbreviated as 'Market Cap,' is the total value of a company's outstanding shares, calculated by multiplying the share price by the total number of shares.</p>
 	          </div>
-	          <div class="investors pt-3" id="Market-Close">
+	          <div class="investors pt-3 anchor-section" id="Market-Close">
 	            <h3>Market Close</h3>
 	            <p>
 	                Market close denotes the final trading price of a particular financial instrument at the end of a regular trading day.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Market-Open">
+	          <div class="investors pt-3 anchor-section" id="Market-Open">
 	            <h3>Market Open</h3>
 	            <p>
 	                Market open signifies the initial trading price of a specific financial instrument when an exchange commences trading at the beginning of a trading day.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Momentum">
+	          <div class="investors pt-3 anchor-section" id="Momentum">
 	            <h3>Momentum</h3>
 	            <p>
 	                Momentum is calculated as the percentage change in price over the preceding six months. When momentum has a positive value, it indicates that the price has risen during that period, while negative values signify a decrease in price.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Momentum-Strategy">
+	          <div class="investors pt-3 anchor-section" id="Momentum-Strategy">
 	            <h3>Momentum Strategy</h3>
 	            <p>
 	                Momentum for an asset is calculated by measuring the percentage change in its value over a specified time frame. Positive momentum suggests that the asset may have the potential to continue rising, while negative momentum indicates a potential further decline in price.
@@ -1228,13 +1234,13 @@
 	                The Momentum strategy is designed to identify assets with the most significant percentage price increases over the specified period and generates buy signals for these assets. Conversely, the strategy also identifies assets with the most substantial price decreases over the same period and generates sell signals for them. This approach aims to capitalize on the trends in asset prices and make investment decisions accordingly.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Lookback-Period">
+	          <div class="investors pt-3 anchor-section" id="Lookback-Period">
 	            <h3>Lookback Period</h3>
 	            <p>
 	                The lookback period, in the context of a backtest, refers to the specific duration over which performance measurements are computed within the backtest window. For instance, consider a Momentum strategy with a 6-month lookback period and a 10-year backtest window. In this scenario, if the strategy rebalances on a monthly basis, it means that every month, the strategy calculates the Momentum over the previous 6 months for all the instruments it's tracking. This calculation involves assessing the percentage change in prices over that 6-month period. The backtest then simulates this process over a historical time window spanning 10 years, enabling an evaluation of how the strategy would have performed during that extended period.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Portfolio-Construction">
+	          <div class="investors pt-3 anchor-section" id="Portfolio-Construction">
 	            <h3>Portfolio Construction</h3>
 	            <p>
 	                You can choose from a variety of methods to determine how your portfolio is constructed:
@@ -1248,13 +1254,13 @@
 
 	            <p><strong>Variance Optimized Portfolio Construction:</strong> This method focuses on optimizing your portfolio for risk-adjusted returns. Securities are weighted in a manner that aims to maximize the portfolio's return while considering the associated risk. It seeks to strike a balance between potential returns and portfolio risk.</p>
 	          </div>
-	          <div class="investors pt-3" id="Return-metric">
+	          <div class="investors pt-3 anchor-section" id="Return-metric">
 	            <h3>Return</h3>
 	            <p>
 	                The Return metric reflects the profitability of your investment strategy and is calculated as the Internal Rate of Return (IRR) of your strategy's cash flows. It considers all investments made, interim dividends or sales, and assumes that the portfolio is sold at its current value today. The IRR represents the discount rate at which the Net Present Value (NPV) of the cash flows from the strategy becomes zero. In other words, it is the rate of return at which your strategy's cash flows break even in present value terms.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Risk-Level">
+	          <div class="investors pt-3 anchor-section" id="Risk-Level">
 	            <h3>Risk Level</h3>
 	            <p>
 	                The risk associated with an investment strategy signifies the likelihood that the actual return on the investment may deviate from the expected return.
@@ -1265,7 +1271,7 @@
 
 	            <p>Your chosen risk level reflects your risk appetite or propensity, indicating your willingness to either embrace or avoid risk in your investment approach. It's an essential consideration when tailoring your investment strategy to align with your financial objectives and tolerance for risk.</p>
 	          </div>
-	          <div class="investors pt-3" id="Sharpe-Ratio">
+	          <div class="investors pt-3 anchor-section" id="Sharpe-Ratio">
 	            <h3>Sharpe Ratio</h3>
 	            <p>
 	                The Sharpe Ratio serves as a metric for assessing the risk-adjusted performance of your investment strategy. This ratio is computed by dividing the strategy's return by its volatility, which serves as a proxy for risk.
@@ -1278,7 +1284,7 @@
 	            <p><b>High returns divided by high risk:</b> A medium Sharpe ratio is produced, indicating that while returns are good, they are offset by higher risk levels.</p>
 	            <p><b>Low returns divided by high risk:</b> This leads to a low Sharpe ratio, which is the least favorable outcome. It signifies poor returns relative to the elevated risk taken, indicating an unattractive risk-adjusted performance.</p>
 	          </div>
-	          <div class="investors pt-3" id="Stamp-Duty">
+	          <div class="investors pt-3 anchor-section" id="Stamp-Duty">
 	            <h3>Stamp Duty</h3>
 	            <p>
 	                Stamp duty is a tax imposed by the UK government on the acquisition of specific assets, which includes stocks. When purchasing UK stocks, a stamp duty of 0.5% is levied on the value of the transaction.
@@ -1287,13 +1293,13 @@
 	                It's important to note that stamp duty is not applicable to various categories of assets, such as UK-listed Exchange-Traded Funds (ETFs), stocks listed on the AIM (Alternative Investment Market), or those listed on US exchanges, along with other non-UK assets. The exemptions help define the scope of assets subject to this tax.
 	            </p>
 	          </div>
-	          <div class="investors pt-3" id="Volatility">
+	          <div class="investors pt-3 anchor-section" id="Volatility">
 	            <h3>Volatility</h3>
 	            <p>
 	                Volatility is a metric that quantifies the extent of fluctuations in the returns of a specific security over a specified time period. In many instances, higher volatility is associated with increased risk for that security. This means that securities with greater volatility are generally considered riskier investments due to their potential for larger and more frequent price swings.
 	            </p>
 	          </div>  
-	          <div class="investors pt-3" id="Value-Strategy">
+	          <div class="investors pt-3 anchor-section" id="Value-Strategy">
 	            <h3>Value Strategy</h3>
 	            <p>
 	                A value indicator aims to assess whether the price of an asset is trading above or below its intrinsic value. This assessment is made by analyzing a company's fundamental metrics, primarily based on its financial statement reports.
@@ -1312,8 +1318,9 @@
 export default {
   name: "GlossarySidebar",
   data() {
-    return {
+  return {
       activeIndex: null, // Currently active accordion index
+      activeLink: null, // Currently selected link inside accordion
       accordionItems: [
         {
           title: "Understanding Risk",
@@ -1420,9 +1427,57 @@ export default {
       ],
     };
   },
+  mounted() {
+    // Scroll-based highlighting of current section using scroll position
+    this._glossarySections = Array.from(
+      document.querySelectorAll(".anchor-section[id]")
+    );
+    if (!this._glossarySections.length) return;
+
+    const handleScroll = () => {
+      const offset = 140; // distance from top to consider "active"
+      let bestSection = null;
+      let bestTop = -Infinity;
+
+      this._glossarySections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= offset && rect.top > bestTop) {
+          bestTop = rect.top;
+          bestSection = section;
+        }
+      });
+
+      if (bestSection && bestSection.id) {
+        const href = `#${bestSection.id}`;
+        if (this.activeLink !== href) {
+          this.setActiveLink(href);
+        }
+      }
+    };
+
+    this._onGlossaryScroll = handleScroll;
+    window.addEventListener("scroll", this._onGlossaryScroll, { passive: true });
+    // Initialize on mount
+    this._onGlossaryScroll();
+  },
+  beforeDestroy() {
+    if (this._onGlossaryScroll) {
+      window.removeEventListener("scroll", this._onGlossaryScroll);
+    }
+  },
   methods: {
     toggleAccordion(index) {
       this.activeIndex = this.activeIndex === index ? null : index;
+    },
+    setActiveLink(href) {
+      this.activeLink = href;
+      // Ensure the correct accordion group is open for this link
+      const itemIndex = this.accordionItems.findIndex((item) =>
+        item.links.some((l) => l.href === href)
+      );
+      if (itemIndex !== -1) {
+        this.activeIndex = itemIndex;
+      }
     },
   },
 };
@@ -1469,6 +1524,8 @@ export default {
   width: 100%;
   text-align: left;
   padding: 12px 16px;
+  padding-right: 40px;
+  box-sizing: border-box;
   font-size: 1rem;
   font-weight: 500;
   color: #333333;
@@ -1479,7 +1536,23 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.accordion-button::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #333333;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
 }
 
 .accordion-button:hover {
@@ -1487,7 +1560,13 @@ export default {
 }
 
 .accordion-button.active {
-  background-color: #e0e0e0;
+  background-color: #f9f9f9; /* same as default */
+  color: #333333; /* same as default */
+}
+
+.accordion-button.active::after {
+  transform: rotate(180deg);
+  border-top-color: #333333;
 }
 
 .accordion-button .indicator {
@@ -1515,6 +1594,11 @@ export default {
   color: #000000;
   transition: color 0.2s;
   font-size: 16px;
+}
+
+.accordion-body a.active-link {
+  color: #0056b3;
+  font-weight: 600;
 }
 
 .accordion-body a:hover {
@@ -1561,7 +1645,11 @@ export default {
 
   .accordion-button {
     padding: 10px 14px;
+    padding-right: 40px;
     font-size: 0.95rem;
+    box-sizing: border-box;
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .accordion-collapse {
@@ -1588,11 +1676,45 @@ export default {
 
   .accordion-button {
     padding: 12px 10px;
+    padding-right: 40px;
     font-size: 1rem;
+    box-sizing: border-box;
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .accordion-collapse {
     padding: 0 10px 10px 10px;
+  }
+}
+
+.anchor-section {
+  /* Controls where the heading sits when navigated to via hash links */
+  scroll-margin-top: 120px;
+}
+
+@media (max-width: 768px) {
+  /* Remove large top margin for Glossary page container on mobile */
+  .glossary-page {
+    margin-top: 0 !important;
+  }
+
+  /* Remove extra top padding from the left sidebar column */
+  .gloss-sidebar-col {
+    padding-top: 0 !important;
+  }
+
+  /* Tighter padding inside the sidebar itself so "Table of Contents" sits closer to the top */
+  .gloss-sidebar {
+    padding-top: 8px;
+    padding-right: 20px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+  }
+
+  /* Add a comfortable gap before the "Understanding Risk" heading */
+  .glossary-page .glossary-content h2 {
+    margin-top: 0.75rem;
   }
 }
 </style>
