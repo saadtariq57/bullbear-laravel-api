@@ -1482,9 +1482,17 @@ class WidgetController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'string|max:255',
-            // other validation rules
+            'description' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:widget_categories,id',
         ]);
+        
+        // Convert empty strings to null for nullable fields
+        if (isset($validatedData['description']) && $validatedData['description'] === '') {
+            $validatedData['description'] = null;
+        }
+        if (isset($validatedData['parent_id']) && $validatedData['parent_id'] === '') {
+            $validatedData['parent_id'] = null;
+        }
         
         WidgetCategory::create($validatedData);
         return redirect()->route('admin.widgets.categories.index')->with('success', 'Category created successfully');
@@ -1500,8 +1508,17 @@ class WidgetController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'string|max:255',
+            'description' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:widget_categories,id',
         ]);
+        
+        // Convert empty strings to null for nullable fields
+        if (isset($validatedData['description']) && $validatedData['description'] === '') {
+            $validatedData['description'] = null;
+        }
+        if (isset($validatedData['parent_id']) && $validatedData['parent_id'] === '') {
+            $validatedData['parent_id'] = null;
+        }
         
         $category->update($validatedData);
         return redirect()->route('admin.widgets.categories.index')->with('success', 'Category updated successfully');
