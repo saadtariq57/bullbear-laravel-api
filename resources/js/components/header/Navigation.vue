@@ -143,6 +143,7 @@
                       <ul
                         class="dropdown-menu py-3 mega-menu rounded-3 flex-column"
                         :class="{ show: desktopOpenMenuId === 'markets' }"
+                        @mouseenter="openDesktopMenu('markets')"
                       >
                         <!-- Indices -->
                         <li>
@@ -1221,6 +1222,21 @@ ul.nested-mega-menu {
     border-radius: 0;
     transform: translateY(-30px) !important;
     left: 160px;
+}
+
+/* Prevent glitching when moving cursor from button to dropdown menu */
+.main-list > li > .dropdown > .dropdown-menu.mega-menu {
+    margin-top: 0 !important;
+}
+
+.main-list > li > .dropdown > .dropdown-menu.mega-menu::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    display: block;
 }
 
 /* ul.dynamic-nested-mega-menu {
