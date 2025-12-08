@@ -534,5 +534,18 @@ export default {
   .bi-info-circle {
     display: none;
   }
+
+  /* Make chart full width on mobile */
+  .ohlc-chart {
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+
+  .ohlc-chart .chart-controls {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: calc(100% - 40px);
+  }
 }
 </style>

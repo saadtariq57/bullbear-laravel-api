@@ -1216,6 +1216,18 @@ export default {
     justify-content: space-between;
 }
 
+/* Keep navbar height consistent even when only auth links render */
+.nav-main .navbar {
+    min-height: 96px;
+}
+
+/* Let mobile keep its slimmer height */
+@media (max-width: 1199.98px) {
+    .nav-main .navbar {
+        min-height: auto;
+    }
+}
+
 .mobile-nav-body,
 .mobile_nav_header,
 .mobile-drop {
@@ -1445,7 +1457,7 @@ ul.nested-mega-menu {
     right: 0;
     padding-bottom: env(safe-area-inset-bottom);
     border-top: 1px solid #eee;
-    z-index: 1030; /* above content, below modals */
+    z-index: 1000; /* below offcanvas (1050+) to ensure side menu appears above */
 }
 
 /* Mobile navbar auto-hide animation */
@@ -1491,17 +1503,17 @@ ul.nested-mega-menu {
         max-width: 100%;
     }
 
-    /* Ensure mobile offcanvas opens full width and above nav */
+    /* Ensure mobile offcanvas opens full width and above nav and bottom navbar */
     .offcanvas.offcanvas-end {
         width: 100vw;
         max-width: 100vw;
         top: 0;
         height: 100vh;
-        z-index: 1055; /* above fixed nav */
+        z-index: 1060 !important; /* above bottom navbar (1030) and fixed nav (1020) */
     }
 
     .offcanvas-backdrop {
-        z-index: 1050;
+        z-index: 1055 !important; /* above bottom navbar (1030) but below offcanvas */
     }
 
     /* Ensure bottom navbar stays at bottom of viewport */
