@@ -44,11 +44,23 @@ function hideLoader() {
     }
 }
 
+// Show footer and hide skeleton when Vue app is ready
+function showFooter() {
+    const footerSkeleton = document.getElementById('footer-skeleton');
+    const footerContent = document.getElementById('footer-content');
+    
+    if (footerSkeleton && footerContent) {
+        footerSkeleton.classList.add('hidden');
+        footerContent.classList.add('visible');
+    }
+}
+
 router.isReady().then(() => {
     //store.dispatch('checkLoginStatus').finally(() => {
         app.mount("#app");
         setTimeout(() => {
             hideLoader();
+            showFooter();
         }, 150);
     //});
 });
@@ -59,6 +71,7 @@ setTimeout(() => {
     const appElement = document.getElementById('app');
     if (appElement) {
         hideLoader();
+        showFooter();
     }
 }, 5000);
 

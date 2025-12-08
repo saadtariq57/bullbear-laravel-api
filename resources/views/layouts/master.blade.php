@@ -57,6 +57,65 @@
     >
     @include('layouts.partials.gtm-head')
     @include('layouts.head-css')
+    <style>
+        /* Footer Skeleton Loader Styles */
+        .footer-skeleton-wrapper {
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+        
+        .footer-skeleton-wrapper.hidden {
+            opacity: 0;
+            display: none;
+        }
+        
+        .footer-content-wrapper {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+        
+        .footer-content-wrapper.visible {
+            opacity: 1;
+            display: block !important;
+        }
+        
+        .skeleton-box {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s ease-in-out infinite;
+            border-radius: 4px;
+        }
+        
+        .skeleton-logo {
+            background: linear-gradient(90deg, rgba(255,255,255,0.15) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.15) 75%);
+            background-size: 200% 100%;
+        }
+        
+        .skeleton-icon {
+            border-radius: 50%;
+        }
+        
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Ensure footer skeleton matches footer styling */
+        .footer-skeleton-wrapper .main-foot {
+            background-color: var(--Cinder, #2a4B61);
+            padding-top: 80px;
+        }
+        
+        @media (max-width: 1199.98px) {
+            .footer-skeleton-wrapper .main-foot {
+                padding-top: 60px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -68,7 +127,58 @@
         <!-- Vue app mounts here -->
         <div class="main-content">
             @yield('content')
-            @include('layouts.footer')
+            <!-- Footer Skeleton Loader -->
+            <div id="footer-skeleton" class="footer-skeleton-wrapper">
+                <footer class="main-foot text-white main-foot-bottom-margin">
+                    <section class="main-footer container-fluid">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="skeleton-box skeleton-logo" style="width: 120px; height: 40px; margin-bottom: 20px;"></div>
+                                    <div class="skeleton-box" style="width: 100%; height: 16px; margin-bottom: 8px;"></div>
+                                    <div class="skeleton-box" style="width: 90%; height: 16px; margin-bottom: 8px;"></div>
+                                    <div class="skeleton-box" style="width: 85%; height: 16px;"></div>
+                                </div>
+                                <div class="col-6 col-lg-2 col-md-6 mt-mobile">
+                                    <div class="skeleton-box" style="width: 80px; height: 24px; margin-bottom: 20px;"></div>
+                                    <div class="skeleton-box" style="width: 100%; height: 12px; margin-bottom: 12px;"></div>
+                                    <div class="skeleton-box" style="width: 90%; height: 12px; margin-bottom: 12px;"></div>
+                                    <div class="skeleton-box" style="width: 95%; height: 12px;"></div>
+                                </div>
+                                <div class="col-6 col-lg-2 col-md-6 mt-mobile">
+                                    <div class="skeleton-box" style="width: 100px; height: 24px; margin-bottom: 20px;"></div>
+                                    <div class="skeleton-box" style="width: 100%; height: 12px; margin-bottom: 12px;"></div>
+                                    <div class="skeleton-box" style="width: 85%; height: 12px; margin-bottom: 12px;"></div>
+                                    <div class="skeleton-box" style="width: 90%; height: 12px;"></div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mt-mobile">
+                                    <div class="skeleton-box" style="width: 200px; height: 24px; margin-bottom: 20px;"></div>
+                                    <div class="skeleton-box" style="width: 100%; height: 40px; margin-bottom: 20px;"></div>
+                                    <div class="skeleton-box" style="width: 150px; height: 20px; margin-bottom: 12px;"></div>
+                                    <div class="skeleton-box" style="width: 120px; height: 20px; margin-bottom: 20px;"></div>
+                                    <div class="d-flex gap-3">
+                                        <div class="skeleton-box skeleton-icon" style="width: 24px; height: 24px;"></div>
+                                        <div class="skeleton-box skeleton-icon" style="width: 24px; height: 24px;"></div>
+                                        <div class="skeleton-box skeleton-icon" style="width: 24px; height: 24px;"></div>
+                                        <div class="skeleton-box skeleton-icon" style="width: 24px; height: 24px;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12 footer-bootem d-flex py-4 mt-5 border-top">
+                                    <div class="skeleton-box" style="width: 200px; height: 16px;"></div>
+                                    <div class="ms-auto d-flex gap-2">
+                                        <div class="skeleton-box" style="width: 100px; height: 16px;"></div>
+                                        <div class="skeleton-box" style="width: 90px; height: 16px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </footer>
+            </div>
+            <!-- Actual Footer (hidden initially) -->
+            <div id="footer-content" class="footer-content-wrapper" style="display: none;">
+                @include('layouts.footer')
+            </div>
         </div>
     </div>
     <!-- END layout-wrapper -->
