@@ -22,7 +22,7 @@
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-5">
-                                    <a href="index" class="">
+                                    <a href="{{ url('/') }}" class="">
                                         <img src="/build/images/logo-welcome.png" alt=""
                                             width="200" class="auth-logo logo-dark mx-auto">
                                         {{-- <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""

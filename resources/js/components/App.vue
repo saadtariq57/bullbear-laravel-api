@@ -82,6 +82,7 @@ export default {
 /* Prevent mobile bottom navbar from overlapping content */
 @media (max-width: 1199.98px) {
   .page-content {
+    padding-top: 65px; /* Space for fixed top navbar (slimmer version) */
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
 }

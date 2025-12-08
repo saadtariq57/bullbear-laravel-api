@@ -1,20 +1,20 @@
 <template>
   <header class="container-fluid main-header bg-white">
     <div>
-      <div class="nav-main">
+      <div class="nav-main" :class="{ 'nav-hidden': isNavHidden }">
         <nav class="navbar bg-transparent py-3">
           <div class="container p-0 gap-3 justify-content-center nav-container">
             <div class="d-flex align-items-center gap-5 flex-fill nav-top-header">
               <!-- Site Logo -->
               <div class="site-logo">
-                <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
+                <router-link to="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
                   <img
                     class="header-image is-logo-image"
                     alt="Rich TV"
                     src="/build/images/logo.svg"
                     title="Rich TV"
                   />
-                </a>
+                </router-link>
               </div>
 
               <!-- Search Component (offcanvas available on all viewports) -->
@@ -54,65 +54,6 @@
               <template v-else>
                 <Login />
               </template>
-            </div>
-
-            <!-- Mobile Bottom Navbar -->
-            <div class="d-block d-xl-none mobile-bottom-navbar fixed-bottom bg-white">
-              <ul class="d-flex px-2 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
-                <!-- Search (1st) -->
-                <li class="text-center cursor-pointer nav-bottom-link">
-                  <button class="bg-transparent border-0 w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-                    <i class="bi bi-search fs-3"></i>
-                    <span class="d-block fw-5 fs-16">Search</span>
-                  </button>
-                </li>
-                <!-- Messages (2nd) -->
-                <li class="text-center cursor-pointer nav-bottom-link">
-                  <template v-if="userData">
-                    <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openMessagesDrawer">
-                      <i class="bi bi-chat-dots fs-3"></i>
-                      <span class="d-block fw-5 fs-16">Messages</span>
-                    </button>
-                  </template>
-                  <template v-else>
-                    <a href="/watchlist" class="text-black">
-                      <i class="bi bi-star-fill fs-3"></i>
-                      <span class="d-block fw-5 fs-16">Watchlist</span>
-                    </a>
-                  </template>
-                </li>
-                <!-- Following (3rd) -->
-                <li class="text-center cursor-pointer nav-bottom-link">
-                  <template v-if="userData">
-                    <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openFollowingDrawer">
-                      <i class="bi bi-person-fill-add fs-3"></i>
-                      <span class="d-block fw-5 fs-16">Following</span>
-                    </button>
-                  </template>
-                  <template v-else>
-                    <a href="/ceo-interviews" class="text-black">
-                      <i class="bi bi-youtube fs-3"></i>
-                      <span class="d-block fw-5 fs-16">CEO Interviews</span>
-                    </a>
-                  </template>
-                </li>
-                <!-- Menu (4th) -->
-                <li
-                  class="text-center nav-bottom-link"
-                >
-                  <button class="navbar-toggler border-0" type="button" @click.prevent="toggleMobileMenu" aria-controls="offcanvasDarkNavbar">
-                    <svg width="23" height="25" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z"
-                        fill="#000000"
-                      ></path>
-                    </svg>
-                  </button>
-                  <span class="d-block fw-5 fs-16 text-black">Menu</span>
-                </li>
-              </ul>
             </div>
 
             <!-- Desktop Navigation -->
@@ -412,14 +353,14 @@
             >
               <div class="offcanvas-header mobile_nav_header">
                 <div class="site-logo">
-                  <a href="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
+                  <router-link to="/" title="Rich TV" rel="home" aria-label="Rich Tv logo">
                     <img
                       class="header-image is-logo-image"
                       alt="Rich TV"
                       src="/build/images/logo.svg"
                       title="Rich TV"
                     />
-                  </a>
+                  </router-link>
                 </div>
                 <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
@@ -980,6 +921,64 @@
         </nav>
       </div>
     </div>
+    <!-- Mobile Bottom Navbar - Outside fixed container -->
+    <div class="d-block d-xl-none mobile-bottom-navbar fixed-bottom bg-white">
+      <ul class="d-flex px-2 px-sm-4 py-2 m-0 justify-content-between align-items-center list-unstyled">
+        <!-- Search (1st) -->
+        <li class="text-center cursor-pointer nav-bottom-link">
+          <button class="bg-transparent border-0 w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+            <i class="bi bi-search fs-3"></i>
+            <span class="d-block fw-5 fs-16">Search</span>
+          </button>
+        </li>
+        <!-- Messages (2nd) -->
+        <li class="text-center cursor-pointer nav-bottom-link">
+          <template v-if="userData">
+            <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openMessagesDrawer">
+              <i class="bi bi-chat-dots fs-3"></i>
+              <span class="d-block fw-5 fs-16">Messages</span>
+            </button>
+          </template>
+          <template v-else>
+            <a href="/watchlist" class="text-black">
+              <i class="bi bi-star-fill fs-3"></i>
+              <span class="d-block fw-5 fs-16">Watchlist</span>
+            </a>
+          </template>
+        </li>
+        <!-- Following (3rd) -->
+        <li class="text-center cursor-pointer nav-bottom-link">
+          <template v-if="userData">
+            <button class="bg-transparent border-0 w-100 text-black" type="button" @click="openFollowingDrawer">
+              <i class="bi bi-person-fill-add fs-3"></i>
+              <span class="d-block fw-5 fs-16">Following</span>
+            </button>
+          </template>
+          <template v-else>
+            <a href="/ceo-interviews" class="text-black">
+              <i class="bi bi-youtube fs-3"></i>
+              <span class="d-block fw-5 fs-16">CEO Interviews</span>
+            </a>
+          </template>
+        </li>
+        <!-- Menu (4th) -->
+        <li
+          class="text-center nav-bottom-link"
+        >
+          <button class="navbar-toggler border-0" type="button" @click.prevent="toggleMobileMenu" aria-controls="offcanvasDarkNavbar">
+            <svg width="23" height="25" viewBox="0 0 30 23" xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M0 1.75C0 0.783502 0.783502 0 1.75 0H28.25C29.2165 0 30 0.783502 30 1.75C30 2.7165 29.2165 3.5 28.25 3.5H1.75C0.783502 3.5 0 2.7165 0 1.75ZM10 11.25C10 10.2835 10.7835 9.5 11.75 9.5H28.25C29.2165 9.5 30 10.2835 30 11.25C30 12.2165 29.2165 13 28.25 13H11.75C10.7835 13 10 12.2165 10 11.25ZM20 20.75C20 19.7835 20.7835 19 21.75 19H28.25C29.2165 19 30 19.7835 30 20.75C30 21.7165 29.2165 22.5 28.25 22.5H21.75C20.7835 22.5 20 21.7165 20 20.75Z"
+                fill="#000000"
+              ></path>
+            </svg>
+          </button>
+          <span class="d-block fw-5 fs-16 text-black">Menu</span>
+        </li>
+      </ul>
+    </div>
   </header>
 </template>
 
@@ -1008,6 +1007,11 @@ export default {
             desktopOpenMenuId: null,
             // Timeout id for delayed close when leaving the whole desktop nav
             desktopCloseTimeout: null,
+            // Mobile navbar scroll state
+            isNavHidden: false,
+            lastScrollY: 0,
+            scrollThreshold: 10, // Minimum scroll distance to trigger hide/show
+            resizeHandler: null,
         };
     },
     computed: {
@@ -1128,6 +1132,51 @@ export default {
             const instance = OffcanvasController.getOrCreateInstance(offcanvasEl);
             instance.toggle();
         },
+        /**
+         * Handle scroll event for mobile navbar auto-hide
+         * Only applies on mobile devices (viewport width < 1200px)
+         */
+        handleScroll() {
+            // Only apply on mobile devices
+            if (window.innerWidth >= 1200) {
+                this.isNavHidden = false;
+                return;
+            }
+
+            const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Don't hide if at the top of the page
+            if (currentScrollY < this.scrollThreshold) {
+                this.isNavHidden = false;
+                this.lastScrollY = currentScrollY;
+                return;
+            }
+
+            // Determine scroll direction
+            if (currentScrollY > this.lastScrollY && currentScrollY > this.scrollThreshold) {
+                // Scrolling down - hide navbar
+                this.isNavHidden = true;
+            } else if (currentScrollY < this.lastScrollY) {
+                // Scrolling up - show navbar
+                this.isNavHidden = false;
+            }
+
+            this.lastScrollY = currentScrollY;
+        },
+        /**
+         * Check if we're on mobile and setup scroll listener
+         */
+        setupMobileScrollListener() {
+            if (window.innerWidth < 1200) {
+                window.addEventListener('scroll', this.handleScroll, { passive: true });
+            }
+        },
+        /**
+         * Remove scroll listener
+         */
+        removeMobileScrollListener() {
+            window.removeEventListener('scroll', this.handleScroll);
+        },
     },
     mounted() {
         const collapseEl = document.getElementById('collapseMarkets');
@@ -1136,6 +1185,27 @@ export default {
             collapseEl.addEventListener('shown.bs.collapse', () => console.log('[Markets] shown.bs.collapse'));
             collapseEl.addEventListener('hide.bs.collapse', () => console.log('[Markets] hide.bs.collapse'));
             collapseEl.addEventListener('hidden.bs.collapse', () => console.log('[Markets] hidden.bs.collapse'));
+        }
+
+        // Setup mobile scroll listener
+        this.setupMobileScrollListener();
+        
+        // Handle window resize to add/remove listener based on viewport
+        this.resizeHandler = () => {
+            this.removeMobileScrollListener();
+            this.setupMobileScrollListener();
+            // Reset navbar state when switching between mobile/desktop
+            if (window.innerWidth >= 1200) {
+                this.isNavHidden = false;
+            }
+        };
+        window.addEventListener('resize', this.resizeHandler);
+    },
+    beforeUnmount() {
+        // Clean up event listeners
+        this.removeMobileScrollListener();
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
         }
     }
 };
@@ -1369,8 +1439,121 @@ ul.nested-mega-menu {
 
 /* Mobile bottom navbar safe-area support and separation */
 .mobile-bottom-navbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0;
+    right: 0;
     padding-bottom: env(safe-area-inset-bottom);
     border-top: 1px solid #eee;
     z-index: 1030; /* above content, below modals */
+}
+
+/* Mobile navbar auto-hide animation */
+@media (max-width: 1199.98px) {
+    .main-header {
+        position: relative;
+    }
+
+    .nav-main {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1020;
+        background-color: white;
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .nav-main.nav-hidden {
+        transform: translateY(-100%);
+    }
+
+    /* Make mobile navbar slimmer */
+    .nav-main .navbar {
+        width: 100%;
+        padding-top: 0.375rem !important;
+        padding-bottom: 0.375rem !important;
+    }
+
+    /* Reduce gap between elements on mobile for slimmer look */
+    .nav-main .nav-top-header {
+        gap: 0.75rem !important;
+    }
+
+    /* Ensure the inner structure maintains proper layout */
+    .nav-main .nav-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Ensure mobile offcanvas opens full width and above nav */
+    .offcanvas.offcanvas-end {
+        width: 100vw;
+        max-width: 100vw;
+        top: 0;
+        height: 100vh;
+        z-index: 1055; /* above fixed nav */
+    }
+
+    .offcanvas-backdrop {
+        z-index: 1050;
+    }
+
+    /* Ensure bottom navbar stays at bottom of viewport */
+    .mobile-bottom-navbar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Apply responsive padding to fixed nav-main to match original header */
+@media (max-width: 767px) {
+    .nav-main {
+        padding-left: 30px !important;
+        padding-right: 30px !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .nav-main {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+@media (max-width: 410px) {
+    .nav-main {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+@media (max-width: 425px) {
+    .nav-main {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+}
+
+@media (max-width: 340px) {
+    .nav-main {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+}
+
+/* Ensure desktop navbar stays in place */
+@media (min-width: 1200px) {
+    .nav-main {
+        position: relative;
+    }
 }
 </style>
