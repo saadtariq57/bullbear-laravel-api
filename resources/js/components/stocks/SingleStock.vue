@@ -267,7 +267,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, onMounted, computed, watch } from 'vue';
+import { defineComponent, ref, watchEffect, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { isLoggedIn } from '../../stores';
@@ -334,6 +334,7 @@ export default defineComponent({
     const isSmallScreen = ref(window.innerWidth < 768);
 
     const handleAddToWatchlist = (symbol) => {
+      hideAllTooltips();
       if (isUserLoggedIn.value) {
         selectedSymbol.value = symbol;
         showWatchlistModal.value = true;
@@ -368,6 +369,7 @@ export default defineComponent({
     };
 
     const navigateToDeepAnalysis = () => {
+      hideAllTooltips();
       router.push(`/deep-analysis/${symbol.value}`);
     };
 
@@ -383,6 +385,8 @@ export default defineComponent({
       'fund': ['SUMMARY', 'NEWS', 'PROFILE'],
     };
     
+    const tooltipInstances = [];
+
     const availableTabs = computed(() => {
       const visibleTabIds = tabVisibility[stockType.value] || [];
       return TABS.filter(tab => visibleTabIds.includes(tab.id));
@@ -411,7 +415,7 @@ export default defineComponent({
           stockData.value = null;
         } finally {
           isLoading.value = false;
-          initializeTooltips();
+          nextTick(() => initializeTooltips());
         }
       };
 
@@ -445,25 +449,54 @@ export default defineComponent({
       window.addEventListener('resize', handleResize);
       handleResize();
     });
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', handleResize);
+      if (tooltipInstances.length) {
+        tooltipInstances.forEach((instance) => instance.dispose && instance.dispose());
+        tooltipInstances.length = 0;
+      }
+    });
     watch(availableTabs, (newTabs) => {
       if (!newTabs.find(tab => tab.id === activeTab.value)) {
         activeTab.value = newTabs.length > 0 ? newTabs[0].id : 'SUMMARY';
       }
     });
 
-    const initializeTooltips = () => {
-      // Initialize Bootstrap tooltips
-      if (typeof bootstrap !== 'undefined') {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl, {
-            trigger: 'hover focus',
-            fallbackPlacements: ['top', 'right', 'bottom', 'left'],
-          });
-        });
-      } else {
-        console.warn('Bootstrap is not loaded. Tooltips will not be initialized.');
+    const hideAllTooltips = () => {
+      if (tooltipInstances.length) {
+        tooltipInstances.forEach((instance) => instance.hide && instance.hide());
       }
+    };
+
+    const initializeTooltips = () => {
+      // Initialize Bootstrap tooltips and clean up old instances to avoid stuck tooltips
+      if (typeof bootstrap === 'undefined') {
+        console.warn('Bootstrap is not loaded. Tooltips will not be initialized.');
+        return;
+      }
+
+      if (tooltipInstances.length) {
+        tooltipInstances.forEach((instance) => instance.dispose && instance.dispose());
+        tooltipInstances.length = 0;
+      }
+
+      const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach((tooltipTriggerEl) => {
+        const instance = new bootstrap.Tooltip(tooltipTriggerEl, {
+          trigger: 'hover focus',
+          fallbackPlacements: ['top', 'right', 'bottom', 'left'],
+          boundary: 'window',
+          container: 'body',
+          delay: { show: 150, hide: 50 },
+        });
+        tooltipTriggerEl.addEventListener('click', () => {
+          instance.hide();
+          tooltipTriggerEl.blur();
+        });
+        tooltipTriggerEl.addEventListener('mouseleave', () => instance.hide());
+        tooltipTriggerEl.addEventListener('focusout', () => instance.hide());
+        tooltipInstances.push(instance);
+      });
     };
 
     return {

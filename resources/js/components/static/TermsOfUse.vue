@@ -5,7 +5,7 @@
       <div class="row">
         <!-- Table of Contents -->
         <div class="col-lg-4 col-xl-3 shadow-sm rounded-4 bg-custom p-4">
-        <nav id="termsTableOfContents">
+        <nav id="termsTableOfContents" class="toc-scroll">
         <h2 class="h4">Contents</h2>
           <ul class="nav flex-column">
             <li class="nav-item">
@@ -499,6 +499,12 @@ export default {
 #termsTableOfContents {
   position: sticky;
   top: 100px;
+}
+
+#termsTableOfContents.toc-scroll {
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
 #termsTableOfContents .nav-link {
