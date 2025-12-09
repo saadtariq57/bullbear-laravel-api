@@ -427,7 +427,7 @@ export default {
           if (!sections.length) return;
 
           const handleScroll = () => {
-            const offset = 140;
+            const offset = 180;
             let bestSection = null;
             let bestTop = -Infinity;
 
@@ -475,7 +475,7 @@ export default {
 
 <style scoped>
 .anchor-section {
-  scroll-margin-top: 120px;
+  scroll-margin-top: 180px;
 }
 
 @media (max-width: 768px) {
