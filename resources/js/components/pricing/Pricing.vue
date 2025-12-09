@@ -39,20 +39,20 @@
           class="col-xl-4 col-lg-6 col-md-12 px-1"
           :class="['pricing-plan', plan.name.toLowerCase()]"
         >
-          <div class="card shadow rounded-4 h-100 position-relative">
+          <div class="card shadow rounded-4 h-100 position-relative plan-card">
             <!-- Recommended Badge for Middle Plan -->
             <div v-if="isRecommendedPlan(index)" class="recommended-badge">
               Recommended
             </div>
 
             <!-- Plan Header -->
-            <div class="px-4 pt-4 pb-4">
+            <div class="px-4 pt-4 pb-4 plan-header">
               <h3 class="text-uppercase fw-bold">{{ plan.name }}</h3>
               <span class="text-secondary fw-5 fs-16">{{ plan.description }}</span>
             </div>
 
             <!-- Plan Price -->
-            <div class="ps-4 pt-3 pb-1 bg-basic-plan position-relative">
+            <div class="ps-4 pt-3 pb-3 bg-basic-plan position-relative plan-price">
               <h2 class="text-cta">
                 <!-- Display 'Free Forever' for Free Plan -->
                 <span v-if="isFreePlan(plan)">
@@ -69,7 +69,7 @@
             </div>
 
             <!-- Features List -->
-            <ul class="list-group list-group-flush membership-checks-list px-1 my-5">
+            <ul class="list-group list-group-flush membership-checks-list px-1 mt-3 mb-0">
               <li v-for="feature in plan.plan_features" :key="feature.id" class="list-group-item py-2">
                 <span>{{ formatFeatureName(feature.feature_name) }}</span>
                 <span v-if="feature.limit">{{ feature.limit }}</span>
@@ -87,7 +87,7 @@
               Current Plan
             </button>
             <button
-              v-else
+              v-else-if="!shouldHideSubscribe(plan)"
               @click="handleSubscribe(plan)"
               class="btn w-100 btn-basic-plan py-4 fs-4 fw-5 align-self-end"
             >
@@ -132,6 +132,11 @@ export default {
       showYearly: state => state.showYearly,
     }),
     ...mapState(['userData']),
+    hasPaidSubscription() {
+      // Determine if the user already has an active paid subscription
+      return Array.isArray(this.subscriptionPlans)
+        && this.subscriptionPlans.some(plan => plan.currentSubscription && !this.isFreePlan(plan));
+    },
     isModuleRegistered() {
       return () => this.$store.hasModule('pricingStore');
     }
@@ -156,6 +161,10 @@ export default {
     },
     redirectToCheckout(plan) {
         this.setAndRedirectToCheckout({ plan, router: this.$router });
+    },
+    shouldHideSubscribe(plan) {
+      // Hide the Free plan subscribe button when the user already has a paid plan
+      return this.isFreePlan(plan) && this.hasPaidSubscription;
     },
     formatFeatureName(featureName) {
       return featureName
@@ -193,7 +202,7 @@ export default {
 /* Recommended Badge Styles */
 .recommended-badge {
   position: absolute;
-  top: -15px;
+  top: -18px; /* sit above the card */
   left: 50%;
   transform: translateX(-50%);
   background-color: #ffdf00;
@@ -202,7 +211,7 @@ export default {
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.9rem;
-  z-index: 10;
+  z-index: 20;
 }
 
 /* Free Plan Specific Styling (Optional) */
@@ -225,11 +234,84 @@ export default {
   margin-left: 0.5rem;
 }
 
+/* Layout helpers to align cards */
+.pricing-plan .plan-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: visible; 
+}
+
+.plan-header {
+  min-height: 124px;
+}
+
+.plan-price {
+  min-height: 134px;
+  display: flex;
+  align-items: flex-end;
+  padding-right: 1.5rem;
+  padding-left: 0; /* ensure ribbon starts at card edge */
+  background: transparent;
+  position: relative;
+  overflow: visible;
+}
+
+.plan-price h2 {
+  position: relative;
+  width: calc(100% + 24px); /* pull ribbon to card edge */
+  background: #e7e7e7;
+  border-radius: 0;
+  padding: 16px 16px 12px 24px;
+  margin: 0;
+  margin-left: -24px; /* offset the card's left padding */
+  overflow: visible;
+}
+
+.plan-price h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  background: #e7e7e7;
+  border-radius: 0;
+}
+
+.plan-price h2::after {
+  content: '';
+  position: absolute;
+  right: -100px;
+  top: 0;
+  height: 100%;
+  width: 160px;
+  background: #e7e7e7;
+  clip-path: polygon(0 0, 100% 0, 62% 100%, 0 100%);
+}
+
+.plan-price h2 .basic-plan-curve {
+  display: none;
+}
+
 /* Feature List Alignment */
-.list-group-item {
+.membership-checks-list {
+  flex: 1 1 auto;
+  padding: 0;
+}
+
+.membership-checks-list .list-group-item {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #e6e6e6;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.membership-checks-list .list-group-item:last-child {
+  border-bottom: 1px solid #e6e6e6;
 }
 
 /* Additional Styles for Improved UX */
@@ -237,14 +319,14 @@ export default {
   background-color: #007bff;
   color: #fff;
   transition: background-color 0.3s ease;
+  border: none;
+  border-radius: 0 0 18px 18px;
+  margin-top: auto;
+  min-height: 64px;
 }
 
 .btn-basic-plan:hover {
   background-color: #0056b3;
-}
-
-.pricing-wrapper {
-  /* Optional: Add smooth transitions or other styles as needed */
 }
 
 /* Responsive Adjustments (Optional) */

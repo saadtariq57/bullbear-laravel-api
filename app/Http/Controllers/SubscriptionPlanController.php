@@ -63,14 +63,27 @@ class SubscriptionPlanController extends Controller
 	                        break;
 	                    }
 	                }
-	            } else {
-	                // If no active subscription, mark the "Free" plan as current
-	                foreach ($plans as $plan) {
-	                    if (strtolower($plan->name) === 'free') {
-	                        $plan->currentSubscription = 'free';
-	                        break;
-	                    }
-	                }
+                } else {
+                    // If no active Stripe subscription, fall back to user's stored plan
+                    // This covers admin-updated plans that bypass Stripe
+                    $userPlanId = $user->subscription_plan_id;
+
+                    if ($userPlanId) {
+                        foreach ($plans as $plan) {
+                            if ((int) $plan->id === (int) $userPlanId) {
+                                $plan->currentSubscription = 'manual';
+                                break;
+                            }
+                        }
+                    } else {
+                        // If no stored plan, default the "Free" plan as current
+                        foreach ($plans as $plan) {
+                            if (strtolower($plan->name) === 'free') {
+                                $plan->currentSubscription = 'free';
+                                break;
+                            }
+                        }
+                    }
 	            }
 	        }
 
