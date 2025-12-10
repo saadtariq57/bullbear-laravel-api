@@ -94,7 +94,7 @@
                         </li>
                         <li class="nav-link" v-for="group in filteredGroups" :key="group.id">
                           <a :href="`/groups/${group.id}/${formatGroupName(group.group_title)}`"
-                            class="d-flex align-items-center search-groups-data">
+                            class="d-flex align-items-center search-groups-data w-100 gap-5">
                             <div class="col-3 d-flex align-items-center gap-3">
                               <div class="search-group-icon">
                                 <img :src="group.avatar" alt="search-icon" class="rounded-circle" width="50px"
@@ -104,7 +104,7 @@
                                 <span>{{ group.group_name }}</span>
                               </div>
                             </div>
-                            <span class="col-9 search-company-name fs-14 fw-4">{{ group.group_title }}</span>
+                            <div class="col-9 search-company-name fs-14 fw-4">{{ group.group_title }}</div>
                           </a>
                         </li>
                         <li class="search-symbol-not-show py-3" v-if="filteredGroups.length === 0">
