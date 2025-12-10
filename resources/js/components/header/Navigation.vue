@@ -1512,9 +1512,6 @@ ul.nested-mega-menu {
         z-index: 1060 !important; /* above bottom navbar (1030) and fixed nav (1020) */
     }
 
-    .offcanvas-backdrop {
-        z-index: 1055 !important; /* above bottom navbar (1030) but below offcanvas */
-    }
 
     /* Ensure bottom navbar stays at bottom of viewport */
     .mobile-bottom-navbar {
