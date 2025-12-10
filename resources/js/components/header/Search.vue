@@ -87,8 +87,11 @@
                       role="tabpanel" aria-labelledby="nav-search-group-tab" tabindex="0">
                       <ul class="nav d-flex flex-column px-sm-3 px-1">
                         <li class="nav-item py-0 px-3 d-flex">
-                          <span class="d-flex justify-content-between w-100 align-self-center symbol-search-header">
-                            <span class="col-3">Group Symbol</span>
+                          <span class="d-flex justify-content-between w-100 align-self-center symbol-search-header gap-5">
+                            <span class="col-3 d-flex align-items-center gap-3">
+                              <div class="search-group-icon" style="visibility: hidden; width: 50px; max-width: 50px; min-width: 40px;"></div>
+                              <span>Group Symbol</span>
+                            </span>
                             <span class="col-9">Group Title</span>
                           </span>
                         </li>
