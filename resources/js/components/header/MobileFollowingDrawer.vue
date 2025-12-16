@@ -39,6 +39,11 @@
               </div>
             </a>
           </li>
+          <li v-if="userData" class="following-sheet__see-all">
+            <a :href="'/profile/' + userData.name + '/follow'" class="d-block text-center py-3 text-decoration-none fw-6">
+              See All
+            </a>
+          </li>
         </ul>
       </div>
     </template>
@@ -59,6 +64,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['userData']),
     ...mapState('userNotification', ['followers']),
     followersList() {
       return this.followers || [];
@@ -137,6 +143,23 @@ export default {
   background-color: #edb043;
   left: -2px;
   top: 18px;
+}
+
+.following-sheet__see-all {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid #eee;
+  margin-top: 8px;
+}
+
+.following-sheet__see-all a {
+  color: #0d6efd;
+  transition: background-color 0.2s ease;
+}
+
+.following-sheet__see-all a:hover {
+  background-color: #f8f9fa;
 }
 
 @media (min-width: 768px) {

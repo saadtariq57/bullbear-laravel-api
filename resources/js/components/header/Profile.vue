@@ -4,7 +4,7 @@
         <div class="btn-group btn-drps d-none d-xl-block">
             <button type="button" class="btn dropdown-toggle profile-dropdown-toggle border-0 p-0" data-bs-toggle="dropdown">
                 <i class="bi bi-person-fill-add fs-4"></i>
-                <span class="notification-count" v-if="followers.length > 0">{{ followers.length }}</span>
+                <span class="notification-count" v-if="unreadFollowersCount > 0">{{ unreadFollowersCount }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end m-0 p-0 followers_dropdown">
                 <li v-for="follower in followers" :key="follower.id" class="py-0 position-relative" :class="{ 'unread-notification-wrapper': !follower.read_at }">
@@ -18,7 +18,7 @@
                         </div>
                     </a>
                 </li>
-                <li class="py-0 see-all"><a href="/followers" class="dropdown-item text-center py-2">See All</a></li>
+                <li class="py-0 see-all"><a :href="'/profile/' + userData.name + '/follow'" class="dropdown-item text-center py-2">See All</a></li>
             </ul>
         </div>
 
@@ -151,6 +151,13 @@ export default {
         ...mapState(['userData']),
         ...mapState('profileGroupHeader', ['UpdatedProfileImagePath']),
         ...mapState('userNotification', ['followers', 'notifications', 'messages']),
+        unreadFollowersCount() {
+            try {
+                return this.followers.filter(f => !f.read_at).length;
+            } catch (e) {
+                return 0;
+            }
+        },
         unreadCount() {
             try {
                 return this.notifications.filter(n => !n.read_at).length;

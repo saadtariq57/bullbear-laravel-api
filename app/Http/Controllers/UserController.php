@@ -163,7 +163,94 @@ class UserController extends Controller
                 $validatedData['subscription_plan_id'] = null;
             }
 
+            // Track original plan before update
+            $originalPlanId = $user->subscription_plan_id;
+
+            // Persist basic user fields (including subscription_plan_id)
             $user->update($validatedData);
+
+            // Handle subscription plan changes
+            if ($validatedData['subscription_plan_id'] !== $originalPlanId) {
+                // Check if changing to Free or null
+                $isChangingToFree = empty($validatedData['subscription_plan_id']);
+                
+                if (!$isChangingToFree) {
+                    $newPlan = SubscriptionPlan::find($validatedData['subscription_plan_id']);
+                    $isFreePlan = $newPlan && strtolower($newPlan->name) === 'free';
+                    
+                    if ($isFreePlan) {
+                        $isChangingToFree = true;
+                    }
+                }
+                
+                if ($isChangingToFree) {
+                    // If switched to Free or cleared, cancel ALL subscriptions (Stripe and manual)
+                    foreach ($user->subscriptions as $subscription) {
+                        if (isset($subscription->is_manual) && $subscription->is_manual) {
+                            // Delete manual subscriptions (they don't exist in Stripe)
+                            $subscription->delete();
+                            \Log::info("Admin deleted manual subscription for user {$user->id}: {$subscription->name}");
+                        } else {
+                            // Cancel active Stripe subscriptions
+                            if ($subscription->stripe_status === 'active') {
+                                try {
+                                    $subscription->cancelNow();
+                                    // Refresh the subscription to ensure ends_at is set
+                                    $subscription->refresh();
+                                    \Log::info("Admin cancelled Stripe subscription for user {$user->id}: {$subscription->name}");
+                                } catch (\Exception $e) {
+                                    \Log::error("Failed to cancel Stripe subscription for user {$user->id}: " . $e->getMessage());
+                                    // Continue with other subscriptions even if one fails
+                                }
+                            }
+                        }
+                    }
+                    // Refresh user's subscriptions relationship to ensure changes are reflected
+                    $user->load('subscriptions');
+                } else {
+                    // Changing to Pro/Premium - remove old subscriptions and create manual one
+                    $newPlan = SubscriptionPlan::find($validatedData['subscription_plan_id']);
+                    
+                    // Remove any existing subscriptions (Stripe or manual)
+                    foreach ($user->subscriptions as $subscription) {
+                        // Manual subscriptions have no real Stripe counterpart
+                        if (property_exists($subscription, 'is_manual') && $subscription->is_manual) {
+                            $subscription->delete();
+                        } else {
+                            // For safety, only cancel active Stripe subscriptions here
+                            if ($subscription->stripe_status === 'active') {
+                                try {
+                                    $subscription->cancelNow();
+                                    \Log::info("Admin cancelled Stripe subscription for user {$user->id} when assigning {$newPlan->name}");
+                                } catch (\Exception $e) {
+                                    \Log::error("Failed to cancel Stripe subscription for user {$user->id}: " . $e->getMessage());
+                                }
+                            }
+                        }
+                    }
+
+                    // Create a permanent, complimentary manual subscription
+                    $manualSubscription = $user->subscriptions()->create([
+                        'name'          => $newPlan->name,
+                        'stripe_id'     => null,
+                        'stripe_status' => 'active',
+                        'is_manual'     => true,
+                        'trial_ends_at' => null,
+                        'ends_at'       => null,
+                    ]);
+
+                    // Link a simple subscription item so existing code relying on items still works
+                    $manualSubscription->items()->create([
+                        'stripe_id'      => 'manual_item_' . uniqid(),
+                        'stripe_product' => $newPlan->stripe_product_id ?? 'manual_product',
+                        'stripe_price'   => $newPlan->stripe_monthly_price_id ?? 'manual_price',
+                        'quantity'       => 1,
+                    ]);
+                    
+                    \Log::info("Admin created manual subscription for user {$user->id}: {$newPlan->name}");
+                }
+            }
+
             return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()

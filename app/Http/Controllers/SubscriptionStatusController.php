@@ -22,6 +22,24 @@ class SubscriptionStatusController extends Controller
             // User is not authenticated
             return response()->json(['authenticated' => false], 200);
         }
+        // #region agent log (debug-session)
+        try {
+            $payload = [
+                'sessionId' => 'debug-session',
+                'runId' => 'pre-fix',
+                'hypothesisId' => 'H2',
+                'location' => 'app/Http/Controllers/SubscriptionStatusController.php:getStatus:entry',
+                'message' => 'subscriptionStatus entry',
+                'data' => [
+                    'userId' => $user->id,
+                    'subscription_plan_id' => $user->subscription_plan_id,
+                    'subscriptionPlanName' => $user->subscriptionPlan?->name,
+                ],
+                'timestamp' => round(microtime(true) * 1000),
+            ];
+            @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
+        } catch (\Throwable $e) {}
+        // #endregion
 
         // Retrieve all enabled features for the user's subscription plan
         $features = $user->getSubscriptionFeatures();
@@ -55,11 +73,43 @@ class SubscriptionStatusController extends Controller
                 'can_access'     => $can_access,
             ];
         }
+        // Prepare subscription payload including manual vs Stripe metadata
+        $subscriptionsForPayload = $user->subscriptions?->map(function ($s) {
+            return [
+                'name'              => $s->name,
+                'stripe_status'     => $s->stripe_status,
+                'ends_at'           => $s->ends_at,
+                'is_manual'         => $s->is_manual ?? false,
+                'subscription_type' => ($s->is_manual ?? false) ? 'Complimentary' : 'Stripe',
+            ];
+        })->toArray();
+
+        // #region agent log (debug-session)
+        try {
+            $payload = [
+                'sessionId' => 'debug-session',
+                'runId' => 'pre-fix',
+                'hypothesisId' => 'H2',
+                'location' => 'app/Http/Controllers/SubscriptionStatusController.php:getStatus:exit',
+                'message' => 'subscriptionStatus computed features/subscriptions',
+                'data' => [
+                    'userId' => $user->id,
+                    'subscription_plan_id' => $user->subscription_plan_id,
+                    'subscriptionPlanName' => $user->subscriptionPlan?->name,
+                    'enabledFeatureCount' => is_countable($features) ? count($features) : null,
+                    'returnedSubscriptionCount' => is_array($subscriptionsForPayload) ? count($subscriptionsForPayload) : null,
+                    'subscriptions' => $subscriptionsForPayload,
+                ],
+                'timestamp' => round(microtime(true) * 1000),
+            ];
+            @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
+        } catch (\Throwable $e) {}
+        // #endregion
 
         return response()->json([
             'authenticated' => true,
             'features'      => $featureStatus,
-            'subscription'  => $user->subscriptions,
+            'subscription'  => $subscriptionsForPayload,
         ]);
     }
         

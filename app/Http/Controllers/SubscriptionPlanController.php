@@ -44,16 +44,61 @@ class SubscriptionPlanController extends Controller
 	        // Fetch all plans with their features
 	        $plans = SubscriptionPlan::with('planFeatures')->get();
 	        $user = Auth::user();
+	        // #region agent log (debug-session)
+	        try {
+	            $payload = [
+	                'sessionId' => 'debug-session',
+	                'runId' => 'pre-fix',
+	                'hypothesisId' => 'H1',
+	                'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:entry',
+	                'message' => 'pricingPlans userIndex entry',
+	                'data' => [
+	                    'hasUser' => (bool) $user,
+	                    'userId' => $user?->id,
+	                    'subscription_plan_id' => $user?->subscription_plan_id,
+	                ],
+	                'timestamp' => round(microtime(true) * 1000),
+	            ];
+	            @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
+	        } catch (\Throwable $e) {}
+	        // #endregion
 	        
 	        // If user is authenticated
 	        if ($user) {
 	            // Retrieve the name of the user's active subscription, if any
+	            // Exclude manual subscriptions and cancelled subscriptions
 	            $activeSubscriptionName = $user->subscriptions()
 	                                            ->where('stripe_status', 'active')
+	                                            ->where(function($query) {
+	                                                $query->where('is_manual', false)
+	                                                      ->orWhereNull('is_manual');
+	                                            })
+	                                            ->whereNull('ends_at')
 	                                            ->value('name');
 
 	            // Get the current subscription instance, if any
-	            $currentSubscription = $user->subscription($activeSubscriptionName);
+	            $currentSubscription = $activeSubscriptionName ? $user->subscription($activeSubscriptionName) : null;
+	            // #region agent log (debug-session)
+	            try {
+	                $payload = [
+	                    'sessionId' => 'debug-session',
+	                    'runId' => 'pre-fix',
+	                    'hypothesisId' => 'H1',
+	                    'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:stripe-check',
+	                    'message' => 'pricingPlans stripe currentSubscription check',
+	                    'data' => [
+	                        'userId' => $user->id,
+	                        'subscription_plan_id' => $user->subscription_plan_id,
+	                        'activeSubscriptionName' => $activeSubscriptionName,
+	                        'hasCurrentSubscription' => (bool) $currentSubscription,
+	                        'currentStripeStatus' => $currentSubscription?->stripe_status,
+	                        'currentStripeProduct' => $currentSubscription?->items[0]?->stripe_product ?? null,
+	                    ],
+	                    'timestamp' => round(microtime(true) * 1000),
+	                ];
+	                @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
+	            } catch (\Throwable $e) {}
+	            // #endregion
 
 	            if ($currentSubscription) {
 	                // If there's an active subscription, mark the corresponding plan
@@ -67,6 +112,23 @@ class SubscriptionPlanController extends Controller
                     // If no active Stripe subscription, fall back to user's stored plan
                     // This covers admin-updated plans that bypass Stripe
                     $userPlanId = $user->subscription_plan_id;
+	                    // #region agent log (debug-session)
+	                    try {
+	                        $payload = [
+	                            'sessionId' => 'debug-session',
+	                            'runId' => 'pre-fix',
+	                            'hypothesisId' => 'H1',
+	                            'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:fallback-manual',
+	                            'message' => 'pricingPlans falling back to manual user subscription_plan_id',
+	                            'data' => [
+	                                'userId' => $user->id,
+	                                'subscription_plan_id' => $userPlanId,
+	                            ],
+	                            'timestamp' => round(microtime(true) * 1000),
+	                        ];
+	                        @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
+	                    } catch (\Throwable $e) {}
+	                    // #endregion
 
                     if ($userPlanId) {
                         foreach ($plans as $plan) {
@@ -120,18 +182,60 @@ class SubscriptionPlanController extends Controller
 	        // Create or update the user's Stripe customer information
 	        $user->createOrGetStripeCustomer();
 	        
-	        // Cancel all existing subscriptions
-	        $activeSubscriptions = $user->subscriptions()->where('stripe_status', 'active')->get();
-	        if($activeSubscriptions){
-	            foreach ($activeSubscriptions as $subscription) {
-	                $subscription->cancelNow();
+	        // Detect any existing manual subscriptions before transition
+	        $manualSubscriptions = $user->subscriptions()
+	            ->where(function ($q) {
+	                $q->where('is_manual', true)->orWhereNull('stripe_id');
+	            })
+	            ->get();
+
+	        if ($manualSubscriptions->count() > 0) {
+	            \Log::info("User {$user->id} transitioning from manual subscription to paid Stripe subscription", [
+	                'manual_subscriptions' => $manualSubscriptions->pluck('name')->toArray(),
+	                'new_plan' => $planName,
+	            ]);
+	        }
+	        
+	        // Cancel or remove all existing subscriptions (Stripe AND manual)
+	        $existingSubscriptions = $user->subscriptions()->get();
+	        foreach ($existingSubscriptions as $subscription) {
+	            if (isset($subscription->is_manual) && $subscription->is_manual) {
+	                // Manual subscriptions are local-only; delete them
+	                $subscription->delete();
+	                \Log::info("Deleted manual subscription during Stripe payment transition for user {$user->id}: {$subscription->name}");
+	            } else {
+	                // Stripe-backed subscriptions should be canceled via Cashier
+	                if ($subscription->stripe_status === 'active') {
+	                    try {
+	                        $subscription->cancelNow();
+	                        $subscription->refresh();
+	                        \Log::info("Cancelled existing Stripe subscription during transition for user {$user->id}: {$subscription->name}");
+	                    } catch (\Throwable $e) {
+	                        \Log::warning('Failed to cancel existing Stripe subscription during transition', [
+	                            'user_id' => $user->id,
+	                            'subscription_id' => $subscription->id,
+	                            'error' => $e->getMessage(),
+	                        ]);
+	                    }
+	                }
 	            }
 	        }
 	        
-	        // Subscribe the user to the plan using Cashier
+	        // Subscribe the user to the plan using Cashier (creates real Stripe subscription)
 	        $user->newSubscription($planName, $priceIntent)->create($payment_method);
-	        $user->update(['subscription_plan_id' => SubscriptionPlan::where('name', $planName)->first()->id]);
-	        return response()->json(['message' => 'Subscription created successfully'], 200);
+
+	        $planModel = SubscriptionPlan::where('name', $planName)->first();
+	        if ($planModel) {
+	            $user->update(['subscription_plan_id' => $planModel->id]);
+	        }
+	        
+	        // Refresh subscriptions relationship to ensure all changes are reflected
+	        $user->load('subscriptions');
+
+	        return response()->json([
+                'message' => 'Subscription created successfully',
+                'transitioned_from_manual' => $manualSubscriptions->count() > 0,
+            ], 200);
 	    } catch (\Exception $e) {
 	        // Handle any errors that occur during subscription creation
 	        \Log::error('Subscription Creation Error: ' . $e->getMessage());

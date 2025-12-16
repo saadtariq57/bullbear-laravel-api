@@ -125,6 +125,10 @@
                         @error('subscription_plan_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="form-text text-muted">
+                            Assigning a Pro/Premium plan here will grant complimentary access without creating a Stripe subscription.
+                            When the user later subscribes via Stripe, this complimentary access will be automatically replaced by a paid subscription.
+                        </small>
                     </div>
 
                     <div class="form-group">

@@ -83,6 +83,18 @@
                                             <td>
                                                 @if($user->subscriptionPlan)
                                                     <span class="badge bg-success">{{ $user->subscriptionPlan->name }}</span>
+                                                    @php
+                                                        // Only show Complimentary badge if there's an active manual subscription
+                                                        // Exclude Stripe subscriptions (they have real stripe_id and is_manual = false/null)
+                                                        $manualSub = $user->subscriptions()
+                                                            ->where('stripe_status', 'active')
+                                                            ->where('is_manual', true)
+                                                            ->whereNull('ends_at')
+                                                            ->first();
+                                                    @endphp
+                                                    @if($manualSub)
+                                                        <span class="badge bg-info ms-1">Complimentary</span>
+                                                    @endif
                                                 @else
                                                     <span class="badge bg-secondary">No Plan</span>
                                                 @endif
