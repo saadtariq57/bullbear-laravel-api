@@ -44,6 +44,40 @@ function hideLoader() {
     }
 }
 
+// Check if main content is visible/rendered
+function isMainContentReady() {
+    const appElement = document.getElementById('app');
+    if (!appElement) return false;
+    
+    // Check if Vue app has rendered content (not just mounted)
+    const hasContent = appElement.children.length > 0;
+    if (!hasContent) return false;
+    
+    // Check if we're past the preloader stage (isCheckingAuthState is false)
+    // The preloader shows when isCheckingAuthState is true
+    const preloader = appElement.querySelector('.preloader');
+    if (preloader && preloader.offsetParent !== null) {
+        // Preloader is still visible, content not ready
+        return false;
+    }
+    
+    // Check if the main content area is visible
+    const pageContent = appElement.querySelector('.page-content, .feed-main');
+    if (pageContent) {
+        // Check if element has dimensions (is rendered and visible)
+        const rect = pageContent.getBoundingClientRect();
+        const isVisible = rect.height > 0 && window.getComputedStyle(pageContent).display !== 'none';
+        if (isVisible) {
+            // Additional check: ensure Navigation is also rendered
+            const navigation = appElement.querySelector('nav, .navbar, [class*="navigation"], [class*="Navigation"]');
+            return navigation !== null || rect.height > 100; // Navigation might not have specific class
+        }
+    }
+    
+    // Fallback: if app has children and no preloader, assume content is ready
+    return !preloader || preloader.offsetParent === null;
+}
+
 // Show footer and hide skeleton when Vue app is ready
 function showFooter() {
     const footerSkeleton = document.getElementById('footer-skeleton');
@@ -55,13 +89,32 @@ function showFooter() {
     }
 }
 
+// Wait for main content to be ready before showing footer
+function waitForContentAndShowFooter(maxAttempts = 20, attempt = 0) {
+    if (isMainContentReady()) {
+        hideLoader();
+        showFooter();
+        return;
+    }
+    
+    if (attempt < maxAttempts) {
+        setTimeout(() => {
+            waitForContentAndShowFooter(maxAttempts, attempt + 1);
+        }, 100);
+    } else {
+        // Fallback: show footer even if content check fails
+        hideLoader();
+        showFooter();
+    }
+}
+
 router.isReady().then(() => {
     //store.dispatch('checkLoginStatus').finally(() => {
         app.mount("#app");
+        // Wait for Vue to render content before showing footer
         setTimeout(() => {
-            hideLoader();
-            showFooter();
-        }, 150);
+            waitForContentAndShowFooter();
+        }, 100);
     //});
 });
 
@@ -69,7 +122,7 @@ router.isReady().then(() => {
 // Fallback for hiding loader if Vue doesn't mount (optional)
 setTimeout(() => {
     const appElement = document.getElementById('app');
-    if (appElement) {
+    if (appElement && appElement.children.length > 0) {
         hideLoader();
         showFooter();
     }

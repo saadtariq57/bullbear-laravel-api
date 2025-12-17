@@ -60,8 +60,14 @@
     <style>
         /* Footer Skeleton Loader Styles */
         .footer-skeleton-wrapper {
-            opacity: 1;
+            opacity: 0;
+            display: none;
             transition: opacity 0.3s ease-out;
+        }
+        
+        .footer-skeleton-wrapper.visible {
+            opacity: 1;
+            display: block;
         }
         
         .footer-skeleton-wrapper.hidden {
@@ -128,7 +134,7 @@
         <div class="main-content">
             @yield('content')
             <!-- Footer Skeleton Loader -->
-            <div id="footer-skeleton" class="footer-skeleton-wrapper">
+            <div id="footer-skeleton" class="footer-skeleton-wrapper hidden">
                 <footer class="main-foot text-white main-foot-bottom-margin">
                     <section class="main-footer container-fluid">
                         <div class="container">
