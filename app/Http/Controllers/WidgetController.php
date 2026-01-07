@@ -76,15 +76,29 @@ class WidgetController extends Controller
 
                 if ($response->successful()) {
                     $data = $response->json();
-                    // Validate each data item
-                    if (!$this->validateIntradayData($data)) {
-                        return response()->json(['error' => 'Invalid data format from external API'], 500);
-                    }
-                    usort($data, fn($a, $b) => strtotime($a['date']) - strtotime($b['date']));
-                    return response()->json($data);
+                } else {
+                    $data = [];
                 }
-
-                return response()->json(['error' => 'Failed to fetch intraday data'], 500);
+                
+                // Check if data is empty (market might be closed)
+                if (empty($data) || !is_array($data) || count($data) === 0) {
+                    // If range is 1D and no data, try to get last available trading day
+                    if ($range === '1D') {
+                        $data = $this->getLastAvailableTradingDayData($baseUrl, $apiKey, $symbol, $interval, $endDate);
+                    }
+                    
+                    // If still empty, return empty array instead of error
+                    if (empty($data)) {
+                        return response()->json([]);
+                    }
+                }
+                
+                // Validate each data item
+                if (!$this->validateIntradayData($data)) {
+                    return response()->json(['error' => 'Invalid data format from external API'], 500);
+                }
+                usort($data, fn($a, $b) => strtotime($a['date']) - strtotime($b['date']));
+                return response()->json($data);
 
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
@@ -148,7 +162,8 @@ class WidgetController extends Controller
                 // Determine startDate based on the range
                 switch ($range) {
                     case '1D':
-                        $startDate = $endDate->copy()->subBusinessDay();
+                        // For 1D chart, we want a single day's data (the most recent trading day)
+                        $startDate = $endDate->copy();
                         break;
                     case '5D':
                         $startDate = $endDate->copy()->subBusinessDays(5);
@@ -184,6 +199,49 @@ class WidgetController extends Controller
 
                 return [$startDate, $endDate];
             }
+
+        /**
+         * Fetches data from the last available trading day when market is closed.
+         * Tries up to 7 previous business days to find available data.
+         */
+        private function getLastAvailableTradingDayData($baseUrl, $apiKey, $symbol, $interval, $endDate, $maxDaysBack = 7)
+        {
+            $currentDate = $endDate->copy();
+            
+            // Try up to maxDaysBack previous business days
+            for ($i = 0; $i < $maxDaysBack; $i++) {
+                // Go to previous business day
+                $currentDate = $currentDate->previousBusinessDay();
+                
+                // For 1D chart, we want a single day's data
+                // Set both start and end to the same trading day
+                $targetDate = $currentDate->copy();
+                
+                try {
+                    $response = Http::timeout(10)->get("{$baseUrl}/historical-chart/{$interval}/{$symbol}", [
+                        'from' => $targetDate->toDateString(),
+                        'to' => $targetDate->toDateString(),
+                        'apikey' => $apiKey
+                    ]);
+                    
+                    if ($response->successful()) {
+                        $data = $response->json();
+                        
+                        // If we got valid data, return it
+                        if (!empty($data) && is_array($data) && count($data) > 0 && $this->validateIntradayData($data)) {
+                            return $data;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Continue to next day if this one fails
+                    Log::warning("Failed to fetch data for date {$targetDate->toDateString()}: " . $e->getMessage());
+                    continue;
+                }
+            }
+            
+            // No data found after trying all days
+            return [];
+        }
 
         /**
          * Validates intraday data from external API.
