@@ -301,10 +301,6 @@ export default {
     
     // Handle image load error
     handlegroupprofileError(event) {
-      // Prevent infinite loop - if we're already trying to load the fallback, stop
-      if (event.target.src && event.target.src.includes('d-avatar.jpg')) {
-        return;
-      }
       event.target.src = '/uploads/photos/d-avatar.jpg';
     },
   },
