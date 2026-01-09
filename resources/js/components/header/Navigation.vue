@@ -1559,6 +1559,33 @@ ul.nested-mega-menu {
     }
 }
 
+/* Tablet-specific styles (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .nav-main {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    .nav-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .nav-top-header {
+        gap: 1.5rem !important;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .site-logo {
+        flex-shrink: 0;
+    }
+    
+    .profile-wrapper {
+        flex-shrink: 0;
+    }
+}
+
 /* Ensure desktop navbar stays in place */
 @media (min-width: 1200px) {
     .nav-main {
