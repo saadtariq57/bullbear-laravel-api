@@ -26,6 +26,7 @@ use App\Services\FeedService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Message;
+use App\Jobs\DeleteReactionNotification;
 //
 
 class PostController extends Controller
@@ -1153,30 +1154,31 @@ class PostController extends Controller
         // Retrieve the reaction to get its type before deleting
         $reaction = $query->first();
         if ($reaction) {
+            // Cache reaction_type_id before deletion
             $reactionTypeId = $reaction->reaction_type_id;
             $reaction->delete();
 
-            $notificationQuery = DB::table('notifications')
-            ->where('type', 'App\Notifications\NewPostReactionNotification')
-            ->where('data->reacted_by', $userId);
-
-            if ($postId) {
-                $notificationQuery->whereJsonContains('data->post_id', $postId);
+            // Dispatch notification deletion asynchronously for better performance
+            // Wrap in try-catch to prevent queue connection errors from breaking the request
+            // Notification cleanup is not critical for user experience
+            try {
+                $dispatch = DeleteReactionNotification::dispatch($userId, $postId, $commentId, $messageId);
+                // Explicitly unset to ensure destructor runs within try-catch
+                unset($dispatch);
+            } catch (\Throwable $e) {
+                // Log the error but don't fail the request - notification cleanup is not critical
+                Log::warning('Failed to dispatch DeleteReactionNotification job (non-critical)', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'userId' => $userId,
+                    'postId' => $postId,
+                ]);
             }
-            if ($commentId) {
-                $notificationQuery->whereJsonContains('data->comment_id', $commentId);
-            }
-            if ($messageId) {
-                $notificationQuery->whereJsonContains('data->message_id', $messageId);
-            }
-
-            $abtNotification = $notificationQuery->delete();
 
             return response()->json([
                 'message' => 'Reaction removed successfully',
                 'post_id' => $postId,
                 'reaction_type_id' => $reactionTypeId,
-                'removed notification' => $abtNotification,
             ]); 
         }else {
             return response()->json(['message' => 'No reaction found to remove'], 404);

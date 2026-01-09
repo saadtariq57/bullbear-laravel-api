@@ -1213,11 +1213,14 @@ export default {
       this.showReactionsForPost[postId] = false;
     },
     handleReaction(post_id, reactionTypeId) {
-      const post = this.posts.find(p => p.id === post_id);
+      const post = this.posts.find(p => Number(p.id) === Number(post_id));
       if (post) {
-        if (post.userReaction === reactionTypeId) {
+        // Use Number() comparison to handle type mismatches (string vs number)
+        if (Number(post.userReaction) === Number(reactionTypeId)) {
           // Remove the reaction
-          this.removeReaction(post_id);
+          this.removeReaction(post_id).catch(error => {
+            console.error('Error in removeReaction:', error);
+          });
         } else {
           // Add or update the reaction
           this.addOrUpdateReaction({ post_id, reactionTypeId });

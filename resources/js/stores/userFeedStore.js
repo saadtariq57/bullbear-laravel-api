@@ -113,12 +113,27 @@ const userFeedModule = {
             targetPost.userReaction = userReaction;
         },
         removeReactionFromPost(state, { post_id, userId }) {
-            const targetPost = state.posts.find(post => post.id === post_id);
-            if (!targetPost) return;
+            // Ensure both values are compared as numbers to handle type mismatches
+            const postIndex = state.posts.findIndex(post => Number(post.id) === Number(post_id));
+            if (postIndex === -1) {
+                return;
+            }
+            
+            const targetPost = state.posts[postIndex];
+            
+            // Ensure reactions array exists
+            if (!Array.isArray(targetPost.reactions)) {
+                targetPost.reactions = [];
+            }
+            
             // Remove the user's reaction
-            targetPost.reactions = targetPost.reactions.filter(reaction => reaction.user_id !== userId);
+            const filteredReactions = targetPost.reactions.filter(reaction => Number(reaction.user_id) !== Number(userId));
+            
             // Reorganize reactions after the removal
-            const { organizedReactions, userReaction } = organizeReactions(targetPost.reactions, userId);
+            const { organizedReactions, userReaction } = organizeReactions(filteredReactions, userId);
+            
+            // Update the post properties - Vue should detect these changes
+            targetPost.reactions = filteredReactions;
             targetPost.organizedReactions = organizedReactions;
             targetPost.userReaction = userReaction;
         },
@@ -232,11 +247,15 @@ const userFeedModule = {
         async removeReaction({ commit, rootState}, post_id) {
             try {
                 const userId = rootState.userData.id;
-                const response = await UserFeedService.removeReaction(post_id);
-                commit('removeReactionFromPost', { post_id, userId });
+                // Convert post_id to number to ensure type consistency
+                const numericPostId = Number(post_id);
+                await UserFeedService.removeReaction(numericPostId);
+                
+                // Commit the mutation - if axios didn't throw an error, the request succeeded
+                commit('removeReactionFromPost', { post_id: numericPostId, userId });
             } catch (error) {
                 console.error('Error removing reaction:', error);
-                // Handle the error appropriately
+                // Don't re-throw - just log the error so UI doesn't break
             }
         },
         updateFetchedCommentsFlag({commit}, postId){
