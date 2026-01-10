@@ -1187,6 +1187,41 @@ export default {
             collapseEl.addEventListener('hidden.bs.collapse', () => console.log('[Markets] hidden.bs.collapse'));
         }
 
+        // Fix: Listen for collapse events on all nested market accordion items
+        // When a sibling accordion opens and Bootstrap auto-collapses another via data-bs-parent,
+        // we need to update the collapsed button's state so the chevron rotates back
+        const nestedAccordionIds = [
+            'flush-collapsemarketIndices',
+            'flush-collapsemarketStocks', 
+            'flush-collapsemarketCommodities',
+            'flush-collapsemarketCryptocurrency',
+            'flush-collapsemarketETFs'
+        ];
+        
+        nestedAccordionIds.forEach(id => {
+            const collapseEl = document.getElementById(id);
+            if (collapseEl) {
+                // When a collapse is hidden (auto-collapsed by Bootstrap when sibling opens)
+                collapseEl.addEventListener('hidden.bs.collapse', () => {
+                    // Find the corresponding button for this collapse element
+                    const button = document.querySelector(`[aria-controls="${id}"]`);
+                    if (button) {
+                        button.classList.add('collapsed');
+                        button.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                // When a collapse is shown, ensure button state is correct
+                collapseEl.addEventListener('shown.bs.collapse', () => {
+                    const button = document.querySelector(`[aria-controls="${id}"]`);
+                    if (button) {
+                        button.classList.remove('collapsed');
+                        button.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
+        });
+
         // Setup mobile scroll listener
         this.setupMobileScrollListener();
         
