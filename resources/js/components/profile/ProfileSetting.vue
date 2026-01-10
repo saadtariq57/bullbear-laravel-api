@@ -1103,6 +1103,7 @@ export default {
         // twoFactor: '1',
       },
       show: { current: false, new: false, repeat: false },
+      tabScrollHandler: null,
     };
   },
   mounted() {
@@ -1110,6 +1111,14 @@ export default {
     this.stripePaymentMethod();
     this.loadPrivacySettings();
     this.confirmModalInstance = new Modal(this.$refs.confirm_popup, { backdrop: 'static' });
+    
+    // Simple scroll to top on mobile when tabs change
+    this.tabScrollHandler = () => {
+      if (window.innerWidth < 992) {
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      }
+    };
+    document.addEventListener('shown.bs.tab', this.tabScrollHandler);
   },
   methods: {
     toggleCollapse() {
@@ -1423,6 +1432,11 @@ export default {
         Toast.fire({ icon: 'error', title: message });
       }
     },
+  },
+  beforeUnmount() {
+    if (this.tabScrollHandler) {
+      document.removeEventListener('shown.bs.tab', this.tabScrollHandler);
+    }
   },
 };
 </script>
