@@ -44,24 +44,6 @@ class SubscriptionPlanController extends Controller
 	        // Fetch all plans with their features
 	        $plans = SubscriptionPlan::with('planFeatures')->get();
 	        $user = Auth::user();
-	        // #region agent log (debug-session)
-	        try {
-	            $payload = [
-	                'sessionId' => 'debug-session',
-	                'runId' => 'pre-fix',
-	                'hypothesisId' => 'H1',
-	                'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:entry',
-	                'message' => 'pricingPlans userIndex entry',
-	                'data' => [
-	                    'hasUser' => (bool) $user,
-	                    'userId' => $user?->id,
-	                    'subscription_plan_id' => $user?->subscription_plan_id,
-	                ],
-	                'timestamp' => round(microtime(true) * 1000),
-	            ];
-	            @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
-	        } catch (\Throwable $e) {}
-	        // #endregion
 	        
 	        // If user is authenticated
 	        if ($user) {
@@ -78,27 +60,6 @@ class SubscriptionPlanController extends Controller
 
 	            // Get the current subscription instance, if any
 	            $currentSubscription = $activeSubscriptionName ? $user->subscription($activeSubscriptionName) : null;
-	            // #region agent log (debug-session)
-	            try {
-	                $payload = [
-	                    'sessionId' => 'debug-session',
-	                    'runId' => 'pre-fix',
-	                    'hypothesisId' => 'H1',
-	                    'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:stripe-check',
-	                    'message' => 'pricingPlans stripe currentSubscription check',
-	                    'data' => [
-	                        'userId' => $user->id,
-	                        'subscription_plan_id' => $user->subscription_plan_id,
-	                        'activeSubscriptionName' => $activeSubscriptionName,
-	                        'hasCurrentSubscription' => (bool) $currentSubscription,
-	                        'currentStripeStatus' => $currentSubscription?->stripe_status,
-	                        'currentStripeProduct' => $currentSubscription?->items[0]?->stripe_product ?? null,
-	                    ],
-	                    'timestamp' => round(microtime(true) * 1000),
-	                ];
-	                @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
-	            } catch (\Throwable $e) {}
-	            // #endregion
 
 	            if ($currentSubscription) {
 	                // If there's an active subscription, mark the corresponding plan
@@ -112,23 +73,6 @@ class SubscriptionPlanController extends Controller
                     // If no active Stripe subscription, fall back to user's stored plan
                     // This covers admin-updated plans that bypass Stripe
                     $userPlanId = $user->subscription_plan_id;
-	                    // #region agent log (debug-session)
-	                    try {
-	                        $payload = [
-	                            'sessionId' => 'debug-session',
-	                            'runId' => 'pre-fix',
-	                            'hypothesisId' => 'H1',
-	                            'location' => 'app/Http/Controllers/SubscriptionPlanController.php:userIndex:fallback-manual',
-	                            'message' => 'pricingPlans falling back to manual user subscription_plan_id',
-	                            'data' => [
-	                                'userId' => $user->id,
-	                                'subscription_plan_id' => $userPlanId,
-	                            ],
-	                            'timestamp' => round(microtime(true) * 1000),
-	                        ];
-	                        @file_put_contents(base_path('.cursor/debug.log'), json_encode($payload) . PHP_EOL, FILE_APPEND | LOCK_EX);
-	                    } catch (\Throwable $e) {}
-	                    // #endregion
 
                     if ($userPlanId) {
                         foreach ($plans as $plan) {

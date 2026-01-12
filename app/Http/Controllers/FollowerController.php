@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use App\Notifications\NewFollowerNotification;
+use App\Services\NotificationService;
 
 class FollowerController extends Controller
 {
@@ -40,6 +41,8 @@ class FollowerController extends Controller
                 'follower_id' => $follower->id,
                 'type' => 'follower',
                 'last_follow_time' => now(),
+                'title' => $follower->name . ' has started following you',
+                'description' => '',
                 'url' => "/profile/{$following->name}/",
                 'user' => [
                     'id' => $follower->id,
@@ -48,8 +51,31 @@ class FollowerController extends Controller
                 ],
             ];
 
-            broadcast(new NewFollower($notificationData));
-            $following->notify(new NewFollowerNotification($notificationData));
+            // Check if follower notifications are muted for this user
+            $shouldNotify = NotificationService::shouldNotify($following, 'follower');
+            if ($shouldNotify) {
+                // Try to broadcast (may fail if Redis is down, but notification should still be stored)
+                try {
+                    broadcast(new NewFollower($notificationData));
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Broadcast NewFollower failed', [
+                        'follower_id' => $follower->id,
+                        'following_id' => $userId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+                
+                // Store notification in database (this should always work)
+                try {
+                    $following->notify(new NewFollowerNotification($notificationData));
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Notify NewFollowerNotification failed', [
+                        'follower_id' => $follower->id,
+                        'following_id' => $userId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
 
             return response()->json(['message' => 'User followed successfully']);
         } else {

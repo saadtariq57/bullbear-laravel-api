@@ -1,7 +1,7 @@
 <template>
   <div class="modal-content">
     <div class="modal-header">
-      <h1 class="modal-title fs-5" id="pollpostModal">Create a poll</h1>
+      <h1 class="modal-title fs-5" id="pollpostModal">{{ isEditing ? 'Edit poll' : 'Create a poll' }}</h1>
     </div>
     <div class="modal-body">
       <form @submit.prevent="submitPoll">
@@ -44,7 +44,8 @@ export default {
     return {
       pollQuestion: '',
       pollOptions: ['', ''],
-      pollDuration: '1'
+      pollDuration: '1',
+      isEditing: false
     };
   },
   computed: {
@@ -83,6 +84,19 @@ export default {
       this.pollQuestion = '';
       this.pollOptions = ['', ''];
       this.pollDuration = '1';
+      this.isEditing = false;
+    },
+    setPollData(pollData) {
+      if (pollData) {
+        this.isEditing = true;
+        this.pollQuestion = pollData.question || '';
+        this.pollOptions = pollData.options && pollData.options.length > 0 
+          ? [...pollData.options] 
+          : ['', ''];
+        this.pollDuration = pollData.duration ? String(pollData.duration) : '1';
+      } else {
+        this.isEditing = false;
+      }
     }
   }
 };

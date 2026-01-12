@@ -682,6 +682,14 @@ export default {
     },
     showPollPostModal() {
       this.hidePostModal();
+      // If editing, pass the existing poll data to CreatePoll component
+      if (this.isEditing && this.pollData && this.pollData.question) {
+        this.$nextTick(() => {
+          if (this.$refs.createPollComponent) {
+            this.$refs.createPollComponent.setPollData(this.pollData);
+          }
+        });
+      }
       setTimeout(() => this.pollPostModalInstance.show(), 300);
     },
     hidePollPostModal() {
@@ -904,14 +912,29 @@ export default {
     },
     // Unified Edit Post Methods
     showEditPostModal(post) {
-      console.log(post);
+      console.log('showEditPostModal called with post:', post);
+      
+      // Reset share state first
+      this.sharePostPreview = null;
+      this.shareContext = null;
+      this.shareTargetGroupId = null;
+      this.shareTargetGroupName = null;
+      
+      // Set editing state
       this.isEditing = true;
       this.editPostId = post.id;
-      this.textContent = post.post_text;
+      this.textContent = post.post_text || '';
       this.currentPostType = post.post_type;
+      this.post_privacy = post.post_privacy || 'public';
+      this.comment_status = post.comments_status || 1;
       this.selectedColor = post.colored_post ? `linear-gradient(45deg, ${post.colored_post.color_1} 0%, ${post.colored_post.color_2} 100%)` : '';
       this.textColor = post.colored_post ? post.colored_post.text_color : '';
       this.selectedColorId = post.colored_post_id || null;
+
+      // Reset preview flags
+      this.showMediaPreview = false;
+      this.showPollPreview = false;
+      this.showLinkPreview = false;
 
       switch (post.post_type) {
         case 'photo':
@@ -925,9 +948,9 @@ export default {
           break;
         case 'poll':
           this.pollData = {
-            question: post.poll ? post.poll.question : '',
+            question: post.poll ? post.poll.text : '',
             options: post.poll ? post.poll.options.map(opt => opt.option_text) : [],
-            duration: post.poll ? post.poll.duration : '',
+            duration: post.poll ? post.poll.time : '',
           };
           this.showPollPreview = true;
           break;
@@ -945,7 +968,16 @@ export default {
           break;
       }
 
-      this.postModalInstance.show();
+      // Ensure modal instance is available and show it
+      this.$nextTick(() => {
+        if (!this.$refs.postModal) {
+          console.error('postModal ref not found');
+          return;
+        }
+        this.postModalInstance = Modal.getOrCreateInstance(this.$refs.postModal, { backdrop: 'static' });
+        console.log('Modal instance:', this.postModalInstance);
+        this.postModalInstance.show();
+      });
     },
     updatePost() {
       const formData = new FormData();

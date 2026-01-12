@@ -114,7 +114,7 @@
             aria-labelledby="user-Timeline-tab"
           >
             <div v-if="isOwnProfile">
-              <CreatePost context="profile" ref="createPost" />
+              <CreatePost context="profile" ref="createPost" @post-created="handlePostCreated" @post-updated="handlePostUpdated"/>
             </div>
             <div v-if="canViewPosts">
                 <PostItems
@@ -123,6 +123,8 @@
                   :reactionTypes="reactionTypes"
                   context="profile"
                   @show-post-modal="handleShowPostModal"
+                  @show-edit-model="handleShowPostEditModal"
+                  @post-deleted="handlePostDeleted"
                 />
             </div>
               <div class="followUser" v-else>
@@ -402,6 +404,9 @@ export default {
       'fetchPosts',
       'fetchReactionTypes',
       'initializeRealTimeUpdates',
+      'addPost',
+      'updatePost',
+      'removePost',
     ]),
     ...mapActions('UserGroups', [
       'fetchSuggestedChats',
@@ -410,6 +415,20 @@ export default {
 
     handleShowPostModal(post) {
       this.$refs.createPost.sharePostModal(post);
+    },
+    handleShowPostEditModal(post) {
+      if (this.$refs.createPost) {
+        this.$refs.createPost.showEditPostModal(post);
+      }
+    },
+    handlePostCreated(post) {
+      this.addPost(post);
+    },
+    handlePostUpdated(post) {
+      this.updatePost(post);
+    },
+    handlePostDeleted(postId) {
+      this.removePost(postId);
     },
 
     handleTabChange(event) {

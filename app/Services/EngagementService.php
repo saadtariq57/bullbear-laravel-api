@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Reaction;
 use App\Models\ReactionType;
 use App\Models\User;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
@@ -474,8 +475,11 @@ class EngagementService
                         'avatar' => $reaction->user->avatar,
                     ],
                 ];
-                broadcast(new \App\Events\NewPostReaction($notificationData));
-                $postOwner->notify(new \App\Notifications\NewPostReactionNotification($notificationData));
+                // Check if reaction notifications are muted for this user
+                if (NotificationService::shouldNotify($postOwner, 'reaction')) {
+                    broadcast(new \App\Events\NewPostReaction($notificationData));
+                    $postOwner->notify(new \App\Notifications\NewPostReactionNotification($notificationData));
+                }
             }
         } catch (\Throwable $e) {
             Log::warning('EngagementService: reaction notification failed', ['e' => $e->getMessage()]);
@@ -504,8 +508,30 @@ class EngagementService
                 ],
             ];
             if ($notificationData['commented_to']) {
-                broadcast(new \App\Events\NewPostComment($notificationData));
-                $postOwner->notify(new \App\Notifications\PostCommentNotification($notificationData));
+                // Check if comment notifications are muted for this user
+                if (NotificationService::shouldNotify($postOwner, 'comment')) {
+                    // Try to broadcast (may fail if Redis is down, but notification should still be stored)
+                    try {
+                        broadcast(new \App\Events\NewPostComment($notificationData));
+                    } catch (\Throwable $e) {
+                        Log::warning('EngagementService: Broadcast NewPostComment failed', [
+                            'comment_id' => $comment->id,
+                            'post_id' => $post->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                    
+                    // Store notification in database (this should always work)
+                    try {
+                        $postOwner->notify(new \App\Notifications\PostCommentNotification($notificationData));
+                    } catch (\Throwable $e) {
+                        Log::error('EngagementService: Notify PostCommentNotification failed', [
+                            'comment_id' => $comment->id,
+                            'post_id' => $post->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
         } catch (\Throwable $e) {
             Log::warning('EngagementService: comment notification failed', ['e' => $e->getMessage()]);

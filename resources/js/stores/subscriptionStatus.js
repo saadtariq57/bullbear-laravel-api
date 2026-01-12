@@ -82,9 +82,6 @@ const actions = {
             commit('setSubscriptionStatus', response.data);
             // Cache the response in localStorage
             localStorage.setItem('subscriptionStatus', JSON.stringify(response.data));
-            // #region agent log (debug-session)
-            fetch('http://127.0.0.1:7242/ingest/a8fa692e-1b02-4ed2-97a7-ceb2b1775d01',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H3',location:'resources/js/stores/subscriptionStatus.js:fetchSubscriptionStatus',message:'Fetched subscriptionStatus from API',data:{authenticated:!!response?.data?.authenticated,subscriptionCount:Array.isArray(response?.data?.subscription)?response.data.subscription.length:null,subscriptionNames:Array.isArray(response?.data?.subscription)?response.data.subscription.map(s=>(s?.name||'').toString().trim().toLowerCase()).slice(0,10):null,featureKeys:response?.data?.features?Object.keys(response.data.features).slice(0,10):null},timestamp:Date.now()})}).catch(()=>{});
-            // #endregion
         } catch (error) {
             console.error('Failed to fetch subscription status:', error);
             commit('setUnauthenticated');
@@ -98,9 +95,6 @@ const actions = {
             const data = JSON.parse(cached);
             commit('setSubscriptionStatus', data);
             commit('setLoading', false);
-            // #region agent log (debug-session)
-            fetch('http://127.0.0.1:7242/ingest/a8fa692e-1b02-4ed2-97a7-ceb2b1775d01',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H3',location:'resources/js/stores/subscriptionStatus.js:loadFromCache',message:'Loaded subscriptionStatus from localStorage cache',data:{authenticated:!!data?.authenticated,subscriptionCount:Array.isArray(data?.subscription)?data.subscription.length:null,subscriptionNames:Array.isArray(data?.subscription)?data.subscription.map(s=>(s?.name||'').toString().trim().toLowerCase()).slice(0,10):null,featureKeys:data?.features?Object.keys(data.features).slice(0,10):null},timestamp:Date.now()})}).catch(()=>{});
-            // #endregion
         }
     },
     clearSubscriptionStatus({ commit }) {

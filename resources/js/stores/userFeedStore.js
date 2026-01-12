@@ -28,10 +28,12 @@ const userFeedModule = {
                 state.newPostData = newPost;
             }
         },
-        updatePost(state, post) {
-            const index = state.posts.findIndex(p => p.id === post.id);
+        updatePost(state, updatedPost) {
+            const index = state.posts.findIndex(p => p.id === updatedPost.id);
             if (index !== -1) {
-                state.posts[index] = { ...state.posts[index], ...post };
+                // Replace the entire post object to ensure nested objects (poll, photos, etc.) are properly updated
+                // Use Vue.set or direct assignment with array replacement to ensure reactivity
+                state.posts.splice(index, 1, updatedPost);
             }
         },
         removePost(state, postId){
@@ -65,13 +67,22 @@ const userFeedModule = {
                 const post = state.posts[postIndex];
                 const optionIndex = post.poll.options.findIndex(option => option.id === optionId);
                 
-                // Increment the votes count and add to user_votes
+                // Increment the votes count and add to user_votes/userVotes
                 if (optionIndex !== -1) {
                     post.poll.options[optionIndex].votes++;
+                    // Handle both naming conventions
+                    if (!post.poll.user_votes) {
+                        post.poll.user_votes = [];
+                    }
+                    if (!post.poll.userVotes) {
+                        post.poll.userVotes = [];
+                    }
                     post.poll.user_votes.push({ user_id: userId, option_id: optionId });
+                    post.poll.userVotes.push({ user_id: userId, option_id: optionId });
                 }
 
                 post.poll.userVoted = true;
+                post.poll.userVoteOption = optionId;
                 post.poll.userVoteOptionId = optionId;
             }
         },
@@ -80,18 +91,41 @@ const userFeedModule = {
             const postIndex = state.posts.findIndex(post => post.poll && post.poll.id === pollId);
             if (postIndex !== -1) {
                 const post = state.posts[postIndex];
-                const voteIndex = post.poll.user_votes.findIndex(vote => vote.user_id === userId);
+                // Check both user_votes and userVotes (different naming conventions)
+                const userVotes = post.poll.user_votes || post.poll.userVotes || [];
+                const voteIndex = userVotes.findIndex(vote => vote.user_id === userId);
+                
                 if (voteIndex !== -1) {
-                    const optionIndex = post.poll.options.findIndex(option => option.id === post.poll.user_votes[voteIndex].option_id);
+                    const optionId = userVotes[voteIndex].option_id;
+                    const optionIndex = post.poll.options.findIndex(option => option.id === optionId);
                     
-                    // Decrement the votes count and remove from user_votes
-                    if (optionIndex !== -1) {
+                    // Decrement the votes count
+                    if (optionIndex !== -1 && post.poll.options[optionIndex].votes > 0) {
                         post.poll.options[optionIndex].votes--;
                     }
 
-                    post.poll.user_votes.splice(voteIndex, 1);
+                    // Remove from user_votes array (handle both naming conventions)
+                    if (post.poll.user_votes) {
+                        const voteIndex1 = post.poll.user_votes.findIndex(vote => vote.user_id === userId);
+                        if (voteIndex1 !== -1) {
+                            post.poll.user_votes.splice(voteIndex1, 1);
+                        }
+                    }
+                    if (post.poll.userVotes) {
+                        const voteIndex2 = post.poll.userVotes.findIndex(vote => vote.user_id === userId);
+                        if (voteIndex2 !== -1) {
+                            post.poll.userVotes.splice(voteIndex2, 1);
+                        }
+                    }
+                    
+                    // Update userVoted flag - this is critical for showing voting buttons again
                     post.poll.userVoted = false;
+                    post.poll.userVoteOption = null;
                     post.poll.userVoteOptionId = null;
+                    
+                    // Force reactivity by creating a new object reference
+                    state.posts[postIndex] = { ...state.posts[postIndex] };
+                    state.posts[postIndex].poll = { ...state.posts[postIndex].poll };
                 }
             }
         },

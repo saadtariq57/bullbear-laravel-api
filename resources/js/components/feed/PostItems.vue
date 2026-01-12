@@ -39,7 +39,7 @@
                 </div>
               </div>
               <!-- Post settings -->
-              <div v-if="post.user.id === userData.id && post.post_type != 'poll'" class="position-relative">
+              <div v-if="post.user.id === userData.id" class="position-relative">
                 <button
                   class="btn dropdown-toggle"
                   type="button"
@@ -831,11 +831,14 @@ export default {
         if (post.post_type === 'poll' && post.poll) {
           const isActive = this.isPollActive(post.poll);
           const totalVotes = this.calculateTotalVotes(post.poll.options);
+          // Preserve userVoted and userVoteOption from the original poll data
           updatedPost.poll = {
             ...post.poll,
             isActive: isActive,
             timeLeft: this.timeLeft(post.poll),
-            totalVotes: totalVotes
+            totalVotes: totalVotes,
+            userVoted: post.poll.userVoted !== undefined ? post.poll.userVoted : (post.poll.userVotes && post.poll.userVotes.length > 0),
+            userVoteOption: post.poll.userVoteOption || (post.poll.userVotes && post.poll.userVotes.length > 0 ? post.poll.userVotes[0].option_id : null)
           };
         }
         return updatedPost;
@@ -999,6 +1002,7 @@ export default {
       };
     },
     editPost(post) {
+      console.log('editPost called with:', post);
       this.editPostData = post;
       this.triggerPostEditModal(post);
     },
@@ -1050,6 +1054,7 @@ export default {
       this.$emit('show-post-modal', { post: post, groupId: null, groupName: this.groupName });
     },
     triggerPostEditModal(post){
+      console.log('triggerPostEditModal emitting show-edit-model with:', post);
       this.$emit('show-edit-model', post);
     },
     handlePreviewModalMounted(modalElement) {

@@ -4,11 +4,18 @@
             <div class="col-lg-2 px-2 px-sm-3"></div>
             <div class="col-lg-8 px-2 px-sm-3">
                 <section class="feed-main">
-                    <!-- <div class="CreatePost">
-                        <CreatePost context="feed" ref="createPost"/>
-                    </div> -->
+                    <div style="display: none;">
+                        <CreatePost context="singlePost" ref="createPost"/>
+                    </div>
                     <div>
-                        <PostItems :posts="firstPost" :reactionTypes="reactionTypes" context="singlePost" @show-post-modal="handleShowPostModal"/>
+                        <PostItems 
+                            :posts="firstPost" 
+                            :reactionTypes="reactionTypes" 
+                            context="singlePost" 
+                            @show-post-modal="handleShowPostModal"
+                            @show-edit-model="handleShowPostEditModal"
+                            @post-deleted="handlePostDeleted"
+                        />
                     </div>
                 </section>
             </div>
@@ -20,6 +27,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import PostItems from './PostItems.vue';
+import CreatePost from './CreatePost.vue';
 import { registerVuexModule, unregisterVuexModule } from '@/stores/registerModule';
 import userFeedModule from '@/stores/userFeedStore';
 import userFeedComment from '@/stores/userFeedCommentStore';
@@ -28,6 +36,7 @@ export default {
     name: 'UserFeed',
     components: {
         PostItems,
+        CreatePost,
     },
     data() {
         return {
@@ -41,9 +50,19 @@ export default {
         }
     },
     methods: {
-        ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates']),
+        ...mapActions('userFeed', ['fetchPosts', 'fetchReactionTypes', 'initializeRealTimeUpdates', 'removePost']),
         handleShowPostModal(post) {
-            this.$refs.createPost.sharePostModal(post);
+            if (this.$refs.createPost) {
+                this.$refs.createPost.sharePostModal(post);
+            }
+        },
+        handleShowPostEditModal(post) {
+            if (this.$refs.createPost) {
+                this.$refs.createPost.showEditPostModal(post);
+            }
+        },
+        handlePostDeleted(postId) {
+            this.removePost(postId);
         },
         isModuleRegistered() {
             return this.$store.hasModule('userFeed');

@@ -23,6 +23,7 @@ use App\Notifications\PostCommentNotification;
 use App\Notifications\NewPollVoteNotification;
 use Illuminate\Support\Facades\DB;
 use App\Services\FeedService;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Message;
@@ -223,7 +224,18 @@ class PostController extends Controller
                     unset($post->colorDetails);
                     break;
             }
-        broadcast(new \App\Events\NewPost($post));
+        
+        // Try to broadcast (may fail if Redis is down, but post should still be created)
+        try {
+            broadcast(new \App\Events\NewPost($post));
+        } catch (\Throwable $e) {
+            Log::warning('Broadcast NewPost failed', [
+                'postId' => $post->id,
+                'userId' => $post->user_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+        
         /*$event = new \App\Events\NewPost($post);
         event($event);
         $event->broadcastToAbly();*/
@@ -310,6 +322,65 @@ class PostController extends Controller
                         Storage::disk('public')->delete($albumMedia->image);
                         $albumMedia->delete();
                     }
+                }
+            }
+        }
+
+        // Handle poll post type
+        if ($request->post_type === 'poll') {
+            if ($post->poll) {
+                // Update poll text and time
+                $post->poll->update([
+                    'text' => $request->question,
+                    'time' => $request->duration
+                ]);
+
+                // Get existing option IDs and texts
+                $existingOptions = $post->poll->options->keyBy('id');
+                $newOptions = $request->options ?? [];
+                $newOptionTexts = array_values($newOptions);
+
+                // Update or create options
+                foreach ($newOptionTexts as $newOptionText) {
+                    // Try to find an existing option with the same text
+                    $existingOption = $existingOptions->first(function ($option) use ($newOptionText) {
+                        return $option->option_text === $newOptionText;
+                    });
+
+                    if ($existingOption) {
+                        // Keep this option (remove from list to track what's left)
+                        $existingOptions->forget($existingOption->id);
+                    } else {
+                        // Create new option
+                        PollOption::create([
+                            'poll_id' => $post->poll->id,
+                            'option_text' => $newOptionText,
+                            'votes' => 0
+                        ]);
+                    }
+                }
+
+                // Delete options that are no longer in the list
+                $optionsToDelete = $existingOptions->pluck('id');
+                if ($optionsToDelete->isNotEmpty()) {
+                    // Delete the votes and options
+                    UserPollVotes::whereIn('option_id', $optionsToDelete)->delete();
+                    PollOption::whereIn('id', $optionsToDelete)->delete();
+                }
+            } else {
+                // Create new poll if it doesn't exist
+                $poll = Poll::create([
+                    'post_id' => $post->id,
+                    'text' => $request->question,
+                    'time' => $request->duration
+                ]);
+
+                foreach ($request->options as $option) {
+                    PollOption::create([
+                        'poll_id' => $poll->id,
+                        'option_text' => $option,
+                        'votes' => 0
+                    ]);
                 }
             }
         }
@@ -828,8 +899,31 @@ class PostController extends Controller
             // Find the user to notify
             $userToNotify = User::findOrFail($notificationData['commented_to']);
 
-            broadcast(new NewPostComment($notificationData));
-            $postOwner->notify(new PostCommentNotification($notificationData));
+            // Check if comment notifications are muted for this user
+            $shouldNotify = NotificationService::shouldNotify($userToNotify, 'comment');
+            if ($shouldNotify) {
+                // Try to broadcast (may fail if Redis is down, but notification should still be stored)
+                try {
+                    broadcast(new NewPostComment($notificationData));
+                } catch (\Throwable $e) {
+                    Log::warning('Broadcast NewPostComment failed', [
+                        'userId' => $request->user()->id,
+                        'commented_to' => $notificationData['commented_to'],
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+                
+                // Store notification in database (this should always work)
+                try {
+                    $userToNotify->notify(new PostCommentNotification($notificationData));
+                } catch (\Throwable $e) {
+                    Log::error('Notify PostCommentNotification failed', [
+                        'userId' => $request->user()->id,
+                        'commented_to' => $notificationData['commented_to'],
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
         }
 
         // Fetch the newly created comment in the same format as fetchPostComments
@@ -1097,26 +1191,29 @@ class PostController extends Controller
             ];
             $postOwner = User::findOrFail($ownerId);
 
-            try {
-                broadcast(new NewPostReaction($notificationData));
-            } catch (\Throwable $e) {
-                Log::error('Broadcast NewPostReaction failed', [
-                    'userId' => $userId,
-                    'ownerId' => $ownerId,
-                    'postId' => $postId,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+            // Check if reaction notifications are muted for this user
+            if (NotificationService::shouldNotify($postOwner, 'reaction')) {
+                try {
+                    broadcast(new NewPostReaction($notificationData));
+                } catch (\Throwable $e) {
+                    Log::error('Broadcast NewPostReaction failed', [
+                        'userId' => $userId,
+                        'ownerId' => $ownerId,
+                        'postId' => $postId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
 
-            try {
-                $postOwner->notify(new NewPostReactionNotification($notificationData));
-            } catch (\Throwable $e) {
-                Log::error('Notify NewPostReactionNotification failed', [
-                    'userId' => $userId,
-                    'ownerId' => $ownerId,
-                    'postId' => $postId,
-                    'error' => $e->getMessage(),
-                ]);
+                try {
+                    $postOwner->notify(new NewPostReactionNotification($notificationData));
+                } catch (\Throwable $e) {
+                    Log::error('Notify NewPostReactionNotification failed', [
+                        'userId' => $userId,
+                        'ownerId' => $ownerId,
+                        'postId' => $postId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
             }
         }
         
@@ -1198,57 +1295,108 @@ class PostController extends Controller
         $pollId = $request->poll_id;
         $optionId = $request->option_id;
 
-        // Check if user has already voted on this poll
-        $existingVote = UserPollVotes::where('user_id', $userId)->where('poll_id', $pollId)->first();
+        // Fetch the poll and check if it's still active
+        $poll = Poll::findOrFail($pollId);
         
-        if ($existingVote) {
-            // User has already voted, update their vote
-            $existingVote->update(['option_id' => $optionId]);
-        } else {
-            // User has not voted yet, create a new vote
-            UserPollVotes::create([
-                'user_id' => $userId,
-                'poll_id' => $pollId,
-                'option_id' => $optionId
-            ]);
-
-            $postID = Poll::find($pollId)->post_id;
-            $ownerId = Post::find($postID)->user_id;
-            $postOwner = User::findOrFail($ownerId);
-            // trigger notification
-            if($userId != $ownerId){
-                $notificationData = [
-                    'poll_id' => $pollId,
-                    'option_id' => $optionId,
-                    'voted_by' => $userId,
-                    'voted_to' => $ownerId,
-                    'title' => $user->name.' has voted on your poll',
-                    'description' => '',
-                    'type' => 'pollVote',
-                    'last_notification_time' => now(),
-                    'url' => "/post/{$postOwner->name}/{$postID}",
-                    'user' => [
-                        'id' => $userId,
-                        'name' => $user->name,
-                        'avatar' => $user->avatar,
-                    ],
-                ];
-                
-        
-                broadcast(new NewPollVote($notificationData));
-                $postOwner->notify(new NewPollVoteNotification($notificationData));
-            }
-            
+        // Check if poll is still active (not expired)
+        $pollEndTime = $poll->created_at->copy()->addDays($poll->time);
+        if (now()->greaterThan($pollEndTime)) {
+            return response()->json([
+                'error' => 'This poll has expired and voting is no longer allowed.',
+                'message' => 'Poll has expired'
+            ], 400);
         }
 
-        // Update votes count on the option
-        $option = PollOption::find($optionId);
-        $option->increment('votes');
+        // Use database transaction to ensure data consistency
+        return DB::transaction(function () use ($userId, $pollId, $optionId, $user, $poll) {
+            // Check if user has already voted on this poll
+            $existingVote = UserPollVotes::where('user_id', $userId)->where('poll_id', $pollId)->first();
+            
+            $oldOptionId = null;
+            $isNewVote = false;
+            
+            if ($existingVote) {
+                // User has already voted, update their vote
+                $oldOptionId = $existingVote->option_id;
+                $existingVote->update(['option_id' => $optionId]);
+            } else {
+                // User has not voted yet, create a new vote
+                $isNewVote = true;
+                UserPollVotes::create([
+                    'user_id' => $userId,
+                    'poll_id' => $pollId,
+                    'option_id' => $optionId
+                ]);
 
-        
+                $postID = $poll->post_id;
+                $ownerId = Post::findOrFail($postID)->user_id;
+                $postOwner = User::findOrFail($ownerId);
+                
+                // trigger notification only for new votes
+                if($userId != $ownerId){
+                    $notificationData = [
+                        'poll_id' => $pollId,
+                        'option_id' => $optionId,
+                        'voted_by' => $userId,
+                        'voted_to' => $ownerId,
+                        'title' => $user->name.' has voted on your poll',
+                        'description' => '',
+                        'type' => 'pollVote',
+                        'last_notification_time' => now(),
+                        'url' => "/post/{$postOwner->name}/{$postID}",
+                        'user' => [
+                            'id' => $userId,
+                            'name' => $user->name,
+                            'avatar' => $user->avatar,
+                        ],
+                    ];
+                    
+                    // Check if poll vote notifications are muted for this user
+                    if (NotificationService::shouldNotify($postOwner, 'pollVote')) {
+                        // Try to broadcast (may fail if Redis is down, but vote should still be recorded)
+                        try {
+                            broadcast(new NewPollVote($notificationData));
+                            $postOwner->notify(new NewPollVoteNotification($notificationData));
+                        } catch (\Throwable $e) {
+                            Log::warning('Broadcast NewPollVote failed', [
+                                'pollId' => $pollId,
+                                'userId' => $userId,
+                                'error' => $e->getMessage(),
+                            ]);
+                            // Still send the notification even if broadcast fails
+                            $postOwner->notify(new NewPollVoteNotification($notificationData));
+                        }
+                    }
+                }
+            }
 
-        // Response
-        return response()->json(['message' => 'Vote added successfully', 'poll_id' => $pollId, 'option_id' => $optionId]);
+            // Update votes count on the options
+            if ($oldOptionId) {
+                // User is updating their vote
+                if ($oldOptionId != $optionId) {
+                    // Decrement the old option's vote count
+                    $oldOption = PollOption::find($oldOptionId);
+                    if ($oldOption) {
+                        $oldOption->decrement('votes');
+                    }
+                    // Increment the new option's vote count
+                    $option = PollOption::findOrFail($optionId);
+                    $option->increment('votes');
+                }
+                // If oldOptionId == optionId, no change needed (user clicked same option)
+            } else {
+                // New vote - increment the option's vote count
+                $option = PollOption::findOrFail($optionId);
+                $option->increment('votes');
+            }
+
+            // Response
+            return response()->json([
+                'message' => 'Vote added successfully', 
+                'poll_id' => $pollId, 
+                'option_id' => $optionId
+            ]);
+        });
     }
     public function removeVote(Request $request)
     {

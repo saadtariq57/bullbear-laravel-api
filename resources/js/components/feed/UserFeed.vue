@@ -128,7 +128,13 @@ export default {
       this.removePost(postId);
     },
     handleShowPostEditModal(post){
-      this.$refs.createPost.showEditPostModal(post);
+      console.log('handleShowPostEditModal called with:', post);
+      console.log('createPost ref:', this.$refs.createPost);
+      if (this.$refs.createPost) {
+        this.$refs.createPost.showEditPostModal(post);
+      } else {
+        console.error('createPost ref not found');
+      }
     }
   },
   created() {

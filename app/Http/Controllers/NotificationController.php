@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\NotificationService;
 
 class NotificationController extends Controller
 {
@@ -71,6 +72,8 @@ class NotificationController extends Controller
                         'following_id' => $data['following_id'] ?? null,
                         'follower_id' => $data['follower_id'] ?? null,
                         'last_follow_time' => $data['last_follow_time'] ?? null,
+                        'title' => $data['title'] ?? null,
+                        'description' => $data['description'] ?? null,
                     ]);
                     break;
                 case 'reaction':
@@ -124,6 +127,89 @@ class NotificationController extends Controller
         $notification->update(['data' => $data, 'read_at' => now()]);
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read']);
     }
+
+    public function delete($id)
+    {
+        $notification = Auth::user()->notifications()->findOrFail($id);
+        $notification->delete();
+        return response()->json(['status' => 'success', 'message' => 'Notification deleted successfully']);
+    }
+
+    public function muteNotificationType(Request $request, $id)
+    {
+        $notification = Auth::user()->notifications()->findOrFail($id);
+        $notificationType = $notification->data['type'] ?? null;
+        
+        if (!$notificationType) {
+            return response()->json(['status' => 'error', 'message' => 'Unable to determine notification type'], 400);
+        }
+
+        return $this->muteNotificationTypeInternal($notificationType);
+    }
+
+    public function muteNotificationTypeByType(Request $request)
+    {
+        $notificationType = $request->input('type');
+        
+        if (!$notificationType) {
+            return response()->json(['status' => 'error', 'message' => 'Notification type is required'], 400);
+        }
+
+        return $this->muteNotificationTypeInternal($notificationType);
+    }
+
+    private function muteNotificationTypeInternal($notificationType)
+    {
+        $user = Auth::user();
+        $details = $user->details ?? [];
+        $mutedTypes = $details['muted_notification_types'] ?? [];
+        
+        // Add to muted types if not already muted
+        if (!in_array($notificationType, $mutedTypes)) {
+            $mutedTypes[] = $notificationType;
+            $details['muted_notification_types'] = $mutedTypes;
+            $user->details = $details;
+            $user->save();
+        }
+
+        return response()->json([
+            'status' => 'success', 
+            'message' => "{$notificationType} notifications have been turned off",
+            'muted_type' => $notificationType
+        ]);
+    }
+
+    public function unmuteNotificationType($notificationType)
+    {
+        $user = Auth::user();
+        $details = $user->details ?? [];
+        $mutedTypes = $details['muted_notification_types'] ?? [];
+        
+        // Remove from muted types
+        $mutedTypes = array_values(array_filter($mutedTypes, function($type) use ($notificationType) {
+            return $type !== $notificationType;
+        }));
+        
+        $details['muted_notification_types'] = $mutedTypes;
+        $user->details = $details;
+        $user->save();
+
+        return response()->json([
+            'status' => 'success', 
+            'message' => "{$notificationType} notifications have been turned back on"
+        ]);
+    }
+
+    public function getMutedTypes()
+    {
+        $user = Auth::user();
+        $mutedTypes = NotificationService::getMutedTypes($user);
+        
+        return response()->json([
+            'status' => 'success',
+            'muted_types' => $mutedTypes
+        ]);
+    }
     
     public function sendDailyNotifications($userId)
     {
@@ -164,6 +250,8 @@ class NotificationController extends Controller
                         'following_id' => $notification->data['following_id'],
                         'follower_id' => $notification->data['follower_id'],
                         'last_follow_time' => $notification->data['last_follow_time'],
+                        'title' => $notification->data['title'] ?? null,
+                        'description' => $notification->data['description'] ?? null,
                     ]);
                 case 'reaction':
                     return array_merge($baseData, [

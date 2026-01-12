@@ -245,6 +245,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/suggested-followers', [FollowerController::class, 'suggestedFollowers']);
     Route::get('/{userId}/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'delete']);
+    Route::post('/notifications/{notification}/mute-type', [NotificationController::class, 'muteNotificationType']);
+    Route::post('/notifications/mute-type', [NotificationController::class, 'muteNotificationTypeByType']);
+    Route::post('/notifications/unmute-type/{type}', [NotificationController::class, 'unmuteNotificationType']);
+    Route::get('/notifications/muted-types', [NotificationController::class, 'getMutedTypes']);
     Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
     Route::get('/exams/{examId}/questions', [ExamController::class, 'getExamQuestions']);
     Route::post('/exams/submit/{examId}', [ExamController::class, 'submitExam'])->name('exam.submit');

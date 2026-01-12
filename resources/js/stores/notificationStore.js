@@ -6,7 +6,8 @@ const userNotificationModule = {
     state: {
         followers: [],
         messages: [],
-        notifications: []
+        notifications: [],
+        mutedTypes: []
     },
     mutations: {
         SET_FOLLOWERS(state, followers) {
@@ -63,6 +64,26 @@ const userNotificationModule = {
                     read_at: state.followers[fIdx].read_at || new Date().toISOString(),
                 };
             }
+        },
+        REMOVE_NOTIFICATION(state, notificationId) {
+            // Remove from general notifications
+            const nIdx = state.notifications.findIndex(n => n.id === notificationId);
+            if (nIdx !== -1) {
+                state.notifications.splice(nIdx, 1);
+            }
+            // Remove from message notifications
+            const mIdx = state.messages.findIndex(m => m.id === notificationId);
+            if (mIdx !== -1) {
+                state.messages.splice(mIdx, 1);
+            }
+            // Remove from follower notifications
+            const fIdx = state.followers.findIndex(f => f.id === notificationId);
+            if (fIdx !== -1) {
+                state.followers.splice(fIdx, 1);
+            }
+        },
+        SET_MUTED_TYPES(state, mutedTypes) {
+            state.mutedTypes = mutedTypes;
         },
         // REMOVE_FOLLOWER_NOTIFICATION(state, followerId) {
         //     console.log('Removing follower with ID:', followerId);
@@ -132,6 +153,8 @@ const userNotificationModule = {
                 if (notifications.follower) {
                     console.log('Follower', notifications.follower);
                     commit('SET_FOLLOWERS', notifications.follower);
+                    // Add follower notifications to allNotifications so they appear in the "All" tab
+                    allNotifications = allNotifications.concat(notifications.follower);
                 }
                 // if (notifications) {
                 //     commit('SET_NOTIFICATIONS', notifications);
@@ -149,6 +172,58 @@ const userNotificationModule = {
         
             } catch (error) {
                 console.error('Failed to fetch notifications:', error);
+            }
+        },
+        async deleteNotification({ commit }, notificationId) {
+            try {
+                const response = await axios.delete(`/api/notifications/${notificationId}`);
+                commit('REMOVE_NOTIFICATION', notificationId);
+                return response;
+            } catch (error) {
+                console.error('Failed to delete notification:', error);
+                throw error;
+            }
+        },
+        async muteNotificationType({ commit }, notification) {
+            try {
+                let response;
+                // Support both: notification object with id (from dropdown) or just type string (from settings)
+                if (typeof notification === 'string') {
+                    // Called from settings modal with just type
+                    response = await axios.post('/api/notifications/mute-type', { type: notification });
+                } else {
+                    // Called from notification dropdown with notification object
+                    response = await axios.post(`/api/notifications/${notification.id}/mute-type`);
+                }
+                // Refresh muted types after muting
+                const mutedTypesResponse = await axios.get('/api/notifications/muted-types');
+                commit('SET_MUTED_TYPES', mutedTypesResponse.data.muted_types);
+                return response;
+            } catch (error) {
+                console.error('Failed to mute notification type:', error);
+                throw error;
+            }
+        },
+        async unmuteNotificationType({ commit }, notificationType) {
+            try {
+                const response = await axios.post(`/api/notifications/unmute-type/${notificationType}`);
+                // Refresh muted types after unmuting
+                const mutedTypesResponse = await axios.get('/api/notifications/muted-types');
+                commit('SET_MUTED_TYPES', mutedTypesResponse.data.muted_types);
+                return response;
+            } catch (error) {
+                console.error('Failed to unmute notification type:', error);
+                throw error;
+            }
+        },
+        async getMutedTypes({ commit }) {
+            try {
+                const response = await axios.get('/api/notifications/muted-types');
+                commit('SET_MUTED_TYPES', response.data.muted_types);
+                return response.data.muted_types;
+            } catch (error) {
+                console.error('Failed to get muted types:', error);
+                throw error;
             }
         },
         // removeFollowerNotification({ commit }, followerId) {
