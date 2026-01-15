@@ -72,7 +72,8 @@
                                                     <a :href="`/quotes/${symbolData.symbol.symbol}`"
                                                         class="gray d-flex align-items-center gap-2"
                                                         aria-label="Stock Quote">
-                                                        <img :src="symbolData.symbol.quote.logo" alt="" width="30" height="30"> 
+                                                        <img v-if="symbolData.symbol.quote && symbolData.symbol.quote.logo" :src="symbolData.symbol.quote.logo" alt="" width="30" height="30"> 
+                                                        <span v-else class="placeholder-avatar"></span>
                                                         <div class="lh-sm">
                                                             <span class="text-color fw-bolder">{{ symbolData.symbol.symbol
                                                                 }}</span><br>
@@ -347,6 +348,7 @@ export default {
           () => this.userProfileData,
           (newValue) => {
             if (newValue) {
+              const userId = this.isOwnProfile ? this.userData?.id : newValue.id;
               this.getUserWatchlistData({ userId });
             }
           }

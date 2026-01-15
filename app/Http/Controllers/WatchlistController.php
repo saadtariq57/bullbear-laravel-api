@@ -73,6 +73,7 @@ class WatchlistController extends Controller
            'who_can_view' => $request->input('who_can_view'),
            'featured' => $request->input('featured'),
            'symbol_count' => $request->input('symbol_count', 0),
+           'position' => $this->getNextWatchlistPosition($request->input('user_id')),
        ]);
 
        return redirect()->route('admin.watchlists.edit', $watchlist)->with('success', 'Watchlist created successfully.');
@@ -257,7 +258,8 @@ class WatchlistController extends Controller
                 'title' => $newWatchlistName,
                 'who_can_view' => 'Everyone',
                 'featured' => 0,
-                'symbol_count' => 0
+                'symbol_count' => 0,
+                'position' => $this->getNextWatchlistPosition($user_id),
             ];
             
             $watchlist = UserWatchlist::create($data);
@@ -876,7 +878,8 @@ class WatchlistController extends Controller
                 'title' => $newWatchlistName,
                 'who_can_view' => 'Everyone',
                 'featured' => 0,
-                'symbol_count' => 0
+                'symbol_count' => 0,
+                'position' => $this->getNextWatchlistPosition($user->id),
             ];
 
             $newWatchlist = UserWatchlist::create($newWatchlistData);
@@ -1050,6 +1053,13 @@ class WatchlistController extends Controller
             // Log warning if no watchlist found
             \Log::warning("No watchlist found for user ID: {$userId}");
         }
+    }
+
+    private function getNextWatchlistPosition(int $userId): int
+    {
+        $maxPosition = UserWatchlist::where('user_id', $userId)->max('position');
+
+        return $maxPosition === null ? 0 : ($maxPosition + 1);
     }
 
 
