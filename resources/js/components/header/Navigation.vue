@@ -89,8 +89,9 @@
                         <!-- Indices -->
                         <li>
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
-                            <a href="/markets/indices" class="nav-link nested-nav-dropdown fw-4">Indices</a>
+                            <span class="nav-link nested-nav-dropdown fw-4">Indices</span>
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                              <li><a class="dropdown-item nav-link" href="/markets/indices">Popular Indices</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/indices/indices-futures">Indices Futures</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/indices/major-indices">Major Indices</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/indices/indices-realtime">Indices Real-Time</a></li>
@@ -105,8 +106,9 @@
                         <!-- Stocks -->
                         <li>
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
-                            <a href="/markets/stocks" class="nav-link nested-nav-dropdown fw-4">Stocks</a>
+                            <span class="nav-link nested-nav-dropdown fw-4">Stocks</span>
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                              <li><a class="dropdown-item nav-link" href="/markets/stocks">Popular Stocks</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/trading-stocks">Trending Stocks</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/united-states">United States</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/stocks/most-active">Most Active</a></li>
@@ -121,8 +123,9 @@
                         <!-- Commodities -->
                         <li>
                           <div class="dropdown nested-dropdown-wrapper px-2 position-relative">
-                            <a href="/markets/commodities" class="nav-link nested-nav-dropdown fw-4">Commodities</a>
+                            <span class="nav-link nested-nav-dropdown fw-4">Commodities</span>
                             <ul class="dropdown-menu px-4 py-3 nested-mega-menu rounded-3">
+                              <li><a class="dropdown-item nav-link" href="/markets/commodities">Popular Commodities</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/commodities/real-time-commodities">Real Time Commodities</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/commodities/metals">Metals</a></li>
                               <li><a class="dropdown-item nav-link" href="/markets/commodities/energy">Energy</a></li>
@@ -420,6 +423,9 @@
                                     <div class="accordion-body pt-0">
                                       <ul class="list-unstyled mega-menu-dropdown">
                                             <li>
+                                              <a class="dropdown-item nav-link py-1" href="/markets/indices">Popular Indices</a>
+                                            </li>
+                                            <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/indices/indices-futures">Indices Futures</a>
                                             </li>
                                             <li>
@@ -464,6 +470,9 @@
                                       >
                                     <div class="accordion-body pt-0">
                                       <ul class="list-unstyled mega-menu-dropdown">
+                                            <li>
+                                              <a class="dropdown-item nav-link py-1" href="/markets/stocks">Popular Stocks</a>
+                                            </li>
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/stocks/trading-stocks">Trending Stocks</a>
                                             </li>
@@ -513,6 +522,9 @@
                                       >
                                     <div class="accordion-body pt-0">
                                       <ul class="list-unstyled mega-menu-dropdown">
+                                            <li>
+                                              <a class="dropdown-item nav-link py-1" href="/markets/commodities">Popular Commodities</a>
+                                            </li>
                                             <li>
                                               <a class="dropdown-item nav-link py-1" href="/markets/commodities/real-time-commodities">Real Time Commodities</a>
                                             </li>
@@ -1310,6 +1322,8 @@ export default {
     text-align: left;
     display: flex;
     justify-content: space-between;
+    cursor: default;
+    user-select: none;
 }
 
 .nested-dropdown-wrapper:hover .nested-nav-dropdown:after {
