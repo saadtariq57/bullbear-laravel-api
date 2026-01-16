@@ -1239,7 +1239,17 @@ export default {
         this.touchHandledPosts[postId] = false;
         return;
       }
-      this.handleReaction(postId, 1);
+      const post = this.posts.find(p => Number(p.id) === Number(postId));
+      if (!post) return;
+      if (post.userReaction) {
+        this.removeReaction(postId).catch(error => {
+          console.error('Error in removeReaction:', error);
+        });
+      } else {
+        this.addOrUpdateReaction({ post_id: postId, reactionTypeId: 1 });
+      }
+      this.showReactionsForPost[postId] = false;
+      this.clearReactionTouchData(postId);
     },
     onReactionTouchStart(event, postId) {
       if (!this.isMobile) return;
