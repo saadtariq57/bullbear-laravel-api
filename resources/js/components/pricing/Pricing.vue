@@ -39,7 +39,10 @@
           class="col-xl-4 col-lg-6 col-md-12 px-1"
           :class="['pricing-plan', plan.name.toLowerCase()]"
         >
-          <div class="card shadow rounded-4 h-100 position-relative plan-card">
+          <div
+            class="card shadow rounded-4 h-100 position-relative plan-card"
+            :class="{ 'is-recommended': isRecommendedPlan(index) }"
+          >
             <!-- Recommended Badge for Middle Plan -->
             <div v-if="isRecommendedPlan(index)" class="recommended-badge">
               Recommended
@@ -211,7 +214,7 @@ export default {
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.9rem;
-  z-index: 20;
+  z-index: 1;
 }
 
 /* Free Plan Specific Styling (Optional) */
@@ -240,8 +243,12 @@ export default {
   flex-direction: column;
   height: 100%;
   overflow: visible; 
+  z-index: 0;
 }
 
+.plan-card.is-recommended .plan-header {
+  padding-top: 1.5rem;
+}
 .plan-header {
   min-height: 124px;
 }
