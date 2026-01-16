@@ -46,7 +46,7 @@
     :snap-points="[0.14, 0.55, 0.9]"
     :initial-snap="0"
     :close-threshold="0.25"
-    :backdrop-closes-expanded="false"
+    :backdrop-closes-expanded="true"
     :top-gap-ratio="0.2"
   >
     <template #default="{ close }">
@@ -97,7 +97,7 @@
     :snap-points="[0.14, 0.55, 0.9]"
     :initial-snap="0"
     :close-threshold="0.25"
-    :backdrop-closes-expanded="false"
+    :backdrop-closes-expanded="true"
     :top-gap-ratio="0.2"
   >
     <template #default="{ close }">
