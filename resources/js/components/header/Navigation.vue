@@ -58,7 +58,7 @@
 
             <!-- Desktop Navigation -->
             <div class="desktop-nav d-none d-xl-block flex-fill">
-              <div class="main-menu-container d-flex gap-4 align-items-center justify-content-center">
+            <div class="main-menu-container d-flex gap-4 align-items-center justify-content-center main-menu-container--padded">
                 <!--
                   We control desktop dropdowns via Vue hover state instead of pure CSS/Bootstrap JS.
                   - Hovering a top-level item opens its menu immediately.
@@ -1257,6 +1257,10 @@ export default {
     justify-content: space-between;
 }
 
+.main-menu-container--padded {
+    padding-bottom: 10px;
+}
+
 /* Keep navbar height consistent even when only auth links render */
 .nav-main .navbar {
     min-height: 96px;
@@ -1266,6 +1270,16 @@ export default {
 @media (max-width: 1199.98px) {
     .nav-main .navbar {
         min-height: auto;
+    }
+}
+
+/* On desktop, remove extra bottom spacing so the dropdown meets the header */
+@media (min-width: 1200px) {
+    .nav-main .navbar {
+        padding-bottom: var(--desktop-nav-gap) !important;
+    }
+    .desktop-nav {
+        margin-top: 0;
     }
 }
 
@@ -1347,21 +1361,6 @@ ul.nested-mega-menu {
     border-radius: 0;
     transform: translateY(-30px) !important;
     left: 160px;
-}
-
-/* Prevent glitching when moving cursor from button to dropdown menu */
-.main-list > li > .dropdown > .dropdown-menu.mega-menu {
-    margin-top: 0 !important;
-}
-
-.main-list > li > .dropdown > .dropdown-menu.mega-menu::before {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: 0;
-    right: 0;
-    height: 15px;
-    display: block;
 }
 
 /* ul.dynamic-nested-mega-menu {

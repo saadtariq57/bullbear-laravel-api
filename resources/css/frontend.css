@@ -1379,6 +1379,10 @@ header {
     font-weight: 700;
 }
 
+.main-menu-container {
+    padding-bottom: 10px;
+}
+
 /* .main-menu-container .nav-link:not(.dropdown-menu .nav-link, .main-header.scroll .nav-link) {
     color: var(--white);
 } */
@@ -3722,21 +3726,28 @@ span.marketOpen {
 }
 
 @media (min-width: 1200px) {
-    div.dropdown:hover ul.mega-menu-dropdown {
-        display: block;
-        top: 42px;
+    :root {
+        --desktop-nav-gap: 36px;
     }
-
+    .main-menu-container .dropdown-menu.show {
+        top: 100% !important;
+        margin-top: 0;
+        transform: translateY(calc(-1 * var(--desktop-nav-gap))) !important;
+    }
+    div.dropdown:hover ul.mega-menu-dropdown,
     div.dropdown:hover ul.mega-menu {
         display: block;
-        margin-top: 15px;
+        top: 100% !important;
+        margin-top: 0;
+        transform: translateY(calc(-1 * var(--desktop-nav-gap))) !important;
     }
     ul.mega-menu {
         min-height: max-content;
         position: absolute;
-        top: 30px;
+        top: 100% !important;
+        margin-top: 0;
         border-radius: 0;
-        transform: translateX(-15%) !important;
+        transform: translateX(-15%) translateY(calc(-1 * var(--desktop-nav-gap))) !important;
     }
 
     ul.mega-menu li:not(ul.mega-menu li ul li) {
