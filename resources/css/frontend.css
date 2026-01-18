@@ -3726,9 +3726,7 @@ span.marketOpen {
 }
 
 @media (min-width: 1200px) {
-    :root {
-        --desktop-nav-gap: 36px;
-    }
+   
     .main-menu-container .dropdown-menu.show {
         top: 100% !important;
         margin-top: 0;

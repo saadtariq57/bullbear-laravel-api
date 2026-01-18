@@ -82,7 +82,7 @@
                       </button>
                       <img src="/build/images/bxs_up-arrow.png" alt="" width="15px" height="15px" class="dropdown-img" />
                       <ul
-                        class="dropdown-menu py-3 mega-menu rounded-3 flex-column"
+                        class="dropdown-menu px-4 py-3 mega-menu-dropdown rounded-3 flex-column"
                         :class="{ show: desktopOpenMenuId === 'markets' }"
                         @mouseenter="openDesktopMenu('markets')"
                       >
@@ -1258,7 +1258,7 @@ export default {
 }
 
 .main-menu-container--padded {
-    padding-bottom: 10px;
+    padding-bottom: 12px;
 }
 
 /* Keep navbar height consistent even when only auth links render */
