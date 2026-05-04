@@ -282,6 +282,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
+    // Chatbot
+    Route::post('/chatbot/query', [App\Http\Controllers\ChatbotController::class, 'query']);
+    Route::get('/chatbot/conversations', [App\Http\Controllers\ChatbotController::class, 'conversations']);
+    Route::get('/chatbot/conversations/{conversationId}/messages', [App\Http\Controllers\ChatbotController::class, 'messages']);
+
     Route::post('/createUserSubscription', [SubscriptionPlanController::class, 'createUserSubscription'])->name('createUserSubscription');
 
     Route::get('/subscriptionInvoices', [SubscriptionStatusController::class, 'getInvoices'])->name('getInvoices');

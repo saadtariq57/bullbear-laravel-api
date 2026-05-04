@@ -21,6 +21,21 @@ class RegisterController extends Controller
 
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected function normalizeUsername(Request $request): string|null
+    {
+        $username = $request->input('username');
+        if (is_string($username) && $username !== '') {
+            return $username;
+        }
+
+        $name = $request->input('name');
+        if (is_string($name) && $name !== '') {
+            return $name;
+        }
+
+        return null;
+    }
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -28,9 +43,14 @@ class RegisterController extends Controller
 
     public function initiateSignUp(Request $request)
     {
+        $username = $this->normalizeUsername($request);
+        $request->merge(['name' => $username]);
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255', 'unique:users', 'regex:/^[a-zA-Z0-9]+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'first_name' => ['nullable', 'string', 'max:100'],
+            'last_name' => ['nullable', 'string', 'max:32'],
         ]);
 
         if ($validator->fails()) {
@@ -42,6 +62,8 @@ class RegisterController extends Controller
         $request->session()->put('initial_signup_data', [
             'name' => $request->name,
             'email' => $request->email,
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
             'token' => $token,
         ]);
 
@@ -82,6 +104,8 @@ class RegisterController extends Controller
             'email' => $initialData['email'],
             'password' => Hash::make($request->password),
             'subscription_plan_id' => 1,
+            'first_name' => $initialData['first_name'] ?? null,
+            'last_name' => $initialData['last_name'] ?? null,
         ]);
 
         $request->session()->forget('initial_signup_data');
@@ -109,10 +133,16 @@ class RegisterController extends Controller
 
     protected function validator(array $data)
     {
+        if (array_key_exists('username', $data) && !array_key_exists('name', $data)) {
+            $data['name'] = $data['username'];
+        }
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255', 'unique:users', 'regex:/^[a-zA-Z0-9]+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{8,}$/'],
+            'first_name' => ['nullable', 'string', 'max:100'],
+            'last_name' => ['nullable', 'string', 'max:32'],
         ],[
             'password.regex' => 'The password must be at least 8 characters long and contain at least one special character, one uppercase letter, one lowercase letter, and one number.',
             'name.regex' => 'The username can only contain letters and numbers, no special characters or spaces.',
@@ -121,11 +151,17 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        if (array_key_exists('username', $data) && !array_key_exists('name', $data)) {
+            $data['name'] = $data['username'];
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'subscription_plan_id' => 1,
+            'first_name' => $data['first_name'] ?? null,
+            'last_name' => $data['last_name'] ?? null,
         ]);
     }
 

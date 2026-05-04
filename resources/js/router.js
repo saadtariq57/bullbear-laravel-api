@@ -292,6 +292,11 @@ const routes = [
         component: () => import('./components/groups/ChatRoom.vue'),
     },
     {
+        path: '/ai',
+        name: 'ai-chat',
+        component: () => import('./components/chat/AiChat.vue'),
+    },
+    {
         path: '/single-report',
         name: 'single-report',
         component: () => import('./components/richtvpro/SingleSpecializeReports.vue'),
