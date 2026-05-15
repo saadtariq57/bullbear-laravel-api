@@ -15,7 +15,26 @@ class VerificationController extends Controller
 {
     use VerifiesEmails;
 
-    protected $redirectTo = '/feed';
+    protected $redirectTo = '/';
+
+    protected function frontendBaseUrl(): string
+    {
+        return rtrim((string) env('FRONTEND_URL', 'http://localhost:3000'), '/');
+    }
+
+    protected function frontendUrl(string $path = ''): string
+    {
+        if ($path === '') {
+            return $this->frontendBaseUrl();
+        }
+
+        // If it's already absolute, return as-is.
+        if (preg_match('/^https?:\/\//i', $path)) {
+            return $path;
+        }
+
+        return $this->frontendBaseUrl() . '/' . ltrim($path, '/');
+    }
 
     public function __construct()
     {
@@ -25,10 +44,13 @@ class VerificationController extends Controller
     public function show(Request $request)
     {
         if ($request->user() && $request->user()->hasVerifiedEmail()) {
-            return redirect($this->redirectPath());
+            return redirect($this->frontendUrl($this->redirectPath()));
         }
 
-        return view('auth.verify', ['email' => $request->session()->get('email')]);
+        // We no longer render a Blade "verify" page (Vite). Next.js owns the UI.
+        $email = $request->session()->get('email');
+        $qs = $email ? ('?email=' . urlencode((string) $email)) : '';
+        return redirect($this->frontendUrl('/verify-email' . $qs));
     }
 
     public function verify(Request $request)
@@ -44,7 +66,7 @@ class VerificationController extends Controller
         }
 
         if ($user->hasVerifiedEmail()) {
-            return redirect($this->redirectPath());
+            return redirect($this->frontendUrl($this->redirectPath()));
         }
 
         if ($user->markEmailAsVerified()) {
@@ -69,14 +91,18 @@ class VerificationController extends Controller
 
         $intendedCheckout = $request->session()->pull('intended_checkout_url');
 
-        return redirect($intendedCheckout ?? $this->redirectPath())->with('verified', true);
+        if (is_string($intendedCheckout) && $intendedCheckout !== '') {
+            return redirect($this->frontendUrl($intendedCheckout))->with('verified', true);
+        }
+
+        return redirect($this->frontendUrl($this->redirectPath()))->with('verified', true);
     }
 
     public function resend(Request $request)
     {
         if ($request->user()) {
             if ($request->user()->hasVerifiedEmail()) {
-                return redirect($this->redirectPath());
+                return redirect($this->frontendUrl($this->redirectPath()));
             }
 
             $request->user()->sendEmailVerificationNotification();

@@ -17,6 +17,14 @@ class LoginController extends Controller
 
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    /**
+     * Override the default redirect path after login.
+     */
+    public function redirectPath()
+    {
+        return '/';
+    }
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');

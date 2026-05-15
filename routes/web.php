@@ -19,6 +19,27 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\PersonalSessionController;
 
+/*
+|----------------------------------------------------------------------
+| Next.js frontend redirects
+|----------------------------------------------------------------------
+| We no longer serve a Laravel-rendered auth UI. Redirect common auth
+| pages to the Next.js app (configured via FRONTEND_URL).
+*/
+
+if (!function_exists('frontend_url')) {
+    function frontend_url(string $path = ''): string
+    {
+        $base = rtrim((string) env('FRONTEND_URL', 'http://localhost:3000'), '/');
+        return $path === '' ? $base : ($base . '/' . ltrim($path, '/'));
+    }
+}
+
+Route::get('/login', fn () => redirect(frontend_url('/login')))->name('login');
+Route::get('/register', fn () => redirect(frontend_url('/register')))->name('register');
+Route::get('/password/reset', fn () => redirect(frontend_url('/forgot-password')))->name('password.request');
+Route::get('/password/reset/{token}', fn () => redirect(frontend_url('/reset-password')))->name('password.reset');
+
 Auth::routes(['verify' => true]);
 Broadcast::routes();
 
@@ -286,8 +307,4 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-
-Route::get('/{any}', function () {
-    return view('app');
-})->where('any', '.*');
 
