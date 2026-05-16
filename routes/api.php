@@ -24,6 +24,7 @@ use App\Http\Controllers\{
     SymbolController,
     UserController,
     WatchlistController,
+    WatchlistThresholdController,
     WidgetController,
     StockScreenerController,
     ContactController,
@@ -250,6 +251,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/notifications/mute-type', [NotificationController::class, 'muteNotificationTypeByType']);
     Route::post('/notifications/unmute-type/{type}', [NotificationController::class, 'unmuteNotificationType']);
     Route::get('/notifications/muted-types', [NotificationController::class, 'getMutedTypes']);
+
+    // Watchlist price thresholds (authenticated)
+    Route::prefix('watchlist')->group(function () {
+        Route::get('/thresholds', [WatchlistThresholdController::class, 'index']);
+        Route::put('/symbols/{watchlistSymbol}/thresholds', [WatchlistThresholdController::class, 'update']);
+        Route::delete('/symbols/{watchlistSymbol}/thresholds', [WatchlistThresholdController::class, 'destroy']);
+    });
+
     Route::get('/exams/initiate/{examId}', [ExamController::class, 'initiateExam']);
     Route::get('/exams/{examId}/questions', [ExamController::class, 'getExamQuestions']);
     Route::post('/exams/submit/{examId}', [ExamController::class, 'submitExam'])->name('exam.submit');

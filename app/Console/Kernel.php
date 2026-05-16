@@ -22,6 +22,8 @@ class Kernel extends ConsoleKernel
     // Engagement Logs Cleanup - Run every 48 hours at 2:00 AM to keep 48 hours of data
     $schedule->command('engagement:flush-old-logs')->cron('0 2 */2 * *')->appendOutputTo(storage_path('logs/engagement-cleanup.log'));
 
+    // Watchlist price threshold alerts
+    $schedule->command('watchlist:check-thresholds')->everyFiveMinutes();
 }
 
     /**

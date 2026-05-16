@@ -103,6 +103,21 @@ class NotificationController extends Controller
                         'description' => $data['description'] ?? null,
                     ]);
                     break;
+                case 'watchlist_alert':
+                    $baseData = array_merge($baseData, [
+                        'symbol' => $data['symbol'] ?? null,
+                        'company' => $data['company'] ?? null,
+                        'watchlist_id' => $data['watchlist_id'] ?? null,
+                        'watchlist_symbol_id' => $data['watchlist_symbol_id'] ?? null,
+                        'watchlist_title' => $data['watchlist_title'] ?? null,
+                        'threshold_direction' => $data['threshold_direction'] ?? null,
+                        'threshold_price' => $data['threshold_price'] ?? null,
+                        'current_price' => $data['current_price'] ?? null,
+                        'last_notification_time' => $data['last_notification_time'] ?? null,
+                        'title' => $data['title'] ?? null,
+                        'description' => $data['description'] ?? null,
+                    ]);
+                    break;
                 // Add other types as needed
             }
 
