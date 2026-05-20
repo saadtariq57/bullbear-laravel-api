@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\SendWebPushNotification;
 use App\Notifications\NewMessageNotification;
 use App\Services\NotificationService;
 use Illuminate\Bus\Queueable;
@@ -39,6 +40,7 @@ class SendNewMessageNotifications implements ShouldQueue
                 if (NotificationService::shouldNotify($member, 'message')) {
                     if ($existingNotification) {
                         $data = $existingNotification->data;
+                        $data['id'] = $existingNotification->id;
                         $data['unread_count'] += 1;
                         $data['last_message'] = $this->notificationData['last_message'];
                         $data['last_message_time'] = now();
@@ -48,6 +50,8 @@ class SendNewMessageNotifications implements ShouldQueue
                         // Broadcast the updated notification
                         \Log::info('Updating Notificationn For' . json_encode($data));
                         broadcast(new MessageNotificationUpdated($data, $member->id));
+
+                        SendWebPushNotification::dispatch($member->id, $data);
                     } else {
                         \Log::info('Creating new notification for user ' . $member->id);
                         $newData = $this->notificationData;

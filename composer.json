@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
         "mautic/api-library": "^3.1",
+        "minishlink/web-push": "^10.0",
         "predis/predis": "*",
         "spatie/laravel-sitemap": "^6.0",
         "symfony/event-dispatcher": "5.4",

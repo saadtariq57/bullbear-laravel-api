@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     LiveController,
     MessageController,
     NotificationController,
+    PushSubscriptionController,
     PersonalSessionController,
     PostController,
     RegisterController,
@@ -251,6 +252,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/notifications/mute-type', [NotificationController::class, 'muteNotificationTypeByType']);
     Route::post('/notifications/unmute-type/{type}', [NotificationController::class, 'unmuteNotificationType']);
     Route::get('/notifications/muted-types', [NotificationController::class, 'getMutedTypes']);
+
+    // Web Push subscriptions (authenticated)
+    Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store']);
+    Route::delete('/push-subscriptions', [PushSubscriptionController::class, 'destroy']);
 
     // Watchlist price thresholds (authenticated)
     Route::prefix('watchlist')->group(function () {
