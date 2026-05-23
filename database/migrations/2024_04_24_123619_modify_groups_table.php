@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('groups', function (Blueprint $table) {
             // Change the 'join_privacy' column to enum with values 'public' or 'private'
-            $table->enum('join_privacy', ['public', 'private'])->default('public')->change();
+            $table->string('join_privacy', 20)->default('public')->change();
 
             // Set default values for 'avatar' and 'cover'
             $table->string('avatar', 120)->default('photos/d-group.jpg')->change();
