@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('followers', function (Blueprint $table) {
-            $table->timestamp('time')->nullable()->change();
+            $table->dropColumn('time');
+        });
+        
+        Schema::table('followers', function (Blueprint $table) {
+            $table->timestamp('time')->nullable();
         });
     }
 
