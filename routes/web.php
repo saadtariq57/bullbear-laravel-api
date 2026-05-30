@@ -40,7 +40,7 @@ Route::get('/register', fn () => redirect(frontend_url('/register')))->name('reg
 Route::get('/password/reset', fn () => redirect(frontend_url('/forgot-password')))->name('password.request');
 Route::get('/password/reset/{token}', fn () => redirect(frontend_url('/reset-password')))->name('password.reset');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => false]);
 Broadcast::routes();
 
 

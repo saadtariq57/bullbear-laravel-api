@@ -100,17 +100,58 @@ class VerificationController extends Controller
 
     public function resend(Request $request)
     {
+        $expectsJson = $request->expectsJson();
+
         if ($request->user()) {
             if ($request->user()->hasVerifiedEmail()) {
+                if ($expectsJson) {
+                    return response()->json([
+                        'message' => 'Your email address is already verified.',
+                        'already_verified' => true,
+                    ]);
+                }
+
                 return redirect($this->frontendUrl($this->redirectPath()));
             }
 
-            $request->user()->sendEmailVerificationNotification();
+            $user = $request->user();
         } else {
             $user = User::where('email', $request->email)->first();
-            if ($user) {
-                $user->sendEmailVerificationNotification();
+
+            if (!$user) {
+                if ($expectsJson) {
+                    return response()->json([
+                        'message' => 'No account was found for that email address.',
+                    ], 404);
+                }
+
+                return back()->withErrors([
+                    'email' => 'No account was found for that email address.',
+                ]);
             }
+        }
+
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            \Log::error("Failed to resend verification email for {$user->email}: " . $e->getMessage());
+
+            if ($expectsJson) {
+                return response()->json([
+                    'message' => 'Could not send the verification email. Please try again later.',
+                ], 500);
+            }
+
+            return back()->withErrors([
+                'email' => 'Could not send the verification email. Please try again later.',
+            ]);
+        }
+
+        if ($expectsJson) {
+            return response()->json([
+                'message' => 'Verification email sent.',
+                'resent' => true,
+            ]);
         }
 
         return back()->with('resent', true);

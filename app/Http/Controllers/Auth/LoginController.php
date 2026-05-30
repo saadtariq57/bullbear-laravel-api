@@ -54,17 +54,24 @@ class LoginController extends Controller
 
     protected function unverifiedUser(Request $request, $user)
     {
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            \Log::error("Failed to resend verification email on login attempt for {$user->email}: " . $e->getMessage());
+        }
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => false,
                 'message' => __('Your email address is not verified.'),
-                'verification_required' => true
+                'verification_required' => true,
+                'verification_email_resent' => true,
             ], 403);
         }
 
         return redirect()->route('verification.notice')->with([
             'email' => $user->email,
-            'message' => __('Your email address is not verified. Please check your email for a verification link or click below to resend.')
+            'message' => __('Your email address is not verified. We just sent you a new verification link — please check your inbox.')
         ]);
     }
 
