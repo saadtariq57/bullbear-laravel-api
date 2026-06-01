@@ -111,7 +111,7 @@
                     <ul class="sub-menu">
                         <li><a href="{{ route('admin.bots.index') }}">All Bots</a></li>
                         <li><a href="{{ route('admin.bots.create') }}">Add New Bot</a></li>
-                        <li><a href="{{ route('admin.richtv-content-apis.index') }}">RichTV Content APIs</a></li>
+                        <li><a href="{{ route('admin.richtv-content-apis.index') }}">{{ config('app.name') }} Content APIs</a></li>
                     </ul>
                 </li>
 
@@ -176,7 +176,7 @@
                     <ul class="sub-menu">
                         <li><a href="{{ route('admin.settings.subscription_plans.index') }}">Subscription Plans</a></li>
                         <li><a href="{{ route('admin.emails.index') }}">Manage Emails</a></li>
-                        <li><a href="{{ route('admin.live.index') }}">Rich TV Live</a></li>
+                        <li><a href="{{ route('admin.live.index') }}">{{ config('app.name') }} Live</a></li>
                         <li><a href="{{ route('admin.webinar.index') }}">Webinars</a></li>
                     </ul>
                 </li>

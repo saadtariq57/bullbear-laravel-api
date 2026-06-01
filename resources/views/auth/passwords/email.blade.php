@@ -14,7 +14,7 @@
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-5">
                                     <a href="/" class="">
-                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="Rich Tv logo"
+                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="{{ config('app.name') }} logo"
                                             width="200" class="auth-logo logo-dark mx-auto">
                                     </a>
                                     {{-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> --}}
@@ -33,7 +33,7 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="fs-18 mb-0">Reset Password</h4>
-                                                        <p class="text-muted">Reset your password to RichTv.</p>
+                                                        <p class="text-muted">Reset your password to {{ config('app.name') }}.</p>
                                                     </div>
 
                                                     <div class="alert alert-success mt-4 py-2 text-black" role="alert">
@@ -86,7 +86,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

@@ -14,7 +14,7 @@
                              delay. Prices available on stock
                              page updated in real time.
                              Market &amp; fundamental data
-                             appearing on Rich Tv
+                             appearing on {{ config('app.name') }}
                              sourced from various 3rd party
                              data providers.
                          </p>
@@ -22,7 +22,7 @@
                  </div>
                  <div class="col-6 col-lg-2 col-md-6 mt-mobile">
                      <div class="footer-heading">
-                         <h2 class="mb-3">Rich Tv</h2>
+                         <h2 class="mb-3">{{ config('app.name') }}</h2>
                      </div>
                      <div class="footer-links">
                          <div class="menu-footer-navigation-one-container">
@@ -134,7 +134,7 @@
                      </div>
                  </div>
                  <div class="col-12 footer-bootem d-flex py-4 mt-5 border-top ">
-                     <p class="mb-0 ">Copyright © <?php echo date('Y'); ?> Rich Tv. All rights reserved</p>
+                     <p class="mb-0 ">Copyright © <?php echo date('Y'); ?> {{ config('app.name') }}. All rights reserved</p>
                      <div class="">
                          <a href="/privacy-policy" class="policy-page px-2 mx-2 border-end border-start"
                              aria-label="Privacy Policy">Privacy Policy</a><a href="/terms-of-use"

@@ -31,7 +31,7 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="fs-18 mb-0">VERIFY YOUR EMAIL</h4>
-                                                        <p class="text-muted fs-14">Please verify your email to continue your trading journey with RichTv.</p>
+                                                        <p class="text-muted fs-14">Please verify your email to continue your trading journey with {{ config('app.name') }}.</p>
                                                     </div>
 
                                                     @if (session('resent'))
@@ -70,7 +70,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

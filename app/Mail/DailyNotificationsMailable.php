@@ -79,7 +79,7 @@ class DailyNotificationsMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Richtv - Your Daily Notifications',
+            subject: config('app.name') . ' - Your Daily Notifications',
         );
     }
 

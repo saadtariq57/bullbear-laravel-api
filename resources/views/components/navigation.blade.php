@@ -6,12 +6,12 @@
                     <div class="d-flex align-items-center gap-5 flex-fill nav-top-header">
                         <!-- Site Logo -->
                         <div class="site-logo">
-                            <a href="/" title="Rich TV" rel="home" aria-label="Rich TV logo">
+                            <a href="/" title="{{ config('app.name') }}" rel="home" aria-label="{{ config('app.name') }} logo">
                                 <img
                                     class="header-image is-logo-image"
-                                    alt="Rich TV"
+                                    alt="{{ config('app.name') }}"
                                     src="/build/images/logo.svg"
-                                    title="Rich TV"
+                                    title="{{ config('app.name') }}"
                                 />
                             </a>
                         </div>
@@ -291,7 +291,7 @@
                                     </button>
                                     <img src="/build/images/bxs_up-arrow.png" alt="Dropdown Arrow" width="15px" height="15px" class="dropdown-img" />
                                     <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown" aria-label="Academy Menu">
-                                        <li><a class="dropdown-item nav-link" href="/richtv-live">RichTv Live</a></li>
+                                        <li><a class="dropdown-item nav-link" href="/richtv-live">{{ config('app.name') }} Live</a></li>
                                         <li><a class="dropdown-item nav-link" href="https://richtv.io/glossary/">Glossary</a></li>
                                         <li><a class="dropdown-item nav-link" href="/blog/trading-strategies/">Trading Strategies</a></li>
                                     </ul>
@@ -347,7 +347,7 @@
                                 </div>
                             </li>
 
-                            <!-- RichTv Pro Dropdown -->
+                            <!-- Pro Dropdown -->
                             <li>
                                 <div class="dropdown d-flex gap-2 align-items-center">
                                     <button
@@ -356,12 +356,12 @@
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false"
                                         aria-haspopup="true"
-                                        aria-label="RichTv Pro Dropdown"
+                                        aria-label="{{ config('app.name') }} Pro Dropdown"
                                     >
-                                        <span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span>
+                                        <span class="clr-primary">{{ config('app.name') }}</span>&nbsp;<span class="text-cta">Pro</span>
                                     </button>
                                     <img src="/build/images/bxs_up-arrow.png" alt="Dropdown Arrow" width="15px" height="15px" class="dropdown-img" />
-                                    <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown" aria-label="RichTv Pro Menu">
+                                    <ul class="dropdown-menu px-4 py-3 mega-menu-dropdown" aria-label="{{ config('app.name') }} Pro Menu">
                                         <li><a class="dropdown-item nav-link" href="/trading-education">Trading Education</a></li>
                                         <li><a class="dropdown-item nav-link" href="/exams">Trading Exams</a></li>
                                         <li><a class="dropdown-item nav-link" href="/stocks-screener">Stock Screener</a></li>
@@ -395,12 +395,12 @@
 >
     <div class="offcanvas-header mobile_nav_header">
         <div class="site-logo">
-            <a href="/" title="Rich TV" rel="home" aria-label="Rich TV logo">
+            <a href="/" title="{{ config('app.name') }}" rel="home" aria-label="{{ config('app.name') }} logo">
                 <img
                     class="header-image is-logo-image"
-                    alt="Rich TV"
+                    alt="{{ config('app.name') }}"
                     src="/build/images/logo.svg"
-                    title="Rich TV"
+                    title="{{ config('app.name') }}"
                 />
             </a>
         </div>
@@ -741,7 +741,7 @@
                             >
                                 <div class="accordion-body pt-0">
                                     <ul class="list-unstyled mega-menu-dropdown" aria-label="Academy Submenu">
-                                        <li><a class="dropdown-item nav-link py-1" href="/richtv-live">RichTv Live</a></li>
+                                        <li><a class="dropdown-item nav-link py-1" href="/richtv-live">{{ config('app.name') }} Live</a></li>
                                         <li><a class="dropdown-item nav-link py-1" href="https://richtv.io/glossary/">Glossary</a></li>
                                         <li><a class="dropdown-item nav-link py-1" href="/blog/trading-strategies/">Trading Strategies</a></li>
                                     </ul>
@@ -826,7 +826,7 @@
                             </div>
                         </div>
 
-                        <!-- RichTv Pro Accordion Item -->
+                        <!-- Pro Accordion Item -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button
@@ -836,14 +836,14 @@
                                     data-bs-target="#collapserichtvpro"
                                     aria-expanded="false"
                                     aria-controls="collapserichtvpro"
-                                    aria-label="Toggle RichTv Pro Menu"
+                                    aria-label="Toggle {{ config('app.name') }} Pro Menu"
                                 >
                                     <div class="nav_mobile-img bg-white p-2 rounded-3 shadow">
-                                        <img class="img-fluid" src="/build/images/richtv.png" alt="RichTv Pro Icon" />
+                                        <img class="img-fluid" src="/build/images/richtv.png" alt="{{ config('app.name') }} Pro Icon" />
                                     </div>
                                     <div class="lh-sm">
                                         <p class="mobile-nav-heading m-0 fw-6">
-                                            <span class="clr-primary">RichTv</span>&nbsp;<span class="text-cta">Pro</span>
+                                            <span class="clr-primary">{{ config('app.name') }}</span>&nbsp;<span class="text-cta">Pro</span>
                                         </p>
                                     </div>
                                 </button>
@@ -855,7 +855,7 @@
                                 data-bs-parent="#accordionMobilenavbar"
                             >
                                 <div class="accordion-body pt-0">
-                                    <ul class="list-unstyled mega-menu-dropdown" aria-label="RichTv Pro Submenu">
+                                    <ul class="list-unstyled mega-menu-dropdown" aria-label="{{ config('app.name') }} Pro Submenu">
                                         <li><a class="dropdown-item nav-link py-1" href="/trading-education">Trading Education</a></li>
                                         <li><a class="dropdown-item nav-link py-1" href="/exams">Trading Exams</a></li>
                                         <li><a class="dropdown-item nav-link py-1" href="/stocks-screener">Stock Screener</a></li>

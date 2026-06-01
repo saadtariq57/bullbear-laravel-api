@@ -33,7 +33,7 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="fs-18 mb-0">LOG IN TO YOUR ACCOUNT</h4>
-                                                        <p class="text-muted fs-14">Please log in to start continue your trading journey with RichTv.</p>
+                                                        <p class="text-muted fs-14">Please log in to start continue your trading journey with {{ config('app.name') }}.</p>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('login') }}" class="auth-input">
@@ -108,7 +108,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

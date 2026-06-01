@@ -7,7 +7,7 @@
 @else
 {{ $slot }}
 @endif --}}
-<img src="/build/images/logo.svg" alt="Rich Tv logo" width="150" class="auth-logo logo-dark mx-auto">
+<img src="/build/images/logo.svg" alt="{{ config('app.name') }} logo" width="150" class="auth-logo logo-dark mx-auto">
 </a>
 </a>
 </td>

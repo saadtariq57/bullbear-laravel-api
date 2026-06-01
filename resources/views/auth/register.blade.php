@@ -128,7 +128,7 @@
                                                         </div>
 
                     <div>
-                        <p class="mb-0">By registering you agree to the Rich TV <a
+                        <p class="mb-0">By registering you agree to the {{ config('app.name') }} <a
                                 href="{{ url('/terms-of-use') }}" class="text-primary" target="_blank" rel="noopener">Terms of Use</a></p>
                     </div>
 
@@ -153,7 +153,7 @@
                                     <p class="mb-0">©  
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

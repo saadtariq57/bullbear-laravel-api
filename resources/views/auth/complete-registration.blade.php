@@ -89,7 +89,7 @@
                                     <p class="mb-0">©  
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

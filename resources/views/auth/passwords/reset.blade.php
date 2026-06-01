@@ -14,7 +14,7 @@
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-4">
                                     <a href="/" class="">
-                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="Rich Tv logo"
+                                        <img src="{{ URL::asset('build/images/logo.svg') }}" alt="{{ config('app.name') }} logo"
                                             width="200" class="auth-logo logo-dark mx-auto">
                                     </a>
                                 </div>
@@ -110,7 +110,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Rich Tv
+                                                        </script> {{ config('app.name') }}
                                     </p>
                                 </div>
                             </div>

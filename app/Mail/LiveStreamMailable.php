@@ -43,7 +43,7 @@ class LiveStreamMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Rich TV is Live Now!',
+            subject: config('app.name') . ' is Live Now!',
         );
     }
 

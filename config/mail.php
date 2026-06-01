@@ -103,7 +103,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@richtv.io'),
-        'name' => env('MAIL_FROM_NAME', 'RichTv'),
+        'name' => env('MAIL_FROM_NAME', 'Bull & Bear'),
     ],
 
     /*

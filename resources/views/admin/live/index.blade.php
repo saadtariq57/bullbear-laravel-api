@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 <link rel="stylesheet" href="/build/libs/sweetalert2/sweetalert2.min.css">
 @section('title')
-    Rich TV Live
+    {{ config('app.name') }} Live
 @endsection
 @section('page-title')
-    Rich TV Live
+    {{ config('app.name') }} Live
 @endsection
 @section('body')
 
