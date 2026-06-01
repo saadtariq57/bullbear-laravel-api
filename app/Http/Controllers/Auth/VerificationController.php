@@ -19,7 +19,7 @@ class VerificationController extends Controller
 
     protected function frontendBaseUrl(): string
     {
-        return rtrim((string) env('FRONTEND_URL', 'http://localhost:3000'), '/');
+        return rtrim((string) config('app.frontend_url'), '/');
     }
 
     protected function frontendUrl(string $path = ''): string

@@ -30,7 +30,7 @@ use App\Http\Controllers\PersonalSessionController;
 if (!function_exists('frontend_url')) {
     function frontend_url(string $path = ''): string
     {
-        $base = rtrim((string) env('FRONTEND_URL', 'http://localhost:3000'), '/');
+        $base = rtrim((string) config('app.frontend_url'), '/');
         return $path === '' ? $base : ($base . '/' . ltrim($path, '/'));
     }
 }
