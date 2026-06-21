@@ -60,7 +60,7 @@ class WidgetController extends Controller
             $interval = $request->input('interval', '1min');
 
             try {
-                $intradayIntervals = ['1min', '5min', '10min', '15min', '30min', '1h'];
+                $intradayIntervals = ['1min', '5min', '15min', '30min', '1hour', '4hour'];
 
                 if (!in_array($interval, $intradayIntervals)) {
                     return response()->json(['error' => 'Invalid interval for intraday data'], 400);
