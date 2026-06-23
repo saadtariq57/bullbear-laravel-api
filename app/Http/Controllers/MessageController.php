@@ -14,9 +14,11 @@ class MessageController extends Controller
         $currentUserId = $request->user()->id;
         $group = Group::findOrFail($groupId);
     
+        // Order by id (monotonic) instead of created_at: legacy rows have NULL
+        // created_at, which would otherwise fill page 1 and hide newer messages.
         $messages = $group->messages()
                           ->where('is_deleted', false)
-                          ->latest()
+                          ->latest('id')
                           ->paginate(20);
     
         $result = $messages->map(function ($message) use ($currentUserId) {

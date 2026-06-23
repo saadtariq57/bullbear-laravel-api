@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\PersonalSessionController;
 
 /*
@@ -35,6 +36,31 @@ if (!function_exists('frontend_url')) {
     }
 }
 
+/*
+|----------------------------------------------------------------------
+| Admin panel (Blade) — self-contained authentication
+|----------------------------------------------------------------------
+| Served at the ADMIN_DOMAIN root when configured (e.g. admin.example.com),
+| otherwise under the "/admin" path prefix for local development. Route names
+| keep their "admin." prefix in both modes, so always use the route() helper.
+|
+| These are registered BEFORE the customer-facing auth redirects below so that,
+| on the admin domain, "/login" resolves to the admin login form rather than
+| the Next.js redirect.
+*/
+$adminDomain = config('app.admin_domain');
+
+$adminScope = function () use ($adminDomain) {
+    return $adminDomain ? Route::domain($adminDomain) : Route::prefix('admin');
+};
+
+// Guest-facing admin authentication routes.
+$adminScope()->group(function () {
+    Route::get('login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('login', [AdminLoginController::class, 'login'])->name('admin.login.attempt');
+    Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+});
+
 Route::get('/login', fn () => redirect(frontend_url('/login')))->name('login');
 Route::get('/register', fn () => redirect(frontend_url('/register')))->name('register');
 Route::get('/password/reset', fn () => redirect(frontend_url('/forgot-password')))->name('password.request');
@@ -51,14 +77,12 @@ Route::get('/email/verify', [VerificationController::class, 'show'])->name('veri
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
-Route::middleware(['auth'])->group(function () {
-    // For Admin users
-    Route::middleware(['role'])->group(function () {
-        // Admin Dashboard route
-        Route::get('/admin', [HomeController::class, 'index'])->name('admin.index');
+$adminScope()->middleware(['auth', 'role'])->group(function () {
+    // Admin Dashboard route
+    Route::get('/', [HomeController::class, 'index'])->name('admin.index');
 
         // Grouping for SymbolController
-        Route::prefix('admin/symbols')->name('admin.symbols.')->group(function () {
+        Route::prefix('symbols')->name('admin.symbols.')->group(function () {
             Route::get('/', [SymbolController::class, 'index'])->name('index');
             Route::get('create', [SymbolController::class, 'create'])->name('create');
             Route::post('store', [SymbolController::class, 'store'])->name('store');
@@ -71,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
 
         
         // route group for WidgetController
-        Route::prefix('admin/widgets')->name('admin.widgets.')->group(function () {
+        Route::prefix('widgets')->name('admin.widgets.')->group(function () {
             // Categories Routes
             Route::get('categories', [WidgetController::class, 'categoriesIndex'])->name('categories.index');
             Route::get('categories/create', [WidgetController::class, 'categoriesCreate'])->name('categories.create');
@@ -90,7 +114,7 @@ Route::middleware(['auth'])->group(function () {
             Route::match(['get', 'post'], '{widget}/symbols', [WidgetController::class, 'showSymbols'])->name('symbols');
         });
         
-        Route::prefix('admin/live')->name('admin.live.')->group(function () {
+        Route::prefix('live')->name('admin.live.')->group(function () {
             Route::get('/', [LiveController::class, 'index'])->name('index');
             Route::post('/store', [LiveController::class, 'store'])->name('store');
             Route::get('/edit/{id}', [LiveController::class, 'edit'])->name('edit');
@@ -98,7 +122,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/destroy/{id}', [LiveController::class, 'destroy'])->name('destroy');
         });
         
-        Route::prefix('admin/webinar')->name('admin.webinar.')->group(function () {
+        Route::prefix('webinar')->name('admin.webinar.')->group(function () {
             Route::get('/', [LiveController::class, 'showWebinars'])->name('index');
             Route::post('/store', [LiveController::class, 'storeWebinars'])->name('store');
             Route::get('/edit/{id}', [LiveController::class, 'editWebinars'])->name('edit');
@@ -108,7 +132,7 @@ Route::middleware(['auth'])->group(function () {
         
 
         // route group for ExamController
-        Route::prefix('admin/exams')->name('admin.exams.')->group(function () {
+        Route::prefix('exams')->name('admin.exams.')->group(function () {
             // Exams Routes
             Route::get('/', [ExamController::class, 'index'])->name('index');
             Route::get('create', [ExamController::class, 'create'])->name('create');
@@ -131,14 +155,14 @@ Route::middleware(['auth'])->group(function () {
             Route::put('categories/{examCategory}', [ExamController::class, 'categoriesUpdate'])->name('categories.update');
             Route::delete('categories/{examCategory}', [ExamController::class, 'categoriesDestroy'])->name('categories.destroy');
         });
-        Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        Route::name('admin.')->group(function () {
             // Watchlists Resource Routes
             Route::resource('watchlists', WatchlistController::class);
             // Route to manage symbols within a watchlist
             Route::get('watchlists/{watchlist}/symbols', [WatchlistController::class, 'symbols'])->name('watchlists.symbols');
             Route::post('watchlists/{watchlist}/symbols', [WatchlistController::class, 'updateSymbols'])->name('watchlists.updateSymbols');
         });
-        Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        Route::name('admin.')->group(function () {
             // List all sessions
             Route::get('sessions', [PersonalSessionController::class, 'index'])->name('sessions.index');
             
@@ -162,7 +186,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // mass emails routes
-        Route::prefix('admin/emails')->name('admin.emails.')->group(function () {
+        Route::prefix('emails')->name('admin.emails.')->group(function () {
             Route::get('/', [EmailTemplateController::class, 'index'])->name('index');  // View all templates
             Route::get('/editors/{id}', [EmailTemplateController::class, 'editor'])->name('editor');  // Edit template in TinyMCE
             Route::post('/{id}', [EmailTemplateController::class, 'update'])->name('update');  // Update existing template
@@ -172,7 +196,7 @@ Route::middleware(['auth'])->group(function () {
         });
         
         // route group for GroupController
-        Route::prefix('admin/groups')->name('admin.groups.')->group(function () {
+        Route::prefix('groups')->name('admin.groups.')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('index');
             Route::get('create', [GroupController::class, 'create'])->name('create');
             Route::post('/', [GroupController::class, 'store'])->name('store');
@@ -198,7 +222,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // route group for UserController
-        Route::prefix('admin/users')->name('admin.users.')->group(function () {
+        Route::prefix('users')->name('admin.users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::get('create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
@@ -217,7 +241,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // route group for BotController
-        Route::prefix('admin/bots')->name('admin.bots.')->group(function () {
+        Route::prefix('bots')->name('admin.bots.')->group(function () {
             Route::get('/', [App\Http\Controllers\BotController::class, 'index'])->name('index');
             Route::get('create', [App\Http\Controllers\BotController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\BotController::class, 'store'])->name('store');
@@ -228,7 +252,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // route group for RichTvContentApi management
-        Route::prefix('admin/richtv-content-apis')->name('admin.richtv-content-apis.')->group(function () {
+        Route::prefix('richtv-content-apis')->name('admin.richtv-content-apis.')->group(function () {
             Route::get('/', [App\Http\Controllers\RichTvContentApiController::class, 'index'])->name('index');
             Route::get('create', [App\Http\Controllers\RichTvContentApiController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\RichTvContentApiController::class, 'store'])->name('store');
@@ -244,7 +268,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // route group for GroupController
-        Route::prefix('admin/users')->name('admin.users.')->group(function () {
+        Route::prefix('users')->name('admin.users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::get('create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
@@ -255,7 +279,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Route group for PostController
-        Route::prefix('admin/posts')->name('admin.posts.')->group(function () {
+        Route::prefix('posts')->name('admin.posts.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::get('create', [PostController::class, 'create'])->name('create');
             Route::post('/', [PostController::class, 'store'])->name('store');
@@ -268,7 +292,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Route group for SubscriptionPlanController
-        Route::prefix('admin/settings/subscription_plans')->name('admin.settings.subscription_plans.')->group(function () {
+        Route::prefix('settings/subscription_plans')->name('admin.settings.subscription_plans.')->group(function () {
             Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
             Route::get('create', [SubscriptionPlanController::class, 'create'])->name('create');
             Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
@@ -278,7 +302,7 @@ Route::middleware(['auth'])->group(function () {
             // Additional routes for subscription plan management can be added here
         });
         // previous performence
-        Route::prefix('admin/trading-reports')->name('admin.trading_reports.')->group(function () {
+        Route::prefix('trading-reports')->name('admin.trading_reports.')->group(function () {
             // Reports Routes
             Route::get('/', [TradingReportController::class, 'index'])->name('index');
             Route::get('create', [TradingReportController::class, 'create'])->name('create');
@@ -303,8 +327,4 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('{tradingPerformanceCategory}', [TradingReportController::class, 'categoriesDestroy'])->name('destroy');
             });
         });
-    });
 });
-
-
-

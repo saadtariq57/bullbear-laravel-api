@@ -123,7 +123,7 @@ $(document).ready(function() {
         if (!searchTerm) return; // Avoid empty search requests
 
         $.ajax({
-            url: '/admin/users/search',
+            url: "{{ route('admin.users.search') }}",
             type: 'GET',
             data: { query: searchTerm },
             success: function(data) {
@@ -193,7 +193,7 @@ $(document).ready(function() {
         } else {
             // Otherwise, proceed to update the member details
             $.ajax({
-                url: '/admin/groups/' + $('#groupId').val() + '/updateMember',
+                url: "{{ route('admin.groups.index') }}/" + $('#groupId').val() + '/updateMember',
                 type: 'POST',
                 data: {
                     user_id: userID,
@@ -216,7 +216,7 @@ $(document).ready(function() {
     // Function to remove a member
     function removeMember(userID, rowElement) {
         $.ajax({
-            url: '/admin/groups/' + $('#groupId').val() + '/removeMember',
+            url: "{{ route('admin.groups.index') }}/" + $('#groupId').val() + '/removeMember',
             type: 'DELETE',
             data: {
                 user_id: userID

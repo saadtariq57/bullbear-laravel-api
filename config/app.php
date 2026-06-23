@@ -89,6 +89,20 @@ return [
 
     'frontend_url' => env('FRONTEND_URL', env('APP_URL', 'http://localhost')),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Panel Domain
+    |--------------------------------------------------------------------------
+    |
+    | When set (e.g. "admin.example.com"), the Laravel Blade admin panel is
+    | served from this domain at the root path (no "/admin" prefix) with its
+    | own login. When left empty, the panel falls back to the "/admin" path
+    | prefix on the main domain (useful for local development).
+    |
+    */
+
+    'admin_domain' => env('ADMIN_DOMAIN'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*

@@ -143,7 +143,7 @@
             $('#symbolSearch').on('input', function() {
                 let searchTerm = $(this).val();
                 $.ajax({
-                    url: '/admin/symbols/search',
+                    url: "{{ route('admin.symbols.search') }}",
                     type: 'GET',
                     data: { query: searchTerm },
                     success: function(data) {
@@ -250,7 +250,7 @@
                 });
                 
                 $.ajax({
-                    url: '/admin/widgets/' + $('#widgetId').val() + '/symbols', 
+                    url: "{{ route('admin.widgets.index') }}/" + $('#widgetId').val() + '/symbols', 
                     type: 'POST',
                     data: { symbols: symbolsData },
                     headers: {

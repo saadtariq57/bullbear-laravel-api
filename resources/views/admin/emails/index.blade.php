@@ -152,7 +152,7 @@
                     // console.log('Updating builder link:', enable, templateId);
 
                     if (enable && templateId) {
-                        builderLink.href = `/admin/emails/editors/${templateId}`;
+                        builderLink.href = `{{ route('admin.emails.index') }}/editors/${templateId}`;
                         builderLink.classList.remove('disabled');
                         builderLink.removeAttribute('aria-disabled');
                         builderLink.removeEventListener('click',

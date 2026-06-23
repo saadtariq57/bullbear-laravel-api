@@ -215,7 +215,7 @@
                     // Create a form and submit it
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/admin/bots/' + botId;
+                    form.action = "{{ route('admin.bots.index') }}/" + botId;
                     form.style.display = 'none';
 
                     let methodInput = document.createElement('input');

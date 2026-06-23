@@ -127,7 +127,7 @@
                 confirmButtonText: 'OK'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '/admin/groups'; 
+                    window.location.href = "{{ route('admin.groups.index') }}"; 
                 }
             });
         })

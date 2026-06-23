@@ -158,7 +158,7 @@
                 }
 
                 $.ajax({
-                    url: '/admin/symbols/search',
+                    url: "{{ route('admin.symbols.search') }}",
                     type: 'GET',
                     data: { query: searchTerm },
                     success: function(data) {
@@ -264,7 +264,7 @@
                     if (result.isConfirmed) {
                         // Send AJAX request to remove symbol
                         $.ajax({
-                            url: `/admin/watchlists/${watchlistId}/symbols`,
+                            url: `{{ route('admin.watchlists.index') }}/${watchlistId}/symbols`,
                             type: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',

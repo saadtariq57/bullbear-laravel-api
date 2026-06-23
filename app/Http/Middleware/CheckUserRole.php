@@ -18,21 +18,21 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check if the user is authenticated
+        // Not authenticated: send them to the admin login page.
         if (!Auth::check()) {
-            return redirect('/login'); // Redirect to the login page or wherever you wish
+            return redirect()->route('admin.login');
         }
 
-        // Get the authenticated user
         $user = Auth::user();
 
-        // Check if the user's type is 'admin' or 'robot'
+        // Allow admin and robot users to proceed.
         if ($user->type === 'admin' || $user->type === 'robot') {
-            return $next($request); // Allow admin and robot users to proceed
+            return $next($request);
         }
-        
 
-        // Redirect non-admin users to the /feed route
-        return redirect('/feed');
+        // Authenticated but not an admin: bounce back to the admin login with a
+        // message. The admin login screen will clear the non-admin session.
+        return redirect()->route('admin.login')
+            ->with('error', 'You do not have permission to access the admin panel.');
     }
 }

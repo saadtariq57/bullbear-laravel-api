@@ -149,7 +149,7 @@
                 if (result.isConfirmed) {
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/admin/richtv-content-apis/' + endpointId;
+                    form.action = "{{ route('admin.richtv-content-apis.index') }}/" + endpointId;
                     form.style.display = 'none';
 
                     let methodInput = document.createElement('input');

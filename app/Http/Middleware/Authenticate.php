@@ -12,6 +12,16 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        // Admin-panel requests get their own self-contained login page rather
+        // than being bounced to the Next.js frontend.
+        $adminDomain = config('app.admin_domain');
+        $isAdminArea = ($adminDomain && $request->getHost() === $adminDomain)
+            || (! $adminDomain && $request->is('admin', 'admin/*'));
+
+        return $isAdminArea ? route('admin.login') : route('login');
     }
 }
